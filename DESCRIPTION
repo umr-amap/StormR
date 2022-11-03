@@ -20,7 +20,12 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     ds4psy,
+    graphics,
+    mapproj,
+    maps,
     methods,
     ncdf4,
+    rworldmap,
+    rworldxtra,
     sf,
     sp
