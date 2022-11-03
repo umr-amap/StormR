@@ -2,7 +2,7 @@
 % Please edit documentation in R/getStorms.R
 \name{getStorms}
 \alias{getStorms}
-\title{Initialize a S4 Storms objects}
+\title{Initialize a S4 Storms object}
 \usage{
 getStorms(
   time_period = c(1970, 2022),
@@ -35,8 +35,8 @@ centered in aoi, with a radius of \code{max_dist} is used as loi.}
 circle if aoi is used.}
 }
 \value{
-a S4 Storms object that gathers
+a S4 Storms object that gathers all the above informations
 }
 \description{
-Initialize a S4 Storms objects
+Initialize a S4 Storms object
 }

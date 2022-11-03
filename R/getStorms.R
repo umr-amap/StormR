@@ -65,7 +65,7 @@ Storms <- methods::setClass("Storms",
 
 
 
-#' Initialize a S4 Storms objects
+#' Initialize a S4 Storms object
 #'
 #' @param time_period A numeric vector that contains either the time range of
 #' cyclonic season we are interested in, or the cyclonic seasons that matches
@@ -84,7 +84,7 @@ Storms <- methods::setClass("Storms",
 #' @param max_dist Numeric buffer that indicates the radius (in degree) of the
 #' circle if aoi is used.
 #'
-#' @return a S4 Storms object that gathers
+#' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
 #' @export
 getStorms <- function(time_period = c(1970,2022),
@@ -97,7 +97,8 @@ getStorms <- function(time_period = c(1970,2022),
   #---checking inputs
 
   #Check time_period
-  stopifnot("time_period must contains only integers" = ds4psy::is_wholenumber(time_period))
+  stopifnot("time_period must be numeric" = identical(class(time_period),"numeric"))
+  stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
 
   time_period = as.integer(time_period)
   o = order(time_period)
@@ -121,12 +122,12 @@ getStorms <- function(time_period = c(1970,2022),
 
     stopifnot("aoi must be a vector of numeric " = identical(class(aoi),"numeric"))
     stopifnot("aoi must be a length 2 vector" = length(aoi) == 2)
-    stopifnot("max_dist must contains only one integer " = ds4psy::is_wholenumber(max_dist))
+    stopifnot("max_dist must be numeric " = identical(class(max_dist),"numeric"))
     stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
   }
 
   if(!is.character(loi)){
-    stopifnot("loi must be a matrix or array" = identical(class(loi),c("matrix", "array")) || identical(class(loi),c("SpatialPolygons")))
+    stopifnot("loi must be a matrix, array or SpatialPolygons" = identical(class(loi),c("matrix", "array")) || identical(class(loi),c("SpatialPolygons")))
   }else{
     stopifnot("loi must be focused on South Pacific Basin `SP`" = identical(loi,"SP"))
     loi = matrix(c(150,200,200,150,150,-5,-5,-30,-30,-5),ncol = 2, nrow = 5)
