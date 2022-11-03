@@ -3,3 +3,14 @@
 .Rdata
 .httr-oauth
 .DS_Store
+
+#ignore data
+*.csv
+*.nc
+*.shp
+*.shx
+*.prj
+*.qpj
+*.cpg
+*.dbf
+
