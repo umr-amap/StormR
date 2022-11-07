@@ -206,8 +206,6 @@ plotStorms = function(sts,
 
 
   plot(sts@spatial.loi, lwd = 2, add=T)
-  if(length(sts@aoi[1]) > 0 & !all_basin)
-    graphics::points(x = sts@aoi[1], y =  sts@aoi[2], pch = 4, cex = 1.3)
 }
 
 
