@@ -43,15 +43,25 @@ Storm <- methods::setClass("Storm",
 #' Models a set of storms that occured in a location of interest
 #'
 #' @slot storms A list of S4 Storm we are interested in
+#' @slot time.period Cyclonic season(s) we are interested in
+#' @slot names Storms names of interest
+#' @slot nb.storms Number of storms contained in this object
 #' @slot spatial.loi A SpatialPolygons that represents the location of interest.
 #' Projection is EPSG:4326
+#' @slot buffer the buffer used to extent `spatial.loi`
+#' @slot spatial.loi.buffer buffer extension of `spatial.loi`
 #' @return A S4 object gathering all the above informations
 #' @importFrom methods new
 #' @import sp
 #' @export
 Storms <- methods::setClass("Storms",
                    slots = c(storms = "list",
-                             spatial.loi = "SpatialPolygons"))
+                             time.period = "numeric",
+                             names = "list",
+                             nb.storms = "numeric",
+                             spatial.loi = "SpatialPolygons",
+                             buffer = "numeric",
+                             spatial.loi.buffer = "SpatialPolygons"))
 
 
 
@@ -195,10 +205,17 @@ getStorms <- function(time_period = c(1970,2022),
   sp::proj4string(spatial.poly) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
 
   if(loi.id == "Matrix" | loi.id == "SpatialPolygons" | loi.id =="Country"){
-    spatial.poly = rgeos::gBuffer(spatial.poly, width = max_dist)
+    spatial.poly.buffer = rgeos::gBuffer(spatial.poly, width = max_dist)
   }
 
   #get data associated with indices
+  sts = Storms()
+  sts@time.period = time_period
+  sts@names = list()
+  sts@nb.storms = length(indices)
+  sts@spatial.loi = spatial.poly
+  sts@spatial.loi.buffer = spatial.poly.buffer
+  sts@buffer = max_dist
   storm.list = list()
   k = 2
   for(i in indices){
@@ -212,7 +229,7 @@ getStorms <- function(time_period = c(1970,2022),
 
 
     #which coordinates are within spatial.poly
-    ind = as.numeric(names(which(!is.na(sp::over(pts,spatial.poly)))))
+    ind = as.numeric(names(which(!is.na(sp::over(pts,spatial.poly.buffer)))))
     if(length(ind) > 0){
 
       #offset 1 obs before the loi
@@ -244,13 +261,14 @@ getStorms <- function(time_period = c(1970,2022),
       storm@lty.track = k
       storm.list = append(storm.list,storm)
       k = k+1
+      sts@names = append(sts@names,storm@name)
     }
   }
 
   ncdf4::nc_close(TC_data_base)
-  sts = Storms()
   sts@storms = storm.list
-  sts@spatial.loi = spatial.poly
+  names(sts@storms) = sts@names
+
 
 
   return(sts)

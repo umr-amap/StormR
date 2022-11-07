@@ -16,7 +16,17 @@ Models a set of storms that occured in a location of interest
 \describe{
 \item{\code{storms}}{A list of S4 Storm we are interested in}
 
+\item{\code{time.period}}{Cyclonic season(s) we are interested in}
+
+\item{\code{names}}{Storms names of interest}
+
+\item{\code{nb.storms}}{Number of storms contained in this object}
+
 \item{\code{spatial.loi}}{A SpatialPolygons that represents the location of interest.
 Projection is EPSG:4326}
+
+\item{\code{buffer}}{the buffer used to extent \code{spatial.loi}}
+
+\item{\code{spatial.loi.buffer}}{buffer extension of \code{spatial.loi}}
 }}
 
