@@ -130,7 +130,10 @@ getStorms <- function(time_period = c(1970,2022),
       colnames(loi) = c("lon","lat")
       loi.id = "Matrix"
     }else{
-      stop("invalid entry for loi")
+      map = rworldmap::getMap(resolution = "high")
+      id.country = which(map$SOVEREIGNT == loi)
+      stopifnot("invalid entry for loi" = length(id.country) > 0)
+      loi.id = "Country"
     }
   }
 
@@ -183,6 +186,10 @@ getStorms <- function(time_period = c(1970,2022),
     spatial.poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(loi)), 1)))
   }else if(loi.id == "SpatialPolygons"){
     spatial.poly = loi
+  }else{
+    #loi.id == "Country"
+    loi.sp = map@polygons[[id.country]]
+    spatial.poly = sp::SpatialPolygons(list(loi.sp))
   }
 
   sp::proj4string(spatial.poly) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
