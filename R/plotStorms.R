@@ -2,13 +2,13 @@
 
 
 
-#' Plot the track of a storm on an existing map
+
+#' Get SSWS palette colors associated with a wind observation
 #'
-#' @param storm Storm object that we want to plot the track. Note that a map
-#'  should be previously plotted
+#' @param ms_wind maximum sustained wind observation
 #'
-#' @return NULL
-plot_track = function(storm){
+#' @return color palette associated with the observation
+getColors = function(ms_wind){
 
   saffir_simpson_palette = c("#00CCFF",
                              "#00CCCC",
@@ -17,41 +17,29 @@ plot_track = function(storm){
                              "#FD8D3C",
                              "#F03B20",
                              "#BD0026")
-
-
-  for(i in 1:storm@numobs.all){
-    ms_wind = (storm@obs.all$Nadi_wind[i]+storm@obs.all$Nadi_wind[i+1])/2
-    lon_previous = storm@obs.all$lon[i]
-    lat_previous = storm@obs.all$lat[i]
-    lon_next = storm@obs.all$lon[i+1]
-    lat_next =  storm@obs.all$lat[i+1]
-    trajLon = c(lon_previous,lon_next)
-    trajLat = c(lat_previous,lat_next)
-
-    if(is.na(ms_wind)){
-      color = "black"
+  if(is.na(ms_wind)){
+    color = "black"
+  }else{
+    if(ms_wind <= 17){
+      color = saffir_simpson_palette[1]
     }else{
-      if(ms_wind <= 17){
-        color = saffir_simpson_palette[1]
+      if(ms_wind > 17 & ms_wind <= 32){
+        color = saffir_simpson_palette[2]
       }else{
-        if(ms_wind > 17 & ms_wind <= 32){
-          color = saffir_simpson_palette[2]
+        if(ms_wind >=32 & ms_wind <= 42){
+          color = saffir_simpson_palette[3]
         }else{
-          if(ms_wind >=32 & ms_wind <= 42){
-            color = saffir_simpson_palette[3]
+          if(ms_wind > 42 & ms_wind <= 49){
+            color = saffir_simpson_palette[4]
           }else{
-            if(ms_wind > 42 & ms_wind <= 49){
-              color = saffir_simpson_palette[4]
+            if(ms_wind > 49 & ms_wind < 58){
+              color = saffir_simpson_palette[5]
             }else{
-              if(ms_wind > 49 & ms_wind < 58){
-                color = saffir_simpson_palette[5]
+              if(ms_wind >= 58 & ms_wind < 70){
+                color = saffir_simpson_palette[6]
               }else{
-                if(ms_wind >= 58 & ms_wind < 70){
-                  color = saffir_simpson_palette[6]
-                }else{
-                  if(ms_wind >= 70){
-                    color = saffir_simpson_palette[7]
-                  }
+                if(ms_wind >= 70){
+                  color = saffir_simpson_palette[7]
                 }
               }
             }
@@ -59,18 +47,38 @@ plot_track = function(storm){
         }
       }
     }
-
-    if(!is.na(lon_next)){
-      if(lon_next > 25){
-        graphics::lines(trajLon, trajLat,
-              col = color, type='o',
-              lty = storm@lty.track,
-              pch = 19, lwd = 1,
-              cex = 0.6)
-      }
-    }
   }
+
 }
+
+
+
+
+
+#' Plot the track of a storm on an existing map
+#'
+#' @param storm Storm object that we want to plot the track. Note that a map
+#'  should be previously plotted
+#'
+#' @return NULL
+plot_track = function(storm){
+
+
+  lon = storm@obs.all$lon
+  lat = storm@obs.all$lat
+  msw = storm@obs.all$Nadi_wind
+  colors = unlist(lapply(msw, getColors))
+  graphics::points(lon, lat,
+                col = colors, type='o',
+                lty = storm@lty.track,
+                pch = 19, lwd = 1,
+                cex = 0.8)
+
+  }
+
+
+
+
 
 
 #' Add ISO_time and name label for the first and the
@@ -160,10 +168,10 @@ plotStorms = function(sts,
       ymax = shapefile@bbox["y","max"]
     }
   }else{
-    xmin = sts@spatial.loi@bbox["x","min"]
-    xmax = sts@spatial.loi@bbox["x","max"]
-    ymin = sts@spatial.loi@bbox["y","min"]
-    ymax = sts@spatial.loi@bbox["y","max"]
+    xmin = sts@spatial.loi.buffer@bbox["x","min"]
+    xmax = sts@spatial.loi.buffer@bbox["x","max"]
+    ymin = sts@spatial.loi.buffer@bbox["y","min"]
+    ymax = sts@spatial.loi.buffer@bbox["y","max"]
   }
 
 
@@ -196,16 +204,17 @@ plotStorms = function(sts,
   mapproj::map.grid(lim = c(x.min,x.max,y.min,y.max),
            nx = abs(x.max-x.min)/10*grtc,
            ny = abs(y.max-y.min)/10*grtc,
-           col = "black",
+           col = "blue",
            labels = FALSE,
            lty = 3)
 
+  #Plot track
   lapply(sts@data, plot_track)
   if(labels)
     lapply(sts@data, plot_labels)
 
 
-  plot(sts@spatial.loi, lwd = 2, add=T)
+  plot(sts@spatial.loi.buffer, lwd = 2, add=T)
 }
 
 
