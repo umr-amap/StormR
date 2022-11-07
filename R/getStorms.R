@@ -194,6 +194,9 @@ getStorms <- function(time_period = c(1970,2022),
 
   sp::proj4string(spatial.poly) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
 
+  if(loi.id == "Matrix" | loi.id == "SpatialPolygons" | loi.id =="Country"){
+    spatial.poly = rgeos::gBuffer(spatial.poly, width = max_dist)
+  }
 
   #get data associated with indices
   storm.list = list()
