@@ -59,20 +59,35 @@ getColors = function(ms_wind){
 #'
 #' @param storm Storm object that we want to plot the track. Note that a map
 #'  should be previously plotted
+#' @param all_basin Logical, wether or not to plot track onto the whole basin.
+#' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
+#' `spatial.loi.buffer` of object `sts`
 #'
 #' @return NULL
-plot_track = function(storm){
+plot_track = function(storm, all_basin){
 
+
+  if(all_basin){
+    cex = 0.6
+  }else{
+    cex = 1
+  }
 
   lon = storm@obs.all$lon
   lat = storm@obs.all$lat
   msw = storm@obs.all$Nadi_wind
   colors = unlist(lapply(msw, getColors))
+  graphics::lines(lon,lat,
+                  col = "black",
+                  lty = storm@lty.track,
+                  lwd = 1,
+                  cex = cex)
+
   graphics::points(lon, lat,
-                col = colors, type='o',
-                lty = storm@lty.track,
-                pch = 19, lwd = 1,
-                cex = 0.8)
+                col = colors,
+                pch = 19,
+                lwd = 1,
+                cex = cex)
 
   }
 
@@ -86,25 +101,43 @@ plot_track = function(storm){
 #'
 #' @param storm Storm object that we want to plot the track. Note that both a map
 #' and track of the storm should be previously plotted
+#' @param all_basin Logical, wether or not to plot track onto the whole basin.
+#' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
+#' `spatial.loi.buffer` of object `sts`
 #'
 #' @return NULL
-plot_labels = function(storm){
+plot_labels = function(storm, all_basin){
 
-  graphics::text(storm@obs.all$lon[storm@first.obs],
-       storm@obs.all$lat[storm@first.obs],
-       labels = paste(storm@name,
-                      storm@obs.all$ISO_time[storm@first.obs],
-                      sep="\n"),
-       pos = 3,
-       cex = 0.8)
 
-  graphics::text(storm@obs.all$lon[storm@last.obs],
-       storm@obs.all$lat[storm@last.obs],
-       labels = paste(storm@name,
-                      storm@obs.all$ISO_time[storm@last.obs],
-                      sep="\n"),
-       pos = 3,
-       cex = 0.8)
+  if(all_basin){
+    cex = 0.6
+    lon1 = storm@obs.all$lon[1]
+    lat1 = storm@obs.all$lat[1]
+    lon2 = storm@obs.all$lon[storm@numobs.all]
+    lat2 = storm@obs.all$lat[storm@numobs.all]
+  }else{
+    cex = 1
+    lon1 = storm@obs.all$lon[storm@first.obs]
+    lat1 = storm@obs.all$lat[storm@first.obs]
+    lon2 = storm@obs.all$lon[storm@last.obs]
+    lat2 = storm@obs.all$lat[storm@last.obs]
+  }
+
+  graphics::text(lon1,
+                 lat1,
+                 labels = paste(storm@name,
+                                storm@obs.all$ISO_time[storm@first.obs],
+                                sep="\n"),
+                 pos = 3,
+                 cex = cex)
+
+  graphics::text(lon2,
+                 lat2,
+                 labels = paste(storm@name,
+                                storm@obs.all$ISO_time[storm@last.obs],
+                                sep="\n"),
+                 pos = 3,
+                 cex = cex)
 }
 
 
@@ -120,7 +153,9 @@ plot_labels = function(storm){
 #' @param ocean_color character that stands for the color of the ocean area
 #' @param all_basin Logical, wether or not to plot track onto the whole basin.
 #' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
-#' `spatial.loi` of object `sts`
+#' `spatial.loi.buffer` of object `sts`
+#' @param loi Logical, wether or not to plot `spatial.loi.buffer` on the map
+#' Default value is set to TRUE.
 #' @param labels Logical, wether or not to plot ISO_time and name labels for the
 #' first and the last observation of each storms within the loi. Default value
 #' is set to FALSE.
@@ -137,6 +172,7 @@ plotStorms = function(sts,
                       ocean_color ="white",
                       all_basin = FALSE,
                       labels = FALSE,
+                      loi = TRUE,
                       grtc = 1){
 
   stopifnot("no data to plot" = !missing(sts))
@@ -209,12 +245,12 @@ plotStorms = function(sts,
            lty = 3)
 
   #Plot track
-  lapply(sts@data, plot_track)
+  lapply(sts@data, plot_track, all_basin)
   if(labels)
-    lapply(sts@data, plot_labels)
+    lapply(sts@data, plot_labels,all_basin)
 
-
-  plot(sts@spatial.loi.buffer, lwd = 2, add=T)
+  if(loi)
+    plot(sts@spatial.loi.buffer, lwd = 2, add=T)
 }
 
 

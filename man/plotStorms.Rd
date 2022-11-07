@@ -11,6 +11,7 @@ plotStorms(
   ocean_color = "white",
   all_basin = FALSE,
   labels = FALSE,
+  loi = TRUE,
   grtc = 1
 )
 }
@@ -26,11 +27,14 @@ the default map. Default value is set to NULL.}
 
 \item{all_basin}{Logical, wether or not to plot track onto the whole basin.
 Default value is set to FALSE. Otherwise, the plot focuses on the extent of
-\code{spatial.loi} of object \code{sts}}
+\code{spatial.loi.buffer} of object \code{sts}}
 
 \item{labels}{Logical, wether or not to plot ISO_time and name labels for the
 first and the last observation of each storms within the loi. Default value
 is set to FALSE.}
+
+\item{loi}{Logical, wether or not to plot \code{spatial.loi.buffer} on the map
+Default value is set to TRUE.}
 
 \item{grtc}{numeric that controls how many graticules to plot. Default value
 is set to 1, which plots graticules on multipule of 10 coordinates. Note that

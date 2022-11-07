@@ -4,11 +4,15 @@
 \alias{plot_track}
 \title{Plot the track of a storm on an existing map}
 \usage{
-plot_track(storm)
+plot_track(storm, all_basin)
 }
 \arguments{
 \item{storm}{Storm object that we want to plot the track. Note that a map
 should be previously plotted}
+
+\item{all_basin}{Logical, wether or not to plot track onto the whole basin.
+Default value is set to FALSE. Otherwise, the plot focuses on the extent of
+\code{spatial.loi.buffer} of object \code{sts}}
 }
 \description{
 Plot the track of a storm on an existing map

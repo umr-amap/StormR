@@ -5,11 +5,15 @@
 \title{Add ISO_time and name label for the first and the
 last observation within the loi, on a map for a given storm.}
 \usage{
-plot_labels(storm)
+plot_labels(storm, all_basin)
 }
 \arguments{
 \item{storm}{Storm object that we want to plot the track. Note that both a map
 and track of the storm should be previously plotted}
+
+\item{all_basin}{Logical, wether or not to plot track onto the whole basin.
+Default value is set to FALSE. Otherwise, the plot focuses on the extent of
+\code{spatial.loi.buffer} of object \code{sts}}
 }
 \description{
 Add ISO_time and name label for the first and the
