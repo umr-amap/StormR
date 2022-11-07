@@ -116,7 +116,7 @@ plot_labels = function(storm, all_basin){
     lon2 = storm@obs.all$lon[storm@numobs.all]
     lat2 = storm@obs.all$lat[storm@numobs.all]
   }else{
-    cex = 1
+    cex = 0.4
     lon1 = storm@obs.all$lon[storm@first.obs]
     lat1 = storm@obs.all$lat[storm@first.obs]
     lon2 = storm@obs.all$lon[storm@last.obs]
@@ -162,6 +162,12 @@ plot_labels = function(storm, all_basin){
 #' @param grtc numeric that controls how many graticules to plot. Default value
 #' is set to 1, which plots graticules on multipule of 10 coordinates. Note that
 #' it should be a power of 2.
+#' @param xlim A set of longitude coordinates that controls the longitude extent
+#' of the plot. Default value is NULL which will let the plot extends according
+#' to the x bounding box of `spatial.loi.buffer`.
+#' @param ylim A set of latitude coordinates that controls the latitude extent
+#' of the plot. Default value is NULL which will let the plot extends according
+#' to the y bounding box of `spatial.loi.buffer`.
 #' @return NULL
 #' @importFrom ds4psy is_wholenumber
 #' @import rworldxtra
@@ -173,7 +179,9 @@ plotStorms = function(sts,
                       all_basin = FALSE,
                       labels = FALSE,
                       loi = TRUE,
-                      grtc = 1){
+                      grtc = 1,
+                      xlim = NULL,
+                      ylim = NULL){
 
   stopifnot("no data to plot" = !missing(sts))
   if(!is.null(shapefile))
@@ -182,6 +190,21 @@ plotStorms = function(sts,
   stopifnot("grtc must be class numeric" = identical(class(grtc),"numeric"))
   stopifnot("grtc must contains an integer" = is_wholenumber(grtc))
 
+  if(!is.null(xlim)){
+    stopifnot("xlim must be numeric" = identical(class(xlim),"numeric"))
+    stopifnot("xlim must length 2" = length(xlim) == 2)
+    xlim = xlim(order(xlim))
+    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 & xlim <= 360)
+  }
+
+  if(!is.null(ylim)){
+    stopifnot("ylim must be numeric" = identical(class(ylim),"numeric"))
+    stopifnot("ylim must length 2" = length(ylim) == 2)
+    ylim = ylim(order(ylim))
+    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
+  }
+
+  #Check on graticule
   l2 = log2(grtc)
   if(!is_wholenumber(l2)){
     grtc = 2**round(l2)
@@ -190,35 +213,43 @@ plotStorms = function(sts,
 
 
 
-
+  #Handle spatial extent
   if(all_basin){
-    if(is.null(shapefile)){
       xmin = 150
       xmax = 200
       ymin = -30
       ymax = -5
-    }else{
-      xmin = shapefile@bbox["x","min"]
-      xmax = shapefile@bbox["x","max"]
-      ymin = shapefile@bbox["y","min"]
-      ymax = shapefile@bbox["y","max"]
-    }
+      if(!is.null(xlim)){
+        warning("xlim ignored")
+      }
+      if(!is.null(xlim)){
+        warning("ylim ignored")
+      }
   }else{
     xmin = sts@spatial.loi.buffer@bbox["x","min"]
     xmax = sts@spatial.loi.buffer@bbox["x","max"]
     ymin = sts@spatial.loi.buffer@bbox["y","min"]
     ymax = sts@spatial.loi.buffer@bbox["y","max"]
+    if(!is.null(xlim)){
+      xmin = xlim[1]
+      xmax = xlim[2]
+    }
+    if(!is.null(ylim)){
+      ymin = ylim[1]
+      ymax = ylim[2]
+    }
   }
 
 
   if(is.null(shapefile)){
+    #Change map here to handle wrapping 0-360 in SWP Basin
     world = rworldmap::getMap(resolution = "high")
     maps::map(world,
         fill=TRUE,
         col=ground_color,
         bg=ocean_color,
         xlim = c(xmin,xmax),
-        ylim=c(ymin, ymax))
+        ylim = c(ymin, ymax))
     maps::map.axes(cex.axis = 1)
   }else{
     plot(shapefile,

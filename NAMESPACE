@@ -3,6 +3,7 @@
 export(Storm)
 export(Storms)
 export(getStorms)
+export(plotBehaviour)
 export(plotStorms)
 exportClasses(Storm)
 exportClasses(Storms)

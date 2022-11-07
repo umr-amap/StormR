@@ -212,7 +212,7 @@ getStorms <- function(time_period = c(1970,2022),
   sts = Storms()
   sts@time.period = time_period
   sts@names = list()
-  sts@nb.storms = length(indices)
+  sts@nb.storms = 0
   sts@spatial.loi = spatial.poly
   sts@spatial.loi.buffer = spatial.poly.buffer
   sts@buffer = max_dist
@@ -230,7 +230,10 @@ getStorms <- function(time_period = c(1970,2022),
 
     #which coordinates are within spatial.poly
     ind = as.numeric(names(which(!is.na(sp::over(pts,spatial.poly.buffer)))))
+
     if(length(ind) > 0){
+
+      sts@nb.storms = sts@nb.storms + 1
 
       #offset 1 obs before the loi
       if(ind[1] != 1)

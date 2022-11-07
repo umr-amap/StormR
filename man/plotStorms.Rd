@@ -12,7 +12,9 @@ plotStorms(
   all_basin = FALSE,
   labels = FALSE,
   loi = TRUE,
-  grtc = 1
+  grtc = 1,
+  xlim = NULL,
+  ylim = NULL
 )
 }
 \arguments{
@@ -39,6 +41,14 @@ Default value is set to TRUE.}
 \item{grtc}{numeric that controls how many graticules to plot. Default value
 is set to 1, which plots graticules on multipule of 10 coordinates. Note that
 it should be a power of 2.}
+
+\item{xlim}{A set of longitude coordinates that controls the longitude extent
+of the plot. Default value is NULL which will let the plot extends according
+to the x bounding box of \code{spatial.loi.buffer}.}
+
+\item{ylim}{A set of latitude coordinates that controls the latitude extent
+of the plot. Default value is NULL which will let the plot extends according
+to the y bounding box of \code{spatial.loi.buffer}.}
 }
 \description{
 Plot a set of storm
