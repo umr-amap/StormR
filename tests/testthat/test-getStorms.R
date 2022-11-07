@@ -29,37 +29,39 @@ test_that("Tests invalid inputs", {
   expect_error(getStorms(time_period = c(2016,2015), name = "WINSTON"),
                "name and time_period must be the same length")
 
-  #Checking `aoi` and `max_dist` validity
+  #Checking `loi` validity
   expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         aoi = "hui"),
-               "aoi must be a vector of numeric ")
+                         loi = "hui"),
+               "invalid entry for loi")
 
   expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         aoi = 165),
-               "aoi must be a length 2 vector")
+                         loi = 165),
+               "invalid class for loi")
 
   expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         aoi = c(165,-17), max_dist = "hui"),
+                         loi = c("hj","jk")),
+               "loi must be length one ")
+
+  expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
+                         loi = c(380, 100)),
+               "loi must have valid lon/lat coordinates ")
+
+
+  #Checking `max_dist` validity
+  expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
+                         loi = c(165,-17), max_dist = "hui"),
                "max_dist must be numeric ")
 
   expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         aoi = c(165,-17), max_dist = c(1,3)),
+                         loi = c(165,-17), max_dist = c(1,3)),
                "max_dist must be a length 1 vector ")
 
-  #Checking `loi` validity
 
-  expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         loi = c(165,-17)),
-               "loi must be a matrix, array or SpatialPolygons")
-
-  expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         loi = "NA"), #NA for North Atlantic Basin e.g
-               "loi must be focused on South Pacific Basin `SP`")
 
 
   #Checking access to data
   # expect_error(getStorms(time_period = 2017, name = "PAM"),
-  #              "Storm not found")
+  #               "Storm not found")
 
 
 

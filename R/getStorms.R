@@ -45,17 +45,13 @@ Storm <- methods::setClass("Storm",
 #' @slot storms A list of S4 Storm we are interested in
 #' @slot spatial.loi A SpatialPolygons that represents the location of interest.
 #' Projection is EPSG:4326
-#' @slot aoi A numeric vector that contains longitude/latitude coordinate we are
-#' interested in (if no loi is specified)
-#'
 #' @return A S4 object gathering all the above informations
 #' @importFrom methods new
 #' @import sp
 #' @export
 Storms <- methods::setClass("Storms",
                    slots = c(storms = "list",
-                             spatial.loi = "SpatialPolygons",
-                             aoi = "numeric"))
+                             spatial.loi = "SpatialPolygons"))
 
 
 
@@ -77,10 +73,9 @@ Storms <- methods::setClass("Storms",
 #' @param loi Location of interest. Should be either a `SpatialPolygon`, or a
 #' matrix containing the longitude/latitude coordinates. Default value is set
 #' to "SP" which will focus on the whole South
-#' West Pacific Basin
-#' @param aoi Area of interest. A numeric vector that contains one longitude/
-#' latitude coordinate. If set, loi is ignored and a circle based `SpatialPolygon`
-#' centered in aoi, with a radius of `max_dist` is used as loi.
+#' West Pacific Basin. It can also be a numeric vector that contains one longitude/
+#' latitude coordinate. If so, a circle based `SpatialPolygon`
+#' centered in loi, with a radius of `max_dist` is used as loi.
 #' @param max_dist Numeric buffer that indicates the radius (in degree) of the
 #' circle if aoi is used.
 #'
@@ -90,7 +85,6 @@ Storms <- methods::setClass("Storms",
 getStorms <- function(time_period = c(1970,2022),
                       name = NULL,
                       loi = "SP",
-                      aoi = NULL,
                       max_dist = 1){
 
 
@@ -117,30 +111,38 @@ getStorms <- function(time_period = c(1970,2022),
   }
 
 
-  if(!is.null(aoi)){
-    loi = "SP"; warning("loi set to 'SP'")
-
-    stopifnot("aoi must be a vector of numeric " = identical(class(aoi),"numeric"))
-    stopifnot("aoi must be a length 2 vector" = length(aoi) == 2)
-    stopifnot("max_dist must be numeric " = identical(class(max_dist),"numeric"))
-    stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
-  }
-
   if(!is.character(loi)){
-    stopifnot("loi must be a matrix, array or SpatialPolygons" = identical(class(loi),c("matrix", "array")) || identical(class(loi),c("SpatialPolygons")))
+    if(length(loi) == 2){
+      stopifnot("loi must be numeric " = identical(class(loi),"numeric"))
+      stopifnot("loi must have valid lon/lat coordinates " = loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
+      loi.id = "Coordinates"
+    }else if(identical(class(loi),c("matrix", "array"))){
+      loi.id = "Matrix"
+    }else if(identical(class(loi),c("SpatialPolygons"))){
+      loi.id = "SpatialPolygons"
+    }else{
+      stop("invalid class for loi")
+    }
   }else{
-    stopifnot("loi must be focused on South Pacific Basin `SP`" = identical(loi,"SP"))
-    loi = matrix(c(150,200,200,150,150,-5,-5,-30,-30,-5),ncol = 2, nrow = 5)
-    colnames(loi) = c("lon","lat")
+    stopifnot("loi must be length one " = length(loi) == 1)
+    if(loi == "SP"){
+      loi = matrix(c(150,200,200,150,150,-5,-5,-30,-30,-5),ncol = 2, nrow = 5)
+      colnames(loi) = c("lon","lat")
+      loi.id = "Matrix"
+    }else{
+      stop("invalid entry for loi")
+    }
   }
 
+  stopifnot("max_dist must be numeric " = identical(class(max_dist),"numeric"))
+  stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
 
 
   #---open data_base
   ############################################################
   #-----The following 3lines must be eventually changed-----#
   ############################################################
-  file_name = paste0("./inst/data/IBTrACS.SP.v04r00.nc")
+  file_name = paste0("./inst/extdata/IBTrACS.SP.v04r00.nc")
   TC_data_base = ncdf4::nc_open(file_name)
   cyclonic_seasons = ncdf4::ncvar_get(TC_data_base,"season")
 
@@ -170,20 +172,17 @@ getStorms <- function(time_period = c(1970,2022),
   }
 
 
-  #---Handle aoi and loi
-  if(!is.null(aoi)){
-    #create buffer and then a circle centered on aoi with a max_dist radius
-    aoi.df   <- data.frame(pt = 1, lon = aoi[1], lat = aoi[2])
-    aoi.sf   <- sf::st_as_sf(aoi.df, coords = c("lon", "lat"))
-    loi.sf <- sf::st_buffer(aoi.sf, dist = max_dist)
+  #---Handle loi
+  if(loi.id == "Coordinates"){
+    #create buffer and then a circle centered on loi with a max_dist radius
+    loi.df   <- data.frame(pt = 1, lon = loi[1], lat = loi[2])
+    loi.sf   <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
+    loi.sf <- sf::st_buffer(loi.sf, dist = max_dist)
     spatial.poly = as(loi.sf,'Spatial')
-  }else{
-    #create/assign spatial polygon associated with loi
-    if(identical(class(loi),"SpatialPolygons")){
-      spatial.poly = loi
-    }else{
-      spatial.poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(loi)), 1)))
-    }
+  }else if(loi.id == "Matrix"){
+    spatial.poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(loi)), 1)))
+  }else if(loi.id == "SpatialPolygons"){
+    spatial.poly = loi
   }
 
   sp::proj4string(spatial.poly) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
@@ -242,8 +241,7 @@ getStorms <- function(time_period = c(1970,2022),
   sts = Storms()
   sts@storms = storm.list
   sts@spatial.loi = spatial.poly
-  if(!is.null(aoi))
-    sts@aoi = aoi
+
 
   return(sts)
 

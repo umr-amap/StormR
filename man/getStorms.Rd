@@ -4,13 +4,7 @@
 \alias{getStorms}
 \title{Initialize a S4 Storms object}
 \usage{
-getStorms(
-  time_period = c(1970, 2022),
-  name = NULL,
-  loi = "SP",
-  aoi = NULL,
-  max_dist = 1
-)
+getStorms(time_period = c(1970, 2022), name = NULL, loi = "SP", max_dist = 1)
 }
 \arguments{
 \item{time_period}{A numeric vector that contains either the time range of
@@ -25,11 +19,9 @@ do not correspond, the function will throw an error}
 \item{loi}{Location of interest. Should be either a \code{SpatialPolygon}, or a
 matrix containing the longitude/latitude coordinates. Default value is set
 to "SP" which will focus on the whole South
-West Pacific Basin}
-
-\item{aoi}{Area of interest. A numeric vector that contains one longitude/
-latitude coordinate. If set, loi is ignored and a circle based \code{SpatialPolygon}
-centered in aoi, with a radius of \code{max_dist} is used as loi.}
+West Pacific Basin. It can also be a numeric vector that contains one longitude/
+latitude coordinate. If so, a circle based \code{SpatialPolygon}
+centered in loi, with a radius of \code{max_dist} is used as loi.}
 
 \item{max_dist}{Numeric buffer that indicates the radius (in degree) of the
 circle if aoi is used.}

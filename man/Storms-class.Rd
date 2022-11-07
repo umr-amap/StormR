@@ -18,8 +18,5 @@ Models a set of storms that occured in a location of interest
 
 \item{\code{spatial.loi}}{A SpatialPolygons that represents the location of interest.
 Projection is EPSG:4326}
-
-\item{\code{aoi}}{A numeric vector that contains longitude/latitude coordinate we are
-interested in (if no loi is specified)}
 }}
 
