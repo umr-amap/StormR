@@ -200,9 +200,9 @@ plotStorms = function(sts,
            labels = FALSE,
            lty = 3)
 
-  lapply(sts@storms, plot_track)
+  lapply(sts@data, plot_track)
   if(labels)
-    lapply(sts@storms, plot_labels)
+    lapply(sts@data, plot_labels)
 
 
   plot(sts@spatial.loi, lwd = 2, add=T)

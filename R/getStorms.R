@@ -42,7 +42,7 @@ Storm <- methods::setClass("Storm",
 
 #' Models a set of storms that occured in a location of interest
 #'
-#' @slot storms A list of S4 Storm we are interested in
+#' @slot data A list of S4 Storm we are interested in
 #' @slot time.period Cyclonic season(s) we are interested in
 #' @slot names Storms names of interest
 #' @slot nb.storms Number of storms contained in this object
@@ -55,7 +55,7 @@ Storm <- methods::setClass("Storm",
 #' @import sp
 #' @export
 Storms <- methods::setClass("Storms",
-                   slots = c(storms = "list",
+                   slots = c(data = "list",
                              time.period = "numeric",
                              names = "list",
                              nb.storms = "numeric",
@@ -266,8 +266,8 @@ getStorms <- function(time_period = c(1970,2022),
   }
 
   ncdf4::nc_close(TC_data_base)
-  sts@storms = storm.list
-  names(sts@storms) = sts@names
+  sts@data = storm.list
+  names(sts@data) = sts@names
 
 
 

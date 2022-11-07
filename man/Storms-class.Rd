@@ -14,7 +14,7 @@ Models a set of storms that occured in a location of interest
 \section{Slots}{
 
 \describe{
-\item{\code{storms}}{A list of S4 Storm we are interested in}
+\item{\code{data}}{A list of S4 Storm we are interested in}
 
 \item{\code{time.period}}{Cyclonic season(s) we are interested in}
 
