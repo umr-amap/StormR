@@ -6,11 +6,13 @@
 \usage{
 plotStorms(
   sts,
+  name = NULL,
   shapefile = NULL,
   ground_color = "grey",
   ocean_color = "white",
   all_basin = FALSE,
   labels = FALSE,
+  legends = FALSE,
   loi = TRUE,
   grtc = 1,
   xlim = NULL,
@@ -19,6 +21,9 @@ plotStorms(
 }
 \arguments{
 \item{sts}{S4 Storms object that gathers all the storms we are interested in}
+
+\item{name}{The storm we would like to plot. Default value is NULL that
+will plot all the storms contained in \code{sts}.}
 
 \item{shapefile}{a \code{shapefile} or \code{SpatialPolygons} object that should replace
 the default map. Default value is set to NULL.}
@@ -34,6 +39,9 @@ Default value is set to FALSE. Otherwise, the plot focuses on the extent of
 \item{labels}{Logical, wether or not to plot ISO_time and name labels for the
 first and the last observation of each storms within the loi. Default value
 is set to FALSE.}
+
+\item{legends}{Logical, wether or not to plot legends for the
+plot. Default value is set to FALSE.}
 
 \item{loi}{Logical, wether or not to plot \code{spatial.loi.buffer} on the map
 Default value is set to TRUE.}

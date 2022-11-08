@@ -161,6 +161,8 @@ plot_labels = function(storm, all_basin){
 #' @param labels Logical, wether or not to plot ISO_time and name labels for the
 #' first and the last observation of each storms within the loi. Default value
 #' is set to FALSE.
+#' @param legends Logical, wether or not to plot legends for the
+#' plot. Default value is set to FALSE.
 #' @param grtc numeric that controls how many graticules to plot. Default value
 #' is set to 1, which plots graticules on multipule of 10 coordinates. Note that
 #' it should be a power of 2.
@@ -181,6 +183,7 @@ plotStorms = function(sts,
                       ocean_color ="white",
                       all_basin = FALSE,
                       labels = FALSE,
+                      legends = FALSE,
                       loi = TRUE,
                       grtc = 1,
                       xlim = NULL,
@@ -293,6 +296,22 @@ plotStorms = function(sts,
     plot_track(sts@data[[name]],all_basin)
     if(labels)
       plot_labels(sts@data[[name]],all_basin)
+  }
+
+  if(legends){
+    #graphics::par(mar = c(5.1,4.1,4.1,3),xpd=TRUE)
+    graphics::legend(x = "bottomleft",
+                     legend = c("Tropical Depression (TD)",
+                                "Tropical Storm (TS)",
+                                "Category 1",
+                                "Category 2",
+                                "Category 3",
+                                "Category 4",
+                                "Category 5"),
+                     col = c("#00CCFF","#00CCCC","#FFFFB2","#FECC5C","#FD8D3C",
+                             "#F03B20","#BD0026"),
+                     pch = 19,
+                     cex = 0.6)
   }
 
 
