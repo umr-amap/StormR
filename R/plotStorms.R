@@ -203,14 +203,14 @@ plotStorms = function(sts,
   if(!is.null(xlim)){
     stopifnot("xlim must be numeric" = identical(class(xlim),"numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
-    xlim = xlim(order(xlim))
+    xlim = xlim[order(xlim)]
     stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 & xlim <= 360)
   }
 
   if(!is.null(ylim)){
     stopifnot("ylim must be numeric" = identical(class(ylim),"numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
-    ylim = ylim(order(ylim))
+    ylim = ylim[order(ylim)]
     stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
   }
 
