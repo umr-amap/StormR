@@ -147,6 +147,8 @@ plot_labels = function(storm, all_basin){
 #' Plot a set of storm
 #'
 #' @param sts S4 Storms object that gathers all the storms we are interested in
+#' @param name The storm we would like to plot. Default value is NULL that
+#' will plot all the storms contained in `sts`.
 #' @param shapefile a `shapefile` or `SpatialPolygons` object that should replace
 #' the default map. Default value is set to NULL.
 #' @param ground_color character that stands for the color of the ground area
@@ -173,6 +175,7 @@ plot_labels = function(storm, all_basin){
 #' @import rworldxtra
 #' @export
 plotStorms = function(sts,
+                      name = NULL,
                       shapefile =  NULL,
                       ground_color = "grey",
                       ocean_color ="white",
@@ -186,6 +189,10 @@ plotStorms = function(sts,
   stopifnot("no data to plot" = !missing(sts))
   if(!is.null(shapefile))
     stopifnot("shapefile must be class SpatialPolygonsDataFrame" = identical(class(shapefile)[1],"SpatialPolygonsDataFrame"))
+
+  if(!is.null(name)){
+    stopifnot("Invalid storm name (storm not found)" = name %in% unlist(sts@names))
+  }
 
   stopifnot("grtc must be class numeric" = identical(class(grtc),"numeric"))
   stopifnot("grtc must contains an integer" = is_wholenumber(grtc))
@@ -203,6 +210,8 @@ plotStorms = function(sts,
     ylim = ylim(order(ylim))
     stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
   }
+
+
 
   #Check on graticule
   l2 = log2(grtc)
@@ -276,9 +285,16 @@ plotStorms = function(sts,
            lty = 3)
 
   #Plot track
-  lapply(sts@data, plot_track, all_basin)
-  if(labels)
-    lapply(sts@data, plot_labels,all_basin)
+  if(is.null(name)){
+    lapply(sts@data, plot_track, all_basin)
+    if(labels)
+      lapply(sts@data, plot_labels,all_basin)
+  }else{
+    plot_track(sts@data[[name]],all_basin)
+    if(labels)
+      plot_labels(sts@data[[name]],all_basin)
+  }
+
 
   if(loi)
     plot(sts@spatial.loi.buffer, lwd = 2, add=T)

@@ -105,7 +105,7 @@ stormBehaviour = function(sts,
 
     nb.steps = 4*(last.obs-1) - (last.obs-2)
     n = 1
-    msw.stack = raster::stack()
+    aux.stack = raster::stack()
     #For every general 3H time step j
     for(j in 1:(last.obs-1)){
       lon.a = lon[j]
@@ -162,14 +162,14 @@ stormBehaviour = function(sts,
           }
         }
 
-        msw.stack = raster::addLayer(msw.stack,raster.aux)
+        aux.stack = raster::addLayer(aux.stack,raster.aux)
         n = n+1
       }
     }
 
     if(product == "MSW"){
       #Compute msw raster
-      product.raster = max(msw.stack, na.rm = T);
+      product.raster = max(aux.stack, na.rm = T);
 
       #apply focal function twice to smooth results
       product.raster = raster::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
