@@ -1,0 +1,81 @@
+
+
+
+
+#' Plot a selected product (MSW, PDI ...) alongside with the track of a selected
+#' storm contained in object `sts`.
+#'
+#' @param sts Storms object that contains the storm we are interested in
+#' @param raster_product raster which spatializes the product we are interested
+#' in. The name of the layer must be nameOfTheStorm_product (which is the case)
+#' if the product is generated with the function `stormBehaviour`
+#' @param xlim A set of longitude coordinates that controls the longitude extent
+#' of the plot. Default value is NULL which will let the plot extends according
+#' to the x bounding box of `spatial.loi.buffer`.
+#' @param ylim A set of latitude coordinates that controls the latitude extent
+#' of the plot. Default value is NULL which will let the plot extends according
+#' to the y bounding box of `spatial.loi.buffer`.
+#' @param mask Logical, wether or not to mask the data according to `spatial.loi`
+#'
+#' @return NULL
+#' @export
+plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = FALSE){
+
+  stopifnot("no data to plot" = !missing(raster_product))
+
+  name = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
+  product = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
+
+  if(!(name %in% unlist(sts@names)))
+    stop("Imcompatibility between raster_product and sts (name not found in sts)")
+
+
+  if(!is.null(xlim)){
+    stopifnot("xlim must be numeric" = identical(class(xlim),"numeric"))
+    stopifnot("xlim must length 2" = length(xlim) == 2)
+    xlim = xlim[order(xlim)]
+    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 & xlim <= 360)
+  }
+
+  if(!is.null(ylim)){
+    stopifnot("ylim must be numeric" = identical(class(ylim),"numeric"))
+    stopifnot("ylim must length 2" = length(ylim) == 2)
+    ylim = ylim[order(ylim)]
+    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
+  }
+
+  xmin = sts@spatial.loi.buffer@bbox["x","min"]
+  xmax = sts@spatial.loi.buffer@bbox["x","max"]
+  ymin = sts@spatial.loi.buffer@bbox["y","min"]
+  ymax = sts@spatial.loi.buffer@bbox["y","max"]
+  if(!is.null(xlim)){
+    xmin = xlim[1]
+    xmax = xlim[2]
+  }
+  if(!is.null(ylim)){
+    ymin = ylim[1]
+    ymax = ylim[2]
+  }
+
+  if(mask)
+    raster_product = raster::mask(raster_product,sts@spatial.loi)
+
+  plotStorms(sts, name = name, xlim = c(xmin,xmax), ylim = c(ymin,ymax))
+
+
+  if(product == "MSW")
+    plot(raster_product,
+         col = rev(grDevices::heat.colors(50)),
+         xlim = c(xmin,xmax),
+         ylim = c(ymin,ymax),
+         alpha = 0.7,
+         add = T,
+         # legend.only = T,
+         legend.args = list(text='MSW (m.s^-1)',
+                            side=4,
+                            font=2,
+                            line=2.5,
+                            cex=0.8))
+
+
+}
