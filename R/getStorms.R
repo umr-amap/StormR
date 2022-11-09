@@ -59,9 +59,9 @@ Storms <- methods::setClass("Storms",
                              time.period = "numeric",
                              names = "list",
                              nb.storms = "numeric",
-                             spatial.loi = "SpatialPolygons",
+                             spatial.loi = "sf",
                              buffer = "numeric",
-                             spatial.loi.buffer = "SpatialPolygons"))
+                             spatial.loi.buffer = "sf"))
 
 
 
@@ -80,9 +80,8 @@ Storms <- methods::setClass("Storms",
 #' @param name A character vector that contains the name of the storms we are
 #' interested in. It must be the same size of `time_period`. If the time_period
 #' do not correspond, the function will throw an error
-#' @param loi Location of interest. Should be either a `SpatialPolygon`, or a
-#' matrix containing the longitude/latitude coordinates. Default value is set
-#' to "SP" which will focus on the whole South
+#' @param loi Location of interest. Should be either a `SpatialPolygon`, or a sf
+#' object. Default value is set to "SP" which will focus on the whole South
 #' West Pacific Basin. It can also be a numeric vector that contains one longitude/
 #' latitude coordinate. If so, a circle based `SpatialPolygon`
 #' centered in loi, with a radius of `max_dist` is used as loi.
@@ -98,20 +97,19 @@ getStorms <- function(time_period = c(1970,2022),
                       max_dist = 300){
 
 
-  #---checking inputs
 
-  #Check time_period
+  #Check time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period),"numeric"))
   stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
+  stopifnot("lower bound of time range is not valid" = time_period > 1979)
+  stopifnot("upper bound of time range is not valid" = time_period < 2023)
 
   time_period = as.integer(time_period)
   o = order(time_period)
   time_period = time_period[o]
 
-  stopifnot("lower bound of time range is not valid" = time_period > 1969)
-  stopifnot("upper bound of time range is not valid" = time_period < 2023)
 
-
+  #Check name input
   if(!is.null(name)){
     stopifnot("name must be a vector of characters" = identical(class(name),"character"))
     stopifnot("name and time_period must be the same length" = length(time_period) == length(name))
@@ -121,24 +119,28 @@ getStorms <- function(time_period = c(1970,2022),
   }
 
 
+  #Check loi input
+  loi.is.basin = FALSE
   if(!is.character(loi)){
-    if(length(loi) == 2){
-      stopifnot("loi must be numeric " = identical(class(loi),"numeric"))
-      stopifnot("loi must have valid lon/lat coordinates " = loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
-      loi.id = "Coordinates"
-    }else if(identical(class(loi),c("matrix", "array"))){
-      loi.id = "Matrix"
-    }else if(identical(class(loi),c("SpatialPolygons"))){
+    if(identical(class(loi),c("SpatialPolygons"))){
       loi.id = "SpatialPolygons"
+    }else if(identical(class(loi),c("sf","data.frame"))){
+      loi.id = "sf"
+    }else if(identical(class(loi),c("numeric"))){
+      stopifnot("loi must have valid lon/lat coordinates " = length(loi) == 2 & loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
+      loi.id = "Coordinates"
     }else{
       stop("invalid class for loi")
     }
   }else{
     stopifnot("loi must be length one " = length(loi) == 1)
     if(loi == "SP"){
-      loi = matrix(c(150,200,200,150,150,-5,-5,-30,-30,-5),ncol = 2, nrow = 5)
-      colnames(loi) = c("lon","lat")
-      loi.id = "Matrix"
+      loi = sf::st_polygon(list(cbind(c(150,150,200,200,150),
+                                c(-30,-5,-5,-30,-30))))
+      loi = sf::st_sfc(loi, crs = 4326)
+      loi = sf::st_as_sf(loi)
+      loi.is.basin = TRUE
+      loi.id = "sf"
     }else{
       map = rworldmap::getMap(resolution = "high")
       id.country = which(map@data$ADMIN == loi)
@@ -147,6 +149,7 @@ getStorms <- function(time_period = c(1970,2022),
     }
   }
 
+  #Check max_dist input
   stopifnot("max_dist must be numeric " = identical(class(max_dist),"numeric"))
   stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
 
@@ -185,57 +188,56 @@ getStorms <- function(time_period = c(1970,2022),
   }
 
 
-  #---Handle loi
+  #Handle loi
   if(loi.id == "Coordinates"){
-    #create buffer and then a circle centered on loi with a max_dist radius
     loi.df   <- data.frame(pt = 1, lon = loi[1], lat = loi[2])
     loi.sf   <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
-    loi.sf <- sf::st_buffer(loi.sf, dist = max_dist)
-    spatial.poly = as(loi.sf,'Spatial')
-  }else if(loi.id == "Matrix"){
-    spatial.poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(loi)), 1)))
   }else if(loi.id == "SpatialPolygons"){
-    spatial.poly = loi
+    loi.sf = sf::st_as_sf(loi)
+  }else if(loi.id == "sf"){
+    loi.sf = loi
+    if(st_crs(loi.sf) != 4326){
+      st_transform(loi.sf,crs = 4326)
+    }
   }else{
-    #loi.id == "Country"
-    loi.sp = map@polygons[[id.country]]
-    spatial.poly = sp::SpatialPolygons(list(loi.sp))
+    loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
+  }
+  st_crs(loi.sf) = 4326
+
+
+  #Handle buffer
+  if(!loi.basin){
+    loi.sf.buffer = sf::st_buffer(loi.sf,dist = max_dist*1000)
+  }else{
+    loi.sf.buffer = loi.sf
   }
 
-  sp::proj4string(spatial.poly) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-  spatial.poly = sf::st_as_sf(spatial.poly, crs = 4326)
 
-  if(loi.id == "Matrix" | loi.id == "SpatialPolygons" | loi.id =="Country"){
-    spatial.poly.buffer = sf::st_buffer(spatial.poly,
-                                        #nQuadSegs = 50,
-                                        dist = max_dist*100)
-  }
 
-  spatial.poly = as(spatial.poly,'Spatial')
-  spatial.poly.buffer = as(spatial.poly.buffer,'Spatial')
+
 
   #get data associated with indices
   sts = Storms()
   sts@time.period = time_period
   sts@names = list()
   sts@nb.storms = 0
-  sts@spatial.loi = spatial.poly
-  sts@spatial.loi.buffer = spatial.poly.buffer
   sts@buffer = max_dist
   storm.list = list()
   k = 2
   for(i in indices){
 
-    #create spatial points coordinates to intersect with spatial.poly
+    #create sf points coordinates to intersect with loi.sf
     numobs = ncdf4::ncvar_get(TC_data_base,"numobs")[i]
     lon = ncdf4::ncvar_get(TC_data_base,"lon")[1:numobs,i]
     lat = ncdf4::ncvar_get(TC_data_base,"lat")[1:numobs,i]
-    pts = sp::SpatialPoints(cbind(lon,lat),
-                        proj4string = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+    coords = data.frame(lon = lon,lat = lat)
+    pts = sf::st_as_sf(coords, coords = c("lon","lat"))
+    st_crs(pts) = 4326
 
 
-    #which coordinates are within spatial.poly
-    ind = as.numeric(names(which(!is.na(sp::over(pts,spatial.poly.buffer)))))
+    #which coordinates are within loi.sf
+    ind = which(sf::st_intersects(pts, loi.sf.buffer,
+                                  sparse = FALSE) == TRUE)
 
     if(length(ind) > 0){
 
@@ -273,6 +275,9 @@ getStorms <- function(time_period = c(1970,2022),
       sts@names = append(sts@names,storm@name)
     }
   }
+
+  sts@spatial.loi = loi.sf
+  sts@spatial.loi.buffer = loi.sf.buffer
 
   ncdf4::nc_close(TC_data_base)
   sts@data = storm.list

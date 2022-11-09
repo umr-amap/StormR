@@ -31,4 +31,5 @@ Imports:
     rworldxtra,
     sf,
     sp,
+    terra,
     zoo

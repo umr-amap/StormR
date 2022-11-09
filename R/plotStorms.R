@@ -238,10 +238,10 @@ plotStorms = function(sts,
         warning("ylim ignored")
       }
   }else{
-    xmin = sts@spatial.loi.buffer@bbox["x","min"]
-    xmax = sts@spatial.loi.buffer@bbox["x","max"]
-    ymin = sts@spatial.loi.buffer@bbox["y","min"]
-    ymax = sts@spatial.loi.buffer@bbox["y","max"]
+    xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
+    xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
+    ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
+    ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
     if(!is.null(xlim)){
       xmin = xlim[1]
       xmax = xlim[2]
