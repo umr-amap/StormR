@@ -4,7 +4,7 @@
 \alias{getStorms}
 \title{Initialize a S4 Storms object}
 \usage{
-getStorms(time_period = c(1970, 2022), name = NULL, loi = "SP", max_dist = 1)
+getStorms(time_period = c(1970, 2022), name = NULL, loi = "SP", max_dist = 300)
 }
 \arguments{
 \item{time_period}{A numeric vector that contains either the time range of
@@ -23,8 +23,8 @@ West Pacific Basin. It can also be a numeric vector that contains one longitude/
 latitude coordinate. If so, a circle based \code{SpatialPolygon}
 centered in loi, with a radius of \code{max_dist} is used as loi.}
 
-\item{max_dist}{Numeric buffer that indicates the radius (in degree) of the
-circle if aoi is used.}
+\item{max_dist}{Numeric that indicates the radius (in km) of the
+buffer to generate \code{spatail.poly.buffer}. Default value is set to 300km.}
 }
 \value{
 a S4 Storms object that gathers all the above informations

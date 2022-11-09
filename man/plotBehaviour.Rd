@@ -5,7 +5,7 @@
 \title{Plot a selected product (MSW, PDI ...) alongside with the track of a selected
 storm contained in object \code{sts}.}
 \usage{
-plotBehaviour(sts, raster_product)
+plotBehaviour(sts, raster_product, xlim = NULL, ylim = NULL, mask = FALSE)
 }
 \arguments{
 \item{sts}{Storms object that contains the storm we are interested in}
@@ -13,6 +13,16 @@ plotBehaviour(sts, raster_product)
 \item{raster_product}{raster which spatializes the product we are interested
 in. The name of the layer must be nameOfTheStorm_product (which is the case)
 if the product is generated with the function \code{stormBehaviour}}
+
+\item{xlim}{A set of longitude coordinates that controls the longitude extent
+of the plot. Default value is NULL which will let the plot extends according
+to the x bounding box of \code{spatial.loi.buffer}.}
+
+\item{ylim}{A set of latitude coordinates that controls the latitude extent
+of the plot. Default value is NULL which will let the plot extends according
+to the y bounding box of \code{spatial.loi.buffer}.}
+
+\item{mask}{Logical, wether or not to mask the data according to \code{spatial.loi}}
 }
 \description{
 Plot a selected product (MSW, PDI ...) alongside with the track of a selected

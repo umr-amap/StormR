@@ -86,8 +86,8 @@ Storms <- methods::setClass("Storms",
 #' West Pacific Basin. It can also be a numeric vector that contains one longitude/
 #' latitude coordinate. If so, a circle based `SpatialPolygon`
 #' centered in loi, with a radius of `max_dist` is used as loi.
-#' @param max_dist Numeric buffer that indicates the radius (in degree) of the
-#' circle if aoi is used.
+#' @param max_dist Numeric that indicates the radius (in km) of the
+#' buffer to generate `spatail.poly.buffer`. Default value is set to 300km.
 #'
 #' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
@@ -95,7 +95,7 @@ Storms <- methods::setClass("Storms",
 getStorms <- function(time_period = c(1970,2022),
                       name = NULL,
                       loi = "SP",
-                      max_dist = 1){
+                      max_dist = 300){
 
 
   #---checking inputs
@@ -203,10 +203,16 @@ getStorms <- function(time_period = c(1970,2022),
   }
 
   sp::proj4string(spatial.poly) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+  spatial.poly = sf::st_as_sf(spatial.poly, crs = 4326)
 
   if(loi.id == "Matrix" | loi.id == "SpatialPolygons" | loi.id =="Country"){
-    spatial.poly.buffer = rgeos::gBuffer(spatial.poly, width = max_dist)
+    spatial.poly.buffer = sf::st_buffer(spatial.poly,
+                                        #nQuadSegs = 50,
+                                        dist = max_dist*100)
   }
+
+  spatial.poly = as(spatial.poly,'Spatial')
+  spatial.poly.buffer = as(spatial.poly.buffer,'Spatial')
 
   #get data associated with indices
   sts = Storms()
