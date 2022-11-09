@@ -71,7 +71,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
          alpha = 0.7,
          add = T,
          # legend.only = T,
-         legend.args = list(text='MSW (m.s^-1)',
+         legend.args = list(text=expression(paste("MSW (m.s"^"-1)")),
                             side=4,
                             font=2,
                             line=2.5,
