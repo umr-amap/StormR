@@ -59,9 +59,6 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 #' Default value is set to 1h.
 #' @param verbose Logical, whether or not the function must be verbose. Default
 #' value is set to `FALSE`
-#' @param threshold Represents a wind threshold. If the model provides a value
-#' below this threshold, it is eventually set to `NA` as it does not rely on a
-#' tropical storm wind speed.
 #'
 #' @return A raster stack gathering all the results. Names of the layer are
 #' nameOfTheStorm_product
@@ -71,24 +68,22 @@ stormBehaviour = function(sts,
                           method = "willoughby",
                           space_res = 0.1,
                           time_res = 1,
-                          verbose = FALSE,
-                          threshold = 17){
+                          verbose = FALSE){
 
 
 
 
-  xmin = sts@spatial.loi.buffer@bbox["x","min"]
-  xmax = sts@spatial.loi.buffer@bbox["x","max"]
-  ymin = sts@spatial.loi.buffer@bbox["y","min"]
-  ymax = sts@spatial.loi.buffer@bbox["y","max"]
+  xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
+  xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
+  ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
+  ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
 
 
-  product.stack = raster::stack()
+  product.stack = c()
 
   for(st in sts@data){
 
-    product.raster = raster::raster(xmn=xmin, xmx=xmax, ymn=ymin, ymx = ymax,
-                            crs =CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+    product.raster = terra::rast(xmin=xmin, xmax=xmax, ymin=ymin, ymax = ymax,
                             resolution = space_res, vals=NA)
 
     if(all(!is.na(st@obs$Nadi_wind)))
@@ -105,7 +100,7 @@ stormBehaviour = function(sts,
 
     nb.steps = 4*(last.obs-1) - (last.obs-2)
     n = 1
-    aux.stack = raster::stack()
+    aux.stack = c()
     #For every general 3H time step j
     for(j in 1:(last.obs-1)){
       lon.a = lon[j]
@@ -146,48 +141,73 @@ stormBehaviour = function(sts,
         w = msw[i]
 
         if(verbose)
-          cat("Computing rasters ...  ",x," ",y," ",w," ",n/nb.steps *100,"%\n")
+          cat("Computing rasters ...  ",n/nb.steps *100,"%\n")
+          #cat("Computing rasters ...  ",x," ",y," ",w," ",n/nb.steps *100,"%\n")
 
 
         raster.aux = product.raster
         # distances to the eye of the storm in km
-        dist.km = raster::pointDistance(coordinates(raster.aux)[,], c(x,y), lonlat = T) * 0.001
+
+
+        #############
+        #CHANGE HERE#
+        #############
+        dist.km = terra::distance(x = terra::crds(raster.aux, na.rm = FALSE)[,],
+                                  y = cbind(x,y),
+                                  lonlat = T) * 0.001
+
 
         if(product == "MSW"){
           if(method == "willoughby"){
            #Compute willoughby raster
-           raster::values(raster.aux) = Willoughby(w_max = w,
+           terra::values(raster.aux) = Willoughby(w_max = w,
                                                    lat = y,
                                                    r = dist.km)
           }
         }
 
-        aux.stack = raster::addLayer(aux.stack,raster.aux)
+        aux.stack = c(aux.stack,raster.aux)
         n = n+1
       }
     }
 
+    aux.stack = terra::rast(aux.stack)
     if(product == "MSW"){
       #Compute msw raster
       product.raster = max(aux.stack, na.rm = T);
+      print(product.raster)
 
       #apply focal function twice to smooth results
-      product.raster = raster::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
-      product.raster = raster::focal(product.raster, w=matrix(1,3,3), mean, na.rm = T, pad=T)
+      product.raster = terra::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
+      product.raster = terra::focal(product.raster, w=matrix(1,3,3), mean, na.rm = T, pad=T)
     }
     names(product.raster) = paste0(st@name,"_",product)
-    #Handle threshold
-    product.raster[raster::values(product.raster)< threshold] = NA
-    product.stack = raster::addLayer(product.stack, product.raster)
+    product.stack = c(product.stack, product.raster)
   }
 
-  return(product.stack)
+  return(terra::rast(product.stack))
 }
 
 
 
-
-
+# r.ras = raster::raster(xmn=167, xmx=169, ymn=-18, ymx = -16,
+#                crs =CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+#                resolution = 0.1, vals=NA)
+# r.ter = terra::rast(xmin=167, xmax=169, ymin=-18, ymax = -16,
+#                              resolution = 0.1, vals=NA)
+#
+# x = 168
+# y = -17
+# w = 70
+#
+# m.ras = coordinates(r.ras)[,]
+#
+# m.ter = terra::crds(r.ter, na.rm = FALSE)[,]
+#
+#
+# d1 = raster::pointDistance(m.ras, c(x,y), lonlat = T) * 0.001
+#
+# d2 = terra::distance(x = m.ter,y = cbind(x,y),lonlat = T) * 0.001
 
 
 
