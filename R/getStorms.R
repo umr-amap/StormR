@@ -141,7 +141,7 @@ getStorms <- function(time_period = c(1970,2022),
       loi.id = "Matrix"
     }else{
       map = rworldmap::getMap(resolution = "high")
-      id.country = which(map$SOVEREIGNT == loi)
+      id.country = which(map@data$ADMIN == loi)
       stopifnot("invalid entry for loi" = length(id.country) > 0)
       loi.id = "Country"
     }

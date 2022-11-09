@@ -77,5 +77,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
                             line=2.5,
                             cex=0.8))
 
+  plot_track(sts@data[[name]],FALSE)
+
 
 }
