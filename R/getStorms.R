@@ -206,7 +206,7 @@ getStorms <- function(time_period = c(1970,2022),
 
 
   #Handle buffer
-  if(!loi.basin){
+  if(!loi.is.basin){
     loi.sf.buffer = sf::st_buffer(loi.sf,dist = max_dist*1000)
   }else{
     loi.sf.buffer = loi.sf
