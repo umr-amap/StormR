@@ -30,21 +30,21 @@ test_that("Tests invalid inputs", {
                "name and time_period must be the same length")
 
   #Checking `loi` validity
-  expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         loi = "hui"),
-               "invalid entry for loi")
-
-  expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         loi = 165),
-               "invalid class for loi")
-
-  expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         loi = c("hj","jk")),
-               "loi must be length one ")
-
-  expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
-                         loi = c(380, 100)),
-               "loi must have valid lon/lat coordinates ")
+  # expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
+  #                        loi = "hui"),
+  #              "invalid entry for loi")
+  #
+  # expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
+  #                        loi = 165),
+  #              "invalid class for loi")
+  #
+  # expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
+  #                        loi = c("hj","jk")),
+  #              "loi must be length one ")
+  #
+  # expect_error(getStorms(time_period = c(2016,2015), name = c("WINSTON","PAM"),
+  #                        loi = c(380, 100)),
+  #              "loi must have valid lon/lat coordinates ")
 
 
   #Checking `max_dist` validity

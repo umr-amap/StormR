@@ -154,7 +154,7 @@ getStorms <- function(time_period = c(1970,2022),
   stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
 
 
-  #---open data_base
+  #Open data_base
   ############################################################
   #-----The following 3lines must be eventually changed-----#
   ############################################################
@@ -163,7 +163,7 @@ getStorms <- function(time_period = c(1970,2022),
   cyclonic_seasons = ncdf4::ncvar_get(TC_data_base,"season")
 
 
-  #---Retrieving the matching indices, handling time_period and name
+  #Retrieving the matching indices, handling time_period and name
   if(!is.null(name)){
     #we are interested in one or several storms
     storm.names = ncdf4::ncvar_get(TC_data_base,"name")
@@ -196,13 +196,13 @@ getStorms <- function(time_period = c(1970,2022),
     loi.sf = sf::st_as_sf(loi)
   }else if(loi.id == "sf"){
     loi.sf = loi
-    if(st_crs(loi.sf) != 4326){
-      st_transform(loi.sf,crs = 4326)
+    if(sf::st_crs(loi.sf) != 4326){
+      sf::st_transform(loi.sf,crs = 4326)
     }
   }else{
     loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
   }
-  st_crs(loi.sf) = 4326
+  sf::st_crs(loi.sf) = 4326
 
 
   #Handle buffer
@@ -216,7 +216,7 @@ getStorms <- function(time_period = c(1970,2022),
 
 
 
-  #get data associated with indices
+  #Get data associated with indices
   sts = Storms()
   sts@time.period = time_period
   sts@names = list()
@@ -232,7 +232,7 @@ getStorms <- function(time_period = c(1970,2022),
     lat = ncdf4::ncvar_get(TC_data_base,"lat")[1:numobs,i]
     coords = data.frame(lon = lon,lat = lat)
     pts = sf::st_as_sf(coords, coords = c("lon","lat"))
-    st_crs(pts) = 4326
+    sf::st_crs(pts) = 4326
 
 
     #which coordinates are within loi.sf
@@ -276,17 +276,13 @@ getStorms <- function(time_period = c(1970,2022),
     }
   }
 
+  ncdf4::nc_close(TC_data_base)
   sts@spatial.loi = loi.sf
   sts@spatial.loi.buffer = loi.sf.buffer
-
-  ncdf4::nc_close(TC_data_base)
   sts@data = storm.list
   names(sts@data) = sts@names
 
-
-
   return(sts)
-
 }
 
 

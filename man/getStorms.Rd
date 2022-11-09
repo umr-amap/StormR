@@ -16,9 +16,8 @@ c(1970,2020)}
 interested in. It must be the same size of \code{time_period}. If the time_period
 do not correspond, the function will throw an error}
 
-\item{loi}{Location of interest. Should be either a \code{SpatialPolygon}, or a
-matrix containing the longitude/latitude coordinates. Default value is set
-to "SP" which will focus on the whole South
+\item{loi}{Location of interest. Should be either a \code{SpatialPolygon}, or a sf
+object. Default value is set to "SP" which will focus on the whole South
 West Pacific Basin. It can also be a numeric vector that contains one longitude/
 latitude coordinate. If so, a circle based \code{SpatialPolygon}
 centered in loi, with a radius of \code{max_dist} is used as loi.}
