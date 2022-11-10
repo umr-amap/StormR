@@ -147,11 +147,6 @@ stormBehaviour = function(sts,
 
         raster.aux = product.raster
         # distances to the eye of the storm in km
-
-
-        #############
-        #CHANGE HERE#
-        #############
         dist.km = terra::distance(x = terra::crds(raster.aux, na.rm = FALSE)[,],
                                   y = cbind(x,y),
                                   lonlat = T) * 0.001
@@ -187,27 +182,5 @@ stormBehaviour = function(sts,
 
   return(terra::rast(product.stack))
 }
-
-
-
-# r.ras = raster::raster(xmn=167, xmx=169, ymn=-18, ymx = -16,
-#                crs =CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
-#                resolution = 0.1, vals=NA)
-# r.ter = terra::rast(xmin=167, xmax=169, ymin=-18, ymax = -16,
-#                              resolution = 0.1, vals=NA)
-#
-# x = 168
-# y = -17
-# w = 70
-#
-# m.ras = coordinates(r.ras)[,]
-#
-# m.ter = terra::crds(r.ter, na.rm = FALSE)[,]
-#
-#
-# d1 = raster::pointDistance(m.ras, c(x,y), lonlat = T) * 0.001
-#
-# d2 = terra::distance(x = m.ter,y = cbind(x,y),lonlat = T) * 0.001
-
 
 
