@@ -53,8 +53,8 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 #' currently among `MSW` and `PDI`.
 #' @param method Cyclonic model used to compute product. Default value is set to
 #' `willoughby`.
-#' @param space_res Space resolution (in degree) of the incoming raster products.
-#' Default value is set to 0.1 degree.
+#' @param space_res Space resolution (km) of the incoming raster products.
+#' Default value is set to 10km.
 #' @param time_res Time discretization (in hours) to compute the products.
 #' Default value is set to 1h.
 #' @param verbose Logical, whether or not the function must be verbose. Default
@@ -66,7 +66,7 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 stormBehaviour = function(sts,
                           product = "MSW",
                           method = "willoughby",
-                          space_res = 0.1,
+                          space_res = 10,
                           time_res = 1,
                           verbose = FALSE){
 
@@ -78,13 +78,22 @@ stormBehaviour = function(sts,
   ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
   ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
 
+  ras = terra::rast(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, vals=NA)
+  #Projection in Mercator
+  ras = terra::project(ras,"EPSG:3857")
+  #Resample in new resolution in Mercator
+  ras.template = ras
+  terra::res(ras.template) = space_res*1000
+  ras.template <- terra::resample(ras,ras.template)
+  #Reprojection in lon/lat
+  ras.template = terra::project(ras.template,"EPSG:4326")
+
 
   product.stack = c()
 
   for(st in sts@data){
 
-    product.raster = terra::rast(xmin=xmin, xmax=xmax, ymin=ymin, ymax = ymax,
-                            resolution = space_res, vals=NA)
+    product.raster = ras.template
 
     if(all(!is.na(st@obs$Nadi_wind)))
       warning("NA values detected")
@@ -170,8 +179,6 @@ stormBehaviour = function(sts,
     if(product == "MSW"){
       #Compute msw raster
       product.raster = max(aux.stack, na.rm = T);
-      print(product.raster)
-
       #apply focal function twice to smooth results
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), mean, na.rm = T, pad=T)
@@ -182,5 +189,8 @@ stormBehaviour = function(sts,
 
   return(terra::rast(product.stack))
 }
+
+
+
 
 

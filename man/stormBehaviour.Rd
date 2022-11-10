@@ -9,7 +9,7 @@ stormBehaviour(
   sts,
   product = "MSW",
   method = "willoughby",
-  space_res = 0.1,
+  space_res = 10,
   time_res = 1,
   verbose = FALSE
 )
@@ -23,8 +23,8 @@ currently among \code{MSW} and \code{PDI}.}
 \item{method}{Cyclonic model used to compute product. Default value is set to
 \code{willoughby}.}
 
-\item{space_res}{Space resolution (in degree) of the incoming raster products.
-Default value is set to 0.1 degree.}
+\item{space_res}{Space resolution (km) of the incoming raster products.
+Default value is set to 10km.}
 
 \item{time_res}{Time discretization (in hours) to compute the products.
 Default value is set to 1h.}
