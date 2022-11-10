@@ -11,8 +11,7 @@ stormBehaviour(
   method = "willoughby",
   space_res = 0.1,
   time_res = 1,
-  verbose = FALSE,
-  threshold = 17
+  verbose = FALSE
 )
 }
 \arguments{
@@ -32,10 +31,6 @@ Default value is set to 1h.}
 
 \item{verbose}{Logical, whether or not the function must be verbose. Default
 value is set to \code{FALSE}}
-
-\item{threshold}{Represents a wind threshold. If the model provides a value
-below this threshold, it is eventually set to \code{NA} as it does not rely on a
-tropical storm wind speed.}
 }
 \value{
 A raster stack gathering all the results. Names of the layer are

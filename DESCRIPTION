@@ -26,7 +26,6 @@ Imports:
     maps,
     methods,
     ncdf4,
-    raster,
     rworldmap,
     rworldxtra,
     sf,

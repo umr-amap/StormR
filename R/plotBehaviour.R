@@ -6,7 +6,7 @@
 #' storm contained in object `sts`.
 #'
 #' @param sts Storms object that contains the storm we are interested in
-#' @param raster_product raster which spatializes the product we are interested
+#' @param raster_product Spatraster object which spatializes the product we are interested
 #' in. The name of the layer must be nameOfTheStorm_product (which is the case)
 #' if the product is generated with the function `stormBehaviour`
 #' @param xlim A set of longitude coordinates that controls the longitude extent
@@ -44,10 +44,11 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
     stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
   }
 
-  xmin = sts@spatial.loi.buffer@bbox["x","min"]
-  xmax = sts@spatial.loi.buffer@bbox["x","max"]
-  ymin = sts@spatial.loi.buffer@bbox["y","min"]
-  ymax = sts@spatial.loi.buffer@bbox["y","max"]
+  xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
+  xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
+  ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
+  ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
+
   if(!is.null(xlim)){
     xmin = xlim[1]
     xmax = xlim[2]
@@ -57,8 +58,11 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
     ymax = ylim[2]
   }
 
-  if(mask)
-    raster_product = raster::mask(raster_product,sts@spatial.loi)
+  if(mask){
+    v = terra::vect(sts@spatial.loi)
+    m = terra::rasterize(v,raster_product)
+    raster_product = terra::mask(raster_product,m)
+  }
 
   plotStorms(sts, name = name, xlim = c(xmin,xmax), ylim = c(ymin,ymax))
 
@@ -69,13 +73,10 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
          xlim = c(xmin,xmax),
          ylim = c(ymin,ymax),
          alpha = 0.7,
-         add = T,
-         # legend.only = T,
-         legend.args = list(text=expression(paste("MSW (m.s"^"-1)")),
-                            side=4,
-                            font=2,
-                            line=2.5,
-                            cex=0.8))
+         axes = FALSE,
+         range = c(17,max(raster_product[])),
+         add = T)
+
 
   plot_track(sts@data[[name]],FALSE)
 

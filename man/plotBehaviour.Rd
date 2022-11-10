@@ -10,7 +10,7 @@ plotBehaviour(sts, raster_product, xlim = NULL, ylim = NULL, mask = FALSE)
 \arguments{
 \item{sts}{Storms object that contains the storm we are interested in}
 
-\item{raster_product}{raster which spatializes the product we are interested
+\item{raster_product}{Spatraster object which spatializes the product we are interested
 in. The name of the layer must be nameOfTheStorm_product (which is the case)
 if the product is generated with the function \code{stormBehaviour}}
 
