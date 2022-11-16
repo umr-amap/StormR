@@ -189,17 +189,25 @@ plotStorms = function(sts,
                       xlim = NULL,
                       ylim = NULL){
 
+  #Check sts input
   stopifnot("no data to plot" = !missing(sts))
-  if(!is.null(shapefile))
-    stopifnot("shapefile must be class SpatialPolygonsDataFrame" = identical(class(shapefile)[1],"SpatialPolygonsDataFrame"))
 
+  #Check shapefile input
+  if(!is.null(shapefile))
+    stopifnot("shapefile must be a SpatialPolygonsDataFrame or a SF object" = identical(class(shapefile)[1],"SpatialPolygonsDataFrame") |
+                identical(class(shapefile)[1],"sf"))
+
+  #Check name input
   if(!is.null(name)){
+    stopifnot("name must be characters" = identical(class(name),"character"))
     stopifnot("Invalid storm name (storm not found)" = name %in% unlist(sts@names))
   }
 
-  stopifnot("grtc must be class numeric" = identical(class(grtc),"numeric"))
+  #Check grtc input
+  stopifnot("grtc must be numeric" = identical(class(grtc),"numeric"))
   stopifnot("grtc must contains an integer" = is_wholenumber(grtc))
 
+  #Check xlim input
   if(!is.null(xlim)){
     stopifnot("xlim must be numeric" = identical(class(xlim),"numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
@@ -207,6 +215,7 @@ plotStorms = function(sts,
     stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 & xlim <= 360)
   }
 
+  #Check ylim input
   if(!is.null(ylim)){
     stopifnot("ylim must be numeric" = identical(class(ylim),"numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
@@ -214,9 +223,15 @@ plotStorms = function(sts,
     stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
   }
 
+  #Check logical inputs
+  stopifnot("all_basin must be logical" = identical(class(all_basin),"logical"))
+  stopifnot("legends must be logical" = identical(class(legends),"logical"))
+  stopifnot("labels must be logical" = identical(class(labels),"logical"))
+  stopifnot("loi must be logical" = identical(class(loi),"logical"))
 
 
-  #Check on graticule
+
+  #Check on graticules
   l2 = log2(grtc)
   if(!is_wholenumber(l2)){
     grtc = 2**round(l2)

@@ -21,7 +21,13 @@
 #' @export
 plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = FALSE){
 
+
+  #Check sts input
+  stopifnot("no data to plot" = !missing(sts))
+
+  #Check raster_product
   stopifnot("no data to plot" = !missing(raster_product))
+
 
   name = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
   product = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
@@ -30,6 +36,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
 
+  #Check xlim input
   if(!is.null(xlim)){
     stopifnot("xlim must be numeric" = identical(class(xlim),"numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
@@ -37,12 +44,17 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
     stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 & xlim <= 360)
   }
 
+  #Check ylim input
   if(!is.null(ylim)){
     stopifnot("ylim must be numeric" = identical(class(ylim),"numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
     ylim = ylim[order(ylim)]
     stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
   }
+
+  #Check mask input
+  stopifnot("mask must be logical" = identical(class(mask),"logical"))
+
 
   xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
   xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax

@@ -70,7 +70,27 @@ stormBehaviour = function(sts,
                           time_res = 1,
                           verbose = FALSE){
 
+  #Check sts input
+  stopifnot("no data found" = !missing(sts))
 
+  #Check product input
+  stopifnot("Invalid product" = method %in% c("MSW", "PDI"))
+
+  #Check method input
+  stopifnot("Invalid method" = method %in% c("willoughby"))
+
+  #Check space_res input
+  stopifnot("space_res must be numeric" = identical(class(space_res),"numeric"))
+  stopifnot("space_res must be as integer" = is_wholenumber(space_res))
+  stopifnot("space_res must be positif" = space_res > 0)
+
+  #Check time_res input
+  stopifnot("time_res must be numeric" = identical(class(time_res),"numeric"))
+  stopifnot("time_res must be as integer" = is_wholenumber(time_res))
+  stopifnot("time_res must be positif" = time_res > 0)
+
+  #Check verbose input
+  stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
 
 
   xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin

@@ -133,8 +133,9 @@ getStorms <- function(time_period = c(1970,2022),
       stop("invalid class for loi")
     }
   }else{
-    stopifnot("loi must be length one " = length(loi) == 1)
+    stopifnot("loi must be length 1 " = length(loi) == 1)
     if(loi == "SP"){
+      #Focus on South Pacific Ocean
       loi = sf::st_polygon(list(cbind(c(150,150,200,200,150),
                                 c(-30,-5,-5,-30,-30))))
       loi = sf::st_sfc(loi, crs = 4326)
@@ -263,7 +264,8 @@ getStorms <- function(time_period = c(1970,2022),
                                  lat = ncdf4::ncvar_get(TC_data_base,"lat")[1:numobs,i],
                                  wmo_msw = ncdf4::ncvar_get(TC_data_base,"wmo_wind")[1:numobs,i] * 0.514,
                                  Nadi_wind = ncdf4::ncvar_get(TC_data_base,"nadi_wind")[1:numobs,i] * 0.514,
-                                 Nadi_cat = ncdf4::ncvar_get(TC_data_base,"nadi_cat")[1:numobs,i])
+                                 Nadi_cat = ncdf4::ncvar_get(TC_data_base,"nadi_cat")[1:numobs,i],
+                                 storm_speed = ncdf4::ncvar_get(TC_data_base,"storm_speed")[1:numobs,i] * 0.514)
 
       storm@obs = storm@obs.all[ind,]
       storm@numobs = dim(storm@obs)[1]
