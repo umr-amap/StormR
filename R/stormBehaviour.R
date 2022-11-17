@@ -74,7 +74,7 @@ stormBehaviour = function(sts,
   stopifnot("no data found" = !missing(sts))
 
   #Check product input
-  stopifnot("Invalid product" = method %in% c("MSW", "PDI"))
+  stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Duration"))
 
   #Check method input
   stopifnot("Invalid method" = method %in% c("willoughby"))
@@ -180,15 +180,29 @@ stormBehaviour = function(sts,
                                   y = cbind(x,y),
                                   lonlat = T) * 0.001
 
-
-        if(product == "MSW"){
-          if(method == "willoughby"){
-           #Compute willoughby raster
-           terra::values(raster.aux) = Willoughby(w_max = w,
-                                                   lat = y,
-                                                   r = dist.km)
-          }
+        if(method == "willoughby"){
+          #Compute willoughby raster
+          terra::values(raster.aux) = Willoughby(w_max = w,
+                                                 lat = y,
+                                                 r = dist.km)
         }
+
+        if(product == "Duration"){
+          r = raster.aux
+          terra::values(r) = NA
+          ind = which(terra::values(raster.aux) >= 32 & terra::values(raster.aux) <= 42)
+          r[ind] = 1
+          ind = which(terra::values(raster.aux) >= 43 & terra::values(raster.aux) <= 49)
+          r[ind] = 2
+          ind = which(terra::values(raster.aux) >= 50 & terra::values(raster.aux) <= 57)
+          r[ind] = 3
+          ind = which(terra::values(raster.aux) >= 58 & terra::values(raster.aux) <= 69)
+          r[ind] = 4
+          ind = which(terra::values(raster.aux) >= 70)
+          r[ind] = 5
+          raster.aux = r
+        }
+
 
         aux.stack = c(aux.stack,raster.aux)
         n = n+1
@@ -198,12 +212,20 @@ stormBehaviour = function(sts,
     aux.stack = terra::rast(aux.stack)
     if(product == "MSW"){
       #Compute msw raster
-      product.raster = max(aux.stack, na.rm = T);
+      product.raster = max(aux.stack, na.rm = T)
       #apply focal function twice to smooth results
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), mean, na.rm = T, pad=T)
+    }else if(product == "Duration"){
+      #Compute duration raster
+      product.raster = sum(aux.stack, na.rm = T)
+      #apply focal function to smooth results
+      product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
     }
     names(product.raster) = paste0(st@name,"_",product)
+    if(product == "Duration"){
+      names(product.raster) = paste0(names(product.raster),"_",cat)
+    }
     product.stack = c(product.stack, product.raster)
   }
 
