@@ -223,9 +223,6 @@ stormBehaviour = function(sts,
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
     }
     names(product.raster) = paste0(st@name,"_",product)
-    if(product == "Duration"){
-      names(product.raster) = paste0(names(product.raster),"_",cat)
-    }
     product.stack = c(product.stack, product.raster)
   }
 
