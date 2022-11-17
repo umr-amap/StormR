@@ -88,6 +88,16 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
          axes = FALSE,
          range = c(17,max(raster_product[])),
          add = T)
+  else if(product == "Duration"){
+    plot(raster_product,
+         #col = rev(grDevices::heat.colors(50)),
+         col = rev(viridis::viridis(50)),
+         xlim = c(xmin,xmax),
+         ylim = c(ymin,ymax),
+         alpha = 0.7,
+         axes = FALSE,
+         add = T)
+  }
 
 
   plot_track(sts@data[[name]],FALSE)
