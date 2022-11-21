@@ -97,6 +97,7 @@ stormBehaviour = function(sts,
   xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
   ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
   ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
+  e <- terra::ext(xmin, xmax, ymin, ymax)
 
   ras = terra::rast(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, vals=NA)
   #Projection in Mercator
@@ -107,6 +108,8 @@ stormBehaviour = function(sts,
   ras.template <- terra::resample(ras,ras.template)
   #Reprojection in lon/lat
   ras.template = terra::project(ras.template,"EPSG:4326")
+  ras.template = terra::crop(ras.template, e)
+  ras.template = terra::extend(ras.template,e)
 
 
   product.stack = c()
