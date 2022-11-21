@@ -173,7 +173,7 @@ stormBehaviour = function(sts,
         w = msw[i]
 
         if(verbose)
-          cat("Computing rasters ...  ",n/nb.steps *100,"%\n")
+          cat("Computing rasters ...  ",round(n/nb.steps *100,2),"%\n")
           #cat("Computing rasters ...  ",x," ",y," ",w," ",n/nb.steps *100,"%\n")
 
 
