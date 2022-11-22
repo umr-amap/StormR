@@ -275,6 +275,7 @@ plotStorms = function(sts,
         fill=TRUE,
         col=ground_color,
         bg=ocean_color,
+        wrap = c(0,360),
         xlim = c(xmin,xmax),
         ylim = c(ymin, ymax))
     maps::map.axes(cex.axis = 1)

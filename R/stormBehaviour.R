@@ -115,6 +115,7 @@ stormBehaviour = function(sts,
   ras.template <- terra::resample(ras,ras.template)
   #Reprojection in lon/lat
   ras.template = terra::project(ras.template,"EPSG:4326")
+  #Handling time line crossing
   ras.template = terra::crop(ras.template, e)
   ras.template = terra::extend(ras.template,e)
 
@@ -157,11 +158,12 @@ stormBehaviour = function(sts,
     nb.steps = 4*(last.obs-1) - (last.obs-2)
     n = 1
     aux.stack = c()
-    #For every general 3H time step j
+
 
     if(verbose)
       cat(st@name,"\n")
 
+    #For every general 3H time step j
     for(j in 1:(last.obs-1)){
         lon.a = lon[j]
         lon.b = lon[j+1]
