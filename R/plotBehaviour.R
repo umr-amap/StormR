@@ -19,7 +19,11 @@
 #'
 #' @return NULL
 #' @export
-plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = FALSE){
+plotBehaviour = function(sts,
+                         raster_product,
+                         xlim = NULL,
+                         ylim = NULL,
+                         mask = FALSE){
 
 
   #Check sts input
@@ -86,7 +90,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, mask = F
          ylim = c(ymin,ymax),
          alpha = 0.7,
          axes = FALSE,
-         range = c(17,max(raster_product[])),
+         range = c(17,max(raster_product[],na.rm = T)),
          add = T)
   else if(product == "Duration"){
     plot(raster_product,

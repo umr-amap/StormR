@@ -13,12 +13,7 @@
 #' observation is: Basin, Subbasin, ISO_time, lon, lat, wmo_msw, Nadi_wind, Nadi_cat
 #' @slot numobs A numeric that contains the number of observations available within
 #' the area of interest/location of interest
-#' @slot obs A data.frame.that contains of the observations available within
-#' the area of interest/location of interest
-#' @slot first.obs A numeric standing for the last observation before entering
-#' the area of interest/location of interest
-#' @slot last.obs A numeric standing for the first observation after leaving
-#' the area of interest/location of interest
+#' @slot obs Indices of observations within the loi
 #' @slot lty.track A numeric that indicates which line type should be used to
 #' plot the storm
 #' @return A S4 object gathering all the above informations
@@ -30,12 +25,8 @@ Storm <- methods::setClass("Storm",
                             season = "numeric",
                             numobs.all = "numeric",
                             obs.all = "data.frame",
-
+                            obs = "numeric",
                             numobs = "numeric",
-                            obs = "data.frame",
-                            first.obs = "numeric",
-                            last.obs = "numeric",
-
                             lty.track = "numeric"))
 
 
@@ -276,10 +267,8 @@ getStorms <- function(time_period = c(1970,2022),
                                  Nadi_cat = ncdf4::ncvar_get(TC_data_base,"nadi_cat")[1:numobs,i],
                                  storm_speed = ncdf4::ncvar_get(TC_data_base,"storm_speed")[1:numobs,i] * 0.514)
 
-      storm@obs = storm@obs.all[ind,]
-      storm@numobs = dim(storm@obs)[1]
-      storm@first.obs = ind[1]
-      storm@last.obs = ind[length(ind)]
+      storm@obs = ind
+      storm@numobs = length(ind)
       storm@lty.track = k
       storm.list = append(storm.list,storm)
       k = k+1

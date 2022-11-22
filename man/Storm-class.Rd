@@ -28,14 +28,7 @@ observation is: Basin, Subbasin, ISO_time, lon, lat, wmo_msw, Nadi_wind, Nadi_ca
 \item{\code{numobs}}{A numeric that contains the number of observations available within
 the area of interest/location of interest}
 
-\item{\code{obs}}{A data.frame.that contains of the observations available within
-the area of interest/location of interest}
-
-\item{\code{first.obs}}{A numeric standing for the last observation before entering
-the area of interest/location of interest}
-
-\item{\code{last.obs}}{A numeric standing for the first observation after leaving
-the area of interest/location of interest}
+\item{\code{obs}}{Indices of observations within the loi}
 
 \item{\code{lty.track}}{A numeric that indicates which line type should be used to
 plot the storm}

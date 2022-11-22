@@ -11,7 +11,8 @@ stormBehaviour(
   method = "willoughby",
   space_res = 10,
   time_res = 1,
-  verbose = FALSE
+  verbose = FALSE,
+  focus_loi = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,10 @@ Default value is set to 1h.}
 
 \item{verbose}{Logical, whether or not the function must be verbose. Default
 value is set to \code{FALSE}}
+
+\item{focus_loi}{Logical, whether or not the computations must only take
+place within the loi. Default
+value is set to \code{TRUE}}
 }
 \value{
 A raster stack gathering all the results. Names of the layer are

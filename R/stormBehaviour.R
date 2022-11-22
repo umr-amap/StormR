@@ -59,6 +59,9 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 #' Default value is set to 1h.
 #' @param verbose Logical, whether or not the function must be verbose. Default
 #' value is set to `FALSE`
+#' @param focus_loi Logical, whether or not the computations must only take
+#' place within the loi. Default
+#' value is set to `TRUE`
 #'
 #' @return A raster stack gathering all the results. Names of the layer are
 #' nameOfTheStorm_product
@@ -68,7 +71,8 @@ stormBehaviour = function(sts,
                           method = "willoughby",
                           space_res = 10,
                           time_res = 1,
-                          verbose = FALSE){
+                          verbose = FALSE,
+                          focus_loi = TRUE){
 
   #Check sts input
   stopifnot("no data found" = !missing(sts))
@@ -91,6 +95,9 @@ stormBehaviour = function(sts,
 
   #Check verbose input
   stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
+
+  #Check focus_loi input
+  stopifnot("focus_loi must be logical" = identical(class(focus_loi),"logical"))
 
 
   xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
@@ -118,25 +125,44 @@ stormBehaviour = function(sts,
 
     product.raster = ras.template
 
-    if(all(!is.na(st@obs$Nadi_wind)))
+    if(all(!is.na(st@obs.all$Nadi_wind)))
       warning("NA values detected")
 
 
-    lon = st@obs$lon
-    lat = st@obs$lat
-    last.obs = st@numobs
-    wmo.msw = zoo::na.approx(st@obs$Nadi_wind,rule = 2)
-    rn = as.numeric(row.names(st@obs))
+    if(focus_loi){
+      #Handling indices and offset
+      ind = seq(st@obs[1],st@obs[st@numobs],1)
 
+      if(st@obs[1] >= 3){
+        ind = c(st@obs[1] - 2,st@obs[1] - 1, ind)
+      }else if(st@obs[1] == 2){
+        ind = c(st@obs[1] - 1, ind)
+      }
 
+      if(st@obs[st@numobs] <= st@numobs.all - 2){
+        ind = c(ind, st@obs[st@numobs] + 1, st@obs[st@numobs] + 2)
+      }else if(st@obs[st@numobs] == st@numobs.all - 1){
+        ind = c(ind, st@obs[st@numobs] + 1)
+      }
+    }else{
+      ind = seq(1,st@numobs.all,1)
+    }
+
+    lon = st@obs.all$lon[ind]
+    lat = st@obs.all$lat[ind]
+    last.obs = length(ind)
+    wmo.msw = zoo::na.approx(st@obs.all$Nadi_wind[ind],rule = 2)
 
 
     nb.steps = 4*(last.obs-1) - (last.obs-2)
     n = 1
     aux.stack = c()
     #For every general 3H time step j
+
+    if(verbose)
+      cat(st@name,"\n")
+
     for(j in 1:(last.obs-1)){
-      if(rn[j+1] == rn[j] + 1){
         lon.a = lon[j]
         lon.b = lon[j+1]
         lat.a = lat[j]
@@ -212,22 +238,28 @@ stormBehaviour = function(sts,
           aux.stack = c(aux.stack,raster.aux)
           n = n+1
         }
-      }
     }
 
     aux.stack = terra::rast(aux.stack)
     if(product == "MSW"){
       #Compute msw raster
       product.raster = max(aux.stack, na.rm = T)
-      #apply focal function twice to smooth results
+      #Apply focal function twice to smooth results
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), mean, na.rm = T, pad=T)
     }else if(product == "Duration"){
       #Compute duration raster
       product.raster = sum(aux.stack, na.rm = T)
-      #apply focal function to smooth results
+      #Apply focal function to smooth results
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
     }
+
+    if(focus_loi){
+      v = terra::vect(sts@spatial.loi.buffer)
+      m = terra::rasterize(v,product.raster)
+      product.raster = terra::mask(product.raster,m)
+    }
+
     names(product.raster) = paste0(st@name,"_",product)
     product.stack = c(product.stack, product.raster)
   }

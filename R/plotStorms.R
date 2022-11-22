@@ -117,16 +117,16 @@ plot_labels = function(storm, all_basin){
     lat2 = storm@obs.all$lat[storm@numobs.all]
   }else{
     cex = 0.4
-    lon1 = storm@obs.all$lon[storm@first.obs]
-    lat1 = storm@obs.all$lat[storm@first.obs]
-    lon2 = storm@obs.all$lon[storm@last.obs]
-    lat2 = storm@obs.all$lat[storm@last.obs]
+    lon1 = storm@obs.all$lon[storm@obs[1]]
+    lat1 = storm@obs.all$lat[storm@obs[1]]
+    lon2 = storm@obs.all$lon[storm@obs[storm@numobs]]
+    lat2 = storm@obs.all$lat[storm@obs[storm@numobs]]
   }
 
   graphics::text(lon1,
                  lat1,
                  labels = paste(storm@name,
-                                storm@obs.all$ISO_time[storm@first.obs],
+                                storm@obs.all$ISO_time[storm@obs[1]],
                                 sep="\n"),
                  pos = 3,
                  cex = cex)
@@ -134,7 +134,7 @@ plot_labels = function(storm, all_basin){
   graphics::text(lon2,
                  lat2,
                  labels = paste(storm@name,
-                                storm@obs.all$ISO_time[storm@last.obs],
+                                storm@obs.all$ISO_time[storm@obs[storm@numobs]],
                                 sep="\n"),
                  pos = 3,
                  cex = cex)
