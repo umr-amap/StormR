@@ -126,6 +126,7 @@ stormBehaviour = function(sts,
     lat = st@obs$lat
     last.obs = st@numobs
     wmo.msw = zoo::na.approx(st@obs$Nadi_wind,rule = 2)
+    rn = as.numeric(row.names(st@obs))
 
 
 
@@ -135,80 +136,82 @@ stormBehaviour = function(sts,
     aux.stack = c()
     #For every general 3H time step j
     for(j in 1:(last.obs-1)){
-      lon.a = lon[j]
-      lon.b = lon[j+1]
-      lat.a = lat[j]
-      lat.b = lat[j+1]
-      msw.a = wmo.msw[j]
-      msw.b = wmo.msw[j+1]
-      if(is.na(msw.b)){
-        msw.b = msw.a#correction bug
-      }
+      if(rn[j+1] == rn[j] + 1){
+        lon.a = lon[j]
+        lon.b = lon[j+1]
+        lat.a = lat[j]
+        lat.b = lat[j+1]
+        msw.a = wmo.msw[j]
+        msw.b = wmo.msw[j+1]
+        if(is.na(msw.b)){
+          msw.b = msw.a#correction bug
+        }
 
-      #Interpolated time step dt, default value dt = 1*3 --> 1h
-      dt = 1 + (time_res * 3) #+ 1 for the limit values
-      longitude = rep(NA,dt);
-      longitude[1] = lon.a;
-      longitude[dt] = lon.b;
-      longitude = zoo::na.approx(longitude)
+        #Interpolated time step dt, default value dt = 1*3 --> 1h
+        dt = 1 + (time_res * 3) #+ 1 for the limit values
+        longitude = rep(NA,dt);
+        longitude[1] = lon.a;
+        longitude[dt] = lon.b;
+        longitude = zoo::na.approx(longitude)
 
-      latitude = rep(NA,dt)
-      latitude[1] = lat.a
-      latitude[dt] = lat.b
-      latitude = zoo::na.approx(latitude)
+        latitude = rep(NA,dt)
+        latitude[1] = lat.a
+        latitude[dt] = lat.b
+        latitude = zoo::na.approx(latitude)
 
-      msw = rep(NA,dt)
-      msw[1] = msw.a
-      msw[dt] = msw.b
-      msw = zoo::na.approx(msw)
+        msw = rep(NA,dt)
+        msw[1] = msw.a
+        msw[dt] = msw.b
+        msw = zoo::na.approx(msw)
 
-      #For every interpolated time steps dt
-      for(i in 1:dt){
+        #For every interpolated time steps dt
+        for(i in 1:dt){
 
-        if(i == dt & j != last.obs-1)
-          break #avoid redondance
+          if(i == dt & j != last.obs-1)
+            break #avoid redondance
 
-        x = longitude[i]
-        y = latitude[i]
-        w = msw[i]
+          x = longitude[i]
+          y = latitude[i]
+          w = msw[i]
 
-        if(verbose)
-          cat("Computing rasters ...  ",round(n/nb.steps *100,2),"%\n")
+          if(verbose)
+            cat("Computing rasters ...  ",round(n/nb.steps *100,2),"%\n")
           #cat("Computing rasters ...  ",x," ",y," ",w," ",n/nb.steps *100,"%\n")
 
 
-        raster.aux = product.raster
-        # distances to the eye of the storm in km
-        dist.km = terra::distance(x = terra::crds(raster.aux, na.rm = FALSE)[,],
-                                  y = cbind(x,y),
-                                  lonlat = T) * 0.001
+          raster.aux = product.raster
+          # distances to the eye of the storm in km
+          dist.km = terra::distance(x = terra::crds(raster.aux, na.rm = FALSE)[,],
+                                    y = cbind(x,y),
+                                    lonlat = T) * 0.001
 
-        if(method == "willoughby"){
-          #Compute willoughby raster
-          terra::values(raster.aux) = Willoughby(w_max = w,
-                                                 lat = y,
-                                                 r = dist.km)
+          if(method == "willoughby"){
+            #Compute willoughby raster
+            terra::values(raster.aux) = Willoughby(w_max = w,
+                                                   lat = y,
+                                                   r = dist.km)
+          }
+
+          if(product == "Duration"){
+            r = raster.aux
+            terra::values(r) = NA
+            ind = which(terra::values(raster.aux) >= 32 & terra::values(raster.aux) <= 42)
+            r[ind] = 1
+            ind = which(terra::values(raster.aux) >= 43 & terra::values(raster.aux) <= 49)
+            r[ind] = 2
+            ind = which(terra::values(raster.aux) >= 50 & terra::values(raster.aux) <= 57)
+            r[ind] = 3
+            ind = which(terra::values(raster.aux) >= 58 & terra::values(raster.aux) <= 69)
+            r[ind] = 4
+            ind = which(terra::values(raster.aux) >= 70)
+            r[ind] = 5
+            raster.aux = r
+          }
+
+
+          aux.stack = c(aux.stack,raster.aux)
+          n = n+1
         }
-
-        if(product == "Duration"){
-          r = raster.aux
-          terra::values(r) = NA
-          ind = which(terra::values(raster.aux) >= 32 & terra::values(raster.aux) <= 42)
-          r[ind] = 1
-          ind = which(terra::values(raster.aux) >= 43 & terra::values(raster.aux) <= 49)
-          r[ind] = 2
-          ind = which(terra::values(raster.aux) >= 50 & terra::values(raster.aux) <= 57)
-          r[ind] = 3
-          ind = which(terra::values(raster.aux) >= 58 & terra::values(raster.aux) <= 69)
-          r[ind] = 4
-          ind = which(terra::values(raster.aux) >= 70)
-          r[ind] = 5
-          raster.aux = r
-        }
-
-
-        aux.stack = c(aux.stack,raster.aux)
-        n = n+1
       }
     }
 
