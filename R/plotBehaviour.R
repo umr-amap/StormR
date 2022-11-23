@@ -83,7 +83,7 @@ plotBehaviour = function(sts,
   plotStorms(sts, name = name, xlim = c(xmin,xmax), ylim = c(ymin,ymax))
 
 
-  if(product == "MSW")
+  if(product == "MSW"){
     plot(raster_product,
          col = rev(grDevices::heat.colors(50)),
          xlim = c(xmin,xmax),
@@ -92,7 +92,17 @@ plotBehaviour = function(sts,
          axes = FALSE,
          range = c(17,max(raster_product[],na.rm = T)),
          add = T)
-  else if(product == "Duration"){
+
+  }else if(product == "PDI"){
+    plot(raster_product,
+         col = rev(viridis::inferno(50)),
+         xlim = c(xmin,xmax),
+         ylim = c(ymin,ymax),
+         alpha = 0.7,
+         axes = FALSE,
+         range = c(17,max(raster_product[],na.rm = T)),
+         add = T)
+  }else if(product == "Duration"){
     plot(raster_product,
          #col = rev(grDevices::heat.colors(50)),
          col = rev(viridis::viridis(50)),
