@@ -4,7 +4,13 @@
 \alias{getStorms}
 \title{Initialize a S4 Storms object}
 \usage{
-getStorms(time_period = c(1970, 2022), name = NULL, loi = "SP", max_dist = 300)
+getStorms(
+  time_period = c(1970, 2022),
+  name = NULL,
+  loi = "SP",
+  max_dist = 300,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{time_period}{A numeric vector that contains either the time range of
@@ -24,6 +30,9 @@ centered in loi, with a radius of \code{max_dist} is used as loi.}
 
 \item{max_dist}{Numeric that indicates the radius (in km) of the
 buffer to generate \code{spatail.poly.buffer}. Default value is set to 300km.}
+
+\item{verbose}{Logical, whether or not the function must be verbose. Default
+value is set to \code{FALSE}}
 }
 \value{
 a S4 Storms object that gathers all the above informations

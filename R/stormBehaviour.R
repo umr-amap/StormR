@@ -169,10 +169,11 @@ stormBehaviour = function(sts,
       cat(st@name,"-",product,"(",s,"/",sts@nb.storms,")\n")
 
 
-    #For every general 3H time step j
+
     pb = utils::txtProgressBar(min = 1,
                         max = last.obs-1,
                         style = 3)
+    #For every general 3H time step j
     for(j in 1:(last.obs-1)){
         lon.a = lon[j]
         lon.b = lon[j+1]

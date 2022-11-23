@@ -78,14 +78,17 @@ Storms <- methods::setClass("Storms",
 #' centered in loi, with a radius of `max_dist` is used as loi.
 #' @param max_dist Numeric that indicates the radius (in km) of the
 #' buffer to generate `spatail.poly.buffer`. Default value is set to 300km.
+#' @param verbose Logical, whether or not the function must be verbose. Default
+#' value is set to `FALSE`
 #'
 #' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
 #' @export
-getStorms <- function(time_period = c(1970,2022),
+getStorms <- function(time_period = c(1980,2022),
                       name = NULL,
                       loi = "SP",
-                      max_dist = 300){
+                      max_dist = 300,
+                      verbose = FALSE){
 
 
 
@@ -155,6 +158,8 @@ getStorms <- function(time_period = c(1970,2022),
   cyclonic_seasons = ncdf4::ncvar_get(TC_data_base,"season")
 
 
+  if(verbose)
+    cat("Identification Storms: ")
   #Retrieving the matching indices, handling time_period and name
   if(!is.null(name)){
     #we are interested in one or several storms
@@ -179,6 +184,12 @@ getStorms <- function(time_period = c(1970,2022),
     }
   }
 
+  if(verbose)
+    cat("Done\n")
+
+
+  if(verbose)
+    cat("Make buffer: ")
 
   #Handle loi
   if(loi.id == "Coordinates"){
@@ -213,6 +224,9 @@ getStorms <- function(time_period = c(1970,2022),
     loi.sf.buffer = loi.sf
   }
 
+  if(verbose)
+    cat("Done\n")
+
 
 
 
@@ -225,8 +239,17 @@ getStorms <- function(time_period = c(1970,2022),
   sts@buffer = max_dist
   storm.list = list()
   k = 2
-  for(i in indices){
+  count = 1
 
+  pb = utils::txtProgressBar(min = count,
+                             max = length(indices),
+                             style = 3)
+
+  if(verbose)
+    cat("Gathering storms\n")
+
+
+  for(i in indices){
     #create sf points coordinates to intersect with loi.sf
     numobs = ncdf4::ncvar_get(TC_data_base,"numobs")[i]
     lon = ncdf4::ncvar_get(TC_data_base,"lon")[1:numobs,i]
@@ -274,9 +297,15 @@ getStorms <- function(time_period = c(1970,2022),
       k = k+1
       sts@names = append(sts@names,storm@name)
     }
-  }
 
+    if(verbose)
+      utils::setTxtProgressBar(pb, count)
+
+    count = count + 1
+  }
+  close(pb)
   ncdf4::nc_close(TC_data_base)
+
   sts@spatial.loi = loi.sf
   sts@spatial.loi.buffer = loi.sf.buffer
   sts@data = storm.list
