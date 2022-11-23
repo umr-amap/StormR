@@ -5,7 +5,7 @@
 \title{Plot a selected product (MSW, PDI ...) alongside with the track of a selected
 storm contained in object \code{sts}.}
 \usage{
-plotBehaviour(sts, raster_product, xlim = NULL, ylim = NULL, mask = FALSE, ...)
+plotBehaviour(sts, raster_product, xlim = NULL, ylim = NULL, mask = FALSE)
 }
 \arguments{
 \item{sts}{Storms object that contains the storm we are interested in}

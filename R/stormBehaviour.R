@@ -98,6 +98,10 @@ stormBehaviour = function(sts,
 
   #Check focus_loi input
   stopifnot("focus_loi must be logical" = identical(class(focus_loi),"logical"))
+  if(product == "PDI"){
+    focus_loi = FALSE
+    warning("focus_loi ignored and set to FALSE")
+  }
 
 
   xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
@@ -249,6 +253,15 @@ stormBehaviour = function(sts,
       #Apply focal function twice to smooth results
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), mean, na.rm = T, pad=T)
+    }else if(product == "PDI"){
+      #Raising to power 3
+      aux.stack = aux.stack^3
+      #Apply drag coefficient
+      aux.stack = aux.stack * 0.001
+      #Integrating over the whole track
+      product.raster = sum(aux.stack, na.rm = T)
+      #Apply focal function to smooth results
+      product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
     }else if(product == "Duration"){
       #Compute duration raster
       product.raster = sum(aux.stack, na.rm = T)
