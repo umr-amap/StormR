@@ -125,6 +125,7 @@ stormBehaviour = function(sts,
 
 
   product.stack = c()
+  s = 1
 
   for(st in sts@data){
 
@@ -165,9 +166,13 @@ stormBehaviour = function(sts,
 
 
     if(verbose)
-      cat(st@name,"\n")
+      cat(st@name,"-",product,"(",s,"/",sts@nb.storms,")\n")
+
 
     #For every general 3H time step j
+    pb = utils::txtProgressBar(min = 1,
+                        max = last.obs-1,
+                        style = 3)
     for(j in 1:(last.obs-1)){
         lon.a = lon[j]
         lon.b = lon[j+1]
@@ -206,11 +211,6 @@ stormBehaviour = function(sts,
           y = latitude[i]
           w = msw[i]
 
-          if(verbose)
-            cat("Computing rasters ...  ",round(n/nb.steps *100,2),"%\n")
-          #cat("Computing rasters ...  ",x," ",y," ",w," ",n/nb.steps *100,"%\n")
-
-
           raster.aux = product.raster
           # distances to the eye of the storm in km
           dist.km = terra::distance(x = terra::crds(raster.aux, na.rm = FALSE)[,],
@@ -244,7 +244,10 @@ stormBehaviour = function(sts,
           aux.stack = c(aux.stack,raster.aux)
           n = n+1
         }
+        if(verbose)
+          utils::setTxtProgressBar(pb, j)
     }
+    close(pb)
 
     aux.stack = terra::rast(aux.stack)
     if(product == "MSW"){
@@ -256,7 +259,7 @@ stormBehaviour = function(sts,
     }else if(product == "PDI"){
       #Raising to power 3
       aux.stack = aux.stack^3
-      #Apply drag coefficient
+      #Apply surface drag coefficient
       aux.stack = aux.stack * 0.001
       #Integrating over the whole track
       product.raster = sum(aux.stack, na.rm = T)
@@ -277,6 +280,8 @@ stormBehaviour = function(sts,
 
     names(product.raster) = paste0(st@name,"_",product)
     product.stack = c(product.stack, product.raster)
+
+    s = s+1
   }
 
   return(terra::rast(product.stack))
