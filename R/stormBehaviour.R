@@ -131,7 +131,7 @@ stormBehaviour = function(sts,
 
     product.raster = ras.template
 
-    if(all(!is.na(st@obs.all$Nadi_wind)))
+    if(all(!is.na(st@obs.all$wind)))
       warning("NA values detected")
 
 
@@ -157,7 +157,7 @@ stormBehaviour = function(sts,
     lon = st@obs.all$lon[ind]
     lat = st@obs.all$lat[ind]
     last.obs = length(ind)
-    wmo.msw = zoo::na.approx(st@obs.all$Nadi_wind[ind],rule = 2)
+    wmo.msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2)
 
 
     nb.steps = 4*(last.obs-1) - (last.obs-2)

@@ -75,7 +75,7 @@ plot_track = function(storm, all_basin){
 
   lon = storm@obs.all$lon
   lat = storm@obs.all$lat
-  msw = storm@obs.all$Nadi_wind
+  msw = storm@obs.all$wind
   colors = unlist(lapply(msw, getColors))
   graphics::lines(lon,lat,
                   col = "black",

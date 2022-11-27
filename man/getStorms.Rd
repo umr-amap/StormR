@@ -5,7 +5,7 @@
 \title{Initialize a S4 Storms object}
 \usage{
 getStorms(
-  time_period = c(1970, 2022),
+  time_period = c(1980, 2022),
   name = NULL,
   loi = "SP",
   max_dist = 300,

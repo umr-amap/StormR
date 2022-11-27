@@ -239,7 +239,7 @@ getStorms <- function(time_period = c(1980,2022),
   sts@buffer = max_dist
   storm.list = list()
   k = 2
-  count = 1
+  count = 0
 
   pb = utils::txtProgressBar(min = count,
                              max = length(indices),
@@ -283,12 +283,11 @@ getStorms <- function(time_period = c(1980,2022),
       storm@obs.all = data.frame(Basin = ncdf4::ncvar_get(TC_data_base,"basin")[1:numobs,i],
                                  Subbasin = ncdf4::ncvar_get(TC_data_base,"subbasin")[1:numobs,i],
                                  ISO_time = ncdf4::ncvar_get(TC_data_base,"iso_time")[1:numobs,i],
-                                 lon = ncdf4::ncvar_get(TC_data_base,"lon")[1:numobs,i],
-                                 lat = ncdf4::ncvar_get(TC_data_base,"lat")[1:numobs,i],
-                                 wmo_msw = ncdf4::ncvar_get(TC_data_base,"wmo_wind")[1:numobs,i] * 0.514,
-                                 Nadi_wind = ncdf4::ncvar_get(TC_data_base,"nadi_wind")[1:numobs,i] * 0.514,
-                                 Nadi_cat = ncdf4::ncvar_get(TC_data_base,"nadi_cat")[1:numobs,i],
-                                 storm_speed = ncdf4::ncvar_get(TC_data_base,"storm_speed")[1:numobs,i] * 0.514)
+                                 lon = ncdf4::ncvar_get(TC_data_base,"usa_lon")[1:numobs,i],
+                                 lat = ncdf4::ncvar_get(TC_data_base,"usa_lat")[1:numobs,i],
+                                 wind = ncdf4::ncvar_get(TC_data_base,"usa_wind")[1:numobs,i] * 0.514,
+                                 rmw = ncdf4::ncvar_get(TC_data_base,"usa_rmw")[1:numobs,i],
+                                 sshs = ncdf4::ncvar_get(TC_data_base,"nadi_cat")[1:numobs,i])
 
       storm@obs = ind
       storm@numobs = length(ind)
