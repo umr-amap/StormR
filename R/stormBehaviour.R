@@ -18,13 +18,17 @@ get_RMW = function(w_max,lat){
 #' @param w_max Maximum wind speed generated
 #' @param lat Latitude where `w_max` has occured
 #' @param r Distance to the center of the storm where the value must be computed
-#'
+#' @param rmw Radius of maximum wind speed. Default value is set to NULL
 #' @return wind value according to the Willoughby model at distance `r` to the
 #'  center of the storm located in latitude `lat`
 
-Willoughby_cyc_profil = function(w_max, lat, r){
+Willoughby_cyc_profil = function(w_max, lat, r, rmw = NULL){
 
-  RMW = get_RMW(w_max,lat)
+  if(is.null(rmw)){
+    RMW = get_RMW(w_max,lat)
+  }else{
+    RMW = rmw
+  }
   RMW = rep(RMW,length(r))
   if(r >= RMW){
     XX1 = 287.6 - 1.942 * w_max + 7.799 * log(RMW) +1.819 * abs(lat)
@@ -53,6 +57,7 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 #' currently among `MSW` and `PDI`.
 #' @param method Cyclonic model used to compute product. Default value is set to
 #' `willoughby`.
+#' @param rmw Radius of maximum wind speed. Default value is set to TRUE
 #' @param space_res Space resolution (km) of the incoming raster products.
 #' Default value is set to 10km.
 #' @param time_res Time discretization (in hours) to compute the products.
@@ -69,6 +74,7 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 stormBehaviour = function(sts,
                           product = "MSW",
                           method = "willoughby",
+                          use_rmw = TRUE,
                           space_res = 10,
                           time_res = 1,
                           verbose = FALSE,
@@ -156,51 +162,51 @@ stormBehaviour = function(sts,
 
     lon = st@obs.all$lon[ind]
     lat = st@obs.all$lat[ind]
-    last.obs = length(ind)
-    wmo.msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2)
+    if(use_rmw)
+      rmw = st@obs.all$rmw[ind]
 
+    last.obs = length(ind)
+    msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2)
 
     nb.steps = 4*(last.obs-1) - (last.obs-2)
     n = 1
     aux.stack = c()
 
-
-    if(verbose)
+    if(verbose){
       cat(st@name,"-",product,"(",s,"/",sts@nb.storms,")\n")
+      pb = utils::txtProgressBar(min = 1,
+                                 max = last.obs-1,
+                                 style = 3)
+    }
 
-
-
-    pb = utils::txtProgressBar(min = 1,
-                        max = last.obs-1,
-                        style = 3)
     #For every general 3H time step j
     for(j in 1:(last.obs-1)){
-        lon.a = lon[j]
-        lon.b = lon[j+1]
-        lat.a = lat[j]
-        lat.b = lat[j+1]
-        msw.a = wmo.msw[j]
-        msw.b = wmo.msw[j+1]
-        if(is.na(msw.b)){
-          msw.b = msw.a#correction bug
-        }
 
         #Interpolated time step dt, default value dt = 1*3 --> 1h
         dt = 1 + (time_res * 3) #+ 1 for the limit values
         longitude = rep(NA,dt);
-        longitude[1] = lon.a;
-        longitude[dt] = lon.b;
+        longitude[1] = lon[j];
+        longitude[dt] = lon[j+1];
         longitude = zoo::na.approx(longitude)
 
         latitude = rep(NA,dt)
-        latitude[1] = lat.a
-        latitude[dt] = lat.b
+        latitude[1] = lat[j]
+        latitude[dt] = lat[j+1]
         latitude = zoo::na.approx(latitude)
 
-        msw = rep(NA,dt)
-        msw[1] = msw.a
-        msw[dt] = msw.b
-        msw = zoo::na.approx(msw)
+        wind = rep(NA,dt)
+        wind[1] = msw[j]
+        wind[dt] = msw[j+1]
+        wind= zoo::na.approx(wind)
+
+        if(use_rmw){
+          radius = rep(NA,dt)
+          radius[1] = rmw[j]
+          radius[dt] = rmw[j+1]
+          radius = zoo::na.approx(radius)
+        }else{
+          radius = NULL
+        }
 
         #For every interpolated time steps dt
         for(i in 1:dt){
@@ -208,21 +214,18 @@ stormBehaviour = function(sts,
           if(i == dt & j != last.obs-1)
             break #avoid redondance
 
-          x = longitude[i]
-          y = latitude[i]
-          w = msw[i]
-
           raster.aux = product.raster
           # distances to the eye of the storm in km
           dist.km = terra::distance(x = terra::crds(raster.aux, na.rm = FALSE)[,],
-                                    y = cbind(x,y),
+                                    y = cbind(longitude[i],latitude[i]),
                                     lonlat = T) * 0.001
 
           if(method == "willoughby"){
             #Compute willoughby raster
-            terra::values(raster.aux) = Willoughby(w_max = w,
-                                                   lat = y,
-                                                   r = dist.km)
+            terra::values(raster.aux) = Willoughby(w_max = wind[i],
+                                                   lat = latitude[i],
+                                                   r = dist.km,
+                                                   rmw = radius[i])
           }
 
           if(product == "Duration"){
@@ -248,7 +251,9 @@ stormBehaviour = function(sts,
         if(verbose)
           utils::setTxtProgressBar(pb, j)
     }
-    close(pb)
+
+    if(verbose)
+      close(pb)
 
     aux.stack = terra::rast(aux.stack)
     if(product == "MSW"){

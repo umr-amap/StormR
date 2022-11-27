@@ -9,6 +9,7 @@ stormBehaviour(
   sts,
   product = "MSW",
   method = "willoughby",
+  rmw = TRUE,
   space_res = 10,
   time_res = 1,
   verbose = FALSE,
@@ -23,6 +24,8 @@ currently among \code{MSW} and \code{PDI}.}
 
 \item{method}{Cyclonic model used to compute product. Default value is set to
 \code{willoughby}.}
+
+\item{rmw}{Radius of maximum wind speed. Default value is set to TRUE}
 
 \item{space_res}{Space resolution (km) of the incoming raster products.
 Default value is set to 10km.}

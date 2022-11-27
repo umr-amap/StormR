@@ -4,7 +4,7 @@
 \alias{Willoughby_cyc_profil}
 \title{Compute wind values according to the Willoughby model}
 \usage{
-Willoughby_cyc_profil(w_max, lat, r)
+Willoughby_cyc_profil(w_max, lat, r, rmw = NULL)
 }
 \arguments{
 \item{w_max}{Maximum wind speed generated}
@@ -12,6 +12,8 @@ Willoughby_cyc_profil(w_max, lat, r)
 \item{lat}{Latitude where \code{w_max} has occured}
 
 \item{r}{Distance to the center of the storm where the value must be computed}
+
+\item{rmw}{Radius of maximum wind speed. Default value is set to NULL}
 }
 \value{
 wind value according to the Willoughby model at distance \code{r} to the
