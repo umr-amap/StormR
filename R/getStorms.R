@@ -291,7 +291,8 @@ getStorms <- function(time_period = c(1980,2022),
                                  sshs = ncdf4::ncvar_get(TC_data_base,"nadi_cat")[1:numobs,i])
 
 
-      storm@obs.all$lon[storm@obs.all$lon < 0] = storm@obs.all$lon[storm@obs.all$lon < 0] + 360
+      lg = which(storm@obs.all$lon < 0)
+      storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
       storm@obs = ind
       storm@numobs = length(ind)
       storm@lty.track = k
