@@ -303,7 +303,9 @@ getStorms <- function(time_period = c(1980,2022),
 
     count = count + 1
   }
-  close(pb)
+  if(verbose)
+    close(pb)
+
   ncdf4::nc_close(TC_data_base)
 
   sts@spatial.loi = loi.sf
