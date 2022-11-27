@@ -18,7 +18,7 @@ getColors = function(ms_wind){
                              "#F03B20",
                              "#BD0026")
   if(is.na(ms_wind)){
-    color = "black"
+    color = NA
   }else{
     if(ms_wind <= 17){
       color = saffir_simpson_palette[1]
@@ -76,7 +76,7 @@ plot_track = function(storm, all_basin){
   lon = storm@obs.all$lon
   lat = storm@obs.all$lat
   msw = storm@obs.all$wind
-  colors = unlist(lapply(msw, getColors))
+  colors = unlist(lapply(msw,getColors))
   graphics::lines(lon,lat,
                   col = "black",
                   lty = storm@lty.track,
