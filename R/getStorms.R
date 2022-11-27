@@ -241,12 +241,13 @@ getStorms <- function(time_period = c(1980,2022),
   k = 2
   count = 0
 
-  pb = utils::txtProgressBar(min = count,
+
+  if(verbose){
+    cat("Gathering storms\n")
+    pb = utils::txtProgressBar(min = count,
                              max = length(indices),
                              style = 3)
-
-  if(verbose)
-    cat("Gathering storms\n")
+  }
 
 
   for(i in indices){
