@@ -315,15 +315,16 @@ plotStorms = function(sts,
   }
 
   if(legends){
+    #l = expression(paste("m.s"^"-1"))
     #graphics::par(mar = c(5.1,4.1,4.1,3),xpd=TRUE)
     graphics::legend(x = "bottomleft",
-                     legend = c("Tropical Depression (TD)",
-                                "Tropical Storm (TS)",
-                                "Category 1",
-                                "Category 2",
-                                "Category 3",
-                                "Category 4",
-                                "Category 5"),
+                     legend = c("Tropical Depression (below 17 m/s)",
+                                "Tropical Storm (18 to 32 m/s)",
+                                "Category 1 (33 to 42 m/s)",
+                                "Category 2 (43 to 49 m/s)",
+                                "Category 3(50 to 58 m/s)",
+                                "Category 4 (58 to 70 m/s)",
+                                "Category 5 (70 m/s or higher)"),
                      col = c("#00CCFF","#00CCCC","#FFFFB2","#FECC5C","#FD8D3C",
                              "#F03B20","#BD0026"),
                      pch = 19,
