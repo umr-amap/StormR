@@ -102,7 +102,7 @@ plotBehaviour = function(sts,
          axes = FALSE,
          range = c(17,max(raster_product[],na.rm = T)),
          add = T)
-  }else if(product == "Duration"){
+  }else if(product %in% c("Category1","Category2","Category3","Category4","Category5","Categories")){
     plot(raster_product,
          #col = rev(grDevices::heat.colors(50)),
          col = rev(viridis::viridis(50)),
