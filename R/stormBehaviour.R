@@ -57,7 +57,8 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 #' currently among `MSW` and `PDI`.
 #' @param method Cyclonic model used to compute product. Default value is set to
 #' `willoughby`.
-#' @param rmw Radius of maximum wind speed. Default value is set to TRUE
+#' @param use_rmw Logical, whether or not using the Radius of maximum wind speed.
+#' from the database. Default value is set to TRUE
 #' @param space_res Space resolution (km) of the incoming raster products.
 #' Default value is set to 10km.
 #' @param time_res Time discretization (in hours) to compute the products.
@@ -84,7 +85,7 @@ stormBehaviour = function(sts,
   stopifnot("no data found" = !missing(sts))
 
   #Check product input
-  stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Duration"))
+  stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Category"))
 
   #Check method input
   stopifnot("Invalid method" = method %in% c("willoughby"))
@@ -160,14 +161,15 @@ stormBehaviour = function(sts,
       ind = seq(1,st@numobs.all,1)
     }
 
+    #Get all variables
     lon = st@obs.all$lon[ind]
     lat = st@obs.all$lat[ind]
+    msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2)
     if(use_rmw)
       rmw = st@obs.all$rmw[ind]
 
+    #Compute number of steps
     last.obs = length(ind)
-    msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2)
-
     nb.steps = 4*(last.obs-1) - (last.obs-2)
     n = 1
     aux.stack = c()
@@ -214,38 +216,45 @@ stormBehaviour = function(sts,
           if(i == dt & j != last.obs-1)
             break #avoid redondance
 
-          raster.aux = product.raster
+          raster.msw = product.raster
           # distances to the eye of the storm in km
-          dist.km = terra::distance(x = terra::crds(raster.aux, na.rm = FALSE)[,],
+          dist.km = terra::distance(x = terra::crds(raster.msw, na.rm = FALSE)[,],
                                     y = cbind(longitude[i],latitude[i]),
                                     lonlat = T) * 0.001
 
           if(method == "willoughby"){
             #Compute willoughby raster
-            terra::values(raster.aux) = Willoughby(w_max = wind[i],
+            terra::values(raster.msw) = Willoughby(w_max = wind[i],
                                                    lat = latitude[i],
                                                    r = dist.km,
                                                    rmw = radius[i])
           }
 
-          if(product == "Duration"){
-            r = raster.aux
-            terra::values(r) = NA
-            ind = which(terra::values(raster.aux) >= 32 & terra::values(raster.aux) <= 42)
+          if(product == "Category"){
+            r = product.raster
+            ind = which(terra::values(raster.msw) >= 32 & terra::values(raster.msw) <= 42)
             r[ind] = 1
-            ind = which(terra::values(raster.aux) >= 43 & terra::values(raster.aux) <= 49)
-            r[ind] = 2
-            ind = which(terra::values(raster.aux) >= 50 & terra::values(raster.aux) <= 57)
-            r[ind] = 3
-            ind = which(terra::values(raster.aux) >= 58 & terra::values(raster.aux) <= 69)
-            r[ind] = 4
-            ind = which(terra::values(raster.aux) >= 70)
-            r[ind] = 5
-            raster.aux = r
+            aux.stack = c(aux.stack,r)
+            r = product.raster
+            ind = which(terra::values(raster.msw) >= 43 & terra::values(raster.msw) <= 49)
+            r[ind] = 1
+            aux.stack = c(aux.stack,r)
+            r = product.raster
+            ind = which(terra::values(raster.msw) >= 50 & terra::values(raster.msw) <= 57)
+            r[ind] = 1
+            aux.stack = c(aux.stack,r)
+            r = product.raster
+            ind = which(terra::values(raster.msw) >= 58 & terra::values(raster.msw) <= 69)
+            r[ind] = 1
+            aux.stack = c(aux.stack,r)
+            r = product.raster
+            ind = which(terra::values(raster.msw) >= 70)
+            r[ind] = 1
+            aux.stack = c(aux.stack,r)
+          }else{
+            aux.stack = c(aux.stack,raster.msw)
           }
 
-
-          aux.stack = c(aux.stack,raster.aux)
           n = n+1
         }
         if(verbose)
@@ -262,6 +271,8 @@ stormBehaviour = function(sts,
       #Apply focal function twice to smooth results
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), mean, na.rm = T, pad=T)
+      names(product.raster) = paste0(st@name,"_",product)
+      product.stack = c(product.stack, product.raster)
     }else if(product == "PDI"){
       #Raising to power 3
       aux.stack = aux.stack^3
@@ -271,21 +282,28 @@ stormBehaviour = function(sts,
       product.raster = sum(aux.stack, na.rm = T)
       #Apply focal function to smooth results
       product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
-    }else if(product == "Duration"){
-      #Compute duration raster
-      product.raster = sum(aux.stack, na.rm = T)
-      #Apply focal function to smooth results
-      product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
+      names(product.raster) = paste0(st@name,"_",product)
+      product.stack = c(product.stack, product.raster)
+    }else if(product == "Category"){
+      #Compute Category 1 raster
+      for(i in c(1,2,3,4,0)){
+        ind = which(seq(1,terra::nlyr(aux.stack)) %% 5 == i)
+        product.raster = sum(terra::subset(aux.stack,ind), na.rm = T)
+        #Apply focal function to smooth results
+        product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
+        if(i == 0)
+          i = 5
+        names(product.raster) = paste0(st@name,"_",product,i)
+        product.stack = c(product.stack, product.raster)
+      }
     }
 
+    product.stack = terra::rast(product.stack)
     if(focus_loi){
       v = terra::vect(sts@spatial.loi.buffer)
       m = terra::rasterize(v,product.raster)
-      product.raster = terra::mask(product.raster,m)
+      product. = terra::mask(unlist(product.stack),m)
     }
-
-    names(product.raster) = paste0(st@name,"_",product)
-    product.stack = c(product.stack, product.raster)
 
     s = s+1
   }
