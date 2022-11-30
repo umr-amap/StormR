@@ -286,6 +286,7 @@ stormBehaviour = function(sts,
       product.stack = c(product.stack, product.raster)
     }else if(product == "Category"){
       #Compute Category 1 raster
+      ras_c = c()
       for(i in c(1,2,3,4,0)){
         ind = which(seq(1,terra::nlyr(aux.stack)) %% 5 == i)
         product.raster = sum(terra::subset(aux.stack,ind), na.rm = T)
@@ -295,20 +296,26 @@ stormBehaviour = function(sts,
           i = 5
         names(product.raster) = paste0(st@name,"_",product,i)
         product.stack = c(product.stack, product.raster)
+        ras_c = c(ras_c,product.raster)
       }
+     ras_c = terra::rast(ras_c)
+     ras_c = sum(ras_c,na.rm = T)
+     names(ras_c) = paste0(st@name,"_Categories")
+     product.stack = c(product.stack, ras_c)
     }
 
     product.stack = terra::rast(product.stack)
     if(focus_loi){
-      v = terra::vect(sts@spatial.loi.buffer)
-      m = terra::rasterize(v,product.raster)
-      product. = terra::mask(unlist(product.stack),m)
+      #v = terra::vect(sts@spatial.loi.buffer)
+      #m = terra::rasterize(v,product.raster)
+      #terra::subset(product.stack,i) = terra::mask(terra::subset(product.stack,i),m)
     }
+
 
     s = s+1
   }
 
-  return(terra::rast(product.stack))
+  return(product.stack)
 }
 
 

@@ -25,6 +25,9 @@ currently among \code{MSW} and \code{PDI}.}
 \item{method}{Cyclonic model used to compute product. Default value is set to
 \code{willoughby}.}
 
+\item{use_rmw}{Logical, whether or not using the Radius of maximum wind speed.
+from the database. Default value is set to TRUE}
+
 \item{space_res}{Space resolution (km) of the incoming raster products.
 Default value is set to 10km.}
 
@@ -37,8 +40,6 @@ value is set to \code{FALSE}}
 \item{focus_loi}{Logical, whether or not the computations must only take
 place within the loi. Default
 value is set to \code{TRUE}}
-
-\item{rmw}{Radius of maximum wind speed. Default value is set to TRUE}
 }
 \value{
 A raster stack gathering all the results. Names of the layer are
