@@ -161,15 +161,19 @@ stormBehaviour = function(sts,
       ind = seq(1,st@numobs.all,1)
     }
 
-    #Get all variables
-    lon = st@obs.all$lon[ind]
-    lat = st@obs.all$lat[ind]
-    msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2)
-    if(use_rmw)
-      rmw = st@obs.all$rmw[ind]
+
+    #Get all variables and remove NA's
+    dat = data.frame(lon = st@obs.all$lon[ind],
+                     lat = st@obs.all$lat[ind],
+                     msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2),
+                     rmw = st@obs.all$rmw[ind]
+                     )
+    dat = dat[complete.cases(dat),]
+
+    print(dat)
 
     #Compute number of steps
-    last.obs = length(ind)
+    last.obs = dim(dat)[1]
     nb.steps = 4*(last.obs-1) - (last.obs-2)
     n = 1
     aux.stack = c()
@@ -187,24 +191,24 @@ stormBehaviour = function(sts,
         #Interpolated time step dt, default value dt = 1*3 --> 1h
         dt = 1 + (time_res * 3) #+ 1 for the limit values
         longitude = rep(NA,dt);
-        longitude[1] = lon[j];
-        longitude[dt] = lon[j+1];
+        longitude[1] = dat$lon[j];
+        longitude[dt] = dat$lon[j+1];
         longitude = zoo::na.approx(longitude)
 
         latitude = rep(NA,dt)
-        latitude[1] = lat[j]
-        latitude[dt] = lat[j+1]
+        latitude[1] = dat$lat[j]
+        latitude[dt] = dat$lat[j+1]
         latitude = zoo::na.approx(latitude)
 
         wind = rep(NA,dt)
-        wind[1] = msw[j]
-        wind[dt] = msw[j+1]
+        wind[1] = dat$msw[j]
+        wind[dt] = dat$msw[j+1]
         wind= zoo::na.approx(wind)
 
         if(use_rmw){
           radius = rep(NA,dt)
-          radius[1] = rmw[j]
-          radius[dt] = rmw[j+1]
+          radius[1] = dat$rmw[j]
+          radius[dt] = dat$rmw[j+1]
           radius = zoo::na.approx(radius)
         }else{
           radius = NULL
