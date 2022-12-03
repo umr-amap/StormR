@@ -9,6 +9,7 @@ stormBehaviour(
   sts,
   product = "MSW",
   method = "willoughby",
+  asymmetry = TRUE,
   use_rmw = TRUE,
   space_res = 10,
   time_res = 1,
@@ -25,7 +26,10 @@ currently among \code{MSW} and \code{PDI}.}
 \item{method}{Cyclonic model used to compute product. Default value is set to
 \code{willoughby}.}
 
-\item{use_rmw}{Logical, whether or not using the Radius of maximum wind speed.
+\item{asymmetry}{Logical, whether or not adding asymmetry to the analytic model.
+Default value is set to TRUE}
+
+\item{use_rmw}{Logical, whether or not using the Radius of maximum wind speed
 from the database. Default value is set to TRUE}
 
 \item{space_res}{Space resolution (km) of the incoming raster products.

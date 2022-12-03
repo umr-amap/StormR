@@ -57,7 +57,9 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 #' currently among `MSW` and `PDI`.
 #' @param method Cyclonic model used to compute product. Default value is set to
 #' `willoughby`.
-#' @param use_rmw Logical, whether or not using the Radius of maximum wind speed.
+#' @param asymmetry Logical, whether or not adding asymmetry to the analytic model.
+#' Default value is set to TRUE
+#' @param use_rmw Logical, whether or not using the Radius of maximum wind speed
 #' from the database. Default value is set to TRUE
 #' @param space_res Space resolution (km) of the incoming raster products.
 #' Default value is set to 10km.
@@ -75,6 +77,7 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 stormBehaviour = function(sts,
                           product = "MSW",
                           method = "willoughby",
+                          asymmetry = TRUE,
                           use_rmw = TRUE,
                           space_res = 10,
                           time_res = 1,
@@ -138,16 +141,13 @@ stormBehaviour = function(sts,
 
     product.raster = ras.template
 
-    if(all(!is.na(st@obs.all$wind)))
-      warning("NA values detected")
-
-
     if(focus_loi){
-      #Handling indices and offset
+      #Use observations within the loi for the computations
       ind = seq(st@obs[1],st@obs[st@numobs],1)
 
+      #Handling indices and offset
       if(st@obs[1] >= 3){
-        ind = c(st@obs[1] - 2,st@obs[1] - 1, ind)
+        ind = c(st@obs[1] - 2, st@obs[1] - 1, ind)
       }else if(st@obs[1] == 2){
         ind = c(st@obs[1] - 1, ind)
       }
@@ -158,17 +158,18 @@ stormBehaviour = function(sts,
         ind = c(ind, st@obs[st@numobs] + 1)
       }
     }else{
+      #Use all observations available for the computations
       ind = seq(1,st@numobs.all,1)
     }
 
 
-    #Get all variables and remove NA's
+    #Get all variables and remove NAs
     dat = data.frame(lon = st@obs.all$lon[ind],
                      lat = st@obs.all$lat[ind],
                      msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2),
                      rmw = st@obs.all$rmw[ind]
                      )
-    dat = dat[complete.cases(dat),]
+    dat = dat[stats::complete.cases(dat),]
 
 
     #Compute number of steps
@@ -178,7 +179,7 @@ stormBehaviour = function(sts,
     aux.stack = c()
 
     if(verbose){
-      cat(st@name,"-",product,"(",s,"/",sts@nb.storms,")\n")
+      cat(st@name,"-",product,"-",method,"(",s,"/",sts@nb.storms,")\n")
       pb = utils::txtProgressBar(min = 1,
                                  max = last.obs-1,
                                  style = 3)
@@ -213,14 +214,25 @@ stormBehaviour = function(sts,
           radius = NULL
         }
 
+        #Compute velocity of storm (deg/h)
+        vx.deg = (dat$lon[j+1] - dat$lon[j]) / 3
+        vy.deg = (dat$lat[j+1] - dat$lat[j]) / 3
+        N = sqrt(vx.deg**2+vy.deg**2)
+
+        #(km/h)
+        vx.km = vx.deg * space_res / terra::res(ras.template)[1]
+        vy.km = vy.deg * space_res / terra::res(ras.template)[2]
+        Nv = sqrt(vx.km**2+vy.km**2)
+
+
         #For every interpolated time steps dt
         for(i in 1:dt){
 
           if(i == dt & j != last.obs-1)
             break #avoid redondance
 
-          raster.msw = product.raster
-          # distances to the eye of the storm in km
+          raster.msw = ras.template
+          #distances to the eye of the storm in km
           dist.km = terra::distance(x = terra::crds(raster.msw, na.rm = FALSE)[,],
                                     y = cbind(longitude[i],latitude[i]),
                                     lonlat = T) * 0.001
@@ -231,6 +243,17 @@ stormBehaviour = function(sts,
                                                    lat = latitude[i],
                                                    r = dist.km,
                                                    rmw = radius[i])
+          }
+
+          #Add asymmetry
+          if(asymmetry){
+            x = (terra::crds(raster.msw, na.rm = FALSE)[,1] - longitude[i])
+            y = (terra::crds(raster.msw, na.rm = FALSE)[,2] - latitude[i])
+            r = sqrt(x**2+y**2)
+            raster.theta = ras.template
+            terra::values(raster.theta) = acos((y * vx.deg + -x * vy.deg)/(N*r))
+            terra::values(raster.msw) = terra::values(raster.msw) +
+              cos(terra::values(raster.theta))*(Nv/3.6)
           }
 
           if(product == "Category"){
