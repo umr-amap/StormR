@@ -170,7 +170,6 @@ stormBehaviour = function(sts,
                      )
     dat = dat[complete.cases(dat),]
 
-    print(dat)
 
     #Compute number of steps
     last.obs = dim(dat)[1]
@@ -203,7 +202,7 @@ stormBehaviour = function(sts,
         wind = rep(NA,dt)
         wind[1] = dat$msw[j]
         wind[dt] = dat$msw[j+1]
-        wind= zoo::na.approx(wind)
+        wind = zoo::na.approx(wind)
 
         if(use_rmw){
           radius = rep(NA,dt)

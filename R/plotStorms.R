@@ -101,43 +101,29 @@ plot_track = function(storm, all_basin){
 #'
 #' @param storm Storm object that we want to plot the track. Note that both a map
 #' and track of the storm should be previously plotted
-#' @param all_basin Logical, wether or not to plot track onto the whole basin.
-#' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
+#' @param by number, increment of the sequence for the labels to plot
+#' @param pos number between 1 and 4, position for the labels to plot: up, left,
+#' down, right
 #' `spatial.loi.buffer` of object `sts`
 #'
 #' @return NULL
-plot_labels = function(storm, all_basin){
+plot_labels = function(storm, by, pos){
 
+  cex = 0.6
+  ind = round(seq(1,storm@numobs.all, by))
 
-  if(all_basin){
-    cex = 0.6
-    lon1 = storm@obs.all$lon[1]
-    lat1 = storm@obs.all$lat[1]
-    lon2 = storm@obs.all$lon[storm@numobs.all]
-    lat2 = storm@obs.all$lat[storm@numobs.all]
-  }else{
-    cex = 0.4
-    lon1 = storm@obs.all$lon[storm@obs[1]]
-    lat1 = storm@obs.all$lat[storm@obs[1]]
-    lon2 = storm@obs.all$lon[storm@obs[storm@numobs]]
-    lat2 = storm@obs.all$lat[storm@obs[storm@numobs]]
+  for(i in ind){
+    lon = storm@obs.all$lon[i]
+    lat = storm@obs.all$lat[i]
+
+    graphics::text(lon,
+                   lat,
+                   labels = paste(storm@name,
+                                  storm@obs.all$ISO_time[i],
+                                  sep="\n"),
+                   pos = pos,
+                   cex = cex)
   }
-
-  graphics::text(lon1,
-                 lat1,
-                 labels = paste(storm@name,
-                                storm@obs.all$ISO_time[storm@obs[1]],
-                                sep="\n"),
-                 pos = 3,
-                 cex = cex)
-
-  graphics::text(lon2,
-                 lat2,
-                 labels = paste(storm@name,
-                                storm@obs.all$ISO_time[storm@obs[storm@numobs]],
-                                sep="\n"),
-                 pos = 3,
-                 cex = cex)
 }
 
 
@@ -161,6 +147,9 @@ plot_labels = function(storm, all_basin){
 #' @param labels Logical, wether or not to plot ISO_time and name labels for the
 #' first and the last observation of each storms within the loi. Default value
 #' is set to FALSE.
+#' @param by number, increment of the sequence for the labels to plot
+#' @param pos number between 1 and 4, position for the labels to plot: up, left,
+#' down, right
 #' @param legends Logical, wether or not to plot legends for the
 #' plot. Default value is set to FALSE.
 #' @param grtc numeric that controls how many graticules to plot. Default value
@@ -183,6 +172,8 @@ plotStorms = function(sts,
                       ocean_color ="white",
                       all_basin = FALSE,
                       labels = FALSE,
+                      by = 4,
+                      pos = 3,
                       legends = FALSE,
                       loi = TRUE,
                       grtc = 1,
@@ -228,6 +219,12 @@ plotStorms = function(sts,
   stopifnot("legends must be logical" = identical(class(legends),"logical"))
   stopifnot("labels must be logical" = identical(class(labels),"logical"))
   stopifnot("loi must be logical" = identical(class(loi),"logical"))
+
+  #Check labels inputs
+  stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
+  stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
+  stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
+
 
 
 
@@ -307,7 +304,7 @@ plotStorms = function(sts,
   if(is.null(name)){
     lapply(sts@data, plot_track, all_basin)
     if(labels)
-      lapply(sts@data, plot_labels,all_basin)
+      lapply(sts@data, plot_labels, by, pos)
   }else{
     plot_track(sts@data[[name]],all_basin)
     if(labels)
