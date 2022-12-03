@@ -30,6 +30,7 @@ Imports:
     rworldxtra,
     sf,
     sp,
+    stats,
     terra,
     utils,
     viridis,
