@@ -288,7 +288,8 @@ getStorms <- function(time_period = c(1980,2022),
                                  lat = ncdf4::ncvar_get(TC_data_base,"usa_lat")[1:numobs,i],
                                  wind = ncdf4::ncvar_get(TC_data_base,"usa_wind")[1:numobs,i] * 0.514,
                                  rmw = ncdf4::ncvar_get(TC_data_base,"usa_rmw")[1:numobs,i],
-                                 sshs = ncdf4::ncvar_get(TC_data_base,"nadi_cat")[1:numobs,i])
+                                 sshs = ncdf4::ncvar_get(TC_data_base,"usa_sshs")[1:numobs,i],
+                                 speed = ncdf4::ncvar_get(TC_data_base,"storm_speed")[1:numobs,i]* 0.514)
 
 
       lg = which(storm@obs.all$lon < 0)
