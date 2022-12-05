@@ -303,7 +303,9 @@ stormBehaviour = function(sts,
       #Raising to power 3
       aux.stack = aux.stack^3
       #Apply surface drag coefficient
-      aux.stack = aux.stack * 0.001
+      rho = 0.001
+      Cd = 2.6 * 0.001
+      aux.stack = aux.stack * rho * Cd
       #Integrating over the whole track
       product.raster = sum(aux.stack, na.rm = T)
       #Apply focal function to smooth results
