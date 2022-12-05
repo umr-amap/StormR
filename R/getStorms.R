@@ -3,6 +3,7 @@
 
 
 
+
 #' Models a storm using various slots
 #'
 #' @slot name A character that contains the name of the storm
@@ -19,15 +20,19 @@
 #' @return A S4 object gathering all the above informations
 #' @importFrom methods new
 #' @export
-Storm <- methods::setClass("Storm",
-                  slots = c(name = "character",
-                            sid = "character",
-                            season = "numeric",
-                            numobs.all = "numeric",
-                            obs.all = "data.frame",
-                            obs = "numeric",
-                            numobs = "numeric",
-                            lty.track = "numeric"))
+Storm <- methods::setClass(
+  "Storm",
+  slots = c(
+    name = "character",
+    sid = "character",
+    season = "numeric",
+    numobs.all = "numeric",
+    obs.all = "data.frame",
+    obs = "numeric",
+    numobs = "numeric",
+    lty.track = "numeric"
+  )
+)
 
 
 
@@ -45,14 +50,18 @@ Storm <- methods::setClass("Storm",
 #' @importFrom methods new
 #' @import sp
 #' @export
-Storms <- methods::setClass("Storms",
-                   slots = c(data = "list",
-                             time.period = "numeric",
-                             names = "list",
-                             nb.storms = "numeric",
-                             spatial.loi = "sf",
-                             buffer = "numeric",
-                             spatial.loi.buffer = "sf"))
+Storms <- methods::setClass(
+  "Storms",
+  slots = c(
+    data = "list",
+    time.period = "numeric",
+    names = "list",
+    nb.storms = "numeric",
+    spatial.loi = "sf",
+    buffer = "numeric",
+    spatial.loi.buffer = "sf"
+  )
+)
 
 
 
@@ -84,16 +93,13 @@ Storms <- methods::setClass("Storms",
 #' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
 #' @export
-getStorms <- function(time_period = c(1980,2022),
+getStorms <- function(time_period = c(1980, 2022),
                       name = NULL,
                       loi = "SP",
                       max_dist = 300,
-                      verbose = FALSE){
-
-
-
+                      verbose = FALSE) {
   #Check time_period input
-  stopifnot("time_period must be numeric" = identical(class(time_period),"numeric"))
+  stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
   stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
   stopifnot("lower bound of time range is not valid" = time_period > 1979)
   stopifnot("upper bound of time range is not valid" = time_period < 2023)
@@ -104,39 +110,47 @@ getStorms <- function(time_period = c(1980,2022),
 
 
   #Check name input
-  if(!is.null(name)){
-    stopifnot("name must be a vector of characters" = identical(class(name),"character"))
+  if (!is.null(name)) {
+    stopifnot("name must be a vector of characters" = identical(class(name), "character"))
     stopifnot("name and time_period must be the same length" = length(time_period) == length(name))
     name = name[o]
-  }else{
-    stopifnot("time_period must be either length 1 or 2" = length(time_period) == 1 || length(time_period) ==2)
+  } else{
+    stopifnot(
+      "time_period must be either length 1 or 2" = length(time_period) == 1 ||
+        length(time_period) == 2
+    )
   }
 
 
   #Check loi input
   loi.is.basin = FALSE
-  if(!is.character(loi)){
-    if(identical(class(loi),c("SpatialPolygons"))){
+  if (!is.character(loi)) {
+    if (identical(class(loi), c("SpatialPolygons"))) {
       loi.id = "SpatialPolygons"
-    }else if(identical(class(loi),c("sf","data.frame"))){
+    } else if (identical(class(loi), c("sf", "data.frame"))) {
       loi.id = "sf"
-    }else if(identical(class(loi),c("numeric"))){
-      stopifnot("loi must have valid lon/lat coordinates " = length(loi) == 2 & loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
+    } else if (identical(class(loi), c("numeric"))) {
+      stopifnot(
+        "loi must have valid lon/lat coordinates " = length(loi) == 2 &
+          loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90
+      )
       loi.id = "Coordinates"
-    }else{
+    } else{
       stop("invalid class for loi")
     }
-  }else{
+  } else{
     stopifnot("loi must be length 1 " = length(loi) == 1)
-    if(loi == "SP"){
+    if (loi == "SP") {
       #Focus on South Pacific Ocean
-      loi = sf::st_polygon(list(cbind(c(150,150,200,200,150),
-                                c(-30,-5,-5,-30,-30))))
+      loi = sf::st_polygon(list(cbind(
+        c(150, 150, 200, 200, 150),
+        c(-30, -5, -5, -30, -30)
+      )))
       loi = sf::st_sfc(loi, crs = 4326)
       loi = sf::st_as_sf(loi)
       loi.is.basin = TRUE
       loi.id = "sf"
-    }else{
+    } else{
       map = rworldmap::getMap(resolution = "high")
       id.country = which(map@data$ADMIN == loi)
       stopifnot("invalid entry for loi" = length(id.country) > 0)
@@ -145,7 +159,7 @@ getStorms <- function(time_period = c(1980,2022),
   }
 
   #Check max_dist input
-  stopifnot("max_dist must be numeric " = identical(class(max_dist),"numeric"))
+  stopifnot("max_dist must be numeric " = identical(class(max_dist), "numeric"))
   stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
 
 
@@ -155,57 +169,61 @@ getStorms <- function(time_period = c(1980,2022),
   ############################################################
   file_name = paste0("./inst/extdata/IBTrACS.SP.v04r00.nc")
   TC_data_base = ncdf4::nc_open(file_name)
-  cyclonic_seasons = ncdf4::ncvar_get(TC_data_base,"season")
+  cyclonic_seasons = ncdf4::ncvar_get(TC_data_base, "season")
 
 
-  if(verbose)
+  if (verbose)
     cat("Identification Storms: ")
   #Retrieving the matching indices, handling time_period and name
-  if(!is.null(name)){
+  if (!is.null(name)) {
     #we are interested in one or several storms
-    storm.names = ncdf4::ncvar_get(TC_data_base,"name")
+    storm.names = ncdf4::ncvar_get(TC_data_base, "name")
     indices = c()
-    for(n in 1:length(name)){
+    for (n in 1:length(name)) {
       seasons.id = which(cyclonic_seasons == time_period[n])
       storm.id = NULL
       storm.id = which(storm.names == name[n])
       stopifnot("Storm not found" = !is.null(storm.id))
-      indices = c(indices,seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]])
+      indices = c(indices, seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]])
       stopifnot("Storm not found" = length(indices) > 0)
     }
-  }else{
-    if(length(time_period) == 1){
+  } else{
+    if (length(time_period) == 1) {
       #we are interested in only one cyclonic season
       indices = which(cyclonic_seasons == time_period[1])
-    }else{
+    } else{
       #we are interested in successive cyclonic seasons
-      indices = seq(from = which(cyclonic_seasons == time_period[1])[1],
-                    to = utils::tail(which(cyclonic_seasons == time_period[2]),1))
+      indices = seq(
+        from = which(cyclonic_seasons == time_period[1])[1],
+        to = utils::tail(which(cyclonic_seasons == time_period[2]), 1)
+      )
     }
   }
 
-  if(verbose)
+  if (verbose)
     cat("Done\n")
 
 
-  if(verbose)
+  if (verbose)
     cat("Make buffer: ")
 
   #Handle loi
-  if(loi.id == "Coordinates"){
-    loi.df   <- data.frame(pt = 1, lon = loi[1], lat = loi[2])
+  if (loi.id == "Coordinates") {
+    loi.df   <- data.frame(pt = 1,
+                           lon = loi[1],
+                           lat = loi[2])
     loi.sf   <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
-  }else if(loi.id == "SpatialPolygons"){
+  } else if (loi.id == "SpatialPolygons") {
     loi.sf = sf::st_as_sf(loi)
-  }else if(loi.id == "sf"){
+  } else if (loi.id == "sf") {
     loi.sf = loi
-    if(sf::st_crs(loi.sf) != 4326){
-      sf::st_transform(loi.sf,crs = 4326)
+    if (sf::st_crs(loi.sf) != 4326) {
+      sf::st_transform(loi.sf, crs = 4326)
     }
-  }else{
+  } else{
     loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
     #Handling time line for Fiji
-    if(loi == "Fiji"){
+    if (loi == "Fiji") {
       loi.sf = sf::st_set_crs(loi.sf, 4326)
       loi.sf = sf::st_shift_longitude(loi.sf)
     }
@@ -214,17 +232,17 @@ getStorms <- function(time_period = c(1980,2022),
 
 
   #Handle buffer
-  if(!loi.is.basin){
-    loi.sf.buffer = sf::st_buffer(loi.sf,dist = max_dist*1000)
+  if (!loi.is.basin) {
+    loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * 1000)
     #Handling time line for Fiji
-    if(loi == "Fiji")
+    if (loi == "Fiji")
       loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
 
-  }else{
+  } else{
     loi.sf.buffer = loi.sf
   }
 
-  if(verbose)
+  if (verbose)
     cat("Done\n")
 
 
@@ -242,21 +260,21 @@ getStorms <- function(time_period = c(1980,2022),
   count = 0
 
 
-  if(verbose){
+  if (verbose) {
     cat("Gathering storms\n")
     pb = utils::txtProgressBar(min = count,
-                             max = length(indices),
-                             style = 3)
+                               max = length(indices),
+                               style = 3)
   }
 
 
-  for(i in indices){
+  for (i in indices) {
     #create sf points coordinates to intersect with loi.sf
-    numobs = ncdf4::ncvar_get(TC_data_base,"numobs")[i]
-    lon = ncdf4::ncvar_get(TC_data_base,"lon")[1:numobs,i]
-    lat = ncdf4::ncvar_get(TC_data_base,"lat")[1:numobs,i]
-    coords = data.frame(lon = lon,lat = lat)
-    pts = sf::st_as_sf(coords, coords = c("lon","lat"))
+    numobs = ncdf4::ncvar_get(TC_data_base, "numobs")[i]
+    lon = ncdf4::ncvar_get(TC_data_base, "lon")[1:numobs, i]
+    lat = ncdf4::ncvar_get(TC_data_base, "lat")[1:numobs, i]
+    coords = data.frame(lon = lon, lat = lat)
+    pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
     sf::st_crs(pts) = 4326
 
 
@@ -264,32 +282,33 @@ getStorms <- function(time_period = c(1980,2022),
     ind = which(sf::st_intersects(pts, loi.sf.buffer,
                                   sparse = FALSE) == TRUE)
 
-    if(length(ind) > 0){
-
+    if (length(ind) > 0) {
       sts@nb.storms = sts@nb.storms + 1
 
       #offset 1 obs before the loi
-      if(ind[1] != 1)
-        ind = c(ind[1]-1,ind)
-      if(ind[length(ind)] != numobs)
-        ind = c(ind,ind[length(ind)]+1)
+      if (ind[1] != 1)
+        ind = c(ind[1] - 1, ind)
+      if (ind[length(ind)] != numobs)
+        ind = c(ind, ind[length(ind)] + 1)
 
 
 
       storm = Storm()
-      storm@name = ncdf4::ncvar_get(TC_data_base,"name")[i]
-      storm@sid = ncdf4::ncvar_get(TC_data_base,"sid")[i]
-      storm@season = ncdf4::ncvar_get(TC_data_base,"season")[i]
+      storm@name = ncdf4::ncvar_get(TC_data_base, "name")[i]
+      storm@sid = ncdf4::ncvar_get(TC_data_base, "sid")[i]
+      storm@season = ncdf4::ncvar_get(TC_data_base, "season")[i]
       storm@numobs.all = numobs
-      storm@obs.all = data.frame(Basin = ncdf4::ncvar_get(TC_data_base,"basin")[1:numobs,i],
-                                 Subbasin = ncdf4::ncvar_get(TC_data_base,"subbasin")[1:numobs,i],
-                                 ISO_time = ncdf4::ncvar_get(TC_data_base,"iso_time")[1:numobs,i],
-                                 lon = ncdf4::ncvar_get(TC_data_base,"usa_lon")[1:numobs,i],
-                                 lat = ncdf4::ncvar_get(TC_data_base,"usa_lat")[1:numobs,i],
-                                 wind = ncdf4::ncvar_get(TC_data_base,"usa_wind")[1:numobs,i] * 0.514,
-                                 rmw = ncdf4::ncvar_get(TC_data_base,"usa_rmw")[1:numobs,i],
-                                 sshs = ncdf4::ncvar_get(TC_data_base,"usa_sshs")[1:numobs,i],
-                                 speed = ncdf4::ncvar_get(TC_data_base,"storm_speed")[1:numobs,i]* 0.514)
+      storm@obs.all = data.frame(
+        Basin = ncdf4::ncvar_get(TC_data_base, "basin")[1:numobs, i],
+        Subbasin = ncdf4::ncvar_get(TC_data_base, "subbasin")[1:numobs, i],
+        ISO_time = ncdf4::ncvar_get(TC_data_base, "iso_time")[1:numobs, i],
+        lon = ncdf4::ncvar_get(TC_data_base, "usa_lon")[1:numobs, i],
+        lat = ncdf4::ncvar_get(TC_data_base, "usa_lat")[1:numobs, i],
+        wind = ncdf4::ncvar_get(TC_data_base, "usa_wind")[1:numobs, i] * 0.514,
+        rmw = ncdf4::ncvar_get(TC_data_base, "usa_rmw")[1:numobs, i],
+        sshs = ncdf4::ncvar_get(TC_data_base, "usa_sshs")[1:numobs, i],
+        speed = ncdf4::ncvar_get(TC_data_base, "storm_speed")[1:numobs, i] * 0.514
+      )
 
 
       lg = which(storm@obs.all$lon < 0)
@@ -297,17 +316,17 @@ getStorms <- function(time_period = c(1980,2022),
       storm@obs = ind
       storm@numobs = length(ind)
       storm@lty.track = k
-      storm.list = append(storm.list,storm)
-      k = k+1
-      sts@names = append(sts@names,storm@name)
+      storm.list = append(storm.list, storm)
+      k = k + 1
+      sts@names = append(sts@names, storm@name)
     }
 
-    if(verbose)
+    if (verbose)
       utils::setTxtProgressBar(pb, count)
 
     count = count + 1
   }
-  if(verbose)
+  if (verbose)
     close(pb)
 
   ncdf4::nc_close(TC_data_base)
@@ -319,8 +338,3 @@ getStorms <- function(time_period = c(1980,2022),
 
   return(sts)
 }
-
-
-
-
-

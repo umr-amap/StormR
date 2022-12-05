@@ -3,13 +3,13 @@
 
 
 
+
 #' Get SSWS palette colors associated with a wind observation
 #'
 #' @param ms_wind maximum sustained wind observation
 #'
 #' @return color palette associated with the observation
-getColors = function(ms_wind){
-
+getColors = function(ms_wind) {
   saffir_simpson_palette = c("#00CCFF",
                              "#00CCCC",
                              "#FFFFB2",
@@ -17,28 +17,28 @@ getColors = function(ms_wind){
                              "#FD8D3C",
                              "#F03B20",
                              "#BD0026")
-  if(is.na(ms_wind)){
+  if (is.na(ms_wind)) {
     color = NA
-  }else{
-    if(ms_wind <= 17){
+  } else{
+    if (ms_wind <= 17) {
       color = saffir_simpson_palette[1]
-    }else{
-      if(ms_wind > 17 & ms_wind <= 32){
+    } else{
+      if (ms_wind > 17 & ms_wind <= 32) {
         color = saffir_simpson_palette[2]
-      }else{
-        if(ms_wind >=32 & ms_wind <= 42){
+      } else{
+        if (ms_wind >= 32 & ms_wind <= 42) {
           color = saffir_simpson_palette[3]
-        }else{
-          if(ms_wind > 42 & ms_wind <= 49){
+        } else{
+          if (ms_wind > 42 & ms_wind <= 49) {
             color = saffir_simpson_palette[4]
-          }else{
-            if(ms_wind > 49 & ms_wind < 58){
+          } else{
+            if (ms_wind > 49 & ms_wind < 58) {
               color = saffir_simpson_palette[5]
-            }else{
-              if(ms_wind >= 58 & ms_wind < 70){
+            } else{
+              if (ms_wind >= 58 & ms_wind < 70) {
                 color = saffir_simpson_palette[6]
-              }else{
-                if(ms_wind >= 70){
+              } else{
+                if (ms_wind >= 70) {
                   color = saffir_simpson_palette[7]
                 }
               }
@@ -64,32 +64,36 @@ getColors = function(ms_wind){
 #' `spatial.loi.buffer` of object `sts`
 #'
 #' @return NULL
-plot_track = function(storm, all_basin){
-
-
-  if(all_basin){
+plot_track = function(storm, all_basin) {
+  if (all_basin) {
     cex = 0.6
-  }else{
+  } else{
     cex = 1
   }
 
   lon = storm@obs.all$lon
   lat = storm@obs.all$lat
   msw = storm@obs.all$wind
-  colors = unlist(lapply(msw,getColors))
-  graphics::lines(lon,lat,
-                  col = "black",
-                  lty = storm@lty.track,
-                  lwd = 1,
-                  cex = cex)
+  colors = unlist(lapply(msw, getColors))
+  graphics::lines(
+    lon,
+    lat,
+    col = "black",
+    lty = storm@lty.track,
+    lwd = 1,
+    cex = cex
+  )
 
-  graphics::points(lon, lat,
-                col = colors,
-                pch = 19,
-                lwd = 1,
-                cex = cex)
+  graphics::points(
+    lon,
+    lat,
+    col = colors,
+    pch = 19,
+    lwd = 1,
+    cex = cex
+  )
 
-  }
+}
 
 
 
@@ -107,22 +111,23 @@ plot_track = function(storm, all_basin){
 #' `spatial.loi.buffer` of object `sts`
 #'
 #' @return NULL
-plot_labels = function(storm, by, pos){
-
+plot_labels = function(storm, by, pos) {
   cex = 0.6
-  ind = round(seq(1,storm@numobs.all, by))
+  ind = round(seq(1, storm@numobs.all, by))
 
-  for(i in ind){
+  for (i in ind) {
     lon = storm@obs.all$lon[i]
     lat = storm@obs.all$lat[i]
 
-    graphics::text(lon,
-                   lat,
-                   labels = paste(storm@name,
-                                  storm@obs.all$ISO_time[i],
-                                  sep="\n"),
-                   pos = pos,
-                   cex = cex)
+    graphics::text(
+      lon,
+      lat,
+      labels = paste(storm@name,
+                     storm@obs.all$ISO_time[i],
+                     sep = "\n"),
+      pos = pos,
+      cex = cex
+    )
   }
 }
 
@@ -169,7 +174,7 @@ plotStorms = function(sts,
                       name = NULL,
                       shapefile =  NULL,
                       ground_color = "grey",
-                      ocean_color ="white",
+                      ocean_color = "white",
                       all_basin = FALSE,
                       labels = FALSE,
                       by = 4,
@@ -178,47 +183,50 @@ plotStorms = function(sts,
                       loi = TRUE,
                       grtc = 1,
                       xlim = NULL,
-                      ylim = NULL){
-
+                      ylim = NULL) {
   #Check sts input
   stopifnot("no data to plot" = !missing(sts))
 
   #Check shapefile input
-  if(!is.null(shapefile))
-    stopifnot("shapefile must be a SpatialPolygonsDataFrame or a SF object" = identical(class(shapefile)[1],"SpatialPolygonsDataFrame") |
-                identical(class(shapefile)[1],"sf"))
+  if (!is.null(shapefile))
+    stopifnot(
+      "shapefile must be a SpatialPolygonsDataFrame or a SF object" = identical(class(shapefile)[1], "SpatialPolygonsDataFrame") |
+        identical(class(shapefile)[1], "sf")
+    )
 
   #Check name input
-  if(!is.null(name)){
-    stopifnot("name must be characters" = identical(class(name),"character"))
+  if (!is.null(name)) {
+    stopifnot("name must be characters" = identical(class(name), "character"))
     stopifnot("Invalid storm name (storm not found)" = name %in% unlist(sts@names))
   }
 
   #Check grtc input
-  stopifnot("grtc must be numeric" = identical(class(grtc),"numeric"))
+  stopifnot("grtc must be numeric" = identical(class(grtc), "numeric"))
   stopifnot("grtc must contains an integer" = is_wholenumber(grtc))
 
   #Check xlim input
-  if(!is.null(xlim)){
-    stopifnot("xlim must be numeric" = identical(class(xlim),"numeric"))
+  if (!is.null(xlim)) {
+    stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
     xlim = xlim[order(xlim)]
-    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 & xlim <= 360)
+    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
+                xlim <= 360)
   }
 
   #Check ylim input
-  if(!is.null(ylim)){
-    stopifnot("ylim must be numeric" = identical(class(ylim),"numeric"))
+  if (!is.null(ylim)) {
+    stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
     ylim = ylim[order(ylim)]
-    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
+    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
+                ylim <= 90)
   }
 
   #Check logical inputs
-  stopifnot("all_basin must be logical" = identical(class(all_basin),"logical"))
-  stopifnot("legends must be logical" = identical(class(legends),"logical"))
-  stopifnot("labels must be logical" = identical(class(labels),"logical"))
-  stopifnot("loi must be logical" = identical(class(loi),"logical"))
+  stopifnot("all_basin must be logical" = identical(class(all_basin), "logical"))
+  stopifnot("legends must be logical" = identical(class(legends), "logical"))
+  stopifnot("labels must be logical" = identical(class(labels), "logical"))
+  stopifnot("loi must be logical" = identical(class(loi), "logical"))
 
   #Check labels inputs
   stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
@@ -230,108 +238,122 @@ plotStorms = function(sts,
 
   #Check on graticules
   l2 = log2(grtc)
-  if(!is_wholenumber(l2)){
-    grtc = 2**round(l2)
-    warning(paste("grtc is not a power of 2, set to",grtc))
+  if (!is_wholenumber(l2)) {
+    grtc = 2 ** round(l2)
+    warning(paste("grtc is not a power of 2, set to", grtc))
   }
 
 
 
   #Handle spatial extent
-  if(all_basin){
-      xmin = 150
-      xmax = 200
-      ymin = -30
-      ymax = -5
-      if(!is.null(xlim)){
-        warning("xlim ignored")
-      }
-      if(!is.null(xlim)){
-        warning("ylim ignored")
-      }
-  }else{
+  if (all_basin) {
+    xmin = 150
+    xmax = 200
+    ymin = -30
+    ymax = -5
+    if (!is.null(xlim)) {
+      warning("xlim ignored")
+    }
+    if (!is.null(xlim)) {
+      warning("ylim ignored")
+    }
+  } else{
     xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
     xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
     ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
     ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
-    if(!is.null(xlim)){
+    if (!is.null(xlim)) {
       xmin = xlim[1]
       xmax = xlim[2]
     }
-    if(!is.null(ylim)){
+    if (!is.null(ylim)) {
       ymin = ylim[1]
       ymax = ylim[2]
     }
   }
 
 
-  if(is.null(shapefile)){
+  if (is.null(shapefile)) {
     #Change map here to handle wrapping 0-360 in SWP Basin
     world = rworldmap::getMap(resolution = "high")
-    maps::map(world,
-        fill=TRUE,
-        col=ground_color,
-        bg=ocean_color,
-        wrap = c(0,360),
-        xlim = c(xmin,xmax),
-        ylim = c(ymin, ymax))
+    maps::map(
+      world,
+      fill = TRUE,
+      col = ground_color,
+      bg = ocean_color,
+      wrap = c(0, 360),
+      xlim = c(xmin, xmax),
+      ylim = c(ymin, ymax)
+    )
     maps::map.axes(cex.axis = 1)
-  }else{
-    plot(shapefile,
-         xlim = c(xmin,xmax),
-         ylim=c(ymin, ymax),
-         col= ground_color,
-         bg = ocean_color,
-         lwd = 1,
-         border = 1,
-         axes = T)
+  } else{
+    plot(
+      shapefile,
+      xlim = c(xmin, xmax),
+      ylim = c(ymin, ymax),
+      col = ground_color,
+      bg = ocean_color,
+      lwd = 1,
+      border = 1,
+      axes = T
+    )
   }
 
   #Add graticules
-  x.min = round(xmin/10)*10 - 20
-  x.max = round(xmax/10)*10 + 20
-  y.min = round(ymin/10)*10 - 20
-  y.max = round(ymax/10)*10 + 20
+  x.min = round(xmin / 10) * 10 - 20
+  x.max = round(xmax / 10) * 10 + 20
+  y.min = round(ymin / 10) * 10 - 20
+  y.max = round(ymax / 10) * 10 + 20
 
-  mapproj::map.grid(lim = c(x.min,x.max,y.min,y.max),
-           nx = abs(x.max-x.min)/10*grtc,
-           ny = abs(y.max-y.min)/10*grtc,
-           col = "blue",
-           labels = FALSE,
-           lty = 3)
+  mapproj::map.grid(
+    lim = c(x.min, x.max, y.min, y.max),
+    nx = abs(x.max - x.min) / 10 * grtc,
+    ny = abs(y.max - y.min) / 10 * grtc,
+    col = "blue",
+    labels = FALSE,
+    lty = 3
+  )
 
   #Plot track
-  if(is.null(name)){
+  if (is.null(name)) {
     lapply(sts@data, plot_track, all_basin)
-    if(labels)
+    if (labels)
       lapply(sts@data, plot_labels, by, pos)
-  }else{
-    plot_track(sts@data[[name]],all_basin)
-    if(labels)
-      plot_labels(sts@data[[name]],all_basin)
+  } else{
+    plot_track(sts@data[[name]], all_basin)
+    if (labels)
+      plot_labels(sts@data[[name]], all_basin)
   }
 
-  if(legends){
+  if (legends) {
     #l = expression(paste("m.s"^"-1"))
     #graphics::par(mar = c(5.1,4.1,4.1,3),xpd=TRUE)
-    graphics::legend(x = "bottomleft",
-                     legend = c("Tropical Depression (below 17 m/s)",
-                                "Tropical Storm (18 to 32 m/s)",
-                                "Category 1 (33 to 42 m/s)",
-                                "Category 2 (43 to 49 m/s)",
-                                "Category 3(50 to 58 m/s)",
-                                "Category 4 (58 to 70 m/s)",
-                                "Category 5 (70 m/s or higher)"),
-                     col = c("#00CCFF","#00CCCC","#FFFFB2","#FECC5C","#FD8D3C",
-                             "#F03B20","#BD0026"),
-                     pch = 19,
-                     cex = 0.6)
+    graphics::legend(
+      x = "bottomleft",
+      legend = c(
+        "Tropical Depression (below 17 m/s)",
+        "Tropical Storm (18 to 32 m/s)",
+        "Category 1 (33 to 42 m/s)",
+        "Category 2 (43 to 49 m/s)",
+        "Category 3(50 to 58 m/s)",
+        "Category 4 (58 to 70 m/s)",
+        "Category 5 (70 m/s or higher)"
+      ),
+      col = c(
+        "#00CCFF",
+        "#00CCCC",
+        "#FFFFB2",
+        "#FECC5C",
+        "#FD8D3C",
+        "#F03B20",
+        "#BD0026"
+      ),
+      pch = 19,
+      cex = 0.6
+    )
   }
 
 
-  if(loi)
-    plot(sts@spatial.loi.buffer, lwd = 2, add=T)
+  if (loi)
+    plot(sts@spatial.loi.buffer, lwd = 2, add = T)
 }
-
-
-

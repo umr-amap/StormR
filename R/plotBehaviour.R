@@ -2,6 +2,7 @@
 
 
 
+
 #' Plot a selected product (MSW, PDI ...) alongside with the track of a selected
 #' storm contained in object `sts`.
 #'
@@ -23,9 +24,7 @@ plotBehaviour = function(sts,
                          raster_product,
                          xlim = NULL,
                          ylim = NULL,
-                         mask = FALSE){
-
-
+                         mask = FALSE) {
   #Check sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -36,28 +35,30 @@ plotBehaviour = function(sts,
   name = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
   product = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
 
-  if(!(name %in% unlist(sts@names)))
+  if (!(name %in% unlist(sts@names)))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
 
   #Check xlim input
-  if(!is.null(xlim)){
-    stopifnot("xlim must be numeric" = identical(class(xlim),"numeric"))
+  if (!is.null(xlim)) {
+    stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
     xlim = xlim[order(xlim)]
-    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 & xlim <= 360)
+    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
+                xlim <= 360)
   }
 
   #Check ylim input
-  if(!is.null(ylim)){
-    stopifnot("ylim must be numeric" = identical(class(ylim),"numeric"))
+  if (!is.null(ylim)) {
+    stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
     ylim = ylim[order(ylim)]
-    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 & ylim <= 90)
+    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
+                ylim <= 90)
   }
 
   #Check mask input
-  stopifnot("mask must be logical" = identical(class(mask),"logical"))
+  stopifnot("mask must be logical" = identical(class(mask), "logical"))
 
 
   xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
@@ -65,56 +66,72 @@ plotBehaviour = function(sts,
   ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
   ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
 
-  if(!is.null(xlim)){
+  if (!is.null(xlim)) {
     xmin = xlim[1]
     xmax = xlim[2]
   }
-  if(!is.null(ylim)){
+  if (!is.null(ylim)) {
     ymin = ylim[1]
     ymax = ylim[2]
   }
 
-  if(mask){
+  if (mask) {
     v = terra::vect(sts@spatial.loi)
-    m = terra::rasterize(v,raster_product)
-    raster_product = terra::mask(raster_product,m)
+    m = terra::rasterize(v, raster_product)
+    raster_product = terra::mask(raster_product, m)
   }
 
-  plotStorms(sts, name = name, xlim = c(xmin,xmax), ylim = c(ymin,ymax))
+  plotStorms(
+    sts,
+    name = name,
+    xlim = c(xmin, xmax),
+    ylim = c(ymin, ymax)
+  )
 
 
-  if(product == "MSW"){
-    plot(raster_product,
-         col = rev(grDevices::heat.colors(50)),
-         xlim = c(xmin,xmax),
-         ylim = c(ymin,ymax),
-         alpha = 0.7,
-         axes = FALSE,
-         range = c(17,max(raster_product[],na.rm = T)),
-         add = T)
+  if (product == "MSW") {
+    plot(
+      raster_product,
+      col = rev(grDevices::heat.colors(50)),
+      xlim = c(xmin, xmax),
+      ylim = c(ymin, ymax),
+      alpha = 0.7,
+      axes = FALSE,
+      range = c(17, max(raster_product[], na.rm = T)),
+      add = T
+    )
 
-  }else if(product == "PDI"){
-    plot(raster_product,
-         col = rev(viridis::inferno(50)),
-         xlim = c(xmin,xmax),
-         ylim = c(ymin,ymax),
-         alpha = 0.7,
-         axes = FALSE,
-         range = c(17,max(raster_product[],na.rm = T)),
-         add = T)
-  }else if(product %in% c("Category1","Category2","Category3","Category4","Category5","Categories")){
-    plot(raster_product,
-         #col = rev(grDevices::heat.colors(50)),
-         col = rev(viridis::viridis(50)),
-         xlim = c(xmin,xmax),
-         ylim = c(ymin,ymax),
-         alpha = 0.7,
-         axes = FALSE,
-         add = T)
+  } else if (product == "PDI") {
+    plot(
+      raster_product,
+      col = rev(viridis::inferno(50)),
+      xlim = c(xmin, xmax),
+      ylim = c(ymin, ymax),
+      alpha = 0.7,
+      axes = FALSE,
+      range = c(17, max(raster_product[], na.rm = T)),
+      add = T
+    )
+  } else if (product %in% c("Category1",
+                            "Category2",
+                            "Category3",
+                            "Category4",
+                            "Category5",
+                            "Categories")) {
+    plot(
+      raster_product,
+      #col = rev(grDevices::heat.colors(50)),
+      col = rev(viridis::viridis(50)),
+      xlim = c(xmin, xmax),
+      ylim = c(ymin, ymax),
+      alpha = 0.7,
+      axes = FALSE,
+      add = T
+    )
   }
 
 
-  plot_track(sts@data[[name]],FALSE)
+  plot_track(sts@data[[name]], FALSE)
 
 
 }

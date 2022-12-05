@@ -2,6 +2,7 @@
 
 
 
+
 #' Write a SpatRast raster in the given format
 #'
 #' @param rast SpatRast object we wish to write
@@ -13,8 +14,10 @@
 #' @export
 #'
 #' @examples
-writeRast = function(rast, format = ".tiff", filename = "rast", path = "./"){
-
+writeRast = function(rast,
+                     format = ".tiff",
+                     filename = "rast",
+                     path = "./") {
   #Check rast input
   stopifnot("no data to write" = !missing(rast))
 
@@ -22,16 +25,16 @@ writeRast = function(rast, format = ".tiff", filename = "rast", path = "./"){
   stopifnot("Invalid format" = format %in% c(".tiff", ".nc"))
 
   #Check filename
-  stopifnot("filename must be characters" = identical(class(filename),"character"))
+  stopifnot("filename must be characters" = identical(class(filename), "character"))
 
   #Check path
-  stopifnot("path must be characters" = identical(class(path),"character"))
+  stopifnot("path must be characters" = identical(class(path), "character"))
 
 
-  f.name = paste(path,filename,format)
-  if(format == ".tiff"){
+  f.name = paste(path, filename, format)
+  if (format == ".tiff") {
     terra::writeRaster(rast, f.name, overwrite = TRUE)
-  }else if(format == "nc"){
+  } else if (format == "nc") {
     terra::writeCDF(rast, f.name, overwrite = TRUE)
   }
 }
