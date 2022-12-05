@@ -12,8 +12,8 @@
 #'
 #' @return NULL
 #' @export
-#'
-#' @examples
+
+
 writeRast = function(rast,
                      format = ".tiff",
                      filename = "rast",
