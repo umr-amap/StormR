@@ -88,6 +88,8 @@ plotBehaviour = function(sts,
     ylim = c(ymin, ymax)
   )
 
+  #Add title
+  graphics::title(paste0(name," ",sts@data[[name]]@season,": ", product))
 
   if (product == "MSW") {
     plot(
