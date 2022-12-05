@@ -2,14 +2,15 @@
 
 
 
+
 #' Get the radius of maximum wind speed according to Willoughby model
 #'
 #' @param w_max Maximum wind speed generated
 #' @param lat Latitude where `w_max` has occured
 #'
 #' @return radius of maximum wind speed (km)
-get_RMW = function(w_max,lat){
-  return (46.4 * exp(-0.0155*w_max + 0.0169*abs(lat)))
+get_RMW = function(w_max, lat) {
+  return (46.4 * exp(-0.0155 * w_max + 0.0169 * abs(lat)))
 }
 
 
@@ -22,22 +23,22 @@ get_RMW = function(w_max,lat){
 #' @return wind value according to the Willoughby model at distance `r` to the
 #'  center of the storm located in latitude `lat`
 
-Willoughby_cyc_profil = function(w_max, lat, r, rmw = NULL){
-
-  if(is.null(rmw)){
-    RMW = get_RMW(w_max,lat)
-  }else{
+Willoughby_cyc_profil = function(w_max, lat, r, rmw = NULL) {
+  if (is.null(rmw)) {
+    RMW = get_RMW(w_max, lat)
+  } else{
     RMW = rmw
   }
-  RMW = rep(RMW,length(r))
-  if(r >= RMW){
-    XX1 = 287.6 - 1.942 * w_max + 7.799 * log(RMW) +1.819 * abs(lat)
+  RMW = rep(RMW, length(r))
+  if (r >= RMW) {
+    XX1 = 287.6 - 1.942 * w_max + 7.799 * log(RMW) + 1.819 * abs(lat)
     XX2 = 25
-    AA = 0.5913 + 0.0029 * w_max - 0.1361 * log(RMW) -0.0042 * abs(lat)
-    Wr = w_max * ((1-AA) * exp(-abs((r-RMW)/XX1)) + AA * exp(-abs(r-RMW)/XX2))
-  }else{
+    AA = 0.5913 + 0.0029 * w_max - 0.1361 * log(RMW) - 0.0042 * abs(lat)
+    Wr = w_max * ((1 - AA) * exp(-abs((r - RMW) / XX1)) + AA * exp(-abs(r -
+                                                                          RMW) / XX2))
+  } else{
     nn = 2.1340 + 0.0077 * w_max - 0.4522 * log(RMW) - 0.0038 * abs(lat)
-    Wr = w_max*abs((r/RMW)^nn)
+    Wr = w_max * abs((r / RMW) ^ nn)
   }
 
 
@@ -82,8 +83,7 @@ stormBehaviour = function(sts,
                           space_res = 10,
                           time_res = 1,
                           verbose = FALSE,
-                          focus_loi = TRUE){
-
+                          focus_loi = TRUE) {
   #Check sts input
   stopifnot("no data found" = !missing(sts))
 
@@ -94,21 +94,20 @@ stormBehaviour = function(sts,
   stopifnot("Invalid method" = method %in% c("willoughby"))
 
   #Check space_res input
-  stopifnot("space_res must be numeric" = identical(class(space_res),"numeric"))
+  stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
   stopifnot("space_res must be as integer" = is_wholenumber(space_res))
   stopifnot("space_res must be positif" = space_res > 0)
 
   #Check time_res input
-  stopifnot("time_res must be numeric" = identical(class(time_res),"numeric"))
-  stopifnot("time_res must be as integer" = is_wholenumber(time_res))
-  stopifnot("time_res must be positif" = time_res > 0)
+  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
+  stopifnot("invalid time_res" = time_res %in% c(1, 0.75, 0.5, 0.25))
 
   #Check verbose input
-  stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
+  stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
 
   #Check focus_loi input
-  stopifnot("focus_loi must be logical" = identical(class(focus_loi),"logical"))
-  if(product == "PDI"){
+  stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
+  if (product == "PDI") {
     focus_loi = FALSE
     warning("focus_loi ignored and set to FALSE")
   }
@@ -120,231 +119,284 @@ stormBehaviour = function(sts,
   ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
   e <- terra::ext(xmin, xmax, ymin, ymax)
 
-  ras = terra::rast(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, vals=NA)
+  ras = terra::rast(
+    xmin = xmin,
+    xmax = xmax,
+    ymin = ymin,
+    ymax = ymax,
+    vals = NA
+  )
   #Projection in Mercator
-  ras = terra::project(ras,"EPSG:3857")
+  ras = terra::project(ras, "EPSG:3857")
   #Resample in new resolution in Mercator
   ras.template = ras
-  terra::res(ras.template) = space_res*1000
-  ras.template <- terra::resample(ras,ras.template)
+  terra::res(ras.template) = space_res * 1000
+  ras.template <- terra::resample(ras, ras.template)
   #Reprojection in lon/lat
-  ras.template = terra::project(ras.template,"EPSG:4326")
+  ras.template = terra::project(ras.template, "EPSG:4326")
   #Handling time line crossing
   ras.template = terra::crop(ras.template, e)
-  ras.template = terra::extend(ras.template,e)
+  ras.template = terra::extend(ras.template, e)
 
 
-  product.stack = c()
+  final.stack = c()
   s = 1
 
-  for(st in sts@data){
-
-    product.raster = ras.template
-
-    if(focus_loi){
+  for (st in sts@data) {
+    if (focus_loi) {
       #Use observations within the loi for the computations
-      ind = seq(st@obs[1],st@obs[st@numobs],1)
+      ind = seq(st@obs[1], st@obs[st@numobs], 1)
 
       #Handling indices and offset
-      if(st@obs[1] >= 3){
+      if (st@obs[1] >= 3) {
         ind = c(st@obs[1] - 2, st@obs[1] - 1, ind)
-      }else if(st@obs[1] == 2){
+      } else if (st@obs[1] == 2) {
         ind = c(st@obs[1] - 1, ind)
       }
 
-      if(st@obs[st@numobs] <= st@numobs.all - 2){
+      if (st@obs[st@numobs] <= st@numobs.all - 2) {
         ind = c(ind, st@obs[st@numobs] + 1, st@obs[st@numobs] + 2)
-      }else if(st@obs[st@numobs] == st@numobs.all - 1){
+      } else if (st@obs[st@numobs] == st@numobs.all - 1) {
         ind = c(ind, st@obs[st@numobs] + 1)
       }
-    }else{
+    } else{
       #Use all observations available for the computations
-      ind = seq(1,st@numobs.all,1)
+      ind = seq(1, st@numobs.all, 1)
     }
 
 
     #Get all variables and remove NAs
-    dat = data.frame(lon = st@obs.all$lon[ind],
-                     lat = st@obs.all$lat[ind],
-                     msw = zoo::na.approx(st@obs.all$wind[ind],rule = 2),
-                     rmw = st@obs.all$rmw[ind]
-                     )
-    dat = dat[stats::complete.cases(dat),]
+    dat = data.frame(
+      lon = st@obs.all$lon[ind],
+      lat = st@obs.all$lat[ind],
+      msw = zoo::na.approx(st@obs.all$wind[ind], rule = 2),
+      rmw = st@obs.all$rmw[ind]
+    )
+    dat = dat[stats::complete.cases(dat), ]
 
+
+    #Interpolated time step dt, default value dt = 4 --> 1h
+    dt = 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Compute number of steps
     last.obs = dim(dat)[1]
-    nb.steps = 4*(last.obs-1) - (last.obs-2)
+    nb.steps = dt * (last.obs - 1) - (last.obs - 2)
     n = 1
-    aux.stack = c()
 
-    if(verbose){
-      cat(st@name,"-",product,"-",method,"(",s,"/",sts@nb.storms,")\n")
+
+    if (verbose) {
+      cat(st@name,
+          "-",
+          product,
+          "-",
+          method,
+          "(",
+          s,
+          "/",
+          sts@nb.storms,
+          ")\n")
       pb = utils::txtProgressBar(min = 1,
-                                 max = last.obs-1,
+                                 max = last.obs - 1,
                                  style = 3)
     }
 
+    aux.stack = c()
     #For every general 3H time step j
-    for(j in 1:(last.obs-1)){
+    for (j in 1:(last.obs - 1)) {
 
-        #Interpolated time step dt, default value dt = 1*3 --> 1h
-        dt = 1 + (time_res * 3) #+ 1 for the limit values
-        longitude = rep(NA,dt);
-        longitude[1] = dat$lon[j];
-        longitude[dt] = dat$lon[j+1];
-        longitude = zoo::na.approx(longitude)
+      longitude = rep(NA, dt)
+      longitude[1] = dat$lon[j]
+      longitude[dt] = dat$lon[j + 1]
+      longitude = zoo::na.approx(longitude)
 
-        latitude = rep(NA,dt)
-        latitude[1] = dat$lat[j]
-        latitude[dt] = dat$lat[j+1]
-        latitude = zoo::na.approx(latitude)
+      latitude = rep(NA, dt)
+      latitude[1] = dat$lat[j]
+      latitude[dt] = dat$lat[j + 1]
+      latitude = zoo::na.approx(latitude)
 
-        wind = rep(NA,dt)
-        wind[1] = dat$msw[j]
-        wind[dt] = dat$msw[j+1]
-        wind = zoo::na.approx(wind)
+      wind = rep(NA, dt)
+      wind[1] = dat$msw[j]
+      wind[dt] = dat$msw[j + 1]
+      wind = zoo::na.approx(wind)
 
-        if(use_rmw){
-          radius = rep(NA,dt)
-          radius[1] = dat$rmw[j]
-          radius[dt] = dat$rmw[j+1]
-          radius = zoo::na.approx(radius)
-        }else{
-          radius = NULL
+      if (use_rmw) {
+        radius = rep(NA, dt)
+        radius[1] = dat$rmw[j]
+        radius[dt] = dat$rmw[j + 1]
+        radius = zoo::na.approx(radius)
+      } else{
+        radius = NULL
+      }
+
+      #Compute velocity of storm (deg/h)
+      vx.deg = (dat$lon[j + 1] - dat$lon[j]) / 3
+      vy.deg = (dat$lat[j + 1] - dat$lat[j]) / 3
+      N = sqrt(vx.deg ** 2 + vy.deg ** 2)
+
+      #(km/h)
+      vx.km = vx.deg * space_res / terra::res(ras.template)[1]
+      vy.km = vy.deg * space_res / terra::res(ras.template)[2]
+      Nv = sqrt(vx.km ** 2 + vy.km ** 2)
+
+
+      #For every interpolated time steps dt
+      for (i in 1:dt) {
+        if (i == dt & j != last.obs - 1)
+          break #avoid redondance
+
+        raster.msw = ras.template
+        #distances to the eye of the storm in km
+        dist.km = terra::distance(
+          x = terra::crds(raster.msw, na.rm = FALSE)[, ],
+          y = cbind(longitude[i], latitude[i]),
+          lonlat = T
+        ) * 0.001
+
+        if (method == "willoughby") {
+          #Compute willoughby raster
+          terra::values(raster.msw) = Willoughby(
+            w_max = wind[i],
+            lat = latitude[i],
+            r = dist.km,
+            rmw = radius[i]
+          )
         }
 
-        #Compute velocity of storm (deg/h)
-        vx.deg = (dat$lon[j+1] - dat$lon[j]) / 3
-        vy.deg = (dat$lat[j+1] - dat$lat[j]) / 3
-        N = sqrt(vx.deg**2+vy.deg**2)
-
-        #(km/h)
-        vx.km = vx.deg * space_res / terra::res(ras.template)[1]
-        vy.km = vy.deg * space_res / terra::res(ras.template)[2]
-        Nv = sqrt(vx.km**2+vy.km**2)
-
-
-        #For every interpolated time steps dt
-        for(i in 1:dt){
-
-          if(i == dt & j != last.obs-1)
-            break #avoid redondance
-
-          raster.msw = ras.template
-          #distances to the eye of the storm in km
-          dist.km = terra::distance(x = terra::crds(raster.msw, na.rm = FALSE)[,],
-                                    y = cbind(longitude[i],latitude[i]),
-                                    lonlat = T) * 0.001
-
-          if(method == "willoughby"){
-            #Compute willoughby raster
-            terra::values(raster.msw) = Willoughby(w_max = wind[i],
-                                                   lat = latitude[i],
-                                                   r = dist.km,
-                                                   rmw = radius[i])
-          }
-
-          #Add asymmetry
-          if(asymmetry){
-            x = (terra::crds(raster.msw, na.rm = FALSE)[,1] - longitude[i])
-            y = (terra::crds(raster.msw, na.rm = FALSE)[,2] - latitude[i])
-            r = sqrt(x**2+y**2)
-            raster.theta = ras.template
-            terra::values(raster.theta) = acos((y * vx.deg + -x * vy.deg)/(N*r))
-            terra::values(raster.msw) = terra::values(raster.msw) +
-              cos(terra::values(raster.theta))*(Nv/3.6)
-          }
-
-          if(product == "Category"){
-            r = product.raster
-            ind = which(terra::values(raster.msw) >= 32 & terra::values(raster.msw) <= 42)
-            r[ind] = 1
-            aux.stack = c(aux.stack,r)
-            r = product.raster
-            ind = which(terra::values(raster.msw) >= 43 & terra::values(raster.msw) <= 49)
-            r[ind] = 1
-            aux.stack = c(aux.stack,r)
-            r = product.raster
-            ind = which(terra::values(raster.msw) >= 50 & terra::values(raster.msw) <= 57)
-            r[ind] = 1
-            aux.stack = c(aux.stack,r)
-            r = product.raster
-            ind = which(terra::values(raster.msw) >= 58 & terra::values(raster.msw) <= 69)
-            r[ind] = 1
-            aux.stack = c(aux.stack,r)
-            r = product.raster
-            ind = which(terra::values(raster.msw) >= 70)
-            r[ind] = 1
-            aux.stack = c(aux.stack,r)
-          }else{
-            aux.stack = c(aux.stack,raster.msw)
-          }
-
-          n = n+1
+        #Add asymmetry
+        if (asymmetry) {
+          x = (terra::crds(raster.msw, na.rm = FALSE)[, 1] - longitude[i])
+          y = (terra::crds(raster.msw, na.rm = FALSE)[, 2] - latitude[i])
+          r = sqrt(x ** 2 + y ** 2)
+          raster.theta = ras.template
+          terra::values(raster.theta) = acos((y * vx.deg+-x * vy.deg) /
+                                               (N * r))
+          terra::values(raster.msw) = terra::values(raster.msw) +
+            cos(terra::values(raster.theta)) * (Nv / 3.6)
         }
-        if(verbose)
-          utils::setTxtProgressBar(pb, j)
+
+        if (product == "Category") {
+          r = ras.template
+          ind = which(terra::values(raster.msw) >= 32 &
+                        terra::values(raster.msw) <= 42)
+          r[ind] = 1
+          aux.stack = c(aux.stack, r)
+          r = ras.template
+          ind = which(terra::values(raster.msw) >= 43 &
+                        terra::values(raster.msw) <= 49)
+          r[ind] = 1
+          aux.stack = c(aux.stack, r)
+          r = ras.template
+          ind = which(terra::values(raster.msw) >= 50 &
+                        terra::values(raster.msw) <= 57)
+          r[ind] = 1
+          aux.stack = c(aux.stack, r)
+          r = ras.template
+          ind = which(terra::values(raster.msw) >= 58 &
+                        terra::values(raster.msw) <= 69)
+          r[ind] = 1
+          aux.stack = c(aux.stack, r)
+          r = ras.template
+          ind = which(terra::values(raster.msw) >= 70)
+          r[ind] = 1
+          aux.stack = c(aux.stack, r)
+        } else{
+          aux.stack = c(aux.stack, raster.msw)
+        }
+
+        n = n + 1
+      }
+      if (verbose)
+        utils::setTxtProgressBar(pb, j)
     }
 
-    if(verbose)
+    if (verbose)
       close(pb)
 
     aux.stack = terra::rast(aux.stack)
-    if(product == "MSW"){
+    product.raster = ras.template
+
+    if (product == "MSW") {
       #Compute msw raster
       product.raster = max(aux.stack, na.rm = T)
       #Apply focal function twice to smooth results
-      product.raster = terra::focal(product.raster, w=matrix(1,3,3), max, na.rm = T, pad=T)
-      product.raster = terra::focal(product.raster, w=matrix(1,3,3), mean, na.rm = T, pad=T)
-      names(product.raster) = paste0(st@name,"_",product)
-      product.stack = c(product.stack, product.raster)
-    }else if(product == "PDI"){
+      product.raster = terra::focal(
+        product.raster,
+        w = matrix(1, 3, 3),
+        max,
+        na.rm = T,
+        pad = T
+      )
+      product.raster = terra::focal(
+        product.raster,
+        w = matrix(1, 3, 3),
+        mean,
+        na.rm = T,
+        pad = T
+      )
+      names(product.raster) = paste0(st@name, "_", product)
+      final.stack = c(final.stack, product.raster)
+
+    } else if (product == "PDI") {
       #Raising to power 3
-      aux.stack = aux.stack^3
-      #Apply surface drag coefficient
+      aux.stack = aux.stack ^ 3
+      #Apply both rho and surface drag coefficient
       rho = 0.001
       Cd = 2.6 * 0.001
       aux.stack = aux.stack * rho * Cd
       #Integrating over the whole track
-      product.raster = sum(aux.stack, na.rm = T)
+      product.raster = sum(aux.stack, na.rm = T) * time_res
       #Apply focal function to smooth results
-      product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
-      names(product.raster) = paste0(st@name,"_",product)
-      product.stack = c(product.stack, product.raster)
-    }else if(product == "Category"){
-      #Compute Category 1 raster
+      product.raster = terra::focal(
+        product.raster,
+        w = matrix(1, 3, 3),
+        sum,
+        na.rm = T,
+        pad = T
+      )
+      names(product.raster) = paste0(st@name, "_", product)
+      final.stack = c(final.stack, product.raster)
+
+    } else if (product == "Category") {
+      #For each category in SSHS
       ras_c = c()
-      for(i in c(1,2,3,4,0)){
-        ind = which(seq(1,terra::nlyr(aux.stack)) %% 5 == i)
-        product.raster = sum(terra::subset(aux.stack,ind), na.rm = T)
+      for (i in c(1, 2, 3, 4, 0)) {
+        ind = which(seq(1, terra::nlyr(aux.stack)) %% 5 == i)
+        #Integrating over the whole track
+        product.raster = sum(terra::subset(aux.stack, ind), na.rm = T) * time_res
         #Apply focal function to smooth results
-        product.raster = terra::focal(product.raster, w=matrix(1,3,3), sum, na.rm = T, pad=T)
-        if(i == 0)
+        product.raster = terra::focal(
+          product.raster,
+          w = matrix(1, 3, 3),
+          sum,
+          na.rm = T,
+          pad = T
+        )
+        if (i == 0)
           i = 5
-        names(product.raster) = paste0(st@name,"_",product,i)
-        product.stack = c(product.stack, product.raster)
-        ras_c = c(ras_c,product.raster)
+        names(product.raster) = paste0(st@name, "_", product, i)
+        final.stack = c(final.stack, product.raster)
+        ras_c = c(ras_c, product.raster)
+
+
       }
       #Add all categories
       ras_c = terra::rast(ras_c)
-      ras_c = sum(ras_c,na.rm = T)
-      names(ras_c) = paste0(st@name,"_Categories")
-      product.stack = c(product.stack, ras_c)
+      ras_c = sum(ras_c, na.rm = T)
+      names(ras_c) = paste0(st@name, "_Categories")
+      final.stack = c(final.stack, ras_c)
     }
 
-    product.stack = terra::rast(product.stack)
-    if(focus_loi){
+    final.stack = terra::rast(final.stack)
+
+    if (focus_loi) {
+      #Mask the stack to fit loi buffer
       v = terra::vect(sts@spatial.loi.buffer)
-      m = terra::rasterize(v,product.raster)
-      product.stack = terra::mask(product.stack,m)
+      m = terra::rasterize(v, product.raster)
+      final.stack = terra::mask(final.stack, m)
     }
 
-
-    s = s+1
+    s = s + 1
   }
 
-  return(product.stack)
+  return(final.stack)
 }
-
-
