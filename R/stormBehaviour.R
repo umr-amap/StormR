@@ -312,6 +312,16 @@ stormBehaviour = function(sts,
           aux.stack = c(aux.stack, raster.msw)
         }
 
+
+        if (product == "PDI") {
+          Cd = ras.template
+          ind1 = terra::values(raster.msw) <= 31.5
+          ind2 = terra::values(raster.msw) > 31.5
+          terra::values(Cd)[ind1] = (0.8 + 0.06 * terra::values(raster.msw)[ind1]) * 0.001
+          terra::values(Cd)[ind2] = (0.55 + 2.97 * (terra::values(raster.msw)[ind2] /31.5)
+                                     - 1.49 * (terra::values(raster.msw)[ind2] / 31.5) ** 2) * 0.001
+        }
+
         n = n + 1
       }
       if (verbose)
@@ -350,7 +360,6 @@ stormBehaviour = function(sts,
       aux.stack = aux.stack ^ 3
       #Apply both rho and surface drag coefficient
       rho = 0.001
-      Cd = 2.6 * 0.001
       aux.stack = aux.stack * rho * Cd
       #Integrating over the whole track
       product.raster = sum(aux.stack, na.rm = T) * time_res
