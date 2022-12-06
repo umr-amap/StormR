@@ -305,6 +305,7 @@ plotStorms = function(sts,
   y.min = round(ymin / 10) * 10 - 20
   y.max = round(ymax / 10) * 10 + 20
 
+  #Plot map
   mapproj::map.grid(
     lim = c(x.min, x.max, y.min, y.max),
     nx = abs(x.max - x.min) / 10 * grtc,
@@ -313,6 +314,10 @@ plotStorms = function(sts,
     labels = FALSE,
     lty = 3
   )
+
+  #Plot loi
+  if (loi)
+    plot(sts@spatial.loi.buffer, lwd = 2, add = T)
 
   #Plot track
   if (is.null(name)) {
@@ -326,18 +331,16 @@ plotStorms = function(sts,
   }
 
   if (legends) {
-    #l = expression(paste("m.s"^"-1"))
-    #graphics::par(mar = c(5.1,4.1,4.1,3),xpd=TRUE)
     graphics::legend(
       x = "bottomleft",
       legend = c(
-        "Tropical Depression (below 17 m/s)",
-        "Tropical Storm (18 to 32 m/s)",
-        "Category 1 (33 to 42 m/s)",
-        "Category 2 (43 to 49 m/s)",
-        "Category 3(50 to 58 m/s)",
-        "Category 4 (58 to 70 m/s)",
-        "Category 5 (70 m/s or higher)"
+        expression(paste("Tropical Depression (below 17 m.s" ^ "-1)")),
+        expression(paste("Tropical Storm (18 to 32 m.s" ^ "-1)")),
+        expression(paste("Category 1 (33 to 42 m.s" ^ "-1)")),
+        expression(paste("Category 2 (43 to 49 m.s" ^ "-1)")),
+        expression(paste("Category 3 (50 to 58 m.s" ^ "-1)")),
+        expression(paste("Category 4 (58 to 70 m.s" ^ "-1)")),
+        expression(paste("Category 5 (70 m.s" ^ "-1","and higher))"))
       ),
       col = c(
         "#00CCFF",
@@ -353,7 +356,6 @@ plotStorms = function(sts,
     )
   }
 
-
-  if (loi)
-    plot(sts@spatial.loi.buffer, lwd = 2, add = T)
 }
+
+
