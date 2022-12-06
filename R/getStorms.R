@@ -103,8 +103,6 @@ getStorms <- function(time_period = c(1980, 2022),
   stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
   stopifnot("lower bound of time range is not valid" = time_period > 1979)
   stopifnot("upper bound of time range is not valid" = time_period < 2023)
-
-  time_period = as.integer(time_period)
   o = order(time_period)
   time_period = time_period[o]
 
@@ -170,7 +168,7 @@ getStorms <- function(time_period = c(1980, 2022),
   file_name = paste0("./inst/extdata/IBTrACS.SP.v04r00.nc")
   TC_data_base = ncdf4::nc_open(file_name)
   cyclonic_seasons = ncdf4::ncvar_get(TC_data_base, "season")
-
+  #TC_data_base = data(TC_data_base)
 
   if (verbose)
     cat("Identification Storms: ")
@@ -282,7 +280,10 @@ getStorms <- function(time_period = c(1980, 2022),
     ind = which(sf::st_intersects(pts, loi.sf.buffer,
                                   sparse = FALSE) == TRUE)
 
-    if (length(ind) > 0) {
+    #Check if storm is not NOT_NAMED
+    name.storm = ncdf4::ncvar_get(TC_data_base, "name")[i]
+
+    if (length(ind) > 0 & name.storm != "NOT_NAMED") {
       sts@nb.storms = sts@nb.storms + 1
 
       #offset 1 obs before the loi
@@ -294,7 +295,7 @@ getStorms <- function(time_period = c(1980, 2022),
 
 
       storm = Storm()
-      storm@name = ncdf4::ncvar_get(TC_data_base, "name")[i]
+      storm@name = name.storm
       storm@sid = ncdf4::ncvar_get(TC_data_base, "sid")[i]
       storm@season = ncdf4::ncvar_get(TC_data_base, "season")[i]
       storm@numobs.all = numobs
