@@ -89,10 +89,12 @@ plotBehaviour = function(sts,
   )
 
   #Add title
-  graphics::title(paste0(name," ",sts@data[[name]]@season,": ", product))
+  graphics::title(paste0(name,"\t",sts@data[[name]]@season))
+
+
 
   if (product == "MSW") {
-    plot(
+    m = plot(
       raster_product,
       col = rev(grDevices::heat.colors(50)),
       xlim = c(xmin, xmax),
@@ -100,11 +102,19 @@ plotBehaviour = function(sts,
       alpha = 0.7,
       axes = FALSE,
       range = c(17, max(raster_product[], na.rm = T)),
-      add = T
+      legend = T,
+      plg = list(
+        title = expression(paste("MSW (m.s" ^ "-1)")),
+        title.cex = 0.9,
+        cex = 0.7,
+        shrink = 0
+      ),
+      add = T,
     )
+    #axis(side = 4, at = 10, labels = expression(paste("MSW (m.s"^"-1)")))
 
   } else if (product == "PDI") {
-    plot(
+    m = plot(
       raster_product,
       col = rev(viridis::inferno(50)),
       xlim = c(xmin, xmax),
@@ -112,6 +122,12 @@ plotBehaviour = function(sts,
       alpha = 0.7,
       axes = FALSE,
       range = c(17, max(raster_product[], na.rm = T)),
+      plg = list(
+        title = expression(paste("PDI")),
+        title.cex = 0.9,
+        cex = 0.7,
+        shrink = 0
+      ),
       add = T
     )
   } else if (product %in% c("Category1",
@@ -120,7 +136,7 @@ plotBehaviour = function(sts,
                             "Category4",
                             "Category5",
                             "Categories")) {
-    plot(
+    m = plot(
       raster_product,
       #col = rev(grDevices::heat.colors(50)),
       col = rev(viridis::viridis(50)),
@@ -128,6 +144,12 @@ plotBehaviour = function(sts,
       ylim = c(ymin, ymax),
       alpha = 0.7,
       axes = FALSE,
+      plg = list(
+        title = expression(paste("Time spent (h)")),
+        title.cex = 0.9,
+        cex = 0.7,
+        shrink = 0
+      ),
       add = T
     )
   }
