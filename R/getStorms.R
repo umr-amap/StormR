@@ -89,6 +89,8 @@ Storms <- methods::setClass(
 #' buffer to generate `spatail.poly.buffer`. Default value is set to 300km.
 #' @param verbose Logical, whether or not the function must be verbose. Default
 #' value is set to `FALSE`
+#' @param remove_weak_TC Logical, whether or not to remove TC under category 1 in
+#' the sshs scale. Default value is set to TRUE.
 #'
 #' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
@@ -97,7 +99,8 @@ getStorms <- function(time_period = c(1980, 2022),
                       name = NULL,
                       loi = "SP",
                       max_dist = 300,
-                      verbose = FALSE) {
+                      verbose = FALSE,
+                      remove_weak_TC = TRUE) {
   #Check time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
   stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
@@ -280,9 +283,17 @@ getStorms <- function(time_period = c(1980, 2022),
     ind = which(sf::st_intersects(pts, loi.sf.buffer,
                                   sparse = FALSE) == TRUE)
 
-    #Check if storm is not NOT_NAMED
+    #To check if storm is not NOT_NAMED
     name.storm = ncdf4::ncvar_get(TC_data_base, "name")[i]
 
+    #To check if sshs is over categoy 1 in case remove_weak_TC == T
+    sshs = ncdf4::ncvar_get(TC_data_base, "usa_sshs")[1:numobs, i]
+
+    if (remove_weak_TC & max(sshs,na.rm = T) < 1) {
+      ind = NULL
+    }
+
+    #Add TC only if it intersect the LOI or it is not 'NOT_NAMED'
     if (length(ind) > 0 & name.storm != "NOT_NAMED") {
       sts@nb.storms = sts@nb.storms + 1
 
@@ -307,7 +318,7 @@ getStorms <- function(time_period = c(1980, 2022),
         lat = ncdf4::ncvar_get(TC_data_base, "usa_lat")[1:numobs, i],
         wind = ncdf4::ncvar_get(TC_data_base, "usa_wind")[1:numobs, i] * 0.514,
         rmw = ncdf4::ncvar_get(TC_data_base, "usa_rmw")[1:numobs, i],
-        sshs = ncdf4::ncvar_get(TC_data_base, "usa_sshs")[1:numobs, i],
+        sshs = sshs,
         speed = ncdf4::ncvar_get(TC_data_base, "storm_speed")[1:numobs, i] * 0.514
       )
 
