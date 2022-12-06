@@ -355,6 +355,7 @@ stormBehaviour = function(sts,
       names(product.raster) = paste0(st@name, "_", product)
       final.stack = c(final.stack, product.raster)
 
+
     } else if (product == "PDI") {
       #Raising to power 3
       aux.stack = aux.stack ^ 3
@@ -404,16 +405,18 @@ stormBehaviour = function(sts,
       final.stack = c(final.stack, ras_c)
     }
 
-    final.stack = terra::rast(final.stack)
-
-    if (focus_loi) {
-      #Mask the stack to fit loi buffer
-      v = terra::vect(sts@spatial.loi.buffer)
-      m = terra::rasterize(v, product.raster)
-      final.stack = terra::mask(final.stack, m)
-    }
 
     s = s + 1
+  }
+
+  final.stack = terra::rast(final.stack)
+
+
+  if (focus_loi) {
+    #Mask the stack to fit loi buffer
+    v = terra::vect(sts@spatial.loi.buffer)
+    m = terra::rasterize(v, product.raster)
+    final.stack = terra::mask(final.stack, m)
   }
 
   return(final.stack)
