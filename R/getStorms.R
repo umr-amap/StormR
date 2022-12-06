@@ -163,6 +163,12 @@ getStorms <- function(time_period = c(1980, 2022),
   stopifnot("max_dist must be numeric " = identical(class(max_dist), "numeric"))
   stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
 
+  #Check verbose input
+  stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
+
+  #Check remove_weak_TC input
+  stopifnot("verbose must be logical" = identical(class(remove_weak_TC), "logical"))
+
 
   #Open data_base
   ############################################################
