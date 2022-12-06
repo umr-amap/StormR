@@ -327,7 +327,7 @@ plotStorms = function(sts,
   } else{
     plot_track(sts@data[[name]], all_basin)
     if (labels)
-      plot_labels(sts@data[[name]], all_basin)
+      plot_labels(sts@data[[name]], by, pos)
   }
 
   if (legends) {
