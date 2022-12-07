@@ -152,7 +152,8 @@ plot_labels = function(storm, by, pos) {
 #' @param labels Logical, wether or not to plot ISO_time and name labels for the
 #' first and the last observation of each storms within the loi. Default value
 #' is set to FALSE.
-#' @param by number, increment of the sequence for the labels to plot
+#' @param by number, increment of the sequence for the labels to plot. Default value
+#' is set to 8 which represents a 24h time interval
 #' @param pos number between 1 and 4, position for the labels to plot: up, left,
 #' down, right
 #' @param legends Logical, wether or not to plot legends for the
@@ -177,7 +178,7 @@ plotStorms = function(sts,
                       ocean_color = "white",
                       all_basin = FALSE,
                       labels = FALSE,
-                      by = 4,
+                      by = 8,
                       pos = 3,
                       legends = FALSE,
                       loi = TRUE,
