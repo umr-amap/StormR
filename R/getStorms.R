@@ -126,6 +126,7 @@ getStorms <- function(time_period = c(1980, 2022),
   #Check loi input
   loi.is.basin = FALSE
   if (!is.character(loi)) {
+    #loi should be either SpatialPolygon, or sf or points coordinates
     if (identical(class(loi), c("SpatialPolygons"))) {
       loi.id = "SpatialPolygons"
     } else if (identical(class(loi), c("sf", "data.frame"))) {
@@ -140,6 +141,7 @@ getStorms <- function(time_period = c(1980, 2022),
       stop("invalid class for loi")
     }
   } else{
+    #loi is a character that represents either a country or a basin
     stopifnot("loi must be length 1 " = length(loi) == 1)
     if (loi == "SP") {
       #Focus on South Pacific Ocean
@@ -177,10 +179,10 @@ getStorms <- function(time_period = c(1980, 2022),
   file_name = paste0("./inst/extdata/IBTrACS.SP.v04r00.nc")
   TC_data_base = ncdf4::nc_open(file_name)
   cyclonic_seasons = ncdf4::ncvar_get(TC_data_base, "season")
-  #TC_data_base = data(TC_data_base)
+
 
   if (verbose)
-    cat("Identification Storms: ")
+    cat("Identification of Storms: ")
   #Retrieving the matching indices, handling time_period and name
   if (!is.null(name)) {
     #we are interested in one or several storms
@@ -202,17 +204,15 @@ getStorms <- function(time_period = c(1980, 2022),
       #we are interested in successive cyclonic seasons
       indices = seq(
         from = which(cyclonic_seasons == time_period[1])[1],
-        to = utils::tail(which(cyclonic_seasons == time_period[2]), 1)
+        to = utils::tail(which(cyclonic_seasons == time_period[2]),
+        by = 1)
       )
     }
   }
 
   if (verbose)
-    cat("Done\n")
+    cat("Done\n Make buffer: ")
 
-
-  if (verbose)
-    cat("Make buffer: ")
 
   #Handle loi
   if (loi.id == "Coordinates") {
@@ -263,8 +263,8 @@ getStorms <- function(time_period = c(1980, 2022),
   sts@nb.storms = 0
   sts@buffer = max_dist
   storm.list = list()
-  k = 2
-  count = 0
+  k = 2 #init line type
+  count = 0 #init count for progression bar
 
 
   if (verbose) {
@@ -285,31 +285,24 @@ getStorms <- function(time_period = c(1980, 2022),
     sf::st_crs(pts) = 4326
 
 
-    #which coordinates are within loi.sf
+    #which coordinates are within loi.sf.buffer
     ind = which(sf::st_intersects(pts, loi.sf.buffer,
                                   sparse = FALSE) == TRUE)
 
-    #To check if storm is not NOT_NAMED
+    #to check if storm is not NOT_NAMED
     name.storm = ncdf4::ncvar_get(TC_data_base, "name")[i]
 
-    #To check if sshs is over categoy 1 in case remove_weak_TC == T
+    #to check if sshs is over categoy 1 in case remove_weak_TC == T
     sshs = ncdf4::ncvar_get(TC_data_base, "usa_sshs")[1:numobs, i]
 
     if (remove_weak_TC & max(sshs,na.rm = T) < 1) {
+      #it is a TC below category 1, thus we do not consider it
       ind = NULL
     }
 
     #Add TC only if it intersect the LOI or it is not 'NOT_NAMED'
     if (length(ind) > 0 & name.storm != "NOT_NAMED") {
       sts@nb.storms = sts@nb.storms + 1
-
-      #offset 1 obs before the loi
-      if (ind[1] != 1)
-        ind = c(ind[1] - 1, ind)
-      if (ind[length(ind)] != numobs)
-        ind = c(ind, ind[length(ind)] + 1)
-
-
 
       storm = Storm()
       storm@name = name.storm
@@ -328,9 +321,10 @@ getStorms <- function(time_period = c(1980, 2022),
         speed = ncdf4::ncvar_get(TC_data_base, "storm_speed")[1:numobs, i] * 0.514
       )
 
-
+      #wrap longitudes -180/180 to 0/360
       lg = which(storm@obs.all$lon < 0)
       storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
+
       storm@obs = ind
       storm@numobs = length(ind)
       storm@lty.track = k
