@@ -11,7 +11,8 @@
 #' @param lat Latitude where `w_max` has occured
 #'
 #' @return radius of maximum wind speed (km)
-get_RMW = function(w_max, lat) {
+get_RMW = function(w_max,
+                   lat) {
   return (46.4 * exp(-0.0155 * w_max + 0.0169 * abs(lat)))
 }
 
@@ -25,7 +26,10 @@ get_RMW = function(w_max, lat) {
 #' @return wind value according to the Willoughby model at distance `r` to the
 #'  center of the storm located in latitude `lat`
 
-Willoughby_profil = function(w_max, lat, r, rmw = NULL) {
+Willoughby_profil = function(w_max,
+                             lat,
+                             r,
+                             rmw = NULL) {
   if (is.null(rmw)) {
     RMW = get_RMW(w_max, lat)
   } else{
@@ -36,15 +40,15 @@ Willoughby_profil = function(w_max, lat, r, rmw = NULL) {
     XX1 = 287.6 - 1.942 * w_max + 7.799 * log(RMW) + 1.819 * abs(lat)
     XX2 = 25
     AA = 0.5913 + 0.0029 * w_max - 0.1361 * log(RMW) - 0.0042 * abs(lat)
-    Wr = w_max * ((1 - AA) * exp(-abs((r - RMW) / XX1)) + AA * exp(-abs(r -
+    Vr = w_max * ((1 - AA) * exp(-abs((r - RMW) / XX1)) + AA * exp(-abs(r -
                                                                           RMW) / XX2))
   } else{
     nn = 2.1340 + 0.0077 * w_max - 0.4522 * log(RMW) - 0.0038 * abs(lat)
-    Wr = w_max * abs((r / RMW) ^ nn)
+    Vr = w_max * abs((r / RMW) ^ nn)
   }
 
 
-  return(Wr)
+  return(Vr)
 }
 
 #Vectorize version of the above model
@@ -62,21 +66,26 @@ Willoughby <- Vectorize(Willoughby_profil, vectorize.args = "r")
 #' @param b Scaling factor
 #' @return wind value according to the Holland 80 at distance `r` to the
 #'  center of the storm
-Holland80_profil = function(r, rmw, pres, poci, lat, b = 1.3){
+Holland80_profil = function(r,
+                            rmw,
+                            pres,
+                            poci,
+                            lat,
+                            b = 1.3){
 
   r = r
   rmw = rmw
   a = rmw**b
-  rho = 1.15 #air densiy
+  rho = 1.15 * 1/10**(-9) #air densiy
   f = 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
 
   if(r <= rmw){
-    Wr = (a*b*(poci - pres)*exp(-a/r**b)/(rho*r**b))**0.5
+    Vr = (a*b*(poci - pres)*exp(-a/r**b)/(rho*r**b))**0.5
   }else{
-    Wr = (a*b*(poci - pres)*exp(-a/r**b)/(rho*r**b) + r**2 * f**2 / 4)**0.5 - r*f/2
+    Vr = (a*b*(poci - pres)*exp(-a/r**b)/(rho*r**b) + r**2 * f**2 / 4)**0.5 - r*f/2
   }
 
-  return(Wr)
+  return(Vr)
 
 }
 
@@ -95,7 +104,13 @@ Holland80 <- Vectorize(Holland80_profil, vectorize.args = "r")
 #' @param b Scaling factor
 #' @return wind value according to the Boose 01 at distance `r` to the
 #'  center of the storm
-Boose01_profil = function(r, t, rmw, landfall, w_max, Vh, b = 1.3){
+Boose01_profil = function(r,
+                          t,
+                          rmw,
+                          landfall,
+                          w_max,
+                          Vh,
+                          b = 1.3){
 
   if(landfall > 0){
     f = 1
@@ -105,9 +120,9 @@ Boose01_profil = function(r, t, rmw, landfall, w_max, Vh, b = 1.3){
 
   S = 1
 
- Vs = f *(w_max - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
+ Vr = f *(w_max - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
 
- return(Vs)
+ return(Vr)
 
 }
 
@@ -157,7 +172,7 @@ stormBehaviour = function(sts,
   stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Category"))
 
   #Check method input
-  stopifnot("Invalid method" = method %in% c("Willoughby", "H80", "Boose01"))
+  stopifnot("Invalid method" = method %in% c("Willoughby", "Holland80", "Boose01"))
 
   #Check space_res input
   stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
