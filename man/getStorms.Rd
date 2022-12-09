@@ -9,7 +9,8 @@ getStorms(
   name = NULL,
   loi = "SP",
   max_dist = 300,
-  verbose = FALSE
+  verbose = FALSE,
+  remove_weak_TC = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ buffer to generate \code{spatail.poly.buffer}. Default value is set to 300km.}
 
 \item{verbose}{Logical, whether or not the function must be verbose. Default
 value is set to \code{FALSE}}
+
+\item{remove_weak_TC}{Logical, whether or not to remove TC under category 1 in
+the sshs scale. Default value is set to TRUE.}
 }
 \value{
 a S4 Storms object that gathers all the above informations
