@@ -59,12 +59,12 @@ Willoughby <- Vectorize(Willoughby_profil, vectorize.args = "r")
 #' Compute wind values according to the Holland 80 model
 #'
 #' @param r Distance to the center of the storm where the value must be computed
-#' @param rmw Radius of maximum wind speed. Default value is set to NULL
+#' @param rmw Radius of maximum wind speed
 #' @param pres Pressure at the center of the storm
 #' @param poci Pressure at the Outermost Closed Isobar
-#' @param lat Latitude of the eye of the storm
+#' @param lat Latitude of the storm (eye)
 #' @param b Scaling factor
-#' @return wind value according to the Holland 80 at distance `r` to the
+#' @return wind value according to the Holland 80 model at distance `r` to the
 #'  center of the storm
 Holland80_profil = function(r,
                             rmw,
@@ -73,17 +73,11 @@ Holland80_profil = function(r,
                             lat,
                             b = 1.3){
 
-  r = r
-  rmw = rmw
-  a = rmw**b
-  rho = 1.15 * 1/10**(-9) #air densiy
+  rho = 1.15  #air densiy
   f = 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
 
-  if(r <= rmw){
-    Vr = (a*b*(poci - pres)*exp(-a/r**b)/(rho*r**b))**0.5
-  }else{
-    Vr = (a*b*(poci - pres)*exp(-a/r**b)/(rho*r**b) + r**2 * f**2 / 4)**0.5 - r*f/2
-  }
+  Vr = sqrt(b/rho * (rmw/r)**b * (poci - pres)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
+
 
   return(Vr)
 
@@ -389,7 +383,7 @@ stormBehaviour = function(sts,
             rmw = rmw[i],
             pres = pres[i],
             poci = poci[i],
-            b = 1.05
+            b = 1.3
           )
         }else if (method == "Boose01") {
           raster.t = ras.template
