@@ -1,6 +1,8 @@
 
 
-
+##################
+#Model prototypes#
+##################
 
 
 #' Get the radius of maximum wind speed according to Willoughby model
@@ -17,13 +19,13 @@ get_RMW = function(w_max, lat) {
 #' Compute wind values according to the Willoughby model
 #'
 #' @param w_max Maximum wind speed generated
-#' @param lat Latitude where `w_max` has occured
+#' @param lat Latitude of the eye of the storm
 #' @param r Distance to the center of the storm where the value must be computed
 #' @param rmw Radius of maximum wind speed. Default value is set to NULL
 #' @return wind value according to the Willoughby model at distance `r` to the
 #'  center of the storm located in latitude `lat`
 
-Willoughby_cyc_profil = function(w_max, lat, r, rmw = NULL) {
+Willoughby_profil = function(w_max, lat, r, rmw = NULL) {
   if (is.null(rmw)) {
     RMW = get_RMW(w_max, lat)
   } else{
@@ -46,7 +48,71 @@ Willoughby_cyc_profil = function(w_max, lat, r, rmw = NULL) {
 }
 
 #Vectorize version of the above model
-Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
+Willoughby <- Vectorize(Willoughby_profil, vectorize.args = "r")
+
+
+
+#' Compute wind values according to the Holland 80 model
+#'
+#' @param r Distance to the center of the storm where the value must be computed
+#' @param rmw Radius of maximum wind speed. Default value is set to NULL
+#' @param pres Pressure at the center of the storm
+#' @param poci Pressure at the Outermost Closed Isobar
+#' @param lat Latitude of the eye of the storm
+#' @param b Scaling factor
+#' @return wind value according to the Holland 80 at distance `r` to the
+#'  center of the storm
+Holland80_profil = function(r, rmw, pres, poci, lat, b = 1.3){
+
+  r = r
+  rmw = rmw
+  a = rmw**b
+  rho = 1.15 #air densiy
+  f = 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
+
+  if(r <= rmw){
+    Wr = (a*b*(poci - pres)*exp(-a/r**b)/(rho*r**b))**0.5
+  }else{
+    Wr = (a*b*(poci - pres)*exp(-a/r**b)/(rho*r**b) + r**2 * f**2 / 4)**0.5 - r*f/2
+  }
+
+  return(Wr)
+
+}
+
+#Vectorize version of the above model
+Holland80 <- Vectorize(Holland80_profil, vectorize.args = "r")
+
+
+#' Compute wind values according to the Boose 01 model
+#'
+#' @param r Distance to the center of the storm where the value must be computed
+#' @param t Clockwise angle between forward motion of hurricane and radial line to P
+#' @param rmw Radius of maximum wind speed. Default value is set to NULL
+#' @param landfall pres Pressure at the center of the storm
+#' @param w_max Maximum wind speed generated
+#' @param Vh forward speed of storm
+#' @param b Scaling factor
+#' @return wind value according to the Boose 01 at distance `r` to the
+#'  center of the storm
+Boose01_profil = function(r, t, rmw, landfall, w_max, Vh, b = 1.3){
+
+  if(landfall > 0){
+    f = 1
+  }else{
+    f = 0.8
+  }
+
+  S = 1
+
+ Vs = f *(w_max - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
+
+ return(Vs)
+
+}
+
+#Vectorize version of the above model
+Boose01 <- Vectorize(Boose01_profil, vectorize.args = c("r","t"))
 
 
 
@@ -77,7 +143,7 @@ Willoughby <- Vectorize(Willoughby_cyc_profil, vectorize.args = "r")
 #' @export
 stormBehaviour = function(sts,
                           product = "MSW",
-                          method = "willoughby",
+                          method = "Willoughby",
                           asymmetry = TRUE,
                           use_rmw = TRUE,
                           space_res = 10,
@@ -91,7 +157,7 @@ stormBehaviour = function(sts,
   stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Category"))
 
   #Check method input
-  stopifnot("Invalid method" = method %in% c("willoughby"))
+  stopifnot("Invalid method" = method %in% c("Willoughby", "H80", "Boose01"))
 
   #Check space_res input
   stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
@@ -107,12 +173,14 @@ stormBehaviour = function(sts,
 
   #Check focus_loi input
   stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
+  initial_floi = focus_loi
   if (product == "PDI") {
     focus_loi = FALSE
-    warning("focus_loi ignored and set to FALSE")
+    warning("focus_loi ignored for computations")
   }
 
 
+  #Generating the template
   xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
   xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
   ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
@@ -147,7 +215,7 @@ stormBehaviour = function(sts,
       #Use observations within the loi for the computations
       ind = seq(st@obs[1], st@obs[st@numobs], 1)
 
-      #Handling indices and offset
+      #Handling indices and offset (2 outside of loi at entry and exit)
       if (st@obs[1] >= 3) {
         ind = c(st@obs[1] - 2, st@obs[1] - 1, ind)
       } else if (st@obs[1] == 2) {
@@ -170,7 +238,11 @@ stormBehaviour = function(sts,
       lon = st@obs.all$lon[ind],
       lat = st@obs.all$lat[ind],
       msw = zoo::na.approx(st@obs.all$wind[ind], rule = 2),
-      rmw = st@obs.all$rmw[ind]
+      rmw = st@obs.all$rmw[ind],
+      roci = st@obs.all$roci[ind],
+      pres = st@obs.all$pres[ind],
+      poci = st@obs.all$poci[ind],
+      landfall = st@obs.all$landfall[ind]
     )
     dat = dat[stats::complete.cases(dat), ]
 
@@ -213,29 +285,47 @@ stormBehaviour = function(sts,
     #For every general 3H time step j
     for (j in 1:(last.obs - 1)) {
 
-      longitude = rep(NA, dt)
-      longitude[1] = dat$lon[j]
-      longitude[dt] = dat$lon[j + 1]
-      longitude = zoo::na.approx(longitude)
+      lon = rep(NA, dt)
+      lon[1] = dat$lon[j]
+      lon[dt] = dat$lon[j + 1]
+      lon = zoo::na.approx(lon)
 
-      latitude = rep(NA, dt)
-      latitude[1] = dat$lat[j]
-      latitude[dt] = dat$lat[j + 1]
-      latitude = zoo::na.approx(latitude)
+      lat = rep(NA, dt)
+      lat[1] = dat$lat[j]
+      lat[dt] = dat$lat[j + 1]
+      lat = zoo::na.approx(lat)
 
       wind = rep(NA, dt)
       wind[1] = dat$msw[j]
       wind[dt] = dat$msw[j + 1]
       wind = zoo::na.approx(wind)
 
-      if (use_rmw) {
-        radius = rep(NA, dt)
-        radius[1] = dat$rmw[j]
-        radius[dt] = dat$rmw[j + 1]
-        radius = zoo::na.approx(radius)
-      } else{
-        radius = NULL
-      }
+      pres = rep(NA, dt)
+      pres[1] = dat$pres[j]
+      pres[dt] = dat$pres[j + 1]
+      pres = zoo::na.approx(pres)
+
+      poci = rep(NA, dt)
+      poci[1] = dat$poci[j]
+      poci[dt] = dat$poci[j + 1]
+      poci = zoo::na.approx(poci)
+
+      rmw = rep(NA, dt)
+      rmw[1] = dat$rmw[j]
+      rmw[dt] = dat$rmw[j + 1]
+      rmw = zoo::na.approx(rmw)
+
+      roci = rep(NA, dt)
+      roci[1] = dat$roci[j]
+      roci[dt] = dat$roci[j + 1]
+      roci = zoo::na.approx(roci)
+
+      landfall = rep(NA, dt)
+      landfall[1] = dat$landfall[j]
+      landfall[dt] = dat$landfall[j + 1]
+      landfall = zoo::na.approx(landfall)
+
+
 
       #Compute velocity of storm (deg/h)
       vx.deg = (dat$lon[j + 1] - dat$lon[j]) / 3
@@ -254,27 +344,54 @@ stormBehaviour = function(sts,
           break #avoid redondance
 
         raster.msw = ras.template
-        #distances to the eye of the storm in km
-        dist.km = terra::distance(
-          x = terra::crds(raster.msw, na.rm = FALSE)[, ],
-          y = cbind(longitude[i], latitude[i]),
-          lonlat = T
-        ) * 0.001
 
-        if (method == "willoughby") {
-          #Compute willoughby raster
+        #Compute distances to the eye of the storm in m
+        dist.m = terra::distance(
+          x = terra::crds(raster.msw, na.rm = FALSE)[, ],
+          y = cbind(lon[i], lat[i]),
+          lonlat = T
+        )
+        x = (terra::crds(raster.msw, na.rm = FALSE)[, 1] - lon[i])
+        y = (terra::crds(raster.msw, na.rm = FALSE)[, 2] - lat[i])
+        r = sqrt(x ** 2 + y ** 2) #distance in degree
+
+
+        #Compute sustained winds according to the input model
+        if (method == "Willoughby") {
+          if(!use_rmw){
+            rmw[i] = NULL
+          }
           terra::values(raster.msw) = Willoughby(
             w_max = wind[i],
-            lat = latitude[i],
-            r = dist.km,
-            rmw = radius[i]
+            lat = lat[i],
+            r = dist.m * 0.001,
+            rmw = rmw[i]
+          )
+        }else if (method == "H80") {
+          terra::values(raster.msw) = Holland80(
+            lat = lat[i],
+            r = dist.m * 0.001,
+            rmw = rmw[i],
+            pres = pres[i],
+            poci = poci[i],
+            b = 1.05
+          )
+        }else if (method == "Boose01") {
+          raster.t = ras.template
+          #South Hemisphere only, t is counterclockwise
+          terra::values(raster.t) = acos(x/r)
+          terra::values(raster.msw) = Boose01(
+            r = dist.m * 0.001,
+            t = terra::values(raster.t),
+            landfall = landfall[i],
+            rmw = rmw[i],
+            w_max = wind[i],
+            Vh = Nv
           )
         }
 
         #Add asymmetry
         if (asymmetry) {
-          x = (terra::crds(raster.msw, na.rm = FALSE)[, 1] - longitude[i])
-          y = (terra::crds(raster.msw, na.rm = FALSE)[, 2] - latitude[i])
           r = sqrt(x ** 2 + y ** 2)
           raster.theta = ras.template
           terra::values(raster.theta) = acos((y * vx.deg+-x * vy.deg) /
@@ -412,7 +529,7 @@ stormBehaviour = function(sts,
   final.stack = terra::rast(final.stack)
 
 
-  if (focus_loi) {
+  if (initial_floi) {
     #Mask the stack to fit loi buffer
     v = terra::vect(sts@spatial.loi.buffer)
     m = terra::rasterize(v, product.raster)

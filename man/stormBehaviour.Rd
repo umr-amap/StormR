@@ -8,7 +8,7 @@ associated with the each storm}
 stormBehaviour(
   sts,
   product = "MSW",
-  method = "willoughby",
+  method = "Willoughby",
   asymmetry = TRUE,
   use_rmw = TRUE,
   space_res = 10,

@@ -9,7 +9,7 @@ Willoughby_cyc_profil(w_max, lat, r, rmw = NULL)
 \arguments{
 \item{w_max}{Maximum wind speed generated}
 
-\item{lat}{Latitude where \code{w_max} has occured}
+\item{lat}{Latitude of the eye of the storm}
 
 \item{r}{Distance to the center of the storm where the value must be computed}
 
