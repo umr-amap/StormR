@@ -16,8 +16,6 @@ Models a storm using various slots
 \describe{
 \item{\code{name}}{A character that contains the name of the storm}
 
-\item{\code{sid}}{A character that contains a unique id given by ibtracs algorithm}
-
 \item{\code{season}}{A numeric that contains the cyclonic season in which the storm has occured.}
 
 \item{\code{numobs.all}}{A numeric that contains the total number of observations available.}

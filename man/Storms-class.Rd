@@ -22,6 +22,8 @@ Models a set of storms that occured in a location of interest
 
 \item{\code{nb.storms}}{Number of storms contained in this object}
 
+\item{\code{basin}}{in which basin the TC has occured}
+
 \item{\code{spatial.loi}}{A SpatialPolygons that represents the location of interest.
 Projection is EPSG:4326}
 

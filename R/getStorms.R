@@ -7,7 +7,6 @@
 #' Models a storm using various slots
 #'
 #' @slot name A character that contains the name of the storm
-#' @slot basin  in which basin the TC has occured
 #' @slot season A numeric that contains the cyclonic season in which the storm has occured.
 #' @slot numobs.all A numeric that contains the total number of observations available.
 #' @slot obs.all A data.frame.that contains of the observations available, where an
@@ -24,7 +23,6 @@ Storm <- methods::setClass(
   "Storm",
   slots = c(
     name = "character",
-    basin = "character",
     season = "numeric",
     numobs.all = "numeric",
     obs.all = "data.frame",
@@ -42,6 +40,7 @@ Storm <- methods::setClass(
 #' @slot time.period Cyclonic season(s) we are interested in
 #' @slot names Storms names of interest
 #' @slot nb.storms Number of storms contained in this object
+#'@slot basin  in which basin the TC has occured
 #' @slot spatial.loi A SpatialPolygons that represents the location of interest.
 #' Projection is EPSG:4326
 #' @slot buffer the buffer used to extent `spatial.loi`
@@ -57,6 +56,7 @@ Storms <- methods::setClass(
     time.period = "numeric",
     names = "list",
     nb.storms = "numeric",
+    basin = "character",
     spatial.loi = "sf",
     buffer = "numeric",
     spatial.loi.buffer = "sf"
@@ -306,7 +306,6 @@ getStorms <- function(time_period = c(1980, 2022),
 
       storm = Storm()
       storm@name = name.storm
-      storm@basin = ncdf4::ncvar_get(TC_data_base, "basin")[i]
       storm@season = ncdf4::ncvar_get(TC_data_base, "season")[i]
       storm@numobs.all = numobs
       storm@obs.all = data.frame(
@@ -347,6 +346,8 @@ getStorms <- function(time_period = c(1980, 2022),
 
   ncdf4::nc_close(TC_data_base)
 
+
+  sts@basin = "SP" #DO NOT FORGET TO CHANGE
   sts@spatial.loi = loi.sf
   sts@spatial.loi.buffer = loi.sf.buffer
   sts@data = storm.list
