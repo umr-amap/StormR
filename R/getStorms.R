@@ -317,8 +317,11 @@ getStorms <- function(time_period = c(1980, 2022),
         lat = ncdf4::ncvar_get(TC_data_base, "usa_lat")[1:numobs, i],
         wind = ncdf4::ncvar_get(TC_data_base, "usa_wind")[1:numobs, i] * 0.514,
         rmw = ncdf4::ncvar_get(TC_data_base, "usa_rmw")[1:numobs, i],
+        roci = ncdf4::ncvar_get(TC_data_base, "usa_roci")[1:numobs, i],
         pres = ncdf4::ncvar_get(TC_data_base, "usa_pres")[1:numobs, i],
+        poci = ncdf4::ncvar_get(TC_data_base, "usa_poci")[1:numobs, i],
         sshs = sshs,
+        landfall = ncdf4::ncvar_get(TC_data_base, "landfall")[1:numobs, i],
         speed = ncdf4::ncvar_get(TC_data_base, "storm_speed")[1:numobs, i] * 0.514
       )
 
