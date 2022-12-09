@@ -7,7 +7,7 @@
 #' Models a storm using various slots
 #'
 #' @slot name A character that contains the name of the storm
-#' @slot sid  A character that contains a unique id given by ibtracs algorithm
+#' @slot basin  in which basin the TC has occured
 #' @slot season A numeric that contains the cyclonic season in which the storm has occured.
 #' @slot numobs.all A numeric that contains the total number of observations available.
 #' @slot obs.all A data.frame.that contains of the observations available, where an
@@ -24,7 +24,7 @@ Storm <- methods::setClass(
   "Storm",
   slots = c(
     name = "character",
-    sid = "character",
+    basin = "character",
     season = "numeric",
     numobs.all = "numeric",
     obs.all = "data.frame",
@@ -306,7 +306,7 @@ getStorms <- function(time_period = c(1980, 2022),
 
       storm = Storm()
       storm@name = name.storm
-      storm@sid = ncdf4::ncvar_get(TC_data_base, "sid")[i]
+      storm@basin = ncdf4::ncvar_get(TC_data_base, "basin")[i]
       storm@season = ncdf4::ncvar_get(TC_data_base, "season")[i]
       storm@numobs.all = numobs
       storm@obs.all = data.frame(
