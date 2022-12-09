@@ -12,7 +12,7 @@ plotStorms(
   ocean_color = "white",
   all_basin = FALSE,
   labels = FALSE,
-  by = 4,
+  by = 8,
   pos = 3,
   legends = FALSE,
   loi = TRUE,
@@ -42,7 +42,8 @@ Default value is set to FALSE. Otherwise, the plot focuses on the extent of
 first and the last observation of each storms within the loi. Default value
 is set to FALSE.}
 
-\item{by}{number, increment of the sequence for the labels to plot}
+\item{by}{number, increment of the sequence for the labels to plot. Default value
+is set to 8 which represents a 24h time interval}
 
 \item{pos}{number between 1 and 4, position for the labels to plot: up, left,
 down, right}
