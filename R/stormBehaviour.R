@@ -26,7 +26,7 @@ get_RMW = function(w_max,
 #' @return wind value according to the Willoughby model at distance `r` to the
 #'  center of the storm located in latitude `lat`
 
-Willoughby_profil = function(w_max,
+Willoughby_profile = function(w_max,
                              lat,
                              r,
                              rmw = NULL) {
@@ -52,7 +52,7 @@ Willoughby_profil = function(w_max,
 }
 
 #Vectorize version of the above model
-Willoughby <- Vectorize(Willoughby_profil, vectorize.args = "r")
+Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 
 
 
@@ -60,21 +60,22 @@ Willoughby <- Vectorize(Willoughby_profil, vectorize.args = "r")
 #'
 #' @param r Distance to the center of the storm where the value must be computed
 #' @param rmw Radius of maximum wind speed
+#' @param w_max Maximum wind speed generated
 #' @param pres Pressure at the center of the storm
 #' @param poci Pressure at the Outermost Closed Isobar
 #' @param lat Latitude of the storm (eye)
-#' @param b Scaling factor
 #' @return wind value according to the Holland 80 model at distance `r` to the
 #'  center of the storm
-Holland80_profil = function(r,
+Holland80_profile = function(r,
                             rmw,
+                            wmax,
                             pres,
                             poci,
-                            lat,
-                            b = 1.3){
+                            lat){
 
   rho = 1.15  #air densiy
   f = 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
+  b = rho * exp(1) * wmax**2 / (poci - pres)
 
   Vr = sqrt(b/rho * (rmw/r)**b * (poci - pres)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
 
@@ -84,7 +85,7 @@ Holland80_profil = function(r,
 }
 
 #Vectorize version of the above model
-Holland80 <- Vectorize(Holland80_profil, vectorize.args = "r")
+Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 
 #' Compute wind values according to the Boose 01 model
@@ -98,7 +99,7 @@ Holland80 <- Vectorize(Holland80_profil, vectorize.args = "r")
 #' @param b Scaling factor
 #' @return wind value according to the Boose 01 at distance `r` to the
 #'  center of the storm
-Boose01_profil = function(r,
+Boose01_profile = function(r,
                           t,
                           rmw,
                           landfall,
@@ -121,7 +122,7 @@ Boose01_profil = function(r,
 }
 
 #Vectorize version of the above model
-Boose01 <- Vectorize(Boose01_profil, vectorize.args = c("r","t"))
+Boose01 <- Vectorize(Boose01_profile, vectorize.args = c("r","t"))
 
 
 
@@ -376,14 +377,14 @@ stormBehaviour = function(sts,
             r = dist.m * 0.001,
             rmw = rmw[i]
           )
-        }else if (method == "H80") {
+        }else if (method == "Holland80") {
           terra::values(raster.msw) = Holland80(
-            lat = lat[i],
             r = dist.m * 0.001,
             rmw = rmw[i],
-            pres = pres[i],
-            poci = poci[i],
-            b = 1.3
+            wmax = wind[i],
+            pres = pres[i] * 100,
+            poci = poci[i] * 100,
+            lat = lat[i]
           )
         }else if (method == "Boose01") {
           raster.t = ras.template
