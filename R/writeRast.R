@@ -24,7 +24,7 @@ writeRast = function(rast,
   #Check format input
   stopifnot("Invalid format" = format %in% c(".tiff", ".nc"))
 
-  #Check filename
+  #Check filenames
   stopifnot("filename must be characters" = identical(class(filename), "character"))
 
   #Check path

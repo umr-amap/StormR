@@ -213,8 +213,8 @@ stormBehaviour = function(sts,
   #Reprojection in lon/lat
   ras.template = terra::project(ras.template, "EPSG:4326")
   #Handling time line crossing
-  ras.template = terra::crop(ras.template, e)
-  ras.template = terra::extend(ras.template, e)
+  terra::ext(ras.template) = e
+
 
 
   final.stack = c()
