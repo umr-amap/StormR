@@ -230,11 +230,6 @@ getStorms <- function(time_period = c(1980, 2022),
   } else{
     #loi.id == "Country"
     loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
-    #Handling time line for Fiji
-    #if (loi == "Fiji") {
-      #loi.sf = sf::st_set_crs(loi.sf, 4326)
-      #loi.sf = sf::st_shift_longitude(loi.sf)
-    #}
   }
 
   #Handling time line for Fiji

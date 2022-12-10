@@ -7,44 +7,44 @@
 
 #' Get the radius of maximum wind speed according to Willoughby model
 #'
-#' @param w_max Maximum wind speed generated
-#' @param lat Latitude where `w_max` has occured
+#' @param vmax Maximum wind speed generated
+#' @param lat Latitude where `vmax` has occured
 #'
 #' @return radius of maximum wind speed (km)
-get_RMW = function(w_max,
+get_RMW = function(vmax,
                    lat) {
-  return (46.4 * exp(-0.0155 * w_max + 0.0169 * abs(lat)))
+  return (46.4 * exp(-0.0155 * vmax + 0.0169 * abs(lat)))
 }
 
 
 #' Compute wind values according to the Willoughby model
 #'
-#' @param w_max Maximum wind speed generated
+#' @param vmax Maximum wind speed generated
 #' @param lat Latitude of the eye of the storm
 #' @param r Distance to the center of the storm where the value must be computed
 #' @param rmw Radius of maximum wind speed. Default value is set to NULL
 #' @return wind value according to the Willoughby model at distance `r` to the
 #'  center of the storm located in latitude `lat`
 
-Willoughby_profile = function(w_max,
+Willoughby_profile = function(vmax,
                              lat,
                              r,
                              rmw = NULL) {
   if (is.null(rmw)) {
-    RMW = get_RMW(w_max, lat)
+    RMW = get_RMW(vmax, lat)
   } else{
     RMW = rmw
   }
   RMW = rep(RMW, length(r))
   if (r >= RMW) {
-    XX1 = 287.6 - 1.942 * w_max + 7.799 * log(RMW) + 1.819 * abs(lat)
+    XX1 = 287.6 - 1.942 * vmax + 7.799 * log(RMW) + 1.819 * abs(lat)
     XX2 = 25
-    AA = 0.5913 + 0.0029 * w_max - 0.1361 * log(RMW) - 0.0042 * abs(lat)
-    Vr = w_max * ((1 - AA) * exp(-abs((r - RMW) / XX1)) + AA * exp(-abs(r -
+    AA = 0.5913 + 0.0029 * vmax - 0.1361 * log(RMW) - 0.0042 * abs(lat)
+    Vr = vmax * ((1 - AA) * exp(-abs((r - RMW) / XX1)) + AA * exp(-abs(r -
                                                                           RMW) / XX2))
   } else{
-    nn = 2.1340 + 0.0077 * w_max - 0.4522 * log(RMW) - 0.0038 * abs(lat)
-    Vr = w_max * abs((r / RMW) ^ nn)
+    nn = 2.1340 + 0.0077 * vmax - 0.4522 * log(RMW) - 0.0038 * abs(lat)
+    Vr = vmax * abs((r / RMW) ^ nn)
   }
 
 
@@ -60,24 +60,24 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 #'
 #' @param r Distance to the center of the storm where the value must be computed
 #' @param rmw Radius of maximum wind speed
-#' @param w_max Maximum wind speed generated
-#' @param pres Pressure at the center of the storm
+#' @param vmax Maximum wind speed generated
+#' @param pc Pressure at the center of the storm
 #' @param poci Pressure at the Outermost Closed Isobar
 #' @param lat Latitude of the storm (eye)
 #' @return wind value according to the Holland 80 model at distance `r` to the
 #'  center of the storm
 Holland80_profile = function(r,
                             rmw,
-                            wmax,
-                            pres,
+                            vmax,
+                            pc,
                             poci,
                             lat){
 
   rho = 1.15  #air densiy
   f = 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
-  b = rho * exp(1) * wmax**2 / (poci - pres)
+  b = rho * exp(1) * vmax**2 / (poci - pc)
 
-  Vr = sqrt(b/rho * (rmw/r)**b * (poci - pres)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
+  Vr = sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
 
 
   return(Vr)
@@ -93,8 +93,8 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 #' @param r Distance to the center of the storm where the value must be computed
 #' @param t Clockwise angle between forward motion of hurricane and radial line to P
 #' @param rmw Radius of maximum wind speed. Default value is set to NULL
-#' @param landfall pres Pressure at the center of the storm
-#' @param w_max Maximum wind speed generated
+#' @param landfall Minimum distance to land over next 3 hours (=0 means landfall)
+#' @param vmax Maximum wind speed generated
 #' @param Vh forward speed of storm
 #' @param b Scaling factor
 #' @return wind value according to the Boose 01 at distance `r` to the
@@ -103,7 +103,7 @@ Boose01_profile = function(r,
                           t,
                           rmw,
                           landfall,
-                          w_max,
+                          vmax,
                           Vh,
                           b = 1.3){
 
@@ -115,7 +115,7 @@ Boose01_profile = function(r,
 
   S = 1
 
- Vr = f *(w_max - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
+ Vr = f *(vmax - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
 
  return(Vr)
 
@@ -250,7 +250,7 @@ stormBehaviour = function(sts,
       msw = zoo::na.approx(st@obs.all$wind[ind], rule = 2),
       rmw = st@obs.all$rmw[ind],
       roci = st@obs.all$roci[ind],
-      pres = st@obs.all$pres[ind],
+      pc = st@obs.all$pres[ind],
       poci = st@obs.all$poci[ind],
       landfall = st@obs.all$landfall[ind]
     )
@@ -305,15 +305,15 @@ stormBehaviour = function(sts,
       lat[dt] = dat$lat[j + 1]
       lat = zoo::na.approx(lat)
 
-      wind = rep(NA, dt)
-      wind[1] = dat$msw[j]
-      wind[dt] = dat$msw[j + 1]
-      wind = zoo::na.approx(wind)
+      msw = rep(NA, dt)
+      msw[1] = dat$msw[j]
+      msw[dt] = dat$msw[j + 1]
+      msw = zoo::na.approx(msw)
 
-      pres = rep(NA, dt)
-      pres[1] = dat$pres[j]
-      pres[dt] = dat$pres[j + 1]
-      pres = zoo::na.approx(pres)
+      pc = rep(NA, dt)
+      pc[1] = dat$pc[j]
+      pc[dt] = dat$pc[j + 1]
+      pc = zoo::na.approx(pc)
 
       poci = rep(NA, dt)
       poci[1] = dat$poci[j]
@@ -372,7 +372,7 @@ stormBehaviour = function(sts,
             rmw[i] = NULL
           }
           terra::values(raster.msw) = Willoughby(
-            w_max = wind[i],
+            vmax = msw[i],
             lat = lat[i],
             r = dist.m * 0.001,
             rmw = rmw[i]
@@ -381,8 +381,8 @@ stormBehaviour = function(sts,
           terra::values(raster.msw) = Holland80(
             r = dist.m * 0.001,
             rmw = rmw[i],
-            wmax = wind[i],
-            pres = pres[i] * 100,
+            vmax = msw[i],
+            pc = pc[i] * 100,
             poci = poci[i] * 100,
             lat = lat[i]
           )
@@ -395,7 +395,7 @@ stormBehaviour = function(sts,
             t = terra::values(raster.t),
             landfall = landfall[i],
             rmw = rmw[i],
-            w_max = wind[i],
+            vmax = msw[i],
             Vh = Nv
           )
         }
