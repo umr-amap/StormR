@@ -233,16 +233,13 @@ getStorms <- function(time_period = c(1980, 2022),
   }
 
   #Handling time line for Fiji
-  loi.sf = sf::st_shift_longitude(loi.sf)
   sf::st_crs(loi.sf) = 4326
+  loi.sf = sf::st_shift_longitude(loi.sf)
 
 
   #Handle buffer
   if (!loi.is.basin) {
     loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * 1000)
-    #Handling time line for Fiji
-    #if (loi == "Fiji")
-      loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
 
   } else{
     loi.sf.buffer = loi.sf
