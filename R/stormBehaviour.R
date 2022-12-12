@@ -115,7 +115,7 @@ Boose01_profile = function(r,
 
   S = 1
 
- Vr = f *(vmax - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
+  Vr = f *(vmax - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
 
  return(Vr)
 
