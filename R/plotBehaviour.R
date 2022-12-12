@@ -101,7 +101,7 @@ plotBehaviour = function(sts,
       ylim = c(ymin, ymax),
       alpha = 0.7,
       axes = FALSE,
-      range = c(17, max(raster_product[], na.rm = T)),
+      range = c(17, 85),
       legend = T,
       plg = list(
         title = expression(paste("MSW (m.s" ^ "-1)")),
@@ -111,7 +111,7 @@ plotBehaviour = function(sts,
       ),
       add = T,
     )
-    #axis(side = 4, at = 10, labels = expression(paste("MSW (m.s"^"-1)")))
+
 
   } else if (product == "PDI") {
     m = plot(
@@ -121,7 +121,7 @@ plotBehaviour = function(sts,
       ylim = c(ymin, ymax),
       alpha = 0.7,
       axes = FALSE,
-      range = c(0, max(raster_product[], na.rm = T)),
+      range = c(0, 100),
       plg = list(
         title = expression(paste("PDI")),
         title.cex = 0.9,
@@ -138,7 +138,6 @@ plotBehaviour = function(sts,
                             "Categories")) {
     m = plot(
       raster_product,
-      #col = rev(grDevices::heat.colors(50)),
       col = rev(viridis::viridis(50)),
       xlim = c(xmin, xmax),
       ylim = c(ymin, ymax),
