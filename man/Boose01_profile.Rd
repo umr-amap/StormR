@@ -4,7 +4,7 @@
 \alias{Boose01_profile}
 \title{Compute wind values according to the Boose 01 model}
 \usage{
-Boose01_profile(r, t, rmw, landfall, w_max, Vh, b = 1.3)
+Boose01_profile(r, t, rmw, landfall, vmax, Vh, b = 1.3)
 }
 \arguments{
 \item{r}{Distance to the center of the storm where the value must be computed}
@@ -13,9 +13,9 @@ Boose01_profile(r, t, rmw, landfall, w_max, Vh, b = 1.3)
 
 \item{rmw}{Radius of maximum wind speed. Default value is set to NULL}
 
-\item{landfall}{pres Pressure at the center of the storm}
+\item{landfall}{Minimum distance to land over next 3 hours (=0 means landfall)}
 
-\item{w_max}{Maximum wind speed generated}
+\item{vmax}{Maximum wind speed generated}
 
 \item{Vh}{forward speed of storm}
 

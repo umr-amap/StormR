@@ -4,20 +4,20 @@
 \alias{Holland80_profile}
 \title{Compute wind values according to the Holland 80 model}
 \usage{
-Holland80_profile(r, rmw, wmax, pres, poci, lat)
+Holland80_profile(r, rmw, vmax, pc, poci, lat)
 }
 \arguments{
 \item{r}{Distance to the center of the storm where the value must be computed}
 
 \item{rmw}{Radius of maximum wind speed}
 
-\item{pres}{Pressure at the center of the storm}
+\item{vmax}{Maximum wind speed generated}
+
+\item{pc}{Pressure at the center of the storm}
 
 \item{poci}{Pressure at the Outermost Closed Isobar}
 
 \item{lat}{Latitude of the storm (eye)}
-
-\item{b}{Scaling factor}
 }
 \value{
 wind value according to the Holland 80 model at distance \code{r} to the
