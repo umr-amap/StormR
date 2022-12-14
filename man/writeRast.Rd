@@ -4,7 +4,7 @@
 \alias{writeRast}
 \title{Write a SpatRast raster in the given format}
 \usage{
-writeRast(rast, format = ".tiff", filename = "rast", path = "./")
+writeRast(rast, format = ".tiff", filename = NULL, path = "./")
 }
 \arguments{
 \item{rast}{SpatRast object we wish to write}
