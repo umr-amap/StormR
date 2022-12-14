@@ -169,6 +169,16 @@ stormBehaviour = function(sts,
   #Check method input
   stopifnot("Invalid method" = method %in% c("Willoughby", "Holland80", "Boose01"))
 
+  #Check asymmetry input
+  stopifnot("asymmetry must be logical" = identical(class(asymmetry), "logical"))
+  if(method == "Boose01"){
+    asymmetry = T
+    warning("asymmetry ignored")
+  }
+
+  #Check use_rmw input
+  stopifnot("use_rmw must be logical" = identical(class(use_rmw), "logical"))
+
   #Check space_res input
   stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
   stopifnot("space_res must be as integer" = is_wholenumber(space_res))
@@ -208,7 +218,7 @@ stormBehaviour = function(sts,
   ras = terra::project(ras, "EPSG:3857")
   #Resample in new resolution in Mercator
   ras.template = ras
-  terra::res(ras.template) = space_res * 1000
+  terra::res(ras.template) = c(space_res * 1000, space_res * 1000)
   ras.template <- terra::resample(ras, ras.template)
   #Reprojection in lon/lat
   ras.template = terra::project(ras.template, "EPSG:4326")
@@ -252,7 +262,8 @@ stormBehaviour = function(sts,
       roci = st@obs.all$roci[ind],
       pc = st@obs.all$pres[ind],
       poci = st@obs.all$poci[ind],
-      landfall = st@obs.all$landfall[ind]
+      landfall = st@obs.all$landfall[ind],
+      storm.speed = st@obs.all$speed[ind]
     )
     dat = dat[stats::complete.cases(dat), ]
 
@@ -336,16 +347,21 @@ stormBehaviour = function(sts,
       landfall = zoo::na.approx(landfall)
 
 
+      storm.speed = dat$storm.speed[j] * 3.6
+
+
+
 
       #Compute velocity of storm (deg/h)
       vx.deg = (dat$lon[j + 1] - dat$lon[j]) / 3
       vy.deg = (dat$lat[j + 1] - dat$lat[j]) / 3
-      N = sqrt(vx.deg ** 2 + vy.deg ** 2)
-
-      #(km/h)
+      #Compute velocity of storm (deg/h)
       vx.km = vx.deg * space_res / terra::res(ras.template)[1]
       vy.km = vy.deg * space_res / terra::res(ras.template)[2]
-      Nv = sqrt(vx.km ** 2 + vy.km ** 2)
+      v.norm.km = sqrt(vx.km ** 2 + vy.km ** 2)
+      #cat("\n",v.norm.km, " ", storm.speed,"\n")
+
+      storm.speed = v.norm.km
 
 
       #For every interpolated time steps dt
@@ -355,16 +371,15 @@ stormBehaviour = function(sts,
 
         raster.msw = ras.template
 
+        #Compute distances to the eye of the storm for x and y axes
+        x = (terra::crds(raster.msw, na.rm = FALSE)[, 1] - lon[i])
+        y = (terra::crds(raster.msw, na.rm = FALSE)[, 2] - lat[i])
         #Compute distances to the eye of the storm in m
         dist.m = terra::distance(
           x = terra::crds(raster.msw, na.rm = FALSE)[, ],
           y = cbind(lon[i], lat[i]),
           lonlat = T
         )
-        x = (terra::crds(raster.msw, na.rm = FALSE)[, 1] - lon[i])
-        y = (terra::crds(raster.msw, na.rm = FALSE)[, 2] - lat[i])
-        r = sqrt(x ** 2 + y ** 2) #distance in degree
-
 
         #Compute sustained winds according to the input model
         if (method == "Willoughby") {
@@ -389,25 +404,24 @@ stormBehaviour = function(sts,
         }else if (method == "Boose01") {
           raster.t = ras.template
           #South Hemisphere only, t is counterclockwise
-          terra::values(raster.t) = acos(x/r)
+          terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
           terra::values(raster.msw) = Boose01(
             r = dist.m * 0.001,
             t = terra::values(raster.t),
             landfall = landfall[i],
             rmw = rmw[i],
             vmax = msw[i],
-            Vh = Nv
+            Vh = storm.speed
           )
         }
 
         #Add asymmetry
-        if (asymmetry) {
-          r = sqrt(x ** 2 + y ** 2)
-          raster.theta = ras.template
-          terra::values(raster.theta) = acos((y * vx.deg+-x * vy.deg) /
-                                               (N * r))
-          terra::values(raster.msw) = terra::values(raster.msw) +
-            cos(terra::values(raster.theta)) * (Nv / 3.6)
+        if (asymmetry & method != "Boose01") {
+          raster.t = ras.template
+          #South Hemisphere only, t is counterclockwise
+          terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
+          terra::values(raster.msw) = terra::values(raster.msw)
+          - (1 - sin(terra::values(raster.t)))*storm.speed/2
         }
 
         if (product == "Category") {
