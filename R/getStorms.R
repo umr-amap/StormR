@@ -204,9 +204,8 @@ getStorms <- function(time_period = c(1980, 2022),
       #we are interested in successive cyclonic seasons
       indices = seq(
         from = which(cyclonic_seasons == time_period[1])[1],
-        to = utils::tail(which(cyclonic_seasons == time_period[2]),
+        to = max(which(cyclonic_seasons == time_period[2])),
         by = 1)
-      )
     }
   }
 
@@ -240,7 +239,7 @@ getStorms <- function(time_period = c(1980, 2022),
   #Handle buffer
   if (!loi.is.basin) {
     loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * 1000)
-
+    loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
   } else{
     loi.sf.buffer = loi.sf
   }
