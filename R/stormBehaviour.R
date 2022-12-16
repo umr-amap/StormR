@@ -96,7 +96,8 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 #' @param landfall Minimum distance to land over next 3 hours (=0 means landfall)
 #' @param vmax Maximum wind speed generated
 #' @param Vh forward speed of storm
-#' @param b Scaling factor
+#' @param pc Pressure at the center of the storm
+#' @param poci Pressure at the Outermost Closed Isobar
 #' @return wind value according to the Boose 01 at distance `r` to the
 #'  center of the storm
 Boose01_profile = function(r,
@@ -105,7 +106,8 @@ Boose01_profile = function(r,
                           landfall,
                           vmax,
                           Vh,
-                          b = 1.3){
+                          pc,
+                          poci){
 
   if(landfall > 0){
     f = 1
@@ -114,6 +116,7 @@ Boose01_profile = function(r,
   }
 
   S = 1
+  b = 1.15 * exp(1) * vmax**2 / (poci - pc)
 
   Vr = f *(vmax - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
 
@@ -194,10 +197,7 @@ stormBehaviour = function(sts,
   #Check focus_loi input
   stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
   initial_floi = focus_loi
-  if (product == "PDI") {
-    focus_loi = FALSE
-    warning("focus_loi ignored for computations")
-  }
+
 
 
   #Generating the template
@@ -222,8 +222,12 @@ stormBehaviour = function(sts,
   ras.template <- terra::resample(ras, ras.template)
   #Reprojection in lon/lat
   ras.template = terra::project(ras.template, "EPSG:4326")
+
   #Handling time line crossing
-  terra::ext(ras.template) = e
+  if(terra::ext(ras.template)$xmin < 0){
+   ras.template = terra::rast(resolution = terra::res(ras.template), extent = e)
+  }
+
 
 
 
@@ -257,7 +261,7 @@ stormBehaviour = function(sts,
     dat = data.frame(
       lon = st@obs.all$lon[ind],
       lat = st@obs.all$lat[ind],
-      msw = zoo::na.approx(st@obs.all$wind[ind], rule = 2),
+      msw = st@obs.all$wind[ind],
       rmw = st@obs.all$rmw[ind],
       roci = st@obs.all$roci[ind],
       pc = st@obs.all$pres[ind],
@@ -274,7 +278,7 @@ stormBehaviour = function(sts,
     #Compute number of steps
     last.obs = dim(dat)[1]
     nb.steps = dt * (last.obs - 1) - (last.obs - 2)
-    n = 1
+    step = 1
 
 
     if (verbose) {
@@ -347,7 +351,7 @@ stormBehaviour = function(sts,
       landfall = zoo::na.approx(landfall)
 
 
-      storm.speed = dat$storm.speed[j] * 3.6
+      storm.speed = dat$storm.speed[j]
 
 
 
@@ -358,10 +362,10 @@ stormBehaviour = function(sts,
       #Compute velocity of storm (deg/h)
       vx.km = vx.deg * space_res / terra::res(ras.template)[1]
       vy.km = vy.deg * space_res / terra::res(ras.template)[2]
-      v.norm.km = sqrt(vx.km ** 2 + vy.km ** 2)
+      v.norm.ms = sqrt(vx.km ** 2 + vy.km ** 2) / 3.6
       #cat("\n",v.norm.km, " ", storm.speed,"\n")
 
-      storm.speed = v.norm.km
+      storm.speed =  v.norm.ms
 
 
       #For every interpolated time steps dt
@@ -386,6 +390,11 @@ stormBehaviour = function(sts,
           if(!use_rmw){
             rmw[i] = NULL
           }
+
+          if(asymmetry){
+            msw[i] = msw[i] - storm.speed
+          }
+
           terra::values(raster.msw) = Willoughby(
             vmax = msw[i],
             lat = lat[i],
@@ -393,6 +402,10 @@ stormBehaviour = function(sts,
             rmw = rmw[i]
           )
         }else if (method == "Holland80") {
+          if(asymmetry){
+            msw[i] = msw[i] - storm.speed
+          }
+
           terra::values(raster.msw) = Holland80(
             r = dist.m * 0.001,
             rmw = rmw[i],
@@ -411,17 +424,29 @@ stormBehaviour = function(sts,
             landfall = landfall[i],
             rmw = rmw[i],
             vmax = msw[i],
-            Vh = storm.speed
+            Vh = storm.speed,
+            pc = pc[i] *100,
+            poci = poci[i] * 100
           )
         }
 
         #Add asymmetry
         if (asymmetry & method != "Boose01") {
+
           raster.t = ras.template
+          ###############
+          #Boose version#
+          ###############
           #South Hemisphere only, t is counterclockwise
-          terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
-          terra::values(raster.msw) = terra::values(raster.msw)
-          - (1 - sin(terra::values(raster.t)))*storm.speed/2
+          # terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
+          # terra::values(raster.msw) = terra::values(raster.msw) - (1 - sin(terra::values(raster.t)))*(storm.speed/3.6)/2
+
+          ###############
+          #other version#
+          ###############
+          terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) /
+                                           (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x*x + y*y)))
+          terra::values(raster.msw) = terra::values(raster.msw) + cos(terra::values(raster.t))* storm.speed
         }
 
         if (product == "Category") {
@@ -463,7 +488,7 @@ stormBehaviour = function(sts,
                                      - 1.49 * (terra::values(raster.msw)[ind2] / 31.5) ** 2) * 0.001
         }
 
-        n = n + 1
+        step = step + 1
       }
       if (verbose)
         utils::setTxtProgressBar(pb, j)

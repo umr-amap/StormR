@@ -4,7 +4,7 @@
 \alias{Boose01_profile}
 \title{Compute wind values according to the Boose 01 model}
 \usage{
-Boose01_profile(r, t, rmw, landfall, vmax, Vh, b = 1.3)
+Boose01_profile(r, t, rmw, landfall, vmax, Vh, pc, poci)
 }
 \arguments{
 \item{r}{Distance to the center of the storm where the value must be computed}
@@ -19,7 +19,9 @@ Boose01_profile(r, t, rmw, landfall, vmax, Vh, b = 1.3)
 
 \item{Vh}{forward speed of storm}
 
-\item{b}{Scaling factor}
+\item{pc}{Pressure at the center of the storm}
+
+\item{poci}{Pressure at the Outermost Closed Isobar}
 }
 \value{
 wind value according to the Boose 01 at distance \code{r} to the
