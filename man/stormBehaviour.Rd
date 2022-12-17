@@ -24,7 +24,7 @@ stormBehaviour(
 currently among \code{MSW} and \code{PDI}.}
 
 \item{method}{Cyclonic model used to compute product. Default value is set to
-\code{willoughby}.}
+\code{Willoughby}.}
 
 \item{asymmetry}{Logical, whether or not adding asymmetry to the analytic model.
 Default value is set to TRUE}

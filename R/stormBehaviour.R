@@ -136,7 +136,7 @@ Boose01 <- Vectorize(Boose01_profile, vectorize.args = c("r","t"))
 #' @param product Characters that represent the product we would like to compute,
 #' currently among `MSW` and `PDI`.
 #' @param method Cyclonic model used to compute product. Default value is set to
-#' `willoughby`.
+#' `Willoughby`.
 #' @param asymmetry Logical, whether or not adding asymmetry to the analytic model.
 #' Default value is set to TRUE
 #' @param use_rmw Logical, whether or not using the Radius of maximum wind speed
@@ -170,7 +170,7 @@ stormBehaviour = function(sts,
   stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Category"))
 
   #Check method input
-  stopifnot("Invalid method" = method %in% c("Willoughby", "Holland80", "Boose01"))
+  stopifnot("Invalid method" = method %in% c("Willoughby", "Holland80"))
 
   #Check asymmetry input
   stopifnot("asymmetry must be logical" = identical(class(asymmetry), "logical"))
@@ -401,6 +401,7 @@ stormBehaviour = function(sts,
             r = dist.m * 0.001,
             rmw = rmw[i]
           )
+
         }else if (method == "Holland80") {
           if(asymmetry){
             msw[i] = msw[i] - storm.speed
@@ -414,24 +415,10 @@ stormBehaviour = function(sts,
             poci = poci[i] * 100,
             lat = lat[i]
           )
-        }else if (method == "Boose01") {
-          raster.t = ras.template
-          #South Hemisphere only, t is counterclockwise
-          terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
-          terra::values(raster.msw) = Boose01(
-            r = dist.m * 0.001,
-            t = terra::values(raster.t),
-            landfall = landfall[i],
-            rmw = rmw[i],
-            vmax = msw[i],
-            Vh = storm.speed,
-            pc = pc[i] *100,
-            poci = poci[i] * 100
-          )
         }
 
         #Add asymmetry
-        if (asymmetry & method != "Boose01") {
+        if (asymmetry) {
 
           raster.t = ras.template
           ###############
