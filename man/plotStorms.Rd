@@ -6,7 +6,7 @@
 \usage{
 plotStorms(
   sts,
-  name = NULL,
+  names = NULL,
   shapefile = NULL,
   ground_color = "grey",
   ocean_color = "white",
@@ -24,7 +24,7 @@ plotStorms(
 \arguments{
 \item{sts}{S4 Storms object that gathers all the storms we are interested in}
 
-\item{name}{The storm we would like to plot. Default value is NULL that
+\item{names}{The storm we would like to plot. Default value is NULL that
 will plot all the storms contained in \code{sts}.}
 
 \item{shapefile}{a \code{shapefile} or \code{SpatialPolygons} object that should replace

@@ -8,6 +8,7 @@
 #'
 #' @slot name A character that contains the name of the storm
 #' @slot season A numeric that contains the cyclonic season in which the storm has occured.
+#' @slot  sshs numeric. Category in the sshs scale
 #' @slot numobs.all A numeric that contains the total number of observations available.
 #' @slot obs.all A data.frame.that contains of the observations available, where an
 #' observation is: Basin, Subbasin, ISO_time, lon, lat, wmo_msw, Nadi_wind, Nadi_cat
@@ -24,6 +25,7 @@ Storm <- methods::setClass(
   slots = c(
     name = "character",
     season = "numeric",
+    sshs = "numeric",
     numobs.all = "numeric",
     obs.all = "data.frame",
     obs = "numeric",
@@ -326,6 +328,7 @@ getStorms <- function(time_period = c(1980, 2022),
       storm@obs = ind
       storm@numobs = length(ind)
       storm@lty.track = k
+      storm@sshs = max(storm@obs.all$sshs,na.rm = T)
       storm.list = append(storm.list, storm)
       k = k + 1
       sts@names = append(sts@names, storm@name)

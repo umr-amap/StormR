@@ -18,6 +18,8 @@ Models a storm using various slots
 
 \item{\code{season}}{A numeric that contains the cyclonic season in which the storm has occured.}
 
+\item{\code{sshs}}{numeric. Category in the sshs scale}
+
 \item{\code{numobs.all}}{A numeric that contains the total number of observations available.}
 
 \item{\code{obs.all}}{A data.frame.that contains of the observations available, where an
