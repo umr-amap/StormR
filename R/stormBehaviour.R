@@ -137,8 +137,8 @@ Boose01 <- Vectorize(Boose01_profile, vectorize.args = c("r","t"))
 #' currently among `MSW` and `PDI`.
 #' @param method Cyclonic model used to compute product. Default value is set to
 #' `Willoughby`.
-#' @param asymmetry Logical, whether or not adding asymmetry to the analytic model.
-#' Default value is set to TRUE
+#' @param asymmetry Character that indicates which asymmetry to use in the computations.
+#' Default value is set to "None".
 #' @param use_rmw Logical, whether or not using the Radius of maximum wind speed
 #' from the database. Default value is set to TRUE
 #' @param space_res Space resolution (km) of the incoming raster products.
@@ -157,7 +157,7 @@ Boose01 <- Vectorize(Boose01_profile, vectorize.args = c("r","t"))
 stormBehaviour = function(sts,
                           product = "MSW",
                           method = "Willoughby",
-                          asymmetry = TRUE,
+                          asymmetry = "None",
                           use_rmw = TRUE,
                           space_res = 10,
                           time_res = 1,
@@ -170,14 +170,12 @@ stormBehaviour = function(sts,
   stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Category"))
 
   #Check method input
-  stopifnot("Invalid method" = method %in% c("Willoughby", "Holland80"))
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland80"))
+  stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Check asymmetry input
-  stopifnot("asymmetry must be logical" = identical(class(asymmetry), "logical"))
-  if(method == "Boose01"){
-    asymmetry = T
-    warning("asymmetry ignored")
-  }
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "V1", "V2"))
+  stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Check use_rmw input
   stopifnot("use_rmw must be logical" = identical(class(use_rmw), "logical"))
@@ -391,7 +389,7 @@ stormBehaviour = function(sts,
             rmw[i] = NULL
           }
 
-          if(asymmetry){
+          if(asymmetry == "V2"){
             msw[i] = msw[i] - storm.speed
           }
 
@@ -403,7 +401,8 @@ stormBehaviour = function(sts,
           )
 
         }else if (method == "Holland80") {
-          if(asymmetry){
+
+          if(asymmetry == "V2"){
             msw[i] = msw[i] - storm.speed
           }
 
@@ -418,21 +417,16 @@ stormBehaviour = function(sts,
         }
 
         #Add asymmetry
-        if (asymmetry) {
-
-          raster.t = ras.template
-          ###############
-          #Boose version#
-          ###############
+        if (asymmetry == "V1") {
+          #Boose version
           #South Hemisphere only, t is counterclockwise
-          # terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
-          # terra::values(raster.msw) = terra::values(raster.msw) - (1 - sin(terra::values(raster.t)))*(storm.speed/3.6)/2
+          raster.t = ras.template
+          terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
+          terra::values(raster.msw) = terra::values(raster.msw) - (1 - sin(terra::values(raster.t)))*(storm.speed/3.6)/2
 
-          ###############
-          #other version#
-          ###############
-          terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) /
-                                           (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x*x + y*y)))
+        } else if(asymmetry == "V2"){
+          raster.t = ras.template
+          terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
           terra::values(raster.msw) = terra::values(raster.msw) + cos(terra::values(raster.t))* storm.speed
         }
 
