@@ -83,7 +83,7 @@ plotBehaviour = function(sts,
 
   plotStorms(
     sts,
-    name = name,
+    names = name,
     xlim = c(xmin, xmax),
     ylim = c(ymin, ymax)
   )
