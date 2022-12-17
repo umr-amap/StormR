@@ -138,7 +138,7 @@ plot_labels = function(storm, by, pos) {
 #' Plot a set of storm
 #'
 #' @param sts S4 Storms object that gathers all the storms we are interested in
-#' @param name The storm we would like to plot. Default value is NULL that
+#' @param names The storm we would like to plot. Default value is NULL that
 #' will plot all the storms contained in `sts`.
 #' @param shapefile a `shapefile` or `SpatialPolygons` object that should replace
 #' the default map. Default value is set to NULL.
@@ -172,7 +172,7 @@ plot_labels = function(storm, by, pos) {
 #' @import rworldxtra
 #' @export
 plotStorms = function(sts,
-                      name = NULL,
+                      names = NULL,
                       shapefile =  NULL,
                       ground_color = "grey",
                       ocean_color = "white",
@@ -195,10 +195,10 @@ plotStorms = function(sts,
         identical(class(shapefile)[1], "sf")
     )
 
-  #Check name input
-  if (!is.null(name)) {
-    stopifnot("name must be characters" = identical(class(name), "character"))
-    stopifnot("Invalid storm name (storm not found)" = name %in% unlist(sts@names))
+  #Check names input
+  if (!is.null(names)) {
+    stopifnot("names must be characters" = identical(class(names), "character"))
+    stopifnot("Invalid storm names (storm not found)" = names %in% unlist(sts@names))
   }
 
   #Check grtc input
@@ -321,14 +321,16 @@ plotStorms = function(sts,
     plot(sts@spatial.loi.buffer, lwd = 2, add = T)
 
   #Plot track
-  if (is.null(name)) {
+  if (is.null(names)) {
     lapply(sts@data, plot_track, all_basin)
     if (labels)
       lapply(sts@data, plot_labels, by, pos)
   } else{
-    plot_track(sts@data[[name]], all_basin)
-    if (labels)
-      plot_labels(sts@data[[name]], by, pos)
+    for(n in names){
+      plot_track(sts@data[[n]], all_basin)
+      if (labels)
+        plot_labels(sts@data[[n]], by, pos)
+    }
   }
 
   if (legends) {
