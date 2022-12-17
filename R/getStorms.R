@@ -41,6 +41,7 @@ Storm <- methods::setClass(
 #' @slot data A list of S4 Storm we are interested in
 #' @slot time.period Cyclonic season(s) we are interested in
 #' @slot names Storms names of interest
+#' @slot  sshs numeric. Category in the sshs scale
 #' @slot nb.storms Number of storms contained in this object
 #'@slot basin  in which basin the TC has occured
 #' @slot spatial.loi A SpatialPolygons that represents the location of interest.
@@ -57,6 +58,7 @@ Storms <- methods::setClass(
     data = "list",
     time.period = "numeric",
     names = "list",
+    sshs = "list",
     nb.storms = "numeric",
     basin = "character",
     spatial.loi = "sf",
@@ -332,6 +334,7 @@ getStorms <- function(time_period = c(1980, 2022),
       storm.list = append(storm.list, storm)
       k = k + 1
       sts@names = append(sts@names, storm@name)
+      sts@sshs = append(sts@sshs, storm@sshs)
     }
 
     if (verbose)

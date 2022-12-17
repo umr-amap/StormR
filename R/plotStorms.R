@@ -140,6 +140,7 @@ plot_labels = function(storm, by, pos) {
 #' @param sts S4 Storms object that gathers all the storms we are interested in
 #' @param names The storm we would like to plot. Default value is NULL that
 #' will plot all the storms contained in `sts`.
+#' @param category category of storms we would like to plot
 #' @param shapefile a `shapefile` or `SpatialPolygons` object that should replace
 #' the default map. Default value is set to NULL.
 #' @param ground_color character that stands for the color of the ground area
@@ -173,6 +174,7 @@ plot_labels = function(storm, by, pos) {
 #' @export
 plotStorms = function(sts,
                       names = NULL,
+                      category = NULL,
                       shapefile =  NULL,
                       ground_color = "grey",
                       ocean_color = "white",
@@ -199,6 +201,11 @@ plotStorms = function(sts,
   if (!is.null(names)) {
     stopifnot("names must be characters" = identical(class(names), "character"))
     stopifnot("Invalid storm names (storm not found)" = names %in% unlist(sts@names))
+  }
+
+  #Check category input
+  if (!is.null(category)) {
+    stopifnot("Invalid category input" = category %in% c(-1,-2,0,1,2,3,4,5))
   }
 
   #Check grtc input
@@ -320,16 +327,33 @@ plotStorms = function(sts,
   if (loi)
     plot(sts@spatial.loi.buffer, lwd = 2, add = T)
 
+
+  #Handle category
+  if(!is.null(category) & is.null(names)){
+    if(length(category) == 2){
+      category = category[order(category)]
+      cat_inf = category[1]
+      cat_sup = category[2]
+      ind = which(unlist(sts@sshs) >= cat_inf & unlist(sts@sshs) <= cat_sup)
+    }else{
+      #length category == 1
+      ind = which(unlist(sts@sshs) == category)
+    }
+    sts_aux = unlist(sts@data)[ind]
+  }else{
+    sts_aux = sts@data
+  }
+
   #Plot track
   if (is.null(names)) {
-    lapply(sts@data, plot_track, all_basin)
+    lapply(sts_aux, plot_track, all_basin)
     if (labels)
-      lapply(sts@data, plot_labels, by, pos)
+      lapply(sts_aux, plot_labels, by, pos)
   } else{
     for(n in names){
-      plot_track(sts@data[[n]], all_basin)
+      plot_track(sts_aux[[n]], all_basin)
       if (labels)
-        plot_labels(sts@data[[n]], by, pos)
+        plot_labels(sts_aux[[n]], by, pos)
     }
   }
 

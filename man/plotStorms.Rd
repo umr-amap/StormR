@@ -7,6 +7,7 @@
 plotStorms(
   sts,
   names = NULL,
+  category = NULL,
   shapefile = NULL,
   ground_color = "grey",
   ocean_color = "white",
@@ -26,6 +27,8 @@ plotStorms(
 
 \item{names}{The storm we would like to plot. Default value is NULL that
 will plot all the storms contained in \code{sts}.}
+
+\item{category}{category of storms we would like to plot}
 
 \item{shapefile}{a \code{shapefile} or \code{SpatialPolygons} object that should replace
 the default map. Default value is set to NULL.}
