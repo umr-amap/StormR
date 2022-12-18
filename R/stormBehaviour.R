@@ -336,7 +336,6 @@ stormBehaviour = function(sts,
 
 
       aux.stack = c()
-      aux.stack.Cd = c()
       #For every general 3H time step j
       for (j in 1:(last.obs - 1)) {
 
@@ -638,12 +637,23 @@ stormBehaviour = function(sts,
         }
 
         if (product == "PDI") {
+          cat("X:\n",X,"\n\n")
           Cd = X
           ind1 = which(Cd <= 31.5)
           ind2 = which(Cd > 31.5)
-          Cd = (0.8 + 0.06 * Cd[ind1]) * 0.001
-          Cd = (0.55 + 2.97 * Cd[ind2] / 31.5 - 1.49 * (Cd[ind2] / 31.5) ** 2) * 0.001
+          Cd[ind1] = (0.8 + 0.06 * X[ind1]) * 0.001
+          Cd[ind2] = (0.55 + 2.97 * X[ind2] / 31.5 - 1.49 * (X[ind2] / 31.5) ** 2) * 0.001
           Cd[X <= 18] = 0
+          rho = 0.001
+
+          #Raising to power 3
+          X = X ** 3
+
+          #Apply both rho and surface drag coefficient
+          X = X * rho * Cd
+
+          #Integrating over the whole track
+          X = sum(X, na.rm = T) * 3
         }
 
 
@@ -671,7 +681,11 @@ stormBehaviour = function(sts,
 
   }else{
 
-    res = data.frame(res, row.names = ind)
+    if(product == "PDI"){
+      res = data.frame(res)
+    }else{
+      res = data.frame(res, row.names = ind)
+    }
     colnames(res) =paste0("(",points$lon,",",points$lat,")")
     return(res)
   }
