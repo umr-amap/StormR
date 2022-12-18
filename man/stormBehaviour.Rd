@@ -11,6 +11,7 @@ stormBehaviour(
   method = "Willoughby",
   asymmetry = "None",
   use_rmw = TRUE,
+  points = NULL,
   space_res = 10,
   time_res = 1,
   verbose = FALSE,
@@ -31,6 +32,8 @@ Default value is set to "None".}
 
 \item{use_rmw}{Logical, whether or not using the Radius of maximum wind speed
 from the database. Default value is set to TRUE}
+
+\item{points}{...}
 
 \item{space_res}{Space resolution (km) of the incoming raster products.
 Default value is set to 10km.}
