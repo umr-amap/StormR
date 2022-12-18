@@ -283,7 +283,7 @@ stormBehaviour = function(sts,
 
     #Compute speed of storm
     for(i in 1:(dim(dat)[1]-1)){
-      dat$storm.speed2[i] = terra::distance(
+      dat$storm.speed[i] = terra::distance(
         x = cbind(dat$lon[i],dat$lat[i]),
         y = cbind(dat$lon[i+1],dat$lat[i+1]),
         lonlat = T
@@ -369,16 +369,6 @@ stormBehaviour = function(sts,
         rmw[dt] = dat$rmw[j + 1]
         rmw = zoo::na.approx(rmw)
 
-        roci = rep(NA, dt)
-        roci[1] = dat$roci[j]
-        roci[dt] = dat$roci[j + 1]
-        roci = zoo::na.approx(roci)
-
-        landfall = rep(NA, dt)
-        landfall[1] = dat$landfall[j]
-        landfall[dt] = dat$landfall[j + 1]
-        landfall = zoo::na.approx(landfall)
-
         vx.deg = dat$vx.deg[j]
         vy.deg = dat$vy.deg[j]
         storm.speed = dat$storm.speed[j]
@@ -387,7 +377,6 @@ stormBehaviour = function(sts,
         for (i in 1:dt) {
           if (i == dt & j != last.obs - 1)
             break #avoid redondance
-
 
           raster.msw = ras.template
 
@@ -404,7 +393,6 @@ stormBehaviour = function(sts,
           if(asymmetry == "V2"){
             msw[i] = msw[i] - storm.speed
           }
-
 
           #Compute sustained winds according to the input model
           if (method == "Willoughby") {
@@ -445,7 +433,23 @@ stormBehaviour = function(sts,
             terra::values(raster.msw) = terra::values(raster.msw) + cos(terra::values(raster.t))* storm.speed
           }
 
-          if (product == "Category") {
+          if (product == "MSW") {
+            aux.stack = c(aux.stack, raster.msw)
+          }else if (product == "PDI"){
+            Cd = ras.template
+            ind1 = terra::values(raster.msw) <= 31.5
+            ind2 = terra::values(raster.msw) > 31.5
+            terra::values(Cd)[ind1] = (0.8 + 0.06 * terra::values(raster.msw)[ind1]) * 0.001
+            terra::values(Cd)[ind2] = (0.55 + 2.97 * terra::values(raster.msw)[ind2] /31.5
+                                       - 1.49 * (terra::values(raster.msw)[ind2] / 31.5) ** 2) * 0.001
+            terra::values(Cd)[terra::values(raster.msw) <= 18] = 0
+            rho = 0.001
+            #Raising to power 3
+            raster.msw = raster.msw ** 3
+            #Apply both rho and surface drag coefficient
+            raster.msw = raster.msw * rho * Cd
+            aux.stack = c(aux.stack, raster.msw)
+          }else if (product == "Category"){
             r = ras.template
             ind = which(terra::values(raster.msw) >= 32 &
                           terra::values(raster.msw) <= 42)
@@ -470,28 +474,7 @@ stormBehaviour = function(sts,
             ind = which(terra::values(raster.msw) >= 70)
             r[ind] = 1
             aux.stack = c(aux.stack, r)
-          } else if(product == "PDI"){
-            Cd = ras.template
-            ind1 = terra::values(raster.msw) <= 31.5
-            ind2 = terra::values(raster.msw) > 31.5
-            terra::values(Cd)[ind1] = (0.8 + 0.06 * terra::values(raster.msw)[ind1]) * 0.001
-            terra::values(Cd)[ind2] = (0.55 + 2.97 * terra::values(raster.msw)[ind2] /31.5
-                                       - 1.49 * (terra::values(raster.msw)[ind2] / 31.5) ** 2) * 0.001
-            terra::values(Cd)[terra::values(raster.msw) <= 18] = 0
-            rho = 0.001
-            #Raising to power 3
-            raster.msw = raster.msw ** 3
-            #Apply both rho and surface drag coefficient
-            raster.msw = raster.msw * rho * Cd
-            aux.stack = c(aux.stack, raster.msw)
-          }else{
-            #product == MSW
-            aux.stack = c(aux.stack, raster.msw)
           }
-
-
-
-
 
           step = step + 1
         }
@@ -562,9 +545,8 @@ stormBehaviour = function(sts,
           names(product.raster) = paste0(st@name, "_", product, i)
           final.stack = c(final.stack, product.raster)
           ras_c = c(ras_c, product.raster)
-
-
         }
+
         #Add all categories
         ras_c = terra::rast(ras_c)
         ras_c = sum(ras_c, na.rm = T)
@@ -582,7 +564,6 @@ stormBehaviour = function(sts,
         lonlat = T
       )
 
-
       res = c()
       #For each point
       for(i in 1:dim(points)[1]){
@@ -590,7 +571,6 @@ stormBehaviour = function(sts,
         #Compute distance in deg between eye of storm and point P
         x = points$lon[i] - dat$lon
         y = points$lat[i] - dat$lat
-
 
         if(asymmetry == "V2"){
           msw = dat$msw[i] - dat$storm.speed[i]
@@ -624,7 +604,6 @@ stormBehaviour = function(sts,
           )
         }
 
-        #Add asymmetry
         if (asymmetry == "V1") {
           #Boose version
           #South Hemisphere only, t is counterclockwise
@@ -637,7 +616,6 @@ stormBehaviour = function(sts,
         }
 
         if (product == "PDI") {
-          cat("X:\n",X,"\n\n")
           Cd = X
           ind1 = which(Cd <= 31.5)
           ind2 = which(Cd > 31.5)
@@ -654,16 +632,41 @@ stormBehaviour = function(sts,
 
           #Integrating over the whole track
           X = sum(X, na.rm = T) * 3
-        }
 
+        }else if (product == "Category") {
+          ind1 = which(X >= 32 & X <= 42)
+          ind2 = which(X >= 43 & X <= 49)
+          ind3 = which(X >= 50 & X <= 57)
+          ind4 = which(X >= 58 & X <= 69)
+          ind5 = which(X >= 70)
+
+          X1 = rep(0,length(X))
+          X1[ind1] = 1
+          X1 = sum(X1, na.rm = T) * 3
+
+          X2 = rep(0,length(X))
+          X2[ind2] = 1
+          X2 = sum(X2, na.rm = T) * 3
+
+          X3 = rep(0,length(X))
+          X3[ind3] = 1
+          X3 = sum(X3, na.rm = T) * 3
+
+          X4 = rep(0,length(X))
+          X4[ind4] = 1
+          X4 = sum(X4, na.rm = T) * 3
+
+          X5 = rep(0,length(X))
+          X5[ind5] = 1
+          X5 = sum(X5, na.rm = T) * 3
+
+          X = c(X1,X2,X3,X4,X5)
+        }
 
         res = cbind(res,X)
 
-
-
-
-
       }
+
     }
     s = s + 1
   }
@@ -681,11 +684,14 @@ stormBehaviour = function(sts,
 
   }else{
 
-    if(product == "PDI"){
-      res = data.frame(res)
-    }else{
+    if(product == "MSW"){
       res = data.frame(res, row.names = ind)
+    }else if(product == "PDI"){
+      res = data.frame(res,row.names = "PDI")
+    }else{
+      res = data.frame(res,row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
     }
+
     colnames(res) =paste0("(",points$lon,",",points$lat,")")
     return(res)
   }
