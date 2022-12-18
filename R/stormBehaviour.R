@@ -336,6 +336,7 @@ stormBehaviour = function(sts,
 
 
       aux.stack = c()
+      aux.stack.Cd = c()
       #For every general 3H time step j
       for (j in 1:(last.obs - 1)) {
 
@@ -470,19 +471,25 @@ stormBehaviour = function(sts,
             ind = which(terra::values(raster.msw) >= 70)
             r[ind] = 1
             aux.stack = c(aux.stack, r)
-          } else{
-            aux.stack = c(aux.stack, raster.msw)
-          }
-
-
-          if (product == "PDI") {
+          } else if(product == "PDI"){
             Cd = ras.template
             ind1 = terra::values(raster.msw) <= 31.5
             ind2 = terra::values(raster.msw) > 31.5
             terra::values(Cd)[ind1] = (0.8 + 0.06 * terra::values(raster.msw)[ind1]) * 0.001
-            terra::values(Cd)[ind2] = (0.55 + 2.97 * (terra::values(raster.msw)[ind2] /31.5)
+            terra::values(Cd)[ind2] = (0.55 + 2.97 * terra::values(raster.msw)[ind2] /31.5
                                        - 1.49 * (terra::values(raster.msw)[ind2] / 31.5) ** 2) * 0.001
+            terra::values(Cd)[terra::values(raster.msw) <= 18] = 0
+            rho = 0.001
+            #Raising to power 3
+            raster.msw = raster.msw ** 3
+            #Apply both rho and surface drag coefficient
+            raster.msw = raster.msw * rho * Cd
+            aux.stack = c(aux.stack, raster.msw)
+          }else{
+            #product == MSW
+            aux.stack = c(aux.stack, raster.msw)
           }
+
 
 
 
@@ -523,11 +530,6 @@ stormBehaviour = function(sts,
 
 
       } else if (product == "PDI") {
-        #Raising to power 3
-        aux.stack = aux.stack ^ 3
-        #Apply both rho and surface drag coefficient
-        rho = 0.001
-        aux.stack = aux.stack * rho * Cd
         #Integrating over the whole track
         product.raster = sum(aux.stack, na.rm = T) * time_res
         #Apply focal function to smooth results
@@ -635,8 +637,22 @@ stormBehaviour = function(sts,
           X = X + cos(t) * dat$storm.speed[i]
         }
 
+        if (product == "PDI") {
+          Cd = X
+          ind1 = which(Cd <= 31.5)
+          ind2 = which(Cd > 31.5)
+          Cd = (0.8 + 0.06 * Cd[ind1]) * 0.001
+          Cd = (0.55 + 2.97 * Cd[ind2] / 31.5 - 1.49 * (Cd[ind2] / 31.5) ** 2) * 0.001
+          Cd[X <= 18] = 0
+        }
+
 
         res = cbind(res,X)
+
+
+
+
+
       }
     }
     s = s + 1
