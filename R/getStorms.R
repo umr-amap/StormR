@@ -4,19 +4,21 @@
 
 
 
-#' Models a storm using various slots
+#' Gather all the informations to model a single Storm
 #'
-#' @slot name A character that contains the name of the storm
-#' @slot season A numeric that contains the cyclonic season in which the storm has occured.
-#' @slot  sshs numeric. Category in the sshs scale
-#' @slot numobs.all A numeric that contains the total number of observations available.
-#' @slot obs.all A data.frame.that contains of the observations available, where an
-#' observation is: Basin, Subbasin, ISO_time, lon, lat, wmo_msw, Nadi_wind, Nadi_cat
-#' @slot numobs A numeric that contains the number of observations available within
-#' the area of interest/location of interest
-#' @slot obs Indices of observations within the loi
-#' @slot lty.track A numeric that indicates which line type should be used to
-#' plot the storm
+#' @slot name character. Name of the storm
+#' @slot season  numeric. Cyclonic season in which the storm has occured
+#' @slot  sshs numeric. Category in the Saffir Simpson Hurricane Scale
+#' @slot numobs.all numeric. Total number of observations available.
+#' @slot obs.all  data.frame. Contains all of the observations available.
+#' An observation is made up of several slots which are:
+#' Basin, Subbasin, ISO_time, lon, lat, msw (Maximum Sustained Wind in), rmw (Radius of Maximum Wind),
+#' roci (Radius of the Outermost Closed Isobar), pres (pressure at the center),
+#' poci (Pressure of the Outermost Closed Isobar), sshs (Category in the Saffir Simpson Hurricane Scale),
+#' landfall (Minimum distance to land over next 3 hours,  = 0 means landfall)).
+#' @slot numobs numeric. Total number of observations available within the location of interest + buffer
+#' @slot obs numerics. Indices of observations within the location of interest + buffer
+#' @slot lty.track numeric. Indicates which line type is used to plot the storm
 #' @return A S4 object gathering all the above informations
 #' @importFrom methods new
 #' @export
@@ -36,17 +38,19 @@ Storm <- methods::setClass(
 
 
 
-#' Models a set of storms that occured in a location of interest
+#' Gather all the informations to model a set of Storms
 #'
-#' @slot data A list of S4 Storm we are interested in
-#' @slot time.period Cyclonic season(s) we are interested in
-#' @slot names Storms names of interest
-#' @slot  sshs numeric. Category in the sshs scale
-#' @slot nb.storms Number of storms contained in this object
-#'@slot basin  in which basin the TC has occured
-#' @slot spatial.loi A SpatialPolygons that represents the location of interest.
+#' @slot data A list of Storm object
+#' @slot time.period numerics. Range of the cyclonic seasons of Storms available
+#'  in `data`
+#' @slot names characters. Names of Storms available in `data`
+#' @slot  sshs numerics. Maximum category in the Saffir Simpson Hurricane Scale
+#'  of all Storms available in `data`
+#' @slot nb.storms nuleric. Total Number of Storms available in `data`
+#' @slot basin  character. Basin in which the Storms have occured
+#' @slot spatial.loi sf object. Represents the location of interest
 #' Projection is EPSG:4326
-#' @slot buffer the buffer used to extent `spatial.loi`
+#' @slot buffer numeric. Buffer used to extent `spatial.loi` (in km)
 #' @slot spatial.loi.buffer buffer extension of `spatial.loi`
 #' @return A S4 object gathering all the above informations
 #' @importFrom methods new
@@ -75,26 +79,26 @@ Storms <- methods::setClass(
 
 
 
-#' Initialize a S4 Storms object
+#' Initialize a Storms object depending on a selection
 #'
-#' @param time_period A numeric vector that contains either the time range of
-#' cyclonic season we are interested in, or the cyclonic seasons that matches
-#' the occurencies of storms contains in `name`. Default value is set to
-#' c(1970,2020)
-#' @param name A character vector that contains the name of the storms we are
-#' interested in. It must be the same size of `time_period`. If the time_period
-#' do not correspond, the function will throw an error
-#' @param loi Location of interest. Should be either a `SpatialPolygon`, or a sf
-#' object. Default value is set to "SP" which will focus on the whole South
-#' West Pacific Basin. It can also be a numeric vector that contains one longitude/
-#' latitude coordinate. If so, a circle based `SpatialPolygon`
-#' centered in loi, with a radius of `max_dist` is used as loi.
-#' @param max_dist Numeric that indicates the radius (in km) of the
-#' buffer to generate `spatail.poly.buffer`. Default value is set to 300km.
-#' @param verbose Logical, whether or not the function must be verbose. Default
+#' @param time_period numerics. Should be either one cyclonic season or a range
+#' of cyclonic season. It could also be a vector of cyclonic season provided
+#' that it has the same length as `name` and matches the season of each Storm
+#' listed in `name`. Default value is set to c(1980, 2021)
+#' @param name characters. Name(s) of Storm(s). Default value is set to NULL,
+#' otherwise `time_period` and `name` must have the same length, and these two
+#' informations must match
+#' @param loi Location of Interest. Should be either a `SpatialPolygon`, a `sf`
+#' object, a point of coordinates in lon/lat, a character representing a country,
+#' or a basin. Default value is set to `"SP"` which will focus on the whole South
+#' West Pacific Basin. Depending on the input, it will set up the `spatial.loi.`
+#' slot.
+#' @param max_dist numeric. Indicates the buffer used buffer to generate
+#' `spatail.loi.buffer` (in km). Default value is set to 300
+#' @param verbose logical. Whether or not the function must be verbose. Default
 #' value is set to `FALSE`
-#' @param remove_weak_TC Logical, whether or not to remove TC under category 1 in
-#' the sshs scale. Default value is set to TRUE.
+#' @param remove_weak_TC logical. Whether or not to remove Stomrs under category
+#' 1 in the Saffir Simpson Hurricane Scale. Default value is set to TRUE.
 #'
 #' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as

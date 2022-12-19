@@ -2,7 +2,7 @@
 % Please edit documentation in R/getStorms.R
 \name{getStorms}
 \alias{getStorms}
-\title{Initialize a S4 Storms object}
+\title{Initialize a Storms object depending on a selection}
 \usage{
 getStorms(
   time_period = c(1980, 2022),
@@ -14,33 +14,33 @@ getStorms(
 )
 }
 \arguments{
-\item{time_period}{A numeric vector that contains either the time range of
-cyclonic season we are interested in, or the cyclonic seasons that matches
-the occurencies of storms contains in \code{name}. Default value is set to
-c(1970,2020)}
+\item{time_period}{numerics. Should be either one cyclonic season or a range
+of cyclonic season. It could also be a vector of cyclonic season provided
+that it has the same length as \code{name} and matches the season of each Storm
+listed in \code{name}. Default value is set to c(1980, 2021)}
 
-\item{name}{A character vector that contains the name of the storms we are
-interested in. It must be the same size of \code{time_period}. If the time_period
-do not correspond, the function will throw an error}
+\item{name}{characters. Name(s) of Storm(s). Default value is set to NULL,
+otherwise \code{time_period} and \code{name} must have the same length, and these two
+informations must match}
 
-\item{loi}{Location of interest. Should be either a \code{SpatialPolygon}, or a sf
-object. Default value is set to "SP" which will focus on the whole South
-West Pacific Basin. It can also be a numeric vector that contains one longitude/
-latitude coordinate. If so, a circle based \code{SpatialPolygon}
-centered in loi, with a radius of \code{max_dist} is used as loi.}
+\item{loi}{Location of Interest. Should be either a \code{SpatialPolygon}, a \code{sf}
+object, a point of coordinates in lon/lat, a character representing a country,
+or a basin. Default value is set to \code{"SP"} which will focus on the whole South
+West Pacific Basin. Depending on the input, it will set up the \code{spatial.loi.}
+slot.}
 
-\item{max_dist}{Numeric that indicates the radius (in km) of the
-buffer to generate \code{spatail.poly.buffer}. Default value is set to 300km.}
+\item{max_dist}{numeric. Indicates the buffer used buffer to generate
+\code{spatail.loi.buffer} (in km). Default value is set to 300}
 
-\item{verbose}{Logical, whether or not the function must be verbose. Default
+\item{verbose}{logical. Whether or not the function must be verbose. Default
 value is set to \code{FALSE}}
 
-\item{remove_weak_TC}{Logical, whether or not to remove TC under category 1 in
-the sshs scale. Default value is set to TRUE.}
+\item{remove_weak_TC}{logical. Whether or not to remove Stomrs under category
+1 in the Saffir Simpson Hurricane Scale. Default value is set to TRUE.}
 }
 \value{
 a S4 Storms object that gathers all the above informations
 }
 \description{
-Initialize a S4 Storms object
+Initialize a Storms object depending on a selection
 }

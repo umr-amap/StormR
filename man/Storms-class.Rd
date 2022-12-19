@@ -4,32 +4,34 @@
 \name{Storms-class}
 \alias{Storms-class}
 \alias{Storms}
-\title{Models a set of storms that occured in a location of interest}
+\title{Gather all the informations to model a set of Storms}
 \value{
 A S4 object gathering all the above informations
 }
 \description{
-Models a set of storms that occured in a location of interest
+Gather all the informations to model a set of Storms
 }
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{A list of S4 Storm we are interested in}
+\item{\code{data}}{A list of Storm object}
 
-\item{\code{time.period}}{Cyclonic season(s) we are interested in}
+\item{\code{time.period}}{numerics. Range of the cyclonic seasons of Storms available
+in \code{data}}
 
-\item{\code{names}}{Storms names of interest}
+\item{\code{names}}{characters. Names of Storms available in \code{data}}
 
-\item{\code{sshs}}{numeric. Category in the sshs scale}
+\item{\code{sshs}}{numerics. Maximum category in the Saffir Simpson Hurricane Scale
+of all Storms available in \code{data}}
 
-\item{\code{nb.storms}}{Number of storms contained in this object}
+\item{\code{nb.storms}}{nuleric. Total Number of Storms available in \code{data}}
 
-\item{\code{basin}}{in which basin the TC has occured}
+\item{\code{basin}}{character. Basin in which the Storms have occured}
 
-\item{\code{spatial.loi}}{A SpatialPolygons that represents the location of interest.
+\item{\code{spatial.loi}}{sf object. Represents the location of interest
 Projection is EPSG:4326}
 
-\item{\code{buffer}}{the buffer used to extent \code{spatial.loi}}
+\item{\code{buffer}}{numeric. Buffer used to extent \code{spatial.loi} (in km)}
 
 \item{\code{spatial.loi.buffer}}{buffer extension of \code{spatial.loi}}
 }}

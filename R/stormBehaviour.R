@@ -281,7 +281,7 @@ stormBehaviour = function(sts,
     dat$vx.deg = NA
     dat$vy.deg = NA
 
-    #Compute speed of storm
+    #Compute speed of storm (m/s)
     for(i in 1:(dim(dat)[1]-1)){
       dat$storm.speed[i] = terra::distance(
         x = cbind(dat$lon[i],dat$lat[i]),

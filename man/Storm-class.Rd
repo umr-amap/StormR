@@ -4,33 +4,35 @@
 \name{Storm-class}
 \alias{Storm-class}
 \alias{Storm}
-\title{Models a storm using various slots}
+\title{Gather all the informations to model a single Storm}
 \value{
 A S4 object gathering all the above informations
 }
 \description{
-Models a storm using various slots
+Gather all the informations to model a single Storm
 }
 \section{Slots}{
 
 \describe{
-\item{\code{name}}{A character that contains the name of the storm}
+\item{\code{name}}{character. Name of the storm}
 
-\item{\code{season}}{A numeric that contains the cyclonic season in which the storm has occured.}
+\item{\code{season}}{numeric. Cyclonic season in which the storm has occured}
 
-\item{\code{sshs}}{numeric. Category in the sshs scale}
+\item{\code{sshs}}{numeric. Category in the Saffir Simpson Hurricane Scale}
 
-\item{\code{numobs.all}}{A numeric that contains the total number of observations available.}
+\item{\code{numobs.all}}{numeric. Total number of observations available.}
 
-\item{\code{obs.all}}{A data.frame.that contains of the observations available, where an
-observation is: Basin, Subbasin, ISO_time, lon, lat, wmo_msw, Nadi_wind, Nadi_cat}
+\item{\code{obs.all}}{data.frame. Contains all of the observations available.
+An observation is made up of several slots which are:
+Basin, Subbasin, ISO_time, lon, lat, msw (Maximum Sustained Wind in), rmw (Radius of Maximum Wind),
+roci (Radius of the Outermost Closed Isobar), pres (pressure at the center),
+poci (Pressure of the Outermost Closed Isobar), sshs (Category in the Saffir Simpson Hurricane Scale),
+landfall (Minimum distance to land over next 3 hours,  = 0 means landfall)).}
 
-\item{\code{numobs}}{A numeric that contains the number of observations available within
-the area of interest/location of interest}
+\item{\code{numobs}}{numeric. Total number of observations available within the location of interest + buffer}
 
-\item{\code{obs}}{Indices of observations within the loi}
+\item{\code{obs}}{numerics. Indices of observations within the location of interest + buffer}
 
-\item{\code{lty.track}}{A numeric that indicates which line type should be used to
-plot the storm}
+\item{\code{lty.track}}{numeric. Indicates which line type is used to plot the storm}
 }}
 
