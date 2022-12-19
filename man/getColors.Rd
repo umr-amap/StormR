@@ -2,16 +2,18 @@
 % Please edit documentation in R/plotStorms.R
 \name{getColors}
 \alias{getColors}
-\title{Get SSWS palette colors associated with a wind observation}
+\title{Get the Saffir Simpson Hurricane scale colors associated with a maximum
+sustained wind speed}
 \usage{
 getColors(msw)
 }
 \arguments{
-\item{msw}{maximum sustained wind observation}
+\item{msw}{numeric. Maximum Sustained Wind}
 }
 \value{
-color palette associated with the observation
+color associated with the observation
 }
 \description{
-Get SSWS palette colors associated with a wind observation
+Get the Saffir Simpson Hurricane scale colors associated with a maximum
+sustained wind speed
 }

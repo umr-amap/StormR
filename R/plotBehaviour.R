@@ -154,7 +154,7 @@ plotBehaviour = function(sts,
   }
 
 
-  plot_track(sts@data[[name]], FALSE)
+  plotTrack(sts@data[[name]], FALSE)
 
 
 }

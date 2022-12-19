@@ -4,11 +4,12 @@
 
 
 
-#' Get SSWS palette colors associated with a wind observation
+#' Get the Saffir Simpson Hurricane scale colors associated with a maximum
+#' sustained wind speed
 #'
-#' @param msw maximum sustained wind observation
+#' @param msw numeric. Maximum Sustained Wind
 #'
-#' @return color palette associated with the observation
+#' @return color associated with the observation
 getColors = function(msw) {
   saffir.simpson.palette = c("#00CCFF",
                              "#00CCCC",
@@ -48,37 +49,40 @@ getColors = function(msw) {
       }
     }
   }
+
+  return(color)
 }
 
 
 
 
 
-#' Plot the track of a storm on an existing map
+#' Plot the track of a Storm on a map that should be previsouly plotted
 #'
-#' @param storm Storm object that we want to plot the track. Note that a map
-#'  should be previously plotted
-#' @param all_basin Logical, wether or not to plot track onto the whole basin.
-#' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
-#' `spatial.loi.buffer` of object `sts`
+#' @param st Storm object
+#' @param all_basin logical. Whether or not to plot the track onto the whole basin.
+#' Default value is set to `FALSE`. Otherwise, the plot focuses on the extent of
+#' `spatial.loi.buffer` of the Storms object in which `storm` belongs
 #'
 #' @return NULL
-plot_track = function(storm, all_basin) {
+plotTrack = function(st, all_basin) {
+
   if (all_basin) {
     cex = 0.6
   } else{
     cex = 1
   }
 
-  lon = storm@obs.all$lon
-  lat = storm@obs.all$lat
-  msw = storm@obs.all$msw
+  lon = st@obs.all$lon
+  lat = st@obs.all$lat
+  msw = st@obs.all$msw
   colors = unlist(lapply(msw, getColors))
+
   graphics::lines(
     lon,
     lat,
     col = "black",
-    lty = storm@lty.track,
+    lty = st@lty.track,
     lwd = 1,
     cex = cex
   )
@@ -99,30 +103,28 @@ plot_track = function(storm, all_basin) {
 
 
 
-#' Add ISO_time and name label for the first and the
-#' last observation within the loi, on a map for a given storm.
+#' Add ISO Times and name labels on the track of a Storm on a map that should be
+#' previsouly plotted
 #'
-#' @param storm Storm object that we want to plot the track. Note that both a map
-#' and track of the storm should be previously plotted
-#' @param by number, increment of the sequence for the labels to plot
-#' @param pos number between 1 and 4, position for the labels to plot: up, left,
-#' down, right
-#' `spatial.loi.buffer` of object `sts`
+#' @param st Storm object
+#' @param by numeric. Increment of the sequence for the labels to plot
+#' @param pos numeric. Must be between 1 and 4 and correspond to the position of
+#' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)
 #'
 #' @return NULL
-plot_labels = function(storm, by, pos) {
+plotLabels = function(st, by, pos) {
   cex = 0.6
-  ind = round(seq(1, storm@numobs.all, by))
+  ind = round(seq(1, st@numobs.all, by))
 
   for (i in ind) {
-    lon = storm@obs.all$lon[i]
-    lat = storm@obs.all$lat[i]
+    lon = st@obs.all$lon[i]
+    lat = st@obs.all$lat[i]
 
     graphics::text(
       lon,
       lat,
-      labels = paste(storm@name,
-                     storm@obs.all$iso.time[i],
+      labels = paste(st@name,
+                     st@obs.all$iso.time[i],
                      sep = "\n"),
       pos = pos,
       cex = cex
@@ -134,39 +136,38 @@ plot_labels = function(storm, by, pos) {
 
 
 
-#' Plot a set of storm
+#' Plot a set of Storms contained in a Storms object.
 #'
-#' @param sts S4 Storms object that gathers all the storms we are interested in
-#' @param names The storm we would like to plot. Default value is NULL that
-#' will plot all the storms contained in `sts`.
-#' @param category category of storms we would like to plot
-#' @param shapefile a `shapefile` or `SpatialPolygons` object that should replace
-#' the default map. Default value is set to NULL.
-#' @param ground_color character that stands for the color of the ground area
-#' @param ocean_color character that stands for the color of the ocean area
-#' @param all_basin Logical, wether or not to plot track onto the whole basin.
-#' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
-#' `spatial.loi.buffer` of object `sts`
-#' @param loi Logical, wether or not to plot `spatial.loi.buffer` on the map
+#' @param sts Storms object
+#' @param names character(s). Names of the Storms we would like to plot. Default
+#' value is set to `NULL` which will consider every Storm in `sts`
+#' @param category numeric(s). Should be either a category or a range of category
+#' in the Saffir Simpson scale (-2 to 5). Default value is set to `NULL` which
+#' will consider every Storm in `sts`. Otherwise it will consider only storm that
+#' reached `category`
+#' @param ground_color character. Color for the ground
+#' @param ocean_color character. Color for the oceans
+#' @param all_basin logical. Whether or not to plot the track onto the whole basin.
+#' Default value is set to `FALSE`. Otherwise, the plot focuses on the extent of
+#' `spatial.loi.buffer` of `sts`
+#' @param loi logical. Whether or not to plot `spatial.loi.buffer` on the map
 #' Default value is set to TRUE.
-#' @param labels Logical, wether or not to plot ISO_time and name labels for the
-#' first and the last observation of each storms within the loi. Default value
-#' is set to FALSE.
-#' @param by number, increment of the sequence for the labels to plot. Default value
+#' @param labels logical. Whether or not to plot ISO Times and name labels
+#' @param by numeric. Increment of the sequence for the labels to plot. Default value
 #' is set to 8 which represents a 24h time interval
-#' @param pos number between 1 and 4, position for the labels to plot: up, left,
-#' down, right
-#' @param legends Logical, wether or not to plot legends for the
-#' plot. Default value is set to FALSE.
-#' @param grtc numeric that controls how many graticules to plot. Default value
-#' is set to 1, which plots graticules on multipule of 10 coordinates. Note that
+#' @param pos numeric. Must be between 1 and 4 and correspond to the position of
+#' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)
+#' @param legends logical. Whether or not to plot legends. Default value is set
+#' to FALSE.
+#' @param grtc numeric. Controls the number of graticules to plot. Default value
+#' is set to 1, which plots graticules on multiple of 10 coordinates. Note that
 #' it should be a power of 2.
-#' @param xlim A set of longitude coordinates that controls the longitude extent
-#' of the plot. Default value is NULL which will let the plot extends according
-#' to the x bounding box of `spatial.loi.buffer`.
-#' @param ylim A set of latitude coordinates that controls the latitude extent
-#' of the plot. Default value is NULL which will let the plot extends according
-#' to the y bounding box of `spatial.loi.buffer`.
+#' @param xlim numerics. A set of longitude coordinates that controls the
+#' longitude extent of the plot. Default value is set to `NULL` which will let
+#' the plot extends according to the x bounding box of `spatial.loi.buffer`.
+#' @param ylim numerics. A set of latitude coordinates that controls the
+#' longitude extent of the plot. Default value is set to `NULL` which will let
+#' the plot extends according to the x bounding box of `spatial.loi.buffer`.
 #' @return NULL
 #' @importFrom ds4psy is_wholenumber
 #' @import rworldxtra
@@ -174,7 +175,6 @@ plot_labels = function(storm, by, pos) {
 plotStorms = function(sts,
                       names = NULL,
                       category = NULL,
-                      shapefile =  NULL,
                       ground_color = "grey",
                       ocean_color = "white",
                       all_basin = FALSE,
@@ -191,12 +191,6 @@ plotStorms = function(sts,
   #Check sts input
   stopifnot("no data to plot" = !missing(sts))
 
-  #Check shapefile input
-  if (!is.null(shapefile))
-    stopifnot(
-      "shapefile must be a SpatialPolygonsDataFrame or a SF object" = identical(class(shapefile)[1], "SpatialPolygonsDataFrame") |
-        identical(class(shapefile)[1], "sf")
-    )
 
   #Check names input
   if (!is.null(names)) {
@@ -281,32 +275,18 @@ plotStorms = function(sts,
     }
   }
 
+  world = rworldmap::getMap(resolution = "high")
+  maps::map(
+    world,
+    fill = TRUE,
+    col = ground_color,
+    bg = ocean_color,
+    wrap = c(0, 360),
+    xlim = c(xmin, xmax),
+    ylim = c(ymin, ymax)
+  )
+  maps::map.axes(cex.axis = 1)
 
-  if (is.null(shapefile)) {
-    #Change map here to handle wrapping 0-360 in SWP Basin
-    world = rworldmap::getMap(resolution = "high")
-    maps::map(
-      world,
-      fill = TRUE,
-      col = ground_color,
-      bg = ocean_color,
-      wrap = c(0, 360),
-      xlim = c(xmin, xmax),
-      ylim = c(ymin, ymax)
-    )
-    maps::map.axes(cex.axis = 1)
-  } else{
-    plot(
-      shapefile,
-      xlim = c(xmin, xmax),
-      ylim = c(ymin, ymax),
-      col = ground_color,
-      bg = ocean_color,
-      lwd = 1,
-      border = 1,
-      axes = T
-    )
-  }
 
   #Add graticules
   x.min = round(xmin / 10) * 10 - 20
@@ -347,14 +327,14 @@ plotStorms = function(sts,
 
   #Plot track
   if (is.null(names)) {
-    lapply(sts.aux, plot_track, all_basin)
+    lapply(sts.aux, plotTrack, all_basin)
     if (labels)
-      lapply(sts.aux, plot_labels, by, pos)
+      lapply(sts.aux, plotLabels, by, pos)
   } else{
     for(n in names){
-      plot_track(sts.aux[[n]], all_basin)
+      plotTrack(sts.aux[[n]], all_basin)
       if (labels)
-        plot_labels(sts.aux[[n]], by, pos)
+        plotLabels(sts.aux[[n]], by, pos)
     }
   }
 

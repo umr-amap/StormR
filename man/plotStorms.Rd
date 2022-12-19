@@ -2,13 +2,12 @@
 % Please edit documentation in R/plotStorms.R
 \name{plotStorms}
 \alias{plotStorms}
-\title{Plot a set of storm}
+\title{Plot a set of Storms contained in a Storms object.}
 \usage{
 plotStorms(
   sts,
   names = NULL,
   category = NULL,
-  shapefile = NULL,
   ground_color = "grey",
   ocean_color = "white",
   all_basin = FALSE,
@@ -23,52 +22,50 @@ plotStorms(
 )
 }
 \arguments{
-\item{sts}{S4 Storms object that gathers all the storms we are interested in}
+\item{sts}{Storms object}
 
-\item{names}{The storm we would like to plot. Default value is NULL that
-will plot all the storms contained in \code{sts}.}
+\item{names}{character(s). Names of the Storms we would like to plot. Default
+value is set to \code{NULL} which will consider every Storm in \code{sts}}
 
-\item{category}{category of storms we would like to plot}
+\item{category}{numeric(s). Should be either a category or a range of category
+in the Saffir Simpson scale (-2 to 5). Default value is set to \code{NULL} which
+will consider every Storm in \code{sts}. Otherwise it will consider only storm that
+reached \code{category}}
 
-\item{shapefile}{a \code{shapefile} or \code{SpatialPolygons} object that should replace
-the default map. Default value is set to NULL.}
+\item{ground_color}{character. Color for the ground}
 
-\item{ground_color}{character that stands for the color of the ground area}
+\item{ocean_color}{character. Color for the oceans}
 
-\item{ocean_color}{character that stands for the color of the ocean area}
+\item{all_basin}{logical. Whether or not to plot the track onto the whole basin.
+Default value is set to \code{FALSE}. Otherwise, the plot focuses on the extent of
+\code{spatial.loi.buffer} of \code{sts}}
 
-\item{all_basin}{Logical, wether or not to plot track onto the whole basin.
-Default value is set to FALSE. Otherwise, the plot focuses on the extent of
-\code{spatial.loi.buffer} of object \code{sts}}
+\item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
-\item{labels}{Logical, wether or not to plot ISO_time and name labels for the
-first and the last observation of each storms within the loi. Default value
-is set to FALSE.}
-
-\item{by}{number, increment of the sequence for the labels to plot. Default value
+\item{by}{numeric. Increment of the sequence for the labels to plot. Default value
 is set to 8 which represents a 24h time interval}
 
-\item{pos}{number between 1 and 4, position for the labels to plot: up, left,
-down, right}
+\item{pos}{numeric. Must be between 1 and 4 and correspond to the position of
+labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)}
 
-\item{legends}{Logical, wether or not to plot legends for the
-plot. Default value is set to FALSE.}
+\item{legends}{logical. Whether or not to plot legends. Default value is set
+to FALSE.}
 
-\item{loi}{Logical, wether or not to plot \code{spatial.loi.buffer} on the map
+\item{loi}{logical. Whether or not to plot \code{spatial.loi.buffer} on the map
 Default value is set to TRUE.}
 
-\item{grtc}{numeric that controls how many graticules to plot. Default value
-is set to 1, which plots graticules on multipule of 10 coordinates. Note that
+\item{grtc}{numeric. Controls the number of graticules to plot. Default value
+is set to 1, which plots graticules on multiple of 10 coordinates. Note that
 it should be a power of 2.}
 
-\item{xlim}{A set of longitude coordinates that controls the longitude extent
-of the plot. Default value is NULL which will let the plot extends according
-to the x bounding box of \code{spatial.loi.buffer}.}
+\item{xlim}{numerics. A set of longitude coordinates that controls the
+longitude extent of the plot. Default value is set to \code{NULL} which will let
+the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 
-\item{ylim}{A set of latitude coordinates that controls the latitude extent
-of the plot. Default value is NULL which will let the plot extends according
-to the y bounding box of \code{spatial.loi.buffer}.}
+\item{ylim}{numerics. A set of latitude coordinates that controls the
+longitude extent of the plot. Default value is set to \code{NULL} which will let
+the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 }
 \description{
-Plot a set of storm
+Plot a set of Storms contained in a Storms object.
 }
