@@ -7,48 +7,47 @@
 
 #' Get the radius of maximum wind speed according to Willoughby model
 #'
-#' @param vmax Maximum wind speed generated
-#' @param lat Latitude where `vmax` has occured
+#' @param msw Maximum wind speed generated
+#' @param lat Latitude where `msw` has occured
 #'
 #' @return radius of maximum wind speed (km)
-get_RMW = function(vmax,
+get_RMW = function(msw,
                    lat) {
-  return (46.4 * exp(-0.0155 * vmax + 0.0169 * abs(lat)))
+  return (46.4 * exp(-0.0155 * msw + 0.0169 * abs(lat)))
 }
 
 
 #' Compute wind values according to the Willoughby model
 #'
-#' @param vmax Maximum wind speed generated
+#' @param msw Maximum wind speed generated
 #' @param lat Latitude of the eye of the storm
 #' @param r Distance to the center of the storm where the value must be computed
 #' @param rmw Radius of maximum wind speed. Default value is set to NULL
 #' @return wind value according to the Willoughby model at distance `r` to the
 #'  center of the storm located in latitude `lat`
 
-Willoughby_profile = function(vmax,
+Willoughby_profile = function(msw,
                              lat,
                              r,
                              rmw = NULL) {
   if (is.null(rmw)) {
-    RMW = get_RMW(vmax, lat)
-  } else{
-    RMW = rmw
+    rmw = get_RMW(msw, lat)
   }
-  RMW = rep(RMW, length(r))
-  if (r >= RMW) {
-    XX1 = 287.6 - 1.942 * vmax + 7.799 * log(RMW) + 1.819 * abs(lat)
-    XX2 = 25
-    AA = 0.5913 + 0.0029 * vmax - 0.1361 * log(RMW) - 0.0042 * abs(lat)
-    Vr = vmax * ((1 - AA) * exp(-abs((r - RMW) / XX1)) + AA * exp(-abs(r -
-                                                                          RMW) / XX2))
+
+  rmw = rep(rmw, length(r))
+  if (r >= rmw) {
+    xx1 = 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
+    xx2 = 25
+    aa = 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
+    vr = msw * ((1 - aa) * exp(-abs((r - rmw) / xx1)) + aa * exp(-abs(r -
+                                                                          rmw) / xx2))
   } else{
-    nn = 2.1340 + 0.0077 * vmax - 0.4522 * log(RMW) - 0.0038 * abs(lat)
-    Vr = vmax * abs((r / RMW) ^ nn)
+    nn = 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
+    vr = msw * abs((r / rmw) ^ nn)
   }
 
 
-  return(Vr)
+  return(vr)
 }
 
 #Vectorize version of the above model
@@ -60,7 +59,7 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 #'
 #' @param r Distance to the center of the storm where the value must be computed
 #' @param rmw Radius of maximum wind speed
-#' @param vmax Maximum wind speed generated
+#' @param msw Maximum wind speed generated
 #' @param pc Pressure at the center of the storm
 #' @param poci Pressure at the Outermost Closed Isobar
 #' @param lat Latitude of the storm (eye)
@@ -68,64 +67,25 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 #'  center of the storm
 Holland80_profile = function(r,
                             rmw,
-                            vmax,
+                            msw,
                             pc,
                             poci,
                             lat){
 
   rho = 1.15  #air densiy
   f = 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
-  b = rho * exp(1) * vmax**2 / (poci - pc)
+  b = rho * exp(1) * msw**2 / (poci - pc)
 
-  Vr = sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
+  vr = sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
 
 
-  return(Vr)
+  return(vr)
 
 }
 
 #Vectorize version of the above model
 Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
-
-#' Compute wind values according to the Boose 01 model
-#'
-#' @param r Distance to the center of the storm where the value must be computed
-#' @param t Clockwise angle between forward motion of hurricane and radial line to P
-#' @param rmw Radius of maximum wind speed. Default value is set to NULL
-#' @param landfall Minimum distance to land over next 3 hours (=0 means landfall)
-#' @param vmax Maximum wind speed generated
-#' @param Vh forward speed of storm
-#' @param pc Pressure at the center of the storm
-#' @param poci Pressure at the Outermost Closed Isobar
-#' @return wind value according to the Boose 01 at distance `r` to the
-#'  center of the storm
-Boose01_profile = function(r,
-                          t,
-                          rmw,
-                          landfall,
-                          vmax,
-                          Vh,
-                          pc,
-                          poci){
-
-  if(landfall > 0){
-    f = 1
-  }else{
-    f = 0.8
-  }
-
-  S = 1
-  b = 1.15 * exp(1) * vmax**2 / (poci - pc)
-
-  Vr = f *(vmax - S*(1 - sin(t))*Vh/2) * sqrt((rmw/r)**b *exp(1 - (rmw/r)**b))
-
- return(Vr)
-
-}
-
-#Vectorize version of the above model
-Boose01 <- Vectorize(Boose01_profile, vectorize.args = c("r","t"))
 
 
 
@@ -200,7 +160,7 @@ stormBehaviour = function(sts,
 
   #Check focus_loi input
   stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
-  initial_floi = focus_loi
+
 
 
 
@@ -269,7 +229,7 @@ stormBehaviour = function(sts,
     dat = data.frame(
       lon = st@obs.all$lon[ind],
       lat = st@obs.all$lat[ind],
-      msw = st@obs.all$wind[ind],
+      msw = st@obs.all$msw[ind],
       rmw = st@obs.all$rmw[ind],
       roci = st@obs.all$roci[ind],
       pc = st@obs.all$pres[ind],
@@ -401,7 +361,7 @@ stormBehaviour = function(sts,
             }
 
             terra::values(raster.msw) = Willoughby(
-              vmax = msw[i],
+              msw = msw[i],
               lat = lat[i],
               r = dist.m * 0.001,
               rmw = rmw[i]
@@ -412,7 +372,7 @@ stormBehaviour = function(sts,
             terra::values(raster.msw) = Holland80(
               r = dist.m * 0.001,
               rmw = rmw[i],
-              vmax = msw[i],
+              msw = msw[i],
               pc = pc[i] * 100,
               poci = poci[i] * 100,
               lat = lat[i]
@@ -436,44 +396,28 @@ stormBehaviour = function(sts,
           if (product == "MSW") {
             aux.stack = c(aux.stack, raster.msw)
           }else if (product == "PDI"){
-            Cd = ras.template
+            raster.cd = ras.template
             ind1 = terra::values(raster.msw) <= 31.5
             ind2 = terra::values(raster.msw) > 31.5
-            terra::values(Cd)[ind1] = (0.8 + 0.06 * terra::values(raster.msw)[ind1]) * 0.001
-            terra::values(Cd)[ind2] = (0.55 + 2.97 * terra::values(raster.msw)[ind2] /31.5
+            terra::values(raster.cd)[ind1] = (0.8 + 0.06 * terra::values(raster.msw)[ind1]) * 0.001
+            terra::values(raster.cd)[ind2] = (0.55 + 2.97 * terra::values(raster.msw)[ind2] /31.5
                                        - 1.49 * (terra::values(raster.msw)[ind2] / 31.5) ** 2) * 0.001
-            terra::values(Cd)[terra::values(raster.msw) <= 18] = 0
+            terra::values(raster.cd)[terra::values(raster.msw) <= 18] = 0
             rho = 0.001
             #Raising to power 3
             raster.msw = raster.msw ** 3
             #Apply both rho and surface drag coefficient
-            raster.msw = raster.msw * rho * Cd
+            raster.msw = raster.msw * rho * raster.cd
             aux.stack = c(aux.stack, raster.msw)
           }else if (product == "Category"){
-            r = ras.template
-            ind = which(terra::values(raster.msw) >= 32 &
-                          terra::values(raster.msw) <= 42)
-            r[ind] = 1
-            aux.stack = c(aux.stack, r)
-            r = ras.template
-            ind = which(terra::values(raster.msw) >= 43 &
-                          terra::values(raster.msw) <= 49)
-            r[ind] = 1
-            aux.stack = c(aux.stack, r)
-            r = ras.template
-            ind = which(terra::values(raster.msw) >= 50 &
-                          terra::values(raster.msw) <= 57)
-            r[ind] = 1
-            aux.stack = c(aux.stack, r)
-            r = ras.template
-            ind = which(terra::values(raster.msw) >= 58 &
-                          terra::values(raster.msw) <= 69)
-            r[ind] = 1
-            aux.stack = c(aux.stack, r)
-            r = ras.template
-            ind = which(terra::values(raster.msw) >= 70)
-            r[ind] = 1
-            aux.stack = c(aux.stack, r)
+            sshs = c(33,42,49,58,70,100)
+            for(c in 1:5){
+              raster.c = ras.template
+              ind = which(terra::values(raster.msw) >= sshs[c] &
+                            terra::values(raster.msw) < sshs[c+1])
+              raster.c[ind] = 1
+              aux.stack = c(aux.stack, raster.c)
+            }
           }
 
           step = step + 1
@@ -527,7 +471,7 @@ stormBehaviour = function(sts,
 
       } else if (product == "Category") {
         #For each category in SSHS
-        ras_c = c()
+        raster.c = c()
         for (i in c(1, 2, 3, 4, 0)) {
           ind = which(seq(1, terra::nlyr(aux.stack)) %% 5 == i)
           #Integrating over the whole track
@@ -544,14 +488,14 @@ stormBehaviour = function(sts,
             i = 5
           names(product.raster) = paste0(st@name, "_", product, i)
           final.stack = c(final.stack, product.raster)
-          ras_c = c(ras_c, product.raster)
+          raster.c = c(raster.c, product.raster)
         }
 
         #Add all categories
-        ras_c = terra::rast(ras_c)
-        ras_c = sum(ras_c, na.rm = T)
-        names(ras_c) = paste0(st@name, "_Categories")
-        final.stack = c(final.stack, ras_c)
+        raster.c = terra::rast(raster.c)
+        raster.c = sum(raster.c, na.rm = T)
+        names(raster.c) = paste0(st@name, "_Categories")
+        final.stack = c(final.stack, raster.c)
       }
 
     }else{
@@ -585,8 +529,8 @@ stormBehaviour = function(sts,
             rmw = dat$rmw[i]
           }
 
-           X = Willoughby(
-            vmax = msw,
+           vr = Willoughby(
+            msw = msw,
             lat = dat$lat[i],
             r = dist.m[,i] * 0.001,
             rmw = rmw
@@ -594,10 +538,10 @@ stormBehaviour = function(sts,
 
         }else if (method == "Holland80") {
 
-          X = Holland80(
+          vr = Holland80(
             r = dist.m[,i] * 0.001,
             rmw = rmw,
-            vmax = msw,
+            msw = msw,
             pc = dat$pc[i] * 100,
             poci = dat$poci[i] * 100,
             lat = dat$lat[i]
@@ -608,62 +552,45 @@ stormBehaviour = function(sts,
           #Boose version
           #South Hemisphere only, t is counterclockwise
           t = (atan2(dat$vy.deg[i],dat$vx.deg[i])) - atan2(y,x) + pi
-          X = X - (1 - sin(t)) * dat$storm.speed[i]/2
+          vr = vr - (1 - sin(t)) * dat$storm.speed[i]/2
 
         } else if(asymmetry == "V2"){
           t = acos((y * dat$vx.deg[i] - x * dat$vy.deg[i]) / (sqrt(dat$vx.deg[i]**2 + dat$vy.deg[i]**2) * sqrt(x**2 + y**2)))
-          X = X + cos(t) * dat$storm.speed[i]
+          vr = vr + cos(t) * dat$storm.speed[i]
         }
 
         if (product == "PDI") {
-          Cd = X
-          ind1 = which(Cd <= 31.5)
-          ind2 = which(Cd > 31.5)
-          Cd[ind1] = (0.8 + 0.06 * X[ind1]) * 0.001
-          Cd[ind2] = (0.55 + 2.97 * X[ind2] / 31.5 - 1.49 * (X[ind2] / 31.5) ** 2) * 0.001
-          Cd[X <= 18] = 0
+          cd = vr
+          ind1 = which(cd <= 31.5)
+          ind2 = which(cd > 31.5)
+          cd[ind1] = (0.8 + 0.06 * vr[ind1]) * 0.001
+          cd[ind2] = (0.55 + 2.97 * vr[ind2] / 31.5 - 1.49 * (vr[ind2] / 31.5) ** 2) * 0.001
+          cd[vr <= 18] = 0
           rho = 0.001
 
           #Raising to power 3
-          X = X ** 3
+          vr = vr ** 3
 
           #Apply both rho and surface drag coefficient
-          X = X * rho * Cd
+          vr = vr * rho * cd
 
           #Integrating over the whole track
-          X = sum(X, na.rm = T) * 3
+          vr = sum(vr, na.rm = T) * 3
 
         }else if (product == "Category") {
-          ind1 = which(X >= 32 & X <= 42)
-          ind2 = which(X >= 43 & X <= 49)
-          ind3 = which(X >= 50 & X <= 57)
-          ind4 = which(X >= 58 & X <= 69)
-          ind5 = which(X >= 70)
-
-          X1 = rep(0,length(X))
-          X1[ind1] = 1
-          X1 = sum(X1, na.rm = T) * 3
-
-          X2 = rep(0,length(X))
-          X2[ind2] = 1
-          X2 = sum(X2, na.rm = T) * 3
-
-          X3 = rep(0,length(X))
-          X3[ind3] = 1
-          X3 = sum(X3, na.rm = T) * 3
-
-          X4 = rep(0,length(X))
-          X4[ind4] = 1
-          X4 = sum(X4, na.rm = T) * 3
-
-          X5 = rep(0,length(X))
-          X5[ind5] = 1
-          X5 = sum(X5, na.rm = T) * 3
-
-          X = c(X1,X2,X3,X4,X5)
+          vr.c = c()
+          sshs = c(33,42,49,58,70,100)
+          for(c in 1:5){
+            ind = which(vr >= sshs[c] & vr < sshs[c+1])
+            vr.aux = rep(0,length(vr))
+            vr.aux[ind1] = 1
+            vr.aux = sum(vr.aux, na.rm = T) * 3
+            vr.c = c(vr.c,vr.aux)
+          }
+          vr = vr.c
         }
 
-        res = cbind(res,X)
+        res = cbind(res,vr)
 
       }
 
@@ -673,7 +600,7 @@ stormBehaviour = function(sts,
 
   if(is.null(points)){
     final.stack = terra::rast(final.stack)
-    if (initial_floi) {
+    if (focus_loi) {
       #Mask the stack to fit loi buffer
       v = terra::vect(sts@spatial.loi.buffer)
       m = terra::rasterize(v, product.raster)

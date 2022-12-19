@@ -4,12 +4,12 @@
 \alias{get_RMW}
 \title{Get the radius of maximum wind speed according to Willoughby model}
 \usage{
-get_RMW(vmax, lat)
+get_RMW(msw, lat)
 }
 \arguments{
-\item{vmax}{Maximum wind speed generated}
+\item{msw}{Maximum wind speed generated}
 
-\item{lat}{Latitude where \code{vmax} has occured}
+\item{lat}{Latitude where \code{msw} has occured}
 }
 \value{
 radius of maximum wind speed (km)

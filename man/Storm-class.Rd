@@ -24,7 +24,7 @@ Gather all the informations to model a single Storm
 
 \item{\code{obs.all}}{data.frame. Contains all of the observations available.
 An observation is made up of several slots which are:
-Basin, Subbasin, ISO_time, lon, lat, msw (Maximum Sustained Wind in), rmw (Radius of Maximum Wind),
+Basin, Subbasin, iso.time, lon, lat, msw (Maximum Sustained Wind in), rmw (Radius of Maximum Wind),
 roci (Radius of the Outermost Closed Isobar), pres (pressure at the center),
 poci (Pressure of the Outermost Closed Isobar), sshs (Category in the Saffir Simpson Hurricane Scale),
 landfall (Minimum distance to land over next 3 hours,  = 0 means landfall)).}

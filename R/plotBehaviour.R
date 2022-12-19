@@ -94,7 +94,7 @@ plotBehaviour = function(sts,
 
 
   if (product == "MSW") {
-    m = plot(
+    plot(
       raster_product,
       col = rev(grDevices::heat.colors(50)),
       xlim = c(xmin, xmax),
@@ -114,7 +114,7 @@ plotBehaviour = function(sts,
 
 
   } else if (product == "PDI") {
-    m = plot(
+    plot(
       raster_product,
       col = rev(viridis::inferno(50)),
       xlim = c(xmin, xmax),
@@ -136,7 +136,7 @@ plotBehaviour = function(sts,
                             "Category4",
                             "Category5",
                             "Categories")) {
-    m = plot(
+    plot(
       raster_product,
       col = rev(viridis::viridis(50)),
       xlim = c(xmin, xmax),

@@ -6,40 +6,40 @@
 
 #' Get SSWS palette colors associated with a wind observation
 #'
-#' @param ms_wind maximum sustained wind observation
+#' @param msw maximum sustained wind observation
 #'
 #' @return color palette associated with the observation
-getColors = function(ms_wind) {
-  saffir_simpson_palette = c("#00CCFF",
+getColors = function(msw) {
+  saffir.simpson.palette = c("#00CCFF",
                              "#00CCCC",
                              "#FFFFB2",
                              "#FECC5C",
                              "#FD8D3C",
                              "#F03B20",
                              "#BD0026")
-  if (is.na(ms_wind)) {
+  if (is.na(msw)) {
     color = NA
   } else{
-    if (ms_wind <= 17) {
-      color = saffir_simpson_palette[1]
+    if (msw < 18) {
+      color = saffir.simpson.palette[1]
     } else{
-      if (ms_wind > 17 & ms_wind <= 32) {
-        color = saffir_simpson_palette[2]
+      if (msw >= 18 & msw < 33) {
+        color = saffir.simpson.palette[2]
       } else{
-        if (ms_wind >= 32 & ms_wind <= 42) {
-          color = saffir_simpson_palette[3]
+        if (msw >= 33 & msw < 42) {
+          color = saffir.simpson.palette[3]
         } else{
-          if (ms_wind > 42 & ms_wind <= 49) {
-            color = saffir_simpson_palette[4]
+          if (msw >= 42 & msw < 49) {
+            color = saffir.simpson.palette[4]
           } else{
-            if (ms_wind > 49 & ms_wind < 58) {
-              color = saffir_simpson_palette[5]
+            if (msw >= 49 & msw < 58) {
+              color = saffir.simpson.palette[5]
             } else{
-              if (ms_wind >= 58 & ms_wind < 70) {
-                color = saffir_simpson_palette[6]
+              if (msw >= 58 & msw < 70) {
+                color = saffir.simpson.palette[6]
               } else{
-                if (ms_wind >= 70) {
-                  color = saffir_simpson_palette[7]
+                if (msw >= 70) {
+                  color = saffir.simpson.palette[7]
                 }
               }
             }
@@ -48,7 +48,6 @@ getColors = function(ms_wind) {
       }
     }
   }
-
 }
 
 
@@ -73,7 +72,7 @@ plot_track = function(storm, all_basin) {
 
   lon = storm@obs.all$lon
   lat = storm@obs.all$lat
-  msw = storm@obs.all$wind
+  msw = storm@obs.all$msw
   colors = unlist(lapply(msw, getColors))
   graphics::lines(
     lon,
@@ -123,7 +122,7 @@ plot_labels = function(storm, by, pos) {
       lon,
       lat,
       labels = paste(storm@name,
-                     storm@obs.all$ISO_time[i],
+                     storm@obs.all$iso.time[i],
                      sep = "\n"),
       pos = pos,
       cex = cex
@@ -187,6 +186,8 @@ plotStorms = function(sts,
                       grtc = 1,
                       xlim = NULL,
                       ylim = NULL) {
+
+
   #Check sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -262,7 +263,7 @@ plotStorms = function(sts,
     if (!is.null(xlim)) {
       warning("xlim ignored")
     }
-    if (!is.null(xlim)) {
+    if (!is.null(ylim)) {
       warning("ylim ignored")
     }
   } else{
@@ -332,28 +333,28 @@ plotStorms = function(sts,
   if(!is.null(category) & is.null(names)){
     if(length(category) == 2){
       category = category[order(category)]
-      cat_inf = category[1]
-      cat_sup = category[2]
-      ind = which(unlist(sts@sshs) >= cat_inf & unlist(sts@sshs) <= cat_sup)
+      cat.inf = category[1]
+      cat.sup = category[2]
+      ind = which(unlist(sts@sshs) >= cat.inf & unlist(sts@sshs) <= cat.sup)
     }else{
       #length category == 1
       ind = which(unlist(sts@sshs) == category)
     }
-    sts_aux = unlist(sts@data)[ind]
+    sts.aux = unlist(sts@data)[ind]
   }else{
-    sts_aux = sts@data
+    sts.aux = sts@data
   }
 
   #Plot track
   if (is.null(names)) {
-    lapply(sts_aux, plot_track, all_basin)
+    lapply(sts.aux, plot_track, all_basin)
     if (labels)
-      lapply(sts_aux, plot_labels, by, pos)
+      lapply(sts.aux, plot_labels, by, pos)
   } else{
     for(n in names){
-      plot_track(sts_aux[[n]], all_basin)
+      plot_track(sts.aux[[n]], all_basin)
       if (labels)
-        plot_labels(sts_aux[[n]], by, pos)
+        plot_labels(sts.aux[[n]], by, pos)
     }
   }
 

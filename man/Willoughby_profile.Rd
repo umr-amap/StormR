@@ -4,10 +4,10 @@
 \alias{Willoughby_profile}
 \title{Compute wind values according to the Willoughby model}
 \usage{
-Willoughby_profile(vmax, lat, r, rmw = NULL)
+Willoughby_profile(msw, lat, r, rmw = NULL)
 }
 \arguments{
-\item{vmax}{Maximum wind speed generated}
+\item{msw}{Maximum wind speed generated}
 
 \item{lat}{Latitude of the eye of the storm}
 

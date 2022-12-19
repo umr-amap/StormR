@@ -4,10 +4,10 @@
 \alias{getColors}
 \title{Get SSWS palette colors associated with a wind observation}
 \usage{
-getColors(ms_wind)
+getColors(msw)
 }
 \arguments{
-\item{ms_wind}{maximum sustained wind observation}
+\item{msw}{maximum sustained wind observation}
 }
 \value{
 color palette associated with the observation
