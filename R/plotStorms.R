@@ -156,7 +156,8 @@ plotLabels = function(st, by, pos) {
 #' @param by numeric. Increment of the sequence for the labels to plot. Default value
 #' is set to 8 which represents a 24h time interval
 #' @param pos numeric. Must be between 1 and 4 and correspond to the position of
-#' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)
+#' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
+#' Default value is set to 3
 #' @param legends logical. Whether or not to plot legends. Default value is set
 #' to FALSE.
 #' @param grtc numeric. Controls the number of graticules to plot. Default value
@@ -166,7 +167,7 @@ plotLabels = function(st, by, pos) {
 #' longitude extent of the plot. Default value is set to `NULL` which will let
 #' the plot extends according to the x bounding box of `spatial.loi.buffer`.
 #' @param ylim numerics. A set of latitude coordinates that controls the
-#' longitude extent of the plot. Default value is set to `NULL` which will let
+#' latitude extent of the plot. Default value is set to `NULL` which will let
 #' the plot extends according to the x bounding box of `spatial.loi.buffer`.
 #' @return NULL
 #' @importFrom ds4psy is_wholenumber
@@ -225,14 +226,18 @@ plotStorms = function(sts,
                 ylim <= 90)
   }
 
-  #Check logical inputs
+  #Check inputs
   stopifnot("all_basin must be logical" = identical(class(all_basin), "logical"))
   stopifnot("legends must be logical" = identical(class(legends), "logical"))
-  stopifnot("labels must be logical" = identical(class(labels), "logical"))
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
 
   #Check labels inputs
+  stopifnot("labels must be logical" = identical(class(labels), "logical"))
+
+  #Check by inputs
   stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
+
+  #Check pos inputs
   stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
   stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
 

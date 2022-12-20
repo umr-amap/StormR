@@ -63,7 +63,7 @@ longitude extent of the plot. Default value is set to \code{NULL} which will let
 the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 
 \item{ylim}{numerics. A set of latitude coordinates that controls the
-longitude extent of the plot. Default value is set to \code{NULL} which will let
+latitude extent of the plot. Default value is set to \code{NULL} which will let
 the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 }
 \description{

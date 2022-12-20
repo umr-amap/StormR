@@ -484,7 +484,7 @@ stormBehaviour = function(sts,
       if (product == "MSW") {
         if(result == "profiles"){
           final.stack = aux.stack
-          names(final.stack) = paste0(st@name, "_profile_",ind)
+          names(final.stack) = paste0(st@name, "_profile",ind)
         }else{
           #Compute msw analytic raster
           product.raster = max(aux.stack, na.rm = T)
@@ -548,7 +548,7 @@ stormBehaviour = function(sts,
         #Add all categories
         raster.c = terra::rast(raster.c)
         raster.c = sum(raster.c, na.rm = T)
-        names(raster.c) = paste0(st@name, "_", product,"_all")
+        names(raster.c) = paste0(st@name, "_", product,"all")
         final.stack = c(final.stack, raster.c)
         final.stack = terra::rast(final.stack)
       }

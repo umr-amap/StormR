@@ -2,29 +2,30 @@
 % Please edit documentation in R/plotBehaviour.R
 \name{plotBehaviour}
 \alias{plotBehaviour}
-\title{Plot a selected product (MSW, PDI ...) alongside with the track of a selected
-storm contained in object \code{sts}.}
+\title{Plot a rasterize product (Maximum Sustained Wind, Power Dissipation Index,
+Category Exposure, 2D wind speed structure at a given observation ...)
+associated with a Storm contained in a \code{Storms} alongside with its track}
 \usage{
-plotBehaviour(sts, raster_product, xlim = NULL, ylim = NULL, mask = FALSE)
+plotBehaviour(sts, raster_product, xlim = NULL, ylim = NULL, ...)
 }
 \arguments{
-\item{sts}{Storms object that contains the storm we are interested in}
+\item{sts}{\code{Storms} object}
 
-\item{raster_product}{Spatraster object which spatializes the product we are interested
-in. The name of the layer must be nameOfTheStorm_product (which is the case)
-if the product is generated with the function \code{stormBehaviour}}
+\item{raster_product}{\code{Spatraster} object. Name of the layer must be
+"stormName_product" where product is either MSW, PDI, Exposure(1,2,3,4,5,All).
+It can also be "stormName_profileInd" where Ind stand for the observations if
+\code{raster_product} is a 2D wind speed structure}
 
-\item{xlim}{A set of longitude coordinates that controls the longitude extent
-of the plot. Default value is NULL which will let the plot extends according
-to the x bounding box of \code{spatial.loi.buffer}.}
+\item{xlim}{numerics. A set of longitude coordinates that controls the
+longitude extent of the plot. Default value is set to \code{NULL} which will let
+the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 
-\item{ylim}{A set of latitude coordinates that controls the latitude extent
-of the plot. Default value is NULL which will let the plot extends according
-to the y bounding box of \code{spatial.loi.buffer}.}
-
-\item{mask}{Logical, wether or not to mask the data according to \code{spatial.loi}}
+\item{ylim}{numerics. A set of latitude coordinates that controls the
+latitude extent of the plot. Default value is set to \code{NULL} which will let
+the plot extends according to the y bounding box of \code{spatial.loi.buffer}.}
 }
 \description{
-Plot a selected product (MSW, PDI ...) alongside with the track of a selected
-storm contained in object \code{sts}.
+Plot a rasterize product (Maximum Sustained Wind, Power Dissipation Index,
+Category Exposure, 2D wind speed structure at a given observation ...)
+associated with a Storm contained in a \code{Storms} alongside with its track
 }
