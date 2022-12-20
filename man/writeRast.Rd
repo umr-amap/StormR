@@ -7,13 +7,15 @@
 writeRast(rast, format = ".tiff", filename = NULL, path = "./")
 }
 \arguments{
-\item{rast}{SpatRast object we wish to write}
+\item{rast}{SpatRast object.}
 
-\item{format}{format of the file we want to export the \code{rast}}
+\item{format}{character. Format of the file to export \code{rast}. Either \code{.tiff}
+or \code{.nc}. Default value is set to \code{.tiff}}
 
-\item{filename}{name of the file}
+\item{filename}{character. Name of the file. Default value is set to \code{NULL},
+in this case it will be set to \code{names(rast)}}
 
-\item{path}{the relative path where the file shoule be written}
+\item{path}{character. Relative path where the file should be written}
 }
 \description{
 Write a SpatRast raster in the given format

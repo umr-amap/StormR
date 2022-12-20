@@ -5,10 +5,12 @@
 
 #' Write a SpatRast raster in the given format
 #'
-#' @param rast SpatRast object we wish to write
-#' @param format format of the file we want to export the `rast`
-#' @param filename name of the file
-#' @param path the relative path where the file shoule be written
+#' @param rast SpatRast object.
+#' @param format character. Format of the file to export `rast`. Either `.tiff`
+#' or `.nc`. Default value is set to `.tiff`
+#' @param filename character. Name of the file. Default value is set to `NULL`,
+#' in this case it will be set to `names(rast)`
+#' @param path character. Relative path where the file should be written
 #'
 #' @return NULL
 #' @export

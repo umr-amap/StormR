@@ -281,7 +281,7 @@ getStorms <- function(time_period = c(1980, 2022),
 
 
   for (i in indices) {
-    #create sf points coordinates to intersect with loi.sf
+
     numobs = ncdf4::ncvar_get(TC_data_base, "numobs")[i]
     lon = ncdf4::ncvar_get(TC_data_base, "usa_lon")[1:numobs, i]
     lat = ncdf4::ncvar_get(TC_data_base, "usa_lat")[1:numobs, i]
@@ -289,14 +289,16 @@ getStorms <- function(time_period = c(1980, 2022),
 
     #Remove invalid iso_time
     iso.time = ncdf4::ncvar_get(TC_data_base, "iso_time")[1:numobs, i]
-    l = unlist(strsplit(iso.time, split = " ", fixed = TRUE))
-    j = seq(1,length(l))
-    j = which(j %%2 == 0)
-    l = as.numeric(stringr::str_sub(l[j],1,2))
-    j = which(l%%3 == 0)
-    coords = coords[j,]
+    list.iso.time = unlist(strsplit(iso.time, split = " ", fixed = TRUE))
+    ind.iso.time = seq(1,length(list.iso.time))
+    ind.iso.time = which(ind.iso.time %%2 == 0)
+    list.iso.time = as.numeric(stringr::str_sub(list.iso.time[ind.iso.time],1,2))
+    ind.iso.time = which(list.iso.time %% 3 == 0)
+    coords = coords[ind.iso.time,]
     row.names(coords) = seq(1,dim(coords)[1])
-    coords = coords[complete.cases(coords),]
+    coords = coords[stats::complete.cases(coords),]
+
+    #create sf points coordinates to intersect with loi.sf
     pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
     sf::st_crs(pts) = 4326
 
@@ -343,10 +345,10 @@ getStorms <- function(time_period = c(1980, 2022),
       storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
 
       #Remove invalid iso_time
-      storm@obs.all = storm@obs.all[j,]
+      storm@obs.all = storm@obs.all[ind.iso.time,]
       storm@numobs.all = dim(storm@obs.all)[1]
       row.names(storm@obs.all) = seq(1,storm@numobs.all)
-      ind = as.numeric(row.names(storm@obs.all[complete.cases(storm@obs.all),])[ind])
+      ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all),])[ind])
 
       storm@obs = ind
       storm@numobs = length(ind)

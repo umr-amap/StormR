@@ -6,7 +6,15 @@
 Category Exposure, 2D wind speed structure at a given observation ...)
 associated with a Storm contained in a \code{Storms} alongside with its track}
 \usage{
-plotBehaviour(sts, raster_product, xlim = NULL, ylim = NULL, ...)
+plotBehaviour(
+  sts,
+  raster_product,
+  xlim = NULL,
+  ylim = NULL,
+  labels = FALSE,
+  by = 8,
+  pos = 3
+)
 }
 \arguments{
 \item{sts}{\code{Storms} object}
@@ -23,6 +31,15 @@ the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 \item{ylim}{numerics. A set of latitude coordinates that controls the
 latitude extent of the plot. Default value is set to \code{NULL} which will let
 the plot extends according to the y bounding box of \code{spatial.loi.buffer}.}
+
+\item{labels}{logical. Whether or not to plot ISO Times and name labels}
+
+\item{by}{numeric. Increment of the sequence for the labels to plot. Default value
+is set to 8 which represents a 24h time interval}
+
+\item{pos}{numeric. Must be between 1 and 4 and correspond to the position of
+labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
+Default value is set to 3}
 }
 \description{
 Plot a rasterize product (Maximum Sustained Wind, Power Dissipation Index,

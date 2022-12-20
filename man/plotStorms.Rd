@@ -46,7 +46,8 @@ Default value is set to \code{FALSE}. Otherwise, the plot focuses on the extent 
 is set to 8 which represents a 24h time interval}
 
 \item{pos}{numeric. Must be between 1 and 4 and correspond to the position of
-labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)}
+labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
+Default value is set to 3}
 
 \item{legends}{logical. Whether or not to plot legends. Default value is set
 to FALSE.}
