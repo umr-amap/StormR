@@ -105,7 +105,7 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
 #' according to `getRmw` or using the Radius of Maximum Wind from the observations.
 #' Default value is set to `FALSE`
-#' @param points ...
+#' @param result ...
 #' @param space_res numeric. Space resolution (km) for the raster to compute.
 #' Default value is set to 10
 #' @param time_res numeric. Time discretization (hours) used to compute the analytic
@@ -125,7 +125,7 @@ stormBehaviour = function(sts,
                           method = "Willoughby",
                           asymmetry = "None",
                           empirical_rmw = FALSE,
-                          points = NULL,
+                          result = "analytic",
                           space_res = 10,
                           time_res = 1,
                           verbose = FALSE,
@@ -147,9 +147,19 @@ stormBehaviour = function(sts,
   #Check empirical_rmw input
   stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
 
-  #Check points input
-  if(!is.null(points))
-    stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
+  #Check result input
+  if(identical(class(result),"data.frame")){
+    stopifnot("colnames of result must be lon, lat" = colnames(result) == c("lon","lat"))
+    stopifnot("Invalid result coordinates" = result$lon >= 0 & result$lon <= 360 &
+                result$lat >= -90 & result$lat <= 90)
+
+  }else{
+    stopifnot("Invalid result input" = result %in% c("profiles","analytic"))
+    if(result == "profiles")
+      product = "MSW"
+  }
+
+
 
   #Check space_res input
   stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
@@ -169,7 +179,7 @@ stormBehaviour = function(sts,
 
 
 
-  if(is.null(points)){
+  if(result %in% c("profiles","analytic")){
     #Generate the raster template
     xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
     xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
@@ -210,7 +220,7 @@ stormBehaviour = function(sts,
       #Use observations within the loi for the computations
       ind = seq(st@obs[1], st@obs[st@numobs], 1)
 
-      if(is.null(points)){
+      if(result == "analytic"){
         #Handling indices and offset (2 outside of loi at entry and exit)
         if (st@obs[1] >= 3) {
           ind = c(st@obs[1] - 2, st@obs[1] - 1, ind)
@@ -262,21 +272,28 @@ stormBehaviour = function(sts,
 
 
 
-    if(is.null(points)){
+    if(result %in% c("profiles","analytic")){
 
       #Interpolated time step dt, default value dt = 4 --> 1h
       dt = 1 + (1 / time_res * 3) # + 1 for the limit values
 
       #Compute number of steps
       last.obs = dim(dat)[1]
-      nb.steps = dt * (last.obs - 1) - (last.obs - 2)
+      if(result == "analytic"){
+        last.obs = dim(dat)[1] -1
+        nb.steps = dt * last.obs - (last.obs - 1)
+      }else{
+        last.obs = dim(dat)[1]
+        nb.steps = last.obs
+      }
       step = 1
 
 
       if (verbose) {
         cat("Computing",
+            result,
             product,
-            "raster using",
+            "rasters using",
             method,
             "model (time_res:",
             time_res,
@@ -302,7 +319,7 @@ stormBehaviour = function(sts,
 
       aux.stack = c()
       #For every general 3H time step j
-      for (j in 1:(last.obs - 1)) {
+      for (j in 1:last.obs) {
 
         lon = rep(NA, dt)
         lon[1] = dat$lon[j]
@@ -340,7 +357,7 @@ stormBehaviour = function(sts,
 
         #For every interpolated time steps dt
         for (i in 1:dt) {
-          if (i == dt & j != last.obs - 1)
+          if (result == "analytic" & i == dt & j != last.obs)
             break #avoid redondance
 
           raster.msw = ras.template
@@ -438,7 +455,10 @@ stormBehaviour = function(sts,
           }
 
           step = step + 1
+          if(result == "profiles")
+            break
         }
+
         if (verbose)
           utils::setTxtProgressBar(pb, j)
       }
@@ -451,26 +471,31 @@ stormBehaviour = function(sts,
       product.raster = ras.template
 
       if (product == "MSW") {
-        #Compute msw raster
-        product.raster = max(aux.stack, na.rm = T)
-        #Apply focal function twice to smooth results
-        product.raster = terra::focal(
-          product.raster,
-          w = matrix(1, 3, 3),
-          max,
-          na.rm = T,
-          pad = T
-        )
-        product.raster = terra::focal(
-          product.raster,
-          w = matrix(1, 3, 3),
-          mean,
-          na.rm = T,
-          pad = T
-        )
-        names(product.raster) = paste0(st@name, "_", product)
-        final.stack = c(final.stack, product.raster)
-
+        if(result == "profiles"){
+          final.stack = aux.stack
+          names(final.stack) = paste0(st@name, "_profile_",ind)
+        }else{
+          #Compute msw analytic raster
+          product.raster = max(aux.stack, na.rm = T)
+          #Apply focal function twice to smooth results
+          product.raster = terra::focal(
+            product.raster,
+            w = matrix(1, 3, 3),
+            max,
+            na.rm = T,
+            pad = T
+          )
+          product.raster = terra::focal(
+            product.raster,
+            w = matrix(1, 3, 3),
+            mean,
+            na.rm = T,
+            pad = T
+          )
+          names(product.raster) = paste0(st@name, "_", product)
+          final.stack = c(final.stack, product.raster)
+          final.stack = terra::rast(final.stack)
+        }
 
       } else if (product == "PDI") {
         #Integrating over the whole track
@@ -485,6 +510,7 @@ stormBehaviour = function(sts,
         )
         names(product.raster) = paste0(st@name, "_", product)
         final.stack = c(final.stack, product.raster)
+        final.stack = terra::rast(final.stack)
 
       } else if (product == "Category") {
         #For each category in SSHS
@@ -513,6 +539,7 @@ stormBehaviour = function(sts,
         raster.c = sum(raster.c, na.rm = T)
         names(raster.c) = paste0(st@name, "_Categories")
         final.stack = c(final.stack, raster.c)
+        final.stack = terra::rast(final.stack)
       }
 
     }else{
@@ -521,17 +548,17 @@ stormBehaviour = function(sts,
       #every points y
       dist.m = terra::distance(
         x = cbind(dat$lon,dat$lat),
-        y = cbind(points$lon, points$lat),
+        y = cbind(result$lon, result$lat),
         lonlat = T
       )
 
       res = c()
       #For each point
-      for(i in 1:dim(points)[1]){
+      for(i in 1:dim(result)[1]){
 
         #Compute distance in deg between eye of storm and point P
-        x = points$lon[i] - dat$lon
-        y = points$lat[i] - dat$lat
+        x = result$lon[i] - dat$lon
+        y = result$lat[i] - dat$lat
 
         if(asymmetry == "V2"){
           msw = dat$msw[i] - dat$storm.speed[i]
@@ -628,8 +655,8 @@ stormBehaviour = function(sts,
     s = s + 1
   }
 
-  if(is.null(points)){
-    final.stack = terra::rast(final.stack)
+  if(result %in% c("profiles","analytic")){
+
     if (focus_loi) {
       #Mask the stack to fit loi buffer
       v = terra::vect(sts@spatial.loi.buffer)
@@ -649,7 +676,7 @@ stormBehaviour = function(sts,
       res = data.frame(res,row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
     }
 
-    colnames(res) =paste0("(",points$lon,",",points$lat,")")
+    colnames(res) =paste0("(",result$lon,",",result$lat,")")
     return(res)
   }
 

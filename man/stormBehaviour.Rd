@@ -11,7 +11,7 @@ stormBehaviour(
   method = "Willoughby",
   asymmetry = "None",
   empirical_rmw = FALSE,
-  points = NULL,
+  result = "analytic",
   space_res = 10,
   time_res = 1,
   verbose = FALSE,
@@ -35,7 +35,7 @@ computations, that is either \code{None},(no asymmetry) \code{V1} (first version
 according to \code{getRmw} or using the Radius of Maximum Wind from the observations.
 Default value is set to \code{FALSE}}
 
-\item{points}{...}
+\item{result}{...}
 
 \item{space_res}{numeric. Space resolution (km) for the raster to compute.
 Default value is set to 10}
