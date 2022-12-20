@@ -91,34 +91,45 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 
 
-#' Rasterizing various products among Maximum sustained Wind Speed and PDI,
-#' associated with the each storm
+#' Compute analytic products for each storm of a `Storms` object among Maximum
+#' Sustained Wind, Power Dissipation Index and Category exposure. It can also
+#' rasterize and produce the 2D wind speed structure for each observation
 #'
 #' @param sts Storms object
-#' @param product characters. Product we would like to compute, that
+#' @param product characters. Product to compute, that
 #' is either `MSW`, (Maximum Sustained Wind) `PDI`, (Power Dissipation Index) or `Exposure`
+#' (hours spent for each and all categories together)
 #' @param method characters. Cyclonic model used to compute product, that is either
-#' `Willoughby` and `Holland80`.Default value is set to `Willoughby`.
-#' @param asymmetry character. Indicates which asymmetry formula to use in the
-#' computations, that is either `None`,(no asymmetry) `V1` (first version) or
+#' `Willoughby` or `Holland80`. Default value is set to `Willoughby`
+#' @param asymmetry character. Indicates which version of asymmetry to use in the
+#' computations, that is either `None` (no asymmetry) `V1` (first version), or
 #' `V2` (second version). Default value is set to `None`.
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
 #' according to `getRmw` or using the Radius of Maximum Wind from the observations.
 #' Default value is set to `FALSE`
-#' @param result ...
+#' @param result either a character among `analytic` and `profiles`, or a `data.frame`
+#' which contains longitude/latitude coordinates within column names "lon" and "lat".
+#' Represents the format of the result the function should compute. If `analytic`,
+#' analytic rasters (integration in space and time over the track) are returned.
+#' If `profiles`, `product` input is ignored and set to `MSW` and 2D wind speed
+#' structures for each observation are returned. If `data.frame`, computed product
+#' for each coordinates are returned (time series if `product = MSW`)
 #' @param space_res numeric. Space resolution (km) for the raster to compute.
 #' Default value is set to 10
 #' @param time_res numeric. Time discretization (hours) used to compute the analytic
-#' Storm rasters. Allowed values are `1`, `0.75`, `0.5`, and `0.25`. Default value
-#' is set to 1
+#' Storm rasters. Allowed values are `1` (1h), `0.75` (45min), `0.5` (30min),
+#'  and `0.25` (15min). Default value is set to 1
 #' @param verbose logical. Whether or not the function must be verbose and display
 #' a text progress bar. Default value is set to `FALSE`
 #' @param focus_loi logical. Whether or not the computations must only be overtaken
 #' within the `spatial.loi.buffer` from `sts` object. Default value is set to `TRUE`,
 #' otherwise, computations are extended over the whole track of the storms
 #'
-#' @return A raster stack gathering all the results. Names of the layer are
-#' nameOfTheStorm_product
+#' @return Depending on `result` input. If `analytic`,
+#' analytic rasters (integration in space and time over the track) are returned.
+#' If `profiles`, `product` input is ignored and set to `MSW` and 2D wind speed
+#' structures for each observation are returned. If `data.frame`, computed product
+#' for each coordinates are returned (time series if `product = MSW`)
 #' @export
 stormBehaviour = function(sts,
                           product = "MSW",
@@ -134,7 +145,7 @@ stormBehaviour = function(sts,
   stopifnot("no data found" = !missing(sts))
 
   #Check product input
-  stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Category"))
+  stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Exposure"))
 
   #Check method input
   stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland80"))
@@ -443,7 +454,7 @@ stormBehaviour = function(sts,
             #Apply both rho and surface drag coefficient
             raster.msw = raster.msw * rho * raster.cd
             aux.stack = c(aux.stack, raster.msw)
-          }else if (product == "Category"){
+          }else if (product == "Exposure"){
             sshs = c(33,42,49,58,70,100)
             for(c in 1:5){
               raster.c = ras.template
@@ -512,7 +523,7 @@ stormBehaviour = function(sts,
         final.stack = c(final.stack, product.raster)
         final.stack = terra::rast(final.stack)
 
-      } else if (product == "Category") {
+      } else if (product == "Exposure") {
         #For each category in SSHS
         raster.c = c()
         for (i in c(1, 2, 3, 4, 0)) {
@@ -537,7 +548,7 @@ stormBehaviour = function(sts,
         #Add all categories
         raster.c = terra::rast(raster.c)
         raster.c = sum(raster.c, na.rm = T)
-        names(raster.c) = paste0(st@name, "_Categories")
+        names(raster.c) = paste0(st@name, "_", product,"_all")
         final.stack = c(final.stack, raster.c)
         final.stack = terra::rast(final.stack)
       }
@@ -634,7 +645,7 @@ stormBehaviour = function(sts,
           #Integrating over the whole track
           vr = sum(vr, na.rm = T) * 3
 
-        }else if (product == "Category") {
+        }else if (product == "Exposure") {
           vr.c = c()
           sshs = c(33,42,49,58,70,100)
           for(c in 1:5){

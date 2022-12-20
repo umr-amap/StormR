@@ -2,8 +2,9 @@
 % Please edit documentation in R/stormBehaviour.R
 \name{stormBehaviour}
 \alias{stormBehaviour}
-\title{Rasterizing various products among Maximum sustained Wind Speed and PDI,
-associated with the each storm}
+\title{Compute analytic products for each storm of a \code{Storms} object among Maximum
+Sustained Wind, Power Dissipation Index and Category exposure. It can also
+rasterize and produce the 2D wind speed structure for each observation}
 \usage{
 stormBehaviour(
   sts,
@@ -21,28 +22,35 @@ stormBehaviour(
 \arguments{
 \item{sts}{Storms object}
 
-\item{product}{characters. Product we would like to compute, that
-is either \code{MSW}, (Maximum Sustained Wind) \code{PDI}, (Power Dissipation Index) or \code{Exposure}}
+\item{product}{characters. Product to compute, that
+is either \code{MSW}, (Maximum Sustained Wind) \code{PDI}, (Power Dissipation Index) or \code{Exposure}
+(hours spent for each and all categories together)}
 
 \item{method}{characters. Cyclonic model used to compute product, that is either
-\code{Willoughby} and \code{Holland80}.Default value is set to \code{Willoughby}.}
+\code{Willoughby} or \code{Holland80}. Default value is set to \code{Willoughby}}
 
-\item{asymmetry}{character. Indicates which asymmetry formula to use in the
-computations, that is either \code{None},(no asymmetry) \code{V1} (first version) or
+\item{asymmetry}{character. Indicates which version of asymmetry to use in the
+computations, that is either \code{None} (no asymmetry) \code{V1} (first version), or
 \code{V2} (second version). Default value is set to \code{None}.}
 
 \item{empirical_rmw}{logical. Whether to compute the Radius of Maximum Wind
 according to \code{getRmw} or using the Radius of Maximum Wind from the observations.
 Default value is set to \code{FALSE}}
 
-\item{result}{...}
+\item{result}{either a character among \code{analytic} and \code{profiles}, or a \code{data.frame}
+which contains longitude/latitude coordinates within column names "lon" and "lat".
+Represents the format of the result the function should compute. If \code{analytic},
+analytic rasters (integration in space and time over the track) are returned.
+If \code{profiles}, \code{product} input is ignored and set to \code{MSW} and 2D wind speed
+structures for each observation are returned. If \code{data.frame}, computed product
+for each coordinates are returned (time series if \code{product = MSW})}
 
 \item{space_res}{numeric. Space resolution (km) for the raster to compute.
 Default value is set to 10}
 
 \item{time_res}{numeric. Time discretization (hours) used to compute the analytic
-Storm rasters. Allowed values are \code{1}, \code{0.75}, \code{0.5}, and \code{0.25}. Default value
-is set to 1}
+Storm rasters. Allowed values are \code{1} (1h), \code{0.75} (45min), \code{0.5} (30min),
+and \code{0.25} (15min). Default value is set to 1}
 
 \item{verbose}{logical. Whether or not the function must be verbose and display
 a text progress bar. Default value is set to \code{FALSE}}
@@ -52,10 +60,14 @@ within the \code{spatial.loi.buffer} from \code{sts} object. Default value is se
 otherwise, computations are extended over the whole track of the storms}
 }
 \value{
-A raster stack gathering all the results. Names of the layer are
-nameOfTheStorm_product
+Depending on \code{result} input. If \code{analytic},
+analytic rasters (integration in space and time over the track) are returned.
+If \code{profiles}, \code{product} input is ignored and set to \code{MSW} and 2D wind speed
+structures for each observation are returned. If \code{data.frame}, computed product
+for each coordinates are returned (time series if \code{product = MSW})
 }
 \description{
-Rasterizing various products among Maximum sustained Wind Speed and PDI,
-associated with the each storm
+Compute analytic products for each storm of a \code{Storms} object among Maximum
+Sustained Wind, Power Dissipation Index and Category exposure. It can also
+rasterize and produce the 2D wind speed structure for each observation
 }
