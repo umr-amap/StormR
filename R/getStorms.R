@@ -180,6 +180,8 @@ getStorms <- function(time_period = c(1980, 2022),
   stopifnot("verbose must be logical" = identical(class(remove_weak_TC), "logical"))
 
 
+  `%notin%` <- Negate(`%in%`)
+
   #Open data_base
   ############################################################
   #-----The following 3lines must be eventually changed-----#
@@ -281,9 +283,20 @@ getStorms <- function(time_period = c(1980, 2022),
   for (i in indices) {
     #create sf points coordinates to intersect with loi.sf
     numobs = ncdf4::ncvar_get(TC_data_base, "numobs")[i]
-    lon = ncdf4::ncvar_get(TC_data_base, "lon")[1:numobs, i]
-    lat = ncdf4::ncvar_get(TC_data_base, "lat")[1:numobs, i]
+    lon = ncdf4::ncvar_get(TC_data_base, "usa_lon")[1:numobs, i]
+    lat = ncdf4::ncvar_get(TC_data_base, "usa_lat")[1:numobs, i]
     coords = data.frame(lon = lon, lat = lat)
+
+    #Remove invalid iso_time
+    iso.time = ncdf4::ncvar_get(TC_data_base, "iso_time")[1:numobs, i]
+    l = unlist(strsplit(iso.time, split = " ", fixed = TRUE))
+    j = seq(1,length(l))
+    j = which(j %%2 == 0)
+    l = as.numeric(stringr::str_sub(l[j],1,2))
+    j = which(l%%3 == 0)
+    coords = coords[j,]
+    row.names(coords) = seq(1,dim(coords)[1])
+    coords = coords[complete.cases(coords),]
     pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
     sf::st_crs(pts) = 4326
 
@@ -291,6 +304,7 @@ getStorms <- function(time_period = c(1980, 2022),
     #which coordinates are within loi.sf.buffer
     ind = which(sf::st_intersects(pts, loi.sf.buffer,
                                   sparse = FALSE) == TRUE)
+
 
     #to check if storm is not NOT_NAMED
     name.storm = ncdf4::ncvar_get(TC_data_base, "name")[i]
@@ -310,12 +324,11 @@ getStorms <- function(time_period = c(1980, 2022),
       storm = Storm()
       storm@name = name.storm
       storm@season = ncdf4::ncvar_get(TC_data_base, "season")[i]
-      storm@numobs.all = numobs
       storm@obs.all = data.frame(
         subbasin = ncdf4::ncvar_get(TC_data_base, "subbasin")[1:numobs, i],
-        iso.time = ncdf4::ncvar_get(TC_data_base, "iso_time")[1:numobs, i],
-        lon = ncdf4::ncvar_get(TC_data_base, "usa_lon")[1:numobs, i],
-        lat = ncdf4::ncvar_get(TC_data_base, "usa_lat")[1:numobs, i],
+        iso.time = iso.time,
+        lon = lon,
+        lat = lat,
         msw = round(ncdf4::ncvar_get(TC_data_base, "usa_wind")[1:numobs, i] * 0.514),
         rmw = ncdf4::ncvar_get(TC_data_base, "usa_rmw")[1:numobs, i],
         roci = ncdf4::ncvar_get(TC_data_base, "usa_roci")[1:numobs, i],
@@ -328,6 +341,12 @@ getStorms <- function(time_period = c(1980, 2022),
       #wrap longitudes -180/180 to 0/360
       lg = which(storm@obs.all$lon < 0)
       storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
+
+      #Remove invalid iso_time
+      storm@obs.all = storm@obs.all[j,]
+      storm@numobs.all = dim(storm@obs.all)[1]
+      row.names(storm@obs.all) = seq(1,storm@numobs.all)
+      ind = as.numeric(row.names(storm@obs.all[complete.cases(storm@obs.all),])[ind])
 
       storm@obs = ind
       storm@numobs = length(ind)
