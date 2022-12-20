@@ -32,8 +32,8 @@ slot.}
 \item{max_dist}{numeric. Indicates the buffer used buffer to generate
 \code{spatail.loi.buffer} (in km). Default value is set to 300}
 
-\item{verbose}{logical. Whether or not the function must be verbose. Default
-value is set to \code{FALSE}}
+\item{verbose}{logical. Whether or not the function must be verbose and display
+a text progress bar. Default value is set to \code{FALSE}}
 
 \item{remove_weak_TC}{logical. Whether or not to remove Stomrs under category
 1 in the Saffir Simpson Hurricane Scale. Default value is set to TRUE.}

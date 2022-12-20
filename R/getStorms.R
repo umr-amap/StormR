@@ -95,8 +95,8 @@ Storms <- methods::setClass(
 #' slot.
 #' @param max_dist numeric. Indicates the buffer used buffer to generate
 #' `spatail.loi.buffer` (in km). Default value is set to 300
-#' @param verbose logical. Whether or not the function must be verbose. Default
-#' value is set to `FALSE`
+#' @param verbose logical. Whether or not the function must be verbose and display
+#' a text progress bar. Default value is set to `FALSE`
 #' @param remove_weak_TC logical. Whether or not to remove Stomrs under category
 #' 1 in the Saffir Simpson Hurricane Scale. Default value is set to TRUE.
 #'

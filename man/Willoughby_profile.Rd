@@ -2,23 +2,23 @@
 % Please edit documentation in R/stormBehaviour.R
 \name{Willoughby_profile}
 \alias{Willoughby_profile}
-\title{Compute wind values according to the Willoughby model}
+\title{Compute radial wind speed according to Willoughby model}
 \usage{
-Willoughby_profile(msw, lat, r, rmw = NULL)
+Willoughby_profile(r, rmw, msw, lat)
 }
 \arguments{
-\item{msw}{Maximum wind speed generated}
+\item{r}{numeric. Distance to the eye of the storm (km) where the value must be computed}
 
-\item{lat}{Latitude of the eye of the storm}
+\item{rmw}{numeric. Radius of Maximum Wind (km)}
 
-\item{r}{Distance to the center of the storm where the value must be computed}
+\item{msw}{numeric. Maximum Sustained Wind (m/s)}
 
-\item{rmw}{Radius of maximum wind speed. Default value is set to NULL}
+\item{lat}{numeric. Should be between -60 and 60. Latitude of the eye of the storm}
 }
 \value{
-wind value according to the Willoughby model at distance \code{r} to the
-center of the storm located in latitude \code{lat}
+radial wind speed value (m/s) according to Willoughby model at distance \code{r} to the
+eye of the storm located in latitude \code{lat}
 }
 \description{
-Compute wind values according to the Willoughby model
+Compute radial wind speed according to Willoughby model
 }

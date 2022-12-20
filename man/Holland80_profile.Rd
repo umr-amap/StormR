@@ -2,27 +2,27 @@
 % Please edit documentation in R/stormBehaviour.R
 \name{Holland80_profile}
 \alias{Holland80_profile}
-\title{Compute wind values according to the Holland 80 model}
+\title{Compute radial wind speed according to Holland 80 model}
 \usage{
 Holland80_profile(r, rmw, msw, pc, poci, lat)
 }
 \arguments{
-\item{r}{Distance to the center of the storm where the value must be computed}
+\item{r}{numeric. Distance to the eye of the storm (km) where the value must be computed}
 
-\item{rmw}{Radius of maximum wind speed}
+\item{rmw}{numeric. Radius of Maximum Wind (km)}
 
-\item{msw}{Maximum wind speed generated}
+\item{msw}{numeric. Maximum Sustained Wind (m/s)}
 
-\item{pc}{Pressure at the center of the storm}
+\item{pc}{numeric. Pressure at the center of the storm (hPa)}
 
-\item{poci}{Pressure at the Outermost Closed Isobar}
+\item{poci}{Pressure at the Outermost Closed Isobar (hPa)}
 
-\item{lat}{Latitude of the storm (eye)}
+\item{lat}{numeric. Should be between -60 and 60. Latitude of the eye of the storm}
 }
 \value{
-wind value according to the Holland 80 model at distance \code{r} to the
-center of the storm
+radial wind speed value (m/s) according to Boose 80 model at distance \code{r} to the
+eye of the storm located in latitude \code{lat}
 }
 \description{
-Compute wind values according to the Holland 80 model
+Compute radial wind speed according to Holland 80 model
 }
