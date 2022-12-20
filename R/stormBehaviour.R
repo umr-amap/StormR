@@ -382,14 +382,25 @@ stormBehaviour = function(sts,
           #Add asymmetry
           if (asymmetry == "V1") {
             #Boose version
-            #South Hemisphere only, t is counterclockwise
             raster.t = ras.template
-            terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
+            if(sts@basin %in% c("SA", "SP", "SI")){
+              #Southern Hemisphere, t is counterclockwise
+              terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
+            }else{
+              #Northern Hemisphere, t is clockwise
+              terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
+            }
             terra::values(raster.msw) = terra::values(raster.msw) - (1 - sin(terra::values(raster.t)))*(storm.speed/3.6)/2
 
           } else if(asymmetry == "V2"){
             raster.t = ras.template
-            terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
+            if(sts@basin %in% c("SA", "SP", "SI")){
+              #Southern Hemisphere, t is clockwise
+              terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
+            }else{
+              #Northern Hemisphere, t is counterclockwise
+              terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
+            }
             terra::values(raster.msw) = terra::values(raster.msw) + cos(terra::values(raster.t))* storm.speed
           }
 
@@ -550,12 +561,23 @@ stormBehaviour = function(sts,
 
         if (asymmetry == "V1") {
           #Boose version
-          #South Hemisphere only, t is counterclockwise
-          t = (atan2(dat$vy.deg[i],dat$vx.deg[i])) - atan2(y,x) + pi
+          if(sts@basin %in% c("SA", "SP", "SI")){
+            #Southern Hemisphere, t is counterclockwise
+            t = (atan2(dat$vy.deg[i],dat$vx.deg[i])) - atan2(y,x) + pi
+          }else{
+            #Northern Hemisphere, t is clockwise
+            t = (atan2(dat$vy.deg[i],dat$vx.deg[i])) - atan2(y,x) + pi
+          }
           vr = vr - (1 - sin(t)) * dat$storm.speed[i]/2
 
         } else if(asymmetry == "V2"){
-          t = acos((y * dat$vx.deg[i] - x * dat$vy.deg[i]) / (sqrt(dat$vx.deg[i]**2 + dat$vy.deg[i]**2) * sqrt(x**2 + y**2)))
+          if(sts@basin %in% c("SA", "SP", "SI")){
+            #Southern Hemisphere, t is clockwise
+            t = acos((y * dat$vx.deg[i] - x * dat$vy.deg[i]) / (sqrt(dat$vx.deg[i]**2 + dat$vy.deg[i]**2) * sqrt(x**2 + y**2)))
+          }else{
+            #Northern Hemisphere, t is counterclockwise
+            t = acos((y * dat$vx.deg[i] - x * dat$vy.deg[i]) / (sqrt(dat$vx.deg[i]**2 + dat$vy.deg[i]**2) * sqrt(x**2 + y**2)))
+          }
           vr = vr + cos(t) * dat$storm.speed[i]
         }
 

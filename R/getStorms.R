@@ -12,7 +12,7 @@
 #' @slot numobs.all numeric. Total number of observations available.
 #' @slot obs.all  data.frame. Contains all of the observations available.
 #' An observation is made up of several slots which are:
-#' Basin, Subbasin, iso.time, lon, lat, msw (Maximum Sustained Wind in), rmw (Radius of Maximum Wind),
+#' Basin, subbasin, iso.time, lon, lat, msw (Maximum Sustained Wind in), rmw (Radius of Maximum Wind),
 #' roci (Radius of the Outermost Closed Isobar), pres (pressure at the center),
 #' poci (Pressure of the Outermost Closed Isobar), sshs (Category in the Saffir Simpson Hurricane Scale),
 #' landfall (Minimum distance to land over next 3 hours,  = 0 means landfall)).
@@ -312,7 +312,7 @@ getStorms <- function(time_period = c(1980, 2022),
       storm@season = ncdf4::ncvar_get(TC_data_base, "season")[i]
       storm@numobs.all = numobs
       storm@obs.all = data.frame(
-        Subbasin = ncdf4::ncvar_get(TC_data_base, "subbasin")[1:numobs, i],
+        subbasin = ncdf4::ncvar_get(TC_data_base, "subbasin")[1:numobs, i],
         iso.time = ncdf4::ncvar_get(TC_data_base, "iso_time")[1:numobs, i],
         lon = ncdf4::ncvar_get(TC_data_base, "usa_lon")[1:numobs, i],
         lat = ncdf4::ncvar_get(TC_data_base, "usa_lat")[1:numobs, i],
@@ -322,7 +322,7 @@ getStorms <- function(time_period = c(1980, 2022),
         pres = ncdf4::ncvar_get(TC_data_base, "usa_pres")[1:numobs, i],
         poci = ncdf4::ncvar_get(TC_data_base, "usa_poci")[1:numobs, i],
         sshs = sshs,
-        landfall = ncdf4::ncvar_get(TC_data_base, "landfall")[1:numobs, i],
+        landfall = ncdf4::ncvar_get(TC_data_base, "landfall")[1:numobs, i]
       )
 
       #wrap longitudes -180/180 to 0/360
