@@ -95,10 +95,7 @@ plotBehaviour = function(sts,
     sts = sts,
     names = name,
     xlim = c(xmin, xmax),
-    ylim = c(ymin, ymax),
-    labels = labels,
-    by = by,
-    pos = pos,
+    ylim = c(ymin, ymax)
   )
 
   #Add title
@@ -175,7 +172,12 @@ plotBehaviour = function(sts,
 
   plotTrack(sts@data[[name]], FALSE)
 
-  if(labels == TRUE & stringr::str_detect(product,"profile")){
+  if(labels)
+    plotLabels(sts@data[[name]],by,pos)
+
+
+
+  if(labels & stringr::str_detect(product,"profile")){
     print(product)
     ind = as.numeric(stringr::str_sub(product,8,nchar(product)))
     print(ind)
