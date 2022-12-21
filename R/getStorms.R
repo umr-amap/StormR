@@ -142,42 +142,38 @@ getStorms <- function(basin = "SP",
   if(is.null(loi)){
     loi = basin
     loi.is.basin = TRUE
-    if (basin == "SP") {
-      ext = cbind(
-        c(135, 290, 290, 135, 135),
-        c(-5, -5, -60, -60, -5)
-      )
-    }else if (basin == "SI"){
-      ext = cbind(
-        c(10, 135, 135, 10, 10),
-        c(-5, -5, -60, -60, -5)
-      )
-    }else if (basin == "SA"){
-      ext = cbind(
-        c(290, 360, 360, 290, 290),
-        c(-5, -5, -60, -60, -5)
-      )
-    }else if (basin == "NI"){
-      ext = cbind(
-        c(30, 100, 100, 30, 30),
-        c(30, 30, 5, 5, 30)
-      )
-    }else if (basin == "WP"){
-      ext = cbind(
-        c(100, 180, 180, 100, 100),
-        c(60, 60, 5, 5, 60)
-      )
-    }else if (basin == "EP"){
-      ext = cbind(
-        c(180, 290, 200, 290, 180),
-        c(60, 60, 5, 5, 60)
-      )
-    }else if (basin == "NP"){
-      ext = cbind(
-        c(270, 360, 360, 270, 270),
-        c(60, 60, 5, 5, 60)
-      )
-    }
+
+    ext = switch(basin,
+                 "SP" = cbind(
+                   c(135, 290, 290, 135, 135),
+                   c(-5, -5, -60, -60, -5)
+                   ),
+                 "SI" = cbind(
+                   c(10, 135, 135, 10, 10),
+                   c(-5, -5, -60, -60, -5)
+                   ),
+                 "SA" = cbind(
+                   c(290, 360, 360, 290, 290),
+                   c(-5, -5, -60, -60, -5)
+                 ),
+                 "NI" = cbind(
+                   c(30, 100, 100, 30, 30),
+                   c(30, 30, 5, 5, 30)
+                 ),
+                 "WP" = cbind(
+                   c(100, 180, 180, 100, 100),
+                   c(60, 60, 5, 5, 60)
+                 ),
+                 "EP" = cbind(
+                   c(180, 290, 290, 180, 180),
+                   c(60, 60, 5, 5, 60)
+                 ),
+                 "NA" = cbind(
+                   c(270, 359, 359, 270, 270),
+                   c(60, 60, 5, 5, 60)
+                 )
+    )
+
     loi = sf::st_polygon(list(ext))
     loi = sf::st_sfc(loi, crs = 4326)
     loi = sf::st_as_sf(loi)
@@ -223,23 +219,28 @@ getStorms <- function(basin = "SP",
   stopifnot("verbose must be logical" = identical(class(remove_weak_TC), "logical"))
 
   #Open data_base
-  ############################################################
-  #-----The following 3lines must be eventually changed-----#
-  ############################################################
-  file_name = paste0("./inst/extdata/IBTrACS.SP.v04r00.nc")
-  TC_data_base = ncdf4::nc_open(file_name)
-  cyclonic_seasons = ncdf4::ncvar_get(TC_data_base, "season")
-
+  TC.data.base = switch(basin,
+                        "SP" = TC_SP,
+                        "SI" = TC_SI,
+                        "SA" = TC_SA,
+                        "NI" = TC_NI,
+                        "WP" = TC_WP,
+                        "EP" = TC_EP,
+                        "NA" = TC_NA
+                        )
 
   if (verbose)
     cat("Identification of Storms: ")
+
+
   #Retrieving the matching indices, handling time_period and name
+  cyclonic.seasons = ncdf4::ncvar_get(TC.data.base, "season")
   if (!is.null(name)) {
     #we are interested in one or several storms
-    storm.names = ncdf4::ncvar_get(TC_data_base, "name")
+    storm.names = ncdf4::ncvar_get(TC.data.base, "name")
     indices = c()
     for (n in 1:length(name)) {
-      seasons.id = which(cyclonic_seasons == time_period[n])
+      seasons.id = which(cyclonic.seasons == time_period[n])
       storm.id = NULL
       storm.id = which(storm.names == name[n])
       stopifnot("Storm not found" = !is.null(storm.id))
@@ -249,12 +250,12 @@ getStorms <- function(basin = "SP",
   } else{
     if (length(time_period) == 1) {
       #we are interested in only one cyclonic season
-      indices = which(cyclonic_seasons == time_period[1])
+      indices = which(cyclonic.seasons == time_period[1])
     } else{
       #we are interested in successive cyclonic seasons
       indices = seq(
-        from = which(cyclonic_seasons == time_period[1])[1],
-        to = max(which(cyclonic_seasons == time_period[2])),
+        from = which(cyclonic.seasons == time_period[1])[1],
+        to = max(which(cyclonic.seasons == time_period[2])),
         by = 1)
     }
   }
@@ -309,10 +310,10 @@ getStorms <- function(basin = "SP",
   sts@buffer = max_dist
   storm.list = list()
   k = 2 #init line type
-  count = 0 #init count for progression bar
+  count = 1 #init count for progression bar
 
 
-  if (verbose) {
+  if (verbose & length(indices) > 0) {
     cat("Gathering storms\n")
     pb = utils::txtProgressBar(min = count,
                                max = length(indices),
@@ -322,13 +323,13 @@ getStorms <- function(basin = "SP",
 
   for (i in indices) {
 
-    numobs = ncdf4::ncvar_get(TC_data_base, "numobs")[i]
-    lon = ncdf4::ncvar_get(TC_data_base, "usa_lon")[1:numobs, i]
-    lat = ncdf4::ncvar_get(TC_data_base, "usa_lat")[1:numobs, i]
+    numobs = ncdf4::ncvar_get(TC.data.base, "numobs")[i]
+    lon = ncdf4::ncvar_get(TC.data.base, "usa_lon")[1:numobs, i]
+    lat = ncdf4::ncvar_get(TC.data.base, "usa_lat")[1:numobs, i]
     coords = data.frame(lon = lon, lat = lat)
 
     #Remove invalid iso_time
-    iso.time = ncdf4::ncvar_get(TC_data_base, "iso_time")[1:numobs, i]
+    iso.time = ncdf4::ncvar_get(TC.data.base, "iso_time")[1:numobs, i]
     list.iso.time = unlist(strsplit(iso.time, split = " ", fixed = TRUE))
     ind.iso.time = seq(1,length(list.iso.time))
     ind.iso.time = which(ind.iso.time %%2 == 0)
@@ -349,10 +350,10 @@ getStorms <- function(basin = "SP",
 
 
     #to check if storm is not NOT_NAMED
-    name.storm = ncdf4::ncvar_get(TC_data_base, "name")[i]
+    name.storm = ncdf4::ncvar_get(TC.data.base, "name")[i]
 
     #to check if sshs is over categoy 1 in case remove_weak_TC == T
-    sshs = ncdf4::ncvar_get(TC_data_base, "usa_sshs")[1:numobs, i]
+    sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")[1:numobs, i]
 
     if (remove_weak_TC & max(sshs,na.rm = T) < 1) {
       #it is a TC below category 1, thus we do not consider it
@@ -365,19 +366,19 @@ getStorms <- function(basin = "SP",
 
       storm = Storm()
       storm@name = name.storm
-      storm@season = ncdf4::ncvar_get(TC_data_base, "season")[i]
+      storm@season = ncdf4::ncvar_get(TC.data.base, "season")[i]
       storm@obs.all = data.frame(
-        subbasin = ncdf4::ncvar_get(TC_data_base, "subbasin")[1:numobs, i],
+        subbasin = ncdf4::ncvar_get(TC.data.base, "subbasin")[1:numobs, i],
         iso.time = iso.time,
         lon = lon,
         lat = lat,
-        msw = round(ncdf4::ncvar_get(TC_data_base, "usa_wind")[1:numobs, i] * 0.514),
-        rmw = ncdf4::ncvar_get(TC_data_base, "usa_rmw")[1:numobs, i],
-        roci = ncdf4::ncvar_get(TC_data_base, "usa_roci")[1:numobs, i],
-        pres = ncdf4::ncvar_get(TC_data_base, "usa_pres")[1:numobs, i],
-        poci = ncdf4::ncvar_get(TC_data_base, "usa_poci")[1:numobs, i],
+        msw = round(ncdf4::ncvar_get(TC.data.base, "usa_wind")[1:numobs, i] * 0.514),
+        rmw = ncdf4::ncvar_get(TC.data.base, "usa_rmw")[1:numobs, i],
+        roci = ncdf4::ncvar_get(TC.data.base, "usa_roci")[1:numobs, i],
+        pres = ncdf4::ncvar_get(TC.data.base, "usa_pres")[1:numobs, i],
+        poci = ncdf4::ncvar_get(TC.data.base, "usa_poci")[1:numobs, i],
         sshs = sshs,
-        landfall = ncdf4::ncvar_get(TC_data_base, "landfall")[1:numobs, i]
+        landfall = ncdf4::ncvar_get(TC.data.base, "landfall")[1:numobs, i]
       )
 
       #wrap longitudes -180/180 to 0/360
@@ -405,10 +406,9 @@ getStorms <- function(basin = "SP",
 
     count = count + 1
   }
-  if (verbose)
+  if (verbose & length(indices) > 0)
     close(pb)
 
-  ncdf4::nc_close(TC_data_base)
 
 
   sts@basin = basin
