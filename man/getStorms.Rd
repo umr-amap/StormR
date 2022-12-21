@@ -5,15 +5,19 @@
 \title{Initialize a Storms object depending on a selection}
 \usage{
 getStorms(
+  basin = "SP",
   time_period = c(1980, 2022),
   name = NULL,
-  loi = "SP",
+  loi = NULL,
   max_dist = 300,
   verbose = FALSE,
   remove_weak_TC = TRUE
 )
 }
 \arguments{
+\item{basin}{character. Name of basin where the Storms should be extracted.
+Default value is set to \code{"SP"}}
+
 \item{time_period}{numerics. Should be either one cyclonic season or a range
 of cyclonic season. It could also be a vector of cyclonic season provided
 that it has the same length as \code{name} and matches the season of each Storm
@@ -25,9 +29,8 @@ informations must match}
 
 \item{loi}{Location of Interest. Should be either a \code{SpatialPolygon}, a \code{sf}
 object, a point of coordinates in lon/lat, a character representing a country,
-or a basin. Default value is set to \code{"SP"} which will focus on the whole South
-West Pacific Basin. Depending on the input, it will set up the \code{spatial.loi.}
-slot.}
+or a basin. Default value is set to \code{NULL} which will set the \code{spatial.loi.}
+on the whole \code{basin}}
 
 \item{max_dist}{numeric. Indicates the buffer used buffer to generate
 \code{spatail.loi.buffer} (in km). Default value is set to 300}

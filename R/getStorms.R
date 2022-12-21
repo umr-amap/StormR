@@ -81,6 +81,8 @@ Storms <- methods::setClass(
 
 #' Initialize a Storms object depending on a selection
 #'
+#' @param basin character. Name of basin where the Storms should be extracted.
+#' Default value is set to `"SP"`
 #' @param time_period numerics. Should be either one cyclonic season or a range
 #' of cyclonic season. It could also be a vector of cyclonic season provided
 #' that it has the same length as `name` and matches the season of each Storm
@@ -90,9 +92,8 @@ Storms <- methods::setClass(
 #' informations must match
 #' @param loi Location of Interest. Should be either a `SpatialPolygon`, a `sf`
 #' object, a point of coordinates in lon/lat, a character representing a country,
-#' or a basin. Default value is set to `"SP"` which will focus on the whole South
-#' West Pacific Basin. Depending on the input, it will set up the `spatial.loi.`
-#' slot.
+#' or a basin. Default value is set to `NULL` which will set the `spatial.loi.`
+#' on the whole `basin`
 #' @param max_dist numeric. Indicates the buffer used buffer to generate
 #' `spatail.loi.buffer` (in km). Default value is set to 300
 #' @param verbose logical. Whether or not the function must be verbose and display
@@ -103,12 +104,18 @@ Storms <- methods::setClass(
 #' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
 #' @export
-getStorms <- function(time_period = c(1980, 2022),
+getStorms <- function(basin = "SP",
+                      time_period = c(1980, 2022),
                       name = NULL,
-                      loi = "SP",
+                      loi = NULL,
                       max_dist = 300,
                       verbose = FALSE,
                       remove_weak_TC = TRUE) {
+
+
+  #Check basin input
+  stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA"))
+
   #Check time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
   stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
@@ -132,42 +139,78 @@ getStorms <- function(time_period = c(1980, 2022),
 
 
   #Check loi input
-  loi.is.basin = FALSE
-  if (!is.character(loi)) {
-    #loi should be either SpatialPolygon, or sf or points coordinates
-    if (identical(class(loi), c("SpatialPolygons"))) {
-      loi.id = "SpatialPolygons"
-    } else if (identical(class(loi), c("sf", "data.frame"))) {
-      loi.id = "sf"
-    } else if (identical(class(loi), c("numeric"))) {
-      stopifnot(
-        "loi must have valid lon/lat coordinates " = length(loi) == 2 &
-          loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90
+  if(is.null(loi)){
+    loi = basin
+    loi.is.basin = TRUE
+    if (basin == "SP") {
+      ext = cbind(
+        c(135, 290, 290, 135, 135),
+        c(-5, -5, -60, -60, -5)
       )
-      loi.id = "Coordinates"
-    } else{
-      stop("invalid class for loi")
+    }else if (basin == "SI"){
+      ext = cbind(
+        c(10, 135, 135, 10, 10),
+        c(-5, -5, -60, -60, -5)
+      )
+    }else if (basin == "SA"){
+      ext = cbind(
+        c(290, 360, 360, 290, 290),
+        c(-5, -5, -60, -60, -5)
+      )
+    }else if (basin == "NI"){
+      ext = cbind(
+        c(30, 100, 100, 30, 30),
+        c(30, 30, 5, 5, 30)
+      )
+    }else if (basin == "WP"){
+      ext = cbind(
+        c(100, 180, 180, 100, 100),
+        c(60, 60, 5, 5, 60)
+      )
+    }else if (basin == "EP"){
+      ext = cbind(
+        c(180, 290, 200, 290, 180),
+        c(60, 60, 5, 5, 60)
+      )
+    }else if (basin == "NP"){
+      ext = cbind(
+        c(270, 360, 360, 270, 270),
+        c(60, 60, 5, 5, 60)
+      )
     }
-  } else{
-    #loi is a character that represents either a country or a basin
-    stopifnot("loi must be length 1 " = length(loi) == 1)
-    if (loi == "SP") {
-      #Focus on South Pacific Ocean
-      loi = sf::st_polygon(list(cbind(
-        c(150, 150, 200, 200, 150),
-        c(-30, -5, -5, -30, -30)
-      )))
-      loi = sf::st_sfc(loi, crs = 4326)
-      loi = sf::st_as_sf(loi)
-      loi.is.basin = TRUE
-      loi.id = "sf"
+    loi = sf::st_polygon(list(ext))
+    loi = sf::st_sfc(loi, crs = 4326)
+    loi = sf::st_as_sf(loi)
+    loi.id = "sf"
+  }else{
+    loi.is.basin = FALSE
+    if (!is.character(loi)) {
+      #loi should be either SpatialPolygon, or sf or points coordinates
+      if (identical(class(loi), c("SpatialPolygons"))) {
+        loi.id = "SpatialPolygons"
+      } else if (identical(class(loi), c("sf", "data.frame"))) {
+        loi.id = "sf"
+      } else if (identical(class(loi), c("numeric"))) {
+        stopifnot(
+          "loi must have valid lon/lat coordinates " = length(loi) == 2 &
+            loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90
+        )
+        loi.id = "Coordinates"
+      } else{
+        stop("invalid class for loi")
+      }
     } else{
+      #loi is a character that represents a country
+      stopifnot("loi must be length 1 " = length(loi) == 1)
       map = rworldmap::getMap(resolution = "high")
       id.country = which(map@data$ADMIN == loi)
       stopifnot("invalid entry for loi" = length(id.country) > 0)
       loi.id = "Country"
     }
   }
+
+
+
 
   #Check max_dist input
   stopifnot("max_dist must be numeric " = identical(class(max_dist), "numeric"))
@@ -178,9 +221,6 @@ getStorms <- function(time_period = c(1980, 2022),
 
   #Check remove_weak_TC input
   stopifnot("verbose must be logical" = identical(class(remove_weak_TC), "logical"))
-
-
-  `%notin%` <- Negate(`%in%`)
 
   #Open data_base
   ############################################################
@@ -371,7 +411,7 @@ getStorms <- function(time_period = c(1980, 2022),
   ncdf4::nc_close(TC_data_base)
 
 
-  sts@basin = "SP" #DO NOT FORGET TO CHANGE
+  sts@basin = basin
   sts@spatial.loi = loi.sf
   sts@spatial.loi.buffer = loi.sf.buffer
   sts@data = storm.list
