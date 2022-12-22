@@ -419,10 +419,10 @@ stormBehaviour = function(sts,
             raster.t = ras.template
             if(sts@basin %in% c("SA", "SP", "SI")){
               #Southern Hemisphere, t is counterclockwise
-              terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
+              terra::values(raster.t) = atan2(vy.deg,vx.deg) - atan2(y,x) + pi
             }else{
               #Northern Hemisphere, t is clockwise
-              terra::values(raster.t) = (atan2(vy.deg,vx.deg)) - atan2(y,x) + pi
+              terra::values(raster.t) = atan2(y,x) - atan2(vy.deg,vx.deg)  + pi
             }
             terra::values(raster.msw) = terra::values(raster.msw) - (1 - sin(terra::values(raster.t)))*(storm.speed/3.6)/2
 
