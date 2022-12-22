@@ -266,37 +266,50 @@ getStorms <- function(basin = "SP",
   if(basin != "ALL")
     indices = indices[which(basins[1,indices] == basin)]
 
-
   #Remove NOT_NAMED storms
   storm.names = ncdf4::ncvar_get(TC.data.base, "name")
   indices = indices[which(storm.names[indices] != "NOT_NAMED")]
 
   #Remove TD id remove_TD == T
   sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")
+  dim = dim(sshs)[1]
+  sshs = array(sshs[,indices], dim = c(dim,length(indices)))
+
   if(remove_TD)
-    indices = indices[which(apply(sshs[,indices],2,max, na.rm = T) >= 0)]
+      indices = indices[which(apply(sshs,2,max, na.rm = T) >= 0)]
+
 
 
   if (verbose)
     cat("Done\nLoading data:")
 
 
-  #Get data associated with indices
+  #Get remaining data associated with indices
   storm.names = storm.names[indices]
   num.observations = ncdf4::ncvar_get(TC.data.base, "numobs")[indices]
   basins = basins[indices]
-  subbasin = ncdf4::ncvar_get(TC.data.base, "subbasin")[, indices]
+  subbasin = array(ncdf4::ncvar_get(TC.data.base, "subbasin")[, indices],
+                   dim = c(dim,length(indices)))
   cyclonic.seasons = cyclonic.seasons[indices]
-  iso.times = ncdf4::ncvar_get(TC.data.base, "iso_time")[, indices]
-  longitude = ncdf4::ncvar_get(TC.data.base, "usa_lon")[, indices]
-  latitude = ncdf4::ncvar_get(TC.data.base, "usa_lat")[, indices]
-  msw = round(ncdf4::ncvar_get(TC.data.base, "usa_wind")[, indices] * 0.514)
-  rmw = ncdf4::ncvar_get(TC.data.base, "usa_rmw")[, indices]
-  roci = ncdf4::ncvar_get(TC.data.base, "usa_roci")[, indices]
-  pres = ncdf4::ncvar_get(TC.data.base, "usa_pres")[, indices]
-  poci = ncdf4::ncvar_get(TC.data.base, "usa_poci")[, indices]
-  sshs = sshs[, indices]
-  landfall = ncdf4::ncvar_get(TC.data.base, "landfall")[, indices]
+  iso.times = array(ncdf4::ncvar_get(TC.data.base, "iso_time")[, indices],
+                    dim = c(dim,length(indices)))
+  longitude = array(ncdf4::ncvar_get(TC.data.base, "usa_lon")[, indices],
+                    dim = c(dim,length(indices)))
+  latitude = array(ncdf4::ncvar_get(TC.data.base, "usa_lat")[, indices],
+                   dim = c(dim,length(indices)))
+  msw = array(round(ncdf4::ncvar_get(TC.data.base, "usa_wind")[, indices] * 0.514),
+              dim = c(dim,length(indices)))
+  rmw = array(ncdf4::ncvar_get(TC.data.base, "usa_rmw")[, indices],
+              dim = c(dim,length(indices)))
+  roci = array(ncdf4::ncvar_get(TC.data.base, "usa_roci")[, indices],
+               dim = c(dim,length(indices)))
+  pres = array(ncdf4::ncvar_get(TC.data.base, "usa_pres")[, indices],
+               dim = c(dim,length(indices)))
+  poci = array(ncdf4::ncvar_get(TC.data.base, "usa_poci")[, indices],
+               dim = c(dim,length(indices)))
+  sshs = sshs
+  landfall = array(ncdf4::ncvar_get(TC.data.base, "landfall")[, indices],
+                   dim = c(dim,length(indices)))
 
 
   if (verbose)
@@ -347,13 +360,12 @@ getStorms <- function(basin = "SP",
 
 
 
-  if (verbose & length(indices) > 0) {
+  if (verbose & length(indices) > 1) {
     cat("Done\nGathering storms \n")
     pb = utils::txtProgressBar(min = count,
                                max = length(indices),
                                style = 3)
   }
-
 
   for (i in 1:length(indices)) {
 
@@ -363,7 +375,6 @@ getStorms <- function(basin = "SP",
     lat = latitude[1:numobs, i]
     coords = data.frame(lon = lon, lat = lat)
 
-
     #Remove invalid iso_time
     iso.time = iso.times[1:numobs, i]
     list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
@@ -371,8 +382,6 @@ getStorms <- function(basin = "SP",
     coords = coords[ind.iso.time,]
     row.names(coords) = seq(1,dim(coords)[1])
     coords = coords[stats::complete.cases(coords),]
-
-
 
 
     #create sf points coordinates to intersect with loi.sf
@@ -439,12 +448,12 @@ getStorms <- function(basin = "SP",
     }
 
 
-    if (verbose)
+    if (verbose & length(indices) > 1)
       utils::setTxtProgressBar(pb, count)
 
     count = count + 1
   }
-  if (verbose & length(indices) > 0)
+  if (verbose & length(indices) > 1)
     close(pb)
 
   ncdf4::nc_close(TC.data.base)
@@ -462,26 +471,3 @@ getStorms <- function(basin = "SP",
 
 
 
-
-# #Remove invalid iso_time
-# iso.time = ncdf4::ncvar_get(TC.data.base, "iso_time")[, indices]
-# iso.time = apply(iso.time, 2, stringr::str_sub,12,13)
-# iso = apply(iso.time, 2, as.numeric)
-# ind.iso =  iso %% 3 == 0
-#
-# iso.f = iso.time[ind.iso]
-# as.array(iso.f,iso.time)
-#
-# iso.time %in% c("00", "03", "06", "09",
-#                 "12", "15", "18", "21")
-# as.numeric(iso.time[,3])
-#
-# list.iso.time = unlist(strsplit(iso.time, split = " ", fixed = TRUE))
-# ind.iso.time = seq(1,length(list.iso.time))
-# ind.iso.time = which(ind.iso.time %%2 == 0)
-# list.iso.time = as.numeric(stringr::str_sub(list.iso.time[ind.iso.time],1,2))
-# ind.iso.time = which(list.iso.time %% 3 == 0)
-# coords = coords[ind.iso.time,]
-# row.names(coords) = seq(1,dim(coords)[1])
-# coords = coords[stats::complete.cases(coords),]
-#
