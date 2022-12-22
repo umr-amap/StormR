@@ -18,6 +18,8 @@ Gather all the informations to model a single Storm
 
 \item{\code{season}}{numeric. Cyclonic season in which the storm has occured}
 
+\item{\code{basin}}{character. Basin in which the storm has occured}
+
 \item{\code{sshs}}{numeric. Category in the Saffir Simpson Hurricane Scale}
 
 \item{\code{numobs.all}}{numeric. Total number of observations available.}

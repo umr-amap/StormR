@@ -11,7 +11,7 @@ getStorms(
   loi = NULL,
   max_dist = 300,
   verbose = FALSE,
-  remove_weak_TC = TRUE
+  remove_TD = TRUE
 )
 }
 \arguments{
@@ -38,8 +38,8 @@ on the whole \code{basin}}
 \item{verbose}{logical. Whether or not the function must be verbose and display
 a text progress bar. Default value is set to \code{FALSE}}
 
-\item{remove_weak_TC}{logical. Whether or not to remove Stomrs under category
-1 in the Saffir Simpson Hurricane Scale. Default value is set to TRUE.}
+\item{remove_TD}{logical. Whether or not to remove Tropical Depression (< 18 m/s).
+Default value is set to TRUE.}
 }
 \value{
 a S4 Storms object that gathers all the above informations
