@@ -433,7 +433,7 @@ stormBehaviour = function(sts,
               terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
             }else{
               #Northern Hemisphere, t is counterclockwise
-              terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
+              terra::values(raster.t) = acos((- y * vx.deg + x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
             }
             terra::values(raster.msw) = terra::values(raster.msw) + cos(terra::values(raster.t))* storm.speed
           }
