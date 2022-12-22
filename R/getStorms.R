@@ -8,6 +8,7 @@
 #'
 #' @slot name character. Name of the storm
 #' @slot season  numeric. Cyclonic season in which the storm has occured
+#' @slot basin  character. Basin in which the storm has occured
 #' @slot  sshs numeric. Category in the Saffir Simpson Hurricane Scale
 #' @slot numobs.all numeric. Total number of observations available.
 #' @slot obs.all  data.frame. Contains all of the observations available.
@@ -27,6 +28,7 @@ Storm <- methods::setClass(
   slots = c(
     name = "character",
     season = "numeric",
+    basin = "character",
     sshs = "numeric",
     numobs.all = "numeric",
     obs.all = "data.frame",
@@ -98,8 +100,8 @@ Storms <- methods::setClass(
 #' `spatail.loi.buffer` (in km). Default value is set to 300
 #' @param verbose logical. Whether or not the function must be verbose and display
 #' a text progress bar. Default value is set to `FALSE`
-#' @param remove_weak_TC logical. Whether or not to remove Stomrs under category
-#' 1 in the Saffir Simpson Hurricane Scale. Default value is set to TRUE.
+#' @param remove_TD logical. Whether or not to remove Tropical Depression (< 18 m/s).
+#' Default value is set to TRUE.
 #'
 #' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
@@ -110,11 +112,11 @@ getStorms <- function(basin = "SP",
                       loi = NULL,
                       max_dist = 300,
                       verbose = FALSE,
-                      remove_weak_TC = TRUE) {
+                      remove_TD = TRUE) {
 
 
   #Check basin input
-  stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA"))
+  stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
 
   #Check time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
@@ -146,39 +148,44 @@ getStorms <- function(basin = "SP",
     ext = switch(basin,
                  "SP" = cbind(
                    c(135, 290, 290, 135, 135),
-                   c(-5, -5, -60, -60, -5)
+                   c(0, 0, -60, -60, 0)
                    ),
                  "SI" = cbind(
                    c(10, 135, 135, 10, 10),
-                   c(-5, -5, -60, -60, -5)
+                   c(0, 0, -60, -60, 0)
                    ),
                  "SA" = cbind(
                    c(290, 360, 360, 290, 290),
-                   c(-5, -5, -60, -60, -5)
+                   c(0, 0, -60, -60, 0)
                  ),
                  "NI" = cbind(
                    c(30, 100, 100, 30, 30),
-                   c(30, 30, 5, 5, 30)
+                   c(30, 30, 0, 0, 30)
                  ),
                  "WP" = cbind(
                    c(100, 180, 180, 100, 100),
-                   c(60, 60, 5, 5, 60)
+                   c(60, 60, 0, 0, 60)
                  ),
                  "EP" = cbind(
                    c(180, 290, 290, 180, 180),
-                   c(60, 60, 5, 5, 60)
+                   c(60, 60, 0, 0, 60)
                  ),
                  "NA" = cbind(
                    c(270, 359, 359, 270, 270),
-                   c(60, 60, 5, 5, 60)
+                   c(60, 60, 0, 0, 60)
+                 ),
+                 "ALL" = cbind(
+                   c(0, 359, 359, 0, 0),
+                   c(60, 60, -60, -60, 60)
                  )
+
     )
 
     loi = sf::st_polygon(list(ext))
     loi = sf::st_sfc(loi, crs = 4326)
     loi = sf::st_as_sf(loi)
     loi.id = "sf"
-  }else{
+  } else{
     loi.is.basin = FALSE
     if (!is.character(loi)) {
       #loi should be either SpatialPolygon, or sf or points coordinates
@@ -186,7 +193,7 @@ getStorms <- function(basin = "SP",
         loi.id = "SpatialPolygons"
       } else if (identical(class(loi), c("sf", "data.frame"))) {
         loi.id = "sf"
-      } else if (identical(class(loi), c("numeric"))) {
+      } else if (identical(class(loi), c("numeric"))){
         stopifnot(
           "loi must have valid lon/lat coordinates " = length(loi) == 2 &
             loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90
@@ -215,26 +222,21 @@ getStorms <- function(basin = "SP",
   #Check verbose input
   stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
 
-  #Check remove_weak_TC input
-  stopifnot("verbose must be logical" = identical(class(remove_weak_TC), "logical"))
+  #Check remove_TD input
+  stopifnot("verbose must be logical" = identical(class(remove_TD), "logical"))
 
   #Open data_base
-  TC.data.base = switch(basin,
-                        "SP" = TC_SP,
-                        "SI" = TC_SI,
-                        "SA" = TC_SA,
-                        "NI" = TC_NI,
-                        "WP" = TC_WP,
-                        "EP" = TC_EP,
-                        "NA" = TC_NA
-                        )
+  filename = paste0("IBTrACS.ALL.v04r00.nc")
+  TC.data.base = ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
+
 
   if (verbose)
-    cat("Identification of Storms: ")
+    cat("Identifying of Storms: ")
 
 
   #Retrieving the matching indices, handling time_period and name
   cyclonic.seasons = ncdf4::ncvar_get(TC.data.base, "season")
+  basins = ncdf4::ncvar_get(TC.data.base, "basin")
   if (!is.null(name)) {
     #we are interested in one or several storms
     storm.names = ncdf4::ncvar_get(TC.data.base, "name")
@@ -260,8 +262,45 @@ getStorms <- function(basin = "SP",
     }
   }
 
+  #Filter by basin
+  if(basin != "ALL")
+    indices = indices[which(basins[1,indices] == basin)]
+
+
+  #Remove NOT_NAMED storms
+  storm.names = ncdf4::ncvar_get(TC.data.base, "name")
+  indices = indices[which(storm.names[indices] != "NOT_NAMED")]
+
+  #Remove TD id remove_TD == T
+  sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")
+  if(remove_TD)
+    indices = indices[which(apply(sshs[,indices],2,max, na.rm = T) >= 0)]
+
+
   if (verbose)
-    cat("Done\n Make buffer: ")
+    cat("Done\nLoading data:")
+
+
+  #Get data associated with indices
+  storm.names = storm.names[indices]
+  num.observations = ncdf4::ncvar_get(TC.data.base, "numobs")[indices]
+  basins = basins[indices]
+  subbasin = ncdf4::ncvar_get(TC.data.base, "subbasin")[, indices]
+  cyclonic.seasons = cyclonic.seasons[indices]
+  iso.times = ncdf4::ncvar_get(TC.data.base, "iso_time")[, indices]
+  longitude = ncdf4::ncvar_get(TC.data.base, "usa_lon")[, indices]
+  latitude = ncdf4::ncvar_get(TC.data.base, "usa_lat")[, indices]
+  msw = round(ncdf4::ncvar_get(TC.data.base, "usa_wind")[, indices] * 0.514)
+  rmw = ncdf4::ncvar_get(TC.data.base, "usa_rmw")[, indices]
+  roci = ncdf4::ncvar_get(TC.data.base, "usa_roci")[, indices]
+  pres = ncdf4::ncvar_get(TC.data.base, "usa_pres")[, indices]
+  poci = ncdf4::ncvar_get(TC.data.base, "usa_poci")[, indices]
+  sshs = sshs[, indices]
+  landfall = ncdf4::ncvar_get(TC.data.base, "landfall")[, indices]
+
+
+  if (verbose)
+    cat("Done\nMaking buffer: ")
 
 
   #Handle loi
@@ -293,51 +332,48 @@ getStorms <- function(basin = "SP",
     loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
   } else{
     loi.sf.buffer = loi.sf
+    max_dist = 0
   }
 
-  if (verbose)
-    cat("Done\n")
-
-
-
-
-
-  #Get data associated with indices
   sts = Storms()
   sts@time.period = time_period
   sts@names = list()
   sts@nb.storms = 0
   sts@buffer = max_dist
+
   storm.list = list()
   k = 2 #init line type
   count = 1 #init count for progression bar
 
 
+
   if (verbose & length(indices) > 0) {
-    cat("Gathering storms\n")
+    cat("Done\nGathering storms \n")
     pb = utils::txtProgressBar(min = count,
                                max = length(indices),
                                style = 3)
   }
 
 
-  for (i in indices) {
+  for (i in 1:length(indices)) {
 
-    numobs = ncdf4::ncvar_get(TC.data.base, "numobs")[i]
-    lon = ncdf4::ncvar_get(TC.data.base, "usa_lon")[1:numobs, i]
-    lat = ncdf4::ncvar_get(TC.data.base, "usa_lat")[1:numobs, i]
+
+    numobs = num.observations[i]
+    lon = longitude[1:numobs, i]
+    lat = latitude[1:numobs, i]
     coords = data.frame(lon = lon, lat = lat)
 
+
     #Remove invalid iso_time
-    iso.time = ncdf4::ncvar_get(TC.data.base, "iso_time")[1:numobs, i]
-    list.iso.time = unlist(strsplit(iso.time, split = " ", fixed = TRUE))
-    ind.iso.time = seq(1,length(list.iso.time))
-    ind.iso.time = which(ind.iso.time %%2 == 0)
-    list.iso.time = as.numeric(stringr::str_sub(list.iso.time[ind.iso.time],1,2))
+    iso.time = iso.times[1:numobs, i]
+    list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
     ind.iso.time = which(list.iso.time %% 3 == 0)
     coords = coords[ind.iso.time,]
     row.names(coords) = seq(1,dim(coords)[1])
     coords = coords[stats::complete.cases(coords),]
+
+
+
 
     #create sf points coordinates to intersect with loi.sf
     pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
@@ -345,40 +381,36 @@ getStorms <- function(basin = "SP",
 
 
     #which coordinates are within loi.sf.buffer
-    ind = which(sf::st_intersects(pts, loi.sf.buffer,
-                                  sparse = FALSE) == TRUE)
-
-
-    #to check if storm is not NOT_NAMED
-    name.storm = ncdf4::ncvar_get(TC.data.base, "name")[i]
-
-    #to check if sshs is over categoy 1 in case remove_weak_TC == T
-    sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")[1:numobs, i]
-
-    if (remove_weak_TC & max(sshs,na.rm = T) < 1) {
-      #it is a TC below category 1, thus we do not consider it
-      ind = NULL
+    if(!loi.is.basin){
+      ind = which(sf::st_intersects(pts, loi.sf.buffer,
+                                    sparse = FALSE) == TRUE)
+    }else{
+      ind = 1
     }
 
-    #Add TC only if it intersect the LOI or it is not 'NOT_NAMED'
-    if (length(ind) > 0 & name.storm != "NOT_NAMED") {
+
+
+
+    #Add TC only if it intersects the LOI
+    if (length(ind) > 0) {
       sts@nb.storms = sts@nb.storms + 1
 
       storm = Storm()
-      storm@name = name.storm
-      storm@season = ncdf4::ncvar_get(TC.data.base, "season")[i]
+      storm@name = storm.names[i]
+      storm@season =cyclonic.seasons[i]
+      storm@basin = basins[i]
       storm@obs.all = data.frame(
-        subbasin = ncdf4::ncvar_get(TC.data.base, "subbasin")[1:numobs, i],
+        subbasin = subbasin[1:numobs, i],
         iso.time = iso.time,
         lon = lon,
         lat = lat,
-        msw = round(ncdf4::ncvar_get(TC.data.base, "usa_wind")[1:numobs, i] * 0.514),
-        rmw = ncdf4::ncvar_get(TC.data.base, "usa_rmw")[1:numobs, i],
-        roci = ncdf4::ncvar_get(TC.data.base, "usa_roci")[1:numobs, i],
-        pres = ncdf4::ncvar_get(TC.data.base, "usa_pres")[1:numobs, i],
-        poci = ncdf4::ncvar_get(TC.data.base, "usa_poci")[1:numobs, i],
-        sshs = sshs,
-        landfall = ncdf4::ncvar_get(TC.data.base, "landfall")[1:numobs, i]
+        msw = round(msw[1:numobs, i]),
+        rmw = rmw[1:numobs, i],
+        roci = roci[1:numobs, i],
+        pres = pres[1:numobs, i],
+        poci = poci[1:numobs, i],
+        sshs = sshs[1:numobs, i],
+        landfall = landfall[1:numobs, i]
       )
 
       #wrap longitudes -180/180 to 0/360
@@ -389,7 +421,12 @@ getStorms <- function(basin = "SP",
       storm@obs.all = storm@obs.all[ind.iso.time,]
       storm@numobs.all = dim(storm@obs.all)[1]
       row.names(storm@obs.all) = seq(1,storm@numobs.all)
-      ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all),])[ind])
+      if(!loi.is.basin){
+        ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all),])[ind])
+      }else{
+        ind = seq(1,storm@numobs.all)
+      }
+
 
       storm@obs = ind
       storm@numobs = length(ind)
@@ -401,6 +438,7 @@ getStorms <- function(basin = "SP",
       sts@sshs = append(sts@sshs, storm@sshs)
     }
 
+
     if (verbose)
       utils::setTxtProgressBar(pb, count)
 
@@ -409,6 +447,7 @@ getStorms <- function(basin = "SP",
   if (verbose & length(indices) > 0)
     close(pb)
 
+  ncdf4::nc_close(TC.data.base)
 
 
   sts@basin = basin
@@ -419,3 +458,30 @@ getStorms <- function(basin = "SP",
 
   return(sts)
 }
+
+
+
+
+
+# #Remove invalid iso_time
+# iso.time = ncdf4::ncvar_get(TC.data.base, "iso_time")[, indices]
+# iso.time = apply(iso.time, 2, stringr::str_sub,12,13)
+# iso = apply(iso.time, 2, as.numeric)
+# ind.iso =  iso %% 3 == 0
+#
+# iso.f = iso.time[ind.iso]
+# as.array(iso.f,iso.time)
+#
+# iso.time %in% c("00", "03", "06", "09",
+#                 "12", "15", "18", "21")
+# as.numeric(iso.time[,3])
+#
+# list.iso.time = unlist(strsplit(iso.time, split = " ", fixed = TRUE))
+# ind.iso.time = seq(1,length(list.iso.time))
+# ind.iso.time = which(ind.iso.time %%2 == 0)
+# list.iso.time = as.numeric(stringr::str_sub(list.iso.time[ind.iso.time],1,2))
+# ind.iso.time = which(list.iso.time %% 3 == 0)
+# coords = coords[ind.iso.time,]
+# row.names(coords) = seq(1,dim(coords)[1])
+# coords = coords[stats::complete.cases(coords),]
+#
