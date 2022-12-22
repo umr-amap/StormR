@@ -155,7 +155,7 @@ getStorms <- function(basin = "SP",
                    c(0, 0, -60, -60, 0)
                    ),
                  "SA" = cbind(
-                   c(290, 360, 360, 290, 290),
+                   c(290, 359, 359, 290, 290),
                    c(0, 0, -60, -60, 0)
                  ),
                  "NI" = cbind(
@@ -281,7 +281,7 @@ getStorms <- function(basin = "SP",
 
 
   if (verbose)
-    cat("Done\nLoading data:")
+    cat("Done\nLoading data: ")
 
 
   #Get remaining data associated with indices
@@ -358,106 +358,110 @@ getStorms <- function(basin = "SP",
   k = 2 #init line type
   count = 1 #init count for progression bar
 
-
+  if(verbose)
+    cat("Done\n")
 
   if (verbose & length(indices) > 1) {
-    cat("Done\nGathering storms \n")
+    cat("Gathering storms \n")
     pb = utils::txtProgressBar(min = count,
                                max = length(indices),
                                style = 3)
   }
 
-  for (i in 1:length(indices)) {
+  if(length(indices) > 0){
+
+    for (i in 1:length(indices)) {
 
 
-    numobs = num.observations[i]
-    lon = longitude[1:numobs, i]
-    lat = latitude[1:numobs, i]
-    coords = data.frame(lon = lon, lat = lat)
-
-    #Remove invalid iso_time
-    iso.time = iso.times[1:numobs, i]
-    list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
-    ind.iso.time = which(list.iso.time %% 3 == 0)
-    coords = coords[ind.iso.time,]
-    row.names(coords) = seq(1,dim(coords)[1])
-    coords = coords[stats::complete.cases(coords),]
-
-
-    #create sf points coordinates to intersect with loi.sf
-    pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
-    sf::st_crs(pts) = 4326
-
-
-    #which coordinates are within loi.sf.buffer
-    if(!loi.is.basin){
-      ind = which(sf::st_intersects(pts, loi.sf.buffer,
-                                    sparse = FALSE) == TRUE)
-    }else{
-      ind = 1
-    }
-
-
-
-
-    #Add TC only if it intersects the LOI
-    if (length(ind) > 0) {
-      sts@nb.storms = sts@nb.storms + 1
-
-      storm = Storm()
-      storm@name = storm.names[i]
-      storm@season =cyclonic.seasons[i]
-      storm@basin = basins[i]
-      storm@obs.all = data.frame(
-        subbasin = subbasin[1:numobs, i],
-        iso.time = iso.time,
-        lon = lon,
-        lat = lat,
-        msw = round(msw[1:numobs, i]),
-        rmw = rmw[1:numobs, i],
-        roci = roci[1:numobs, i],
-        pres = pres[1:numobs, i],
-        poci = poci[1:numobs, i],
-        sshs = sshs[1:numobs, i],
-        landfall = landfall[1:numobs, i]
-      )
-
-      #wrap longitudes -180/180 to 0/360
-      lg = which(storm@obs.all$lon < 0)
-      storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
+      numobs = num.observations[i]
+      lon = longitude[1:numobs, i]
+      lat = latitude[1:numobs, i]
+      coords = data.frame(lon = lon, lat = lat)
 
       #Remove invalid iso_time
-      storm@obs.all = storm@obs.all[ind.iso.time,]
-      storm@numobs.all = dim(storm@obs.all)[1]
-      row.names(storm@obs.all) = seq(1,storm@numobs.all)
+      iso.time = iso.times[1:numobs, i]
+      list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
+      ind.iso.time = which(list.iso.time %% 3 == 0)
+      coords = coords[ind.iso.time,]
+      row.names(coords) = seq(1,dim(coords)[1])
+      coords = coords[stats::complete.cases(coords),]
+
+
+      #create sf points coordinates to intersect with loi.sf
+      pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
+      sf::st_crs(pts) = 4326
+
+
+      #which coordinates are within loi.sf.buffer
       if(!loi.is.basin){
-        ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all),])[ind])
+        ind = which(sf::st_intersects(pts, loi.sf.buffer,
+                                      sparse = FALSE) == TRUE)
       }else{
-        ind = seq(1,storm@numobs.all)
+        ind = 1
       }
 
 
-      storm@obs = ind
-      storm@numobs = length(ind)
-      storm@lty.track = k
-      storm@sshs = max(storm@obs.all$sshs,na.rm = T)
-      storm.list = append(storm.list, storm)
-      k = k + 1
-      sts@names = append(sts@names, storm@name)
-      sts@sshs = append(sts@sshs, storm@sshs)
+
+
+      #Add TC only if it intersects the LOI
+      if (length(ind) > 0) {
+        sts@nb.storms = sts@nb.storms + 1
+
+        storm = Storm()
+        storm@name = storm.names[i]
+        storm@season =cyclonic.seasons[i]
+        storm@basin = basins[i]
+        storm@obs.all = data.frame(
+          subbasin = subbasin[1:numobs, i],
+          iso.time = iso.time,
+          lon = lon,
+          lat = lat,
+          msw = round(msw[1:numobs, i]),
+          rmw = rmw[1:numobs, i],
+          roci = roci[1:numobs, i],
+          pres = pres[1:numobs, i],
+          poci = poci[1:numobs, i],
+          sshs = sshs[1:numobs, i],
+          landfall = landfall[1:numobs, i]
+        )
+
+        #wrap longitudes -180/180 to 0/360
+        lg = which(storm@obs.all$lon < 0)
+        storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
+
+        #Remove invalid iso_time
+        storm@obs.all = storm@obs.all[ind.iso.time,]
+        storm@numobs.all = dim(storm@obs.all)[1]
+        row.names(storm@obs.all) = seq(1,storm@numobs.all)
+        if(!loi.is.basin){
+          ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all),])[ind])
+        }else{
+          ind = seq(1,storm@numobs.all)
+        }
+
+
+        storm@obs = ind
+        storm@numobs = length(ind)
+        storm@lty.track = k
+        storm@sshs = max(storm@obs.all$sshs,na.rm = T)
+        storm.list = append(storm.list, storm)
+        k = k + 1
+        sts@names = append(sts@names, storm@name)
+        sts@sshs = append(sts@sshs, storm@sshs)
+      }
+
+
+      if (verbose & length(indices) > 1)
+        utils::setTxtProgressBar(pb, count)
+
+      count = count + 1
     }
-
-
     if (verbose & length(indices) > 1)
-      utils::setTxtProgressBar(pb, count)
+      close(pb)
 
-    count = count + 1
   }
-  if (verbose & length(indices) > 1)
-    close(pb)
 
   ncdf4::nc_close(TC.data.base)
-
 
   sts@basin = basin
   sts@spatial.loi = loi.sf
