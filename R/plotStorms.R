@@ -201,12 +201,14 @@ plotStorms = function(sts,
 
   #Check category input
   if (!is.null(category)) {
+    stopifnot("category must be numeric(s)" = identical(class(category), "numeric"))
     stopifnot("Invalid category input" = category %in% c(-1,-2,0,1,2,3,4,5))
   }
 
   #Check grtc input
   stopifnot("grtc must be numeric" = identical(class(grtc), "numeric"))
   stopifnot("grtc must contains an integer" = is_wholenumber(grtc))
+  stopifnot("grtc must be length 1" = length(grtc) == 1)
 
   #Check xlim input
   if (!is.null(xlim)) {
@@ -226,7 +228,7 @@ plotStorms = function(sts,
                 ylim <= 90)
   }
 
-  #Check inputs
+  #Check logical inputs
   stopifnot("all_basin must be logical" = identical(class(all_basin), "logical"))
   stopifnot("legends must be logical" = identical(class(legends), "logical"))
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
@@ -235,10 +237,14 @@ plotStorms = function(sts,
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
 
   #Check by inputs
+  stopifnot("by must be numeric" = identical(class(by), "numeric"))
   stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
+  stopifnot("by must length 1" = length(by) == 1)
 
   #Check pos inputs
+  stopifnot("pos must be numeric" = identical(class(pos), "numeric"))
   stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
+  stopifnot("pos must length 1" = length(pos) == 1)
   stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
 
 

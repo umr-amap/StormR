@@ -246,8 +246,9 @@ getStorms <- function(basin = "SP",
       storm.id = NULL
       storm.id = which(storm.names == name[n])
       stopifnot("Storm not found" = !is.null(storm.id))
-      indices = c(indices, seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]])
-      stopifnot("Storm not found" = length(indices) > 0)
+      id = seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]]
+      stopifnot("Storm not found" = !all(is.na(id)))
+      indices = c(indices, id)
     }
   } else{
     if (length(time_period) == 1) {

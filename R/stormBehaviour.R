@@ -146,6 +146,7 @@ stormBehaviour = function(sts,
 
   #Check product input
   stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Exposure"))
+  stopifnot("Only one product must be chosen" = length(product) == 1)
 
   #Check method input
   stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland80"))
@@ -166,6 +167,7 @@ stormBehaviour = function(sts,
 
   }else{
     stopifnot("Invalid result input" = result %in% c("profiles","analytic"))
+    stopifnot("result should be length 1" = length(result) == 1)
     if(result == "profiles")
       product = "MSW"
   }
@@ -175,11 +177,13 @@ stormBehaviour = function(sts,
   #Check space_res input
   stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
   stopifnot("space_res must be as integer" = is_wholenumber(space_res))
+  stopifnot("space_res must be length 1" = length(space_res) == 1)
   stopifnot("space_res must be positif" = space_res > 0)
 
   #Check time_res input
   stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
   stopifnot("invalid time_res" = time_res %in% c(1, 0.75, 0.5, 0.25))
+  stopifnot("time_res must be length 1" = length(time_res) == 1)
 
   #Check verbose input
   stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
