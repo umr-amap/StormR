@@ -228,6 +228,9 @@ stormBehaviour = function(sts,
       raster.template = terra::rast(resolution = terra::res(raster.template), extent = e)
     }
 
+    #Get new extent
+    e = terra::ext(raster.template)
+
     #Buffer size in degree
     buffer = terra::res(raster.template)[1] * sts@buffer / space_res
     final.stack = c()
@@ -262,6 +265,7 @@ stormBehaviour = function(sts,
     }
 
 
+
     #Get all variables and remove NAs
     dat = data.frame(
       lon = st@obs.all$lon[ind],
@@ -277,6 +281,15 @@ stormBehaviour = function(sts,
     dat$storm.speed = NA
     dat$vx.deg = NA
     dat$vy.deg = NA
+
+    #To reduce size of raster if loi represents the whole basin
+    if(sts@loi.basin & result %in% c("profiles","analytic"))
+      e = terra::ext(min(dat$lon) - buffer,
+                     max(dat$lon) + buffer,
+                     min(dat$lat) - buffer,
+                     max(dat$lat) + buffer)
+
+
 
     #Compute speed of storm (m/s)
     for(i in 1:(dim(dat)[1]-1)){
@@ -461,8 +474,11 @@ stormBehaviour = function(sts,
 
           if (product == "MSW") {
             raster.msw = raster.template
+            if(sts@loi.basin)
+              raster.msw = terra::crop(raster.msw,e)
+
             raster.msw = terra::merge(raster.msw,raster.model)
-            raster.msw = terra::crop(raster.msw,terra::ext(raster.template))
+            raster.msw = terra::crop(raster.msw,e)
             aux.stack = c(aux.stack, raster.msw)
           }else if (product == "PDI"){
             raster.cd = raster.template.model
@@ -479,6 +495,9 @@ stormBehaviour = function(sts,
             raster.model = raster.model * rho * raster.cd
 
             raster.msw = raster.template
+            if(sts@loi.basin)
+              raster.msw = terra::crop(raster.msw,e)
+
             raster.msw = terra::merge(raster.msw,raster.model)
             raster.msw = terra::crop(raster.msw,terra::ext(raster.template))
             aux.stack = c(aux.stack, raster.msw)
@@ -486,6 +505,9 @@ stormBehaviour = function(sts,
             sshs = c(33,42,49,58,70,100)
             for(c in 1:5){
               raster.c = raster.template
+              if(sts@loi.basin)
+                raster.c = terra::crop(raster.c,e)
+
               raster.c.model = raster.template.model
               ind = which(terra::values(raster.model) >= sshs[c] &
                             terra::values(raster.model) < sshs[c+1])
