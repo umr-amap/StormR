@@ -67,6 +67,7 @@ Storms <- methods::setClass(
     sshs = "list",
     nb.storms = "numeric",
     basin = "character",
+    loi.basin = "logical",
     spatial.loi = "sf",
     buffer = "numeric",
     spatial.loi.buffer = "sf"
@@ -346,7 +347,6 @@ getStorms <- function(basin = "SP",
     loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
   } else{
     loi.sf.buffer = loi.sf
-    max_dist = 0
   }
 
   sts = Storms()

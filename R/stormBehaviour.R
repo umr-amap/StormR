@@ -195,34 +195,41 @@ stormBehaviour = function(sts,
 
 
   if(result %in% c("profiles","analytic")){
+
     #Generate the raster template
-    xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
-    xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
-    ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
-    ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
-    e <- terra::ext(xmin, xmax, ymin, ymax)
+    e <- terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
+                    sf::st_bbox(sts@spatial.loi.buffer)$xmax,
+                    sf::st_bbox(sts@spatial.loi.buffer)$ymin,
+                    sf::st_bbox(sts@spatial.loi.buffer)$ymax)
 
     ras = terra::rast(
-      xmin = xmin,
-      xmax = xmax,
-      ymin = ymin,
-      ymax = ymax,
+      xmin = e$xmin,
+      xmax = e$xmax,
+      ymin = e$ymin,
+      ymax = e$ymax,
       vals = NA
     )
     #Projection in Mercator
     ras = terra::project(ras, "EPSG:3857")
     #Resample in new resolution in Mercator
-    ras.template = ras
-    terra::res(ras.template) = c(space_res * 1000, space_res * 1000)
-    ras.template <- terra::resample(ras, ras.template)
+    raster.template = ras
+    terra::res(raster.template) = c(space_res * 1000, space_res * 1000)
+    raster.template <- terra::resample(ras, raster.template)
     #Reprojection in lon/lat
-    ras.template = terra::project(ras.template, "EPSG:4326")
+    raster.template = terra::project(raster.template, "EPSG:4326")
 
     #Handling time line crossing
-    if(terra::ext(ras.template)$xmin < 0){
-      ras.template = terra::rast(resolution = terra::res(ras.template), extent = e)
+    if(terra::ext(raster.template)$xmin < 0){
+      raster.template = terra::rast(resolution = terra::res(raster.template), extent = e)
     }
 
+    #Handling time line crossing
+    if(terra::ext(raster.template)$xmin < 0){
+      raster.template = terra::rast(resolution = terra::res(raster.template), extent = e)
+    }
+
+    #Buffer size in degree
+    buffer = terra::res(raster.template)[1] * sts@buffer / space_res
     final.stack = c()
   }
 
@@ -304,6 +311,7 @@ stormBehaviour = function(sts,
       step = 1
 
 
+
       if (verbose) {
         cat("Computing",
             result,
@@ -375,30 +383,38 @@ stormBehaviour = function(sts,
           if (result == "analytic" & i == dt & j != last.obs)
             break #avoid redondance
 
-          raster.msw = ras.template
+          #Raster to compute model
+          raster.template.model = terra::rast(xmin = lon[i] - buffer,
+                                       xmax = lon[i] + buffer,
+                                       ymin = lat[i] - buffer,
+                                       ymax = lat[i] + buffer,
+                                       res = terra::res(raster.template),
+                                       vals = NA)
+          terra::origin(raster.template.model) = terra::origin(raster.template)
+          raster.model = raster.template.model
 
           #Compute distances to the eye of the storm for x and y axes
-          x = (terra::crds(raster.msw, na.rm = FALSE)[, 1] - lon[i])
-          y = (terra::crds(raster.msw, na.rm = FALSE)[, 2] - lat[i])
+          x = (terra::crds(raster.model, na.rm = FALSE)[, 1] - lon[i])
+          y = (terra::crds(raster.model, na.rm = FALSE)[, 2] - lat[i])
           #Compute distances to the eye of the storm in m
           dist.m = terra::distance(
-            x = terra::crds(raster.msw, na.rm = FALSE)[, ],
+            x = terra::crds(raster.model, na.rm = FALSE)[, ],
             y = cbind(lon[i], lat[i]),
             lonlat = T
           )
 
-          if(asymmetry == "V2"){
+          if(asymmetry == "V2")
             msw[i] = msw[i] - storm.speed
-          }
 
-          if(empirical_rmw){
+
+          if(empirical_rmw)
             rmw[i] = getRmw(msw[i],lat[i])
-          }
+
 
           #Compute sustained winds according to the input model
           if (method == "Willoughby") {
 
-            terra::values(raster.msw) = Willoughby(
+            terra::values(raster.model) = Willoughby(
               msw = msw[i],
               lat = lat[i],
               r = dist.m * 0.001,
@@ -407,7 +423,7 @@ stormBehaviour = function(sts,
 
           }else if (method == "Holland80") {
 
-            terra::values(raster.msw) = Holland80(
+            terra::values(raster.model) = Holland80(
               r = dist.m * 0.001,
               rmw = rmw[i],
               msw = msw[i],
@@ -417,10 +433,11 @@ stormBehaviour = function(sts,
             )
           }
 
+
           #Add asymmetry
           if (asymmetry == "V1") {
             #Boose version
-            raster.t = ras.template
+            raster.t = raster.template.model
             if(sts@basin %in% c("SA", "SP", "SI")){
               #Southern Hemisphere, t is counterclockwise
               terra::values(raster.t) = atan2(vy.deg,vx.deg) - atan2(y,x) + pi
@@ -428,10 +445,10 @@ stormBehaviour = function(sts,
               #Northern Hemisphere, t is clockwise
               terra::values(raster.t) = atan2(y,x) - atan2(vy.deg,vx.deg)  + pi
             }
-            terra::values(raster.msw) = terra::values(raster.msw) - (1 - sin(terra::values(raster.t)))*(storm.speed/3.6)/2
+            terra::values(raster.model) = terra::values(raster.model) - (1 - sin(terra::values(raster.t)))*(storm.speed/3.6)/2
 
           } else if(asymmetry == "V2"){
-            raster.t = ras.template
+            raster.t = raster.template.model
             if(sts@basin %in% c("SA", "SP", "SI")){
               #Southern Hemisphere, t is clockwise
               terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
@@ -439,32 +456,42 @@ stormBehaviour = function(sts,
               #Northern Hemisphere, t is counterclockwise
               terra::values(raster.t) = acos((- y * vx.deg + x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
             }
-            terra::values(raster.msw) = terra::values(raster.msw) + cos(terra::values(raster.t))* storm.speed
+            terra::values(raster.model) = terra::values(raster.model) + cos(terra::values(raster.t))* storm.speed
           }
 
           if (product == "MSW") {
+            raster.msw = raster.template
+            raster.msw = terra::merge(raster.msw,raster.model)
+            raster.msw = terra::crop(raster.msw,terra::ext(raster.template))
             aux.stack = c(aux.stack, raster.msw)
           }else if (product == "PDI"){
-            raster.cd = ras.template
-            ind1 = terra::values(raster.msw) <= 31.5
-            ind2 = terra::values(raster.msw) > 31.5
-            terra::values(raster.cd)[ind1] = (0.8 + 0.06 * terra::values(raster.msw)[ind1]) * 0.001
-            terra::values(raster.cd)[ind2] = (0.55 + 2.97 * terra::values(raster.msw)[ind2] /31.5
-                                       - 1.49 * (terra::values(raster.msw)[ind2] / 31.5) ** 2) * 0.001
-            terra::values(raster.cd)[terra::values(raster.msw) <= 18] = 0
+            raster.cd = raster.template.model
+            ind1 = terra::values(raster.model) <= 31.5
+            ind2 = terra::values(raster.model) > 31.5
+            terra::values(raster.cd)[ind1] = (0.8 + 0.06 * terra::values(raster.model)[ind1]) * 0.001
+            terra::values(raster.cd)[ind2] = (0.55 + 2.97 * terra::values(raster.model)[ind2] /31.5
+                                       - 1.49 * (terra::values(raster.model)[ind2] / 31.5) ** 2) * 0.001
+            terra::values(raster.cd)[terra::values(raster.model) <= 18] = 0
             rho = 0.001
             #Raising to power 3
-            raster.msw = raster.msw ** 3
+            raster.model = raster.model ** 3
             #Apply both rho and surface drag coefficient
-            raster.msw = raster.msw * rho * raster.cd
+            raster.model = raster.model * rho * raster.cd
+
+            raster.msw = raster.template
+            raster.msw = terra::merge(raster.msw,raster.model)
+            raster.msw = terra::crop(raster.msw,terra::ext(raster.template))
             aux.stack = c(aux.stack, raster.msw)
           }else if (product == "Exposure"){
             sshs = c(33,42,49,58,70,100)
             for(c in 1:5){
-              raster.c = ras.template
-              ind = which(terra::values(raster.msw) >= sshs[c] &
-                            terra::values(raster.msw) < sshs[c+1])
-              raster.c[ind] = 1
+              raster.c = raster.template
+              raster.c.model = raster.template.model
+              ind = which(terra::values(raster.model) >= sshs[c] &
+                            terra::values(raster.model) < sshs[c+1])
+              raster.c.model[ind] = 1
+              raster.c = terra::merge(raster.c,raster.c.model)
+              raster.c = terra::crop(raster.c,terra::ext(raster.template))
               aux.stack = c(aux.stack, raster.c)
             }
           }
@@ -483,7 +510,7 @@ stormBehaviour = function(sts,
 
 
       aux.stack = terra::rast(aux.stack)
-      product.raster = ras.template
+      product.raster = raster.template
 
       if (product == "MSW") {
         if(result == "profiles"){
