@@ -76,10 +76,10 @@ plotBehaviour = function(sts,
   stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
 
 
-  xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
-  xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
-  ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
-  ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
+  xmin = terra::ext(raster_product)$xmin
+  xmax = terra::ext(raster_product)$xmax
+  ymin = terra::ext(raster_product)$ymin
+  ymax = terra::ext(raster_product)$ymax
 
   if (!is.null(xlim)) {
     xmin = xlim[1]

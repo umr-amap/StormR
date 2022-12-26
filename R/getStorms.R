@@ -232,7 +232,7 @@ getStorms <- function(basin = "SP",
 
 
   if (verbose)
-    cat("Identifying of Storms: ")
+    cat("Identifying Storms: ")
 
 
   #Retrieving the matching indices, handling time_period and name
@@ -465,6 +465,7 @@ getStorms <- function(basin = "SP",
   ncdf4::nc_close(TC.data.base)
 
   sts@basin = basin
+  sts@loi.basin = loi.is.basin
   sts@spatial.loi = loi.sf
   sts@spatial.loi.buffer = loi.sf.buffer
   sts@data = storm.list
