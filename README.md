@@ -33,7 +33,7 @@ Insert comments about the model here <br />
 $$
 \left\{
 \begin{aligned}
-v_r &= msw\left(\frac{r}{rmw}\right)^{nn} \quad if \quad r <rmw <\\
+v_r &= msw\left(\frac{r}{rmw}\right)^{nn} \quad if \quad r < rmw \\
 v_r &= msw((1-AA))e^{-\frac{|r-rmw|}{XX1}} + AA e^{-\frac{|r-rmw|}{XX2}}) \quad if \quad r \geq rmw \\
 \end{aligned}
 \right.
