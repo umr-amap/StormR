@@ -30,13 +30,14 @@ Two cyclonic models are available within this package in order to compute radial
 Willoughby et al. 2006: <br />
 Insert comments about the model here <br />
 
-
-$$\left\{
+$$
+\left\{
 \begin{aligned}
 v_r &= msw\left(\frac{r}{rmw}\right)^{nn} \quad if \quad r <rmw <\\
 v_r &= msw((1-AA))e^{-\frac{|r-rmw|}{XX1}} + AA e^{-\frac{|r-rmw|}{XX2}}) \quad if \quad r \geq rmw \\
 \end{aligned}
-\right.$$
+\right.
+$$
 
 
 where <br />
@@ -54,7 +55,9 @@ Holland et al. 1980: <br />
 Insert comments about the model here <br />
 
 
-$ v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\frac{rmw}{r}\right)^b} + \left(\frac{rf}{2}\right)^2} - \left(\frac{rf}{2}\right)$ <br />
+$$
+v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\frac{rmw}{r}\right)^b} + \left(\frac{rf}{2}\right)^2} - \left(\frac{rf}{2}\right)
+$$
 
 where <br />
 $v_r$: radial wind speed (m/s) <br />
@@ -85,7 +88,7 @@ much more accurate 2D structures of radial wind speed. This package proposes two
 to add such asymmetry: <br />
 
 Version 1 (Boose et al. 2001 version): <br />
-$v_{r_{as}} = v_r - S(1-\sin(T))\frac{v_h}{2}$
+$v_{r_{as}} = v_r - S(1-\sin(\alpha))\frac{v_h}{2}$
 
 Version 2: <br />
 $v_{r_{as}} = v_{r_{|v_h}} + v_h\cos(\theta)$
@@ -97,7 +100,7 @@ $v_h$: Velocity of storm (m/s) <br />
 $v_{r_{|v_h}}$: Former radial wind speed without asymmetry (m/s), where values
 have been computed substracting $v_h$ to $msw$ i.e $v_{max} = msw-v_h$ in the input
 $S$: Asymmetry coefficient (usually set to 1) <br />
-$T$: Angle between the storm direction and the point where $v_{r_{as}}$ is computed.
+$\alpha$: Angle between the storm direction and the point where $v_{r_{as}}$ is computed.
 Clockwise in Nothern hemisphere, counterclokwise in Southern hemisphere. <br />
 $\theta$: Angle between the storm direction and the direction of radial wind speed at the point where $v_{r_{as}}$ is computed <br />
 
@@ -105,7 +108,7 @@ $\theta$: Angle between the storm direction and the direction of radial wind spe
 Insert comments about the differences here <br />
 
 
-## Product 
+## Products
 stormR let the user compute several products. They can either be computed on 
 specific longitude/latitute coordinates or rasterized over the location of interest.
 The following describes the products available: <br />
@@ -115,8 +118,8 @@ The following describes the products available: <br />
  at distance $r$ of the eye of the storm according to $\max(v_r(t) | t \in [0,T])$ where $T$ stands
  for the whole lifecycle of the storm. <br />
 
-* Power Dissipation Index (PDI): It provides the value of the PDI at distance $r$ of the eye of the     storm according to $\int_T\rho C_d v_r^3 dt$.  $T$ stands for the whole lifecycle of the storm,       $\rho$ represents the air density fixed here at $10^{-3}$ kg/m3 ?
-  Finally, $C_d$ models the drag coefficient of the storm. Although there exist various method and      formula to compute this parameter that are widely debatable, we chose here the following              parametrization derived in []: 
+* Power Dissipation Index (PDI): It provides the value of the PDI at distance $r$ of the eye of the     storm according to $\int_T\rho C_d v_r^3 dt$. <br />
+  $T$ stands for the whole lifecycle of the storm, $\rho$ represents the air density fixed here at      $10^{-3}$ kg/m3 ? Finally, $C_d$ models the drag coefficient of the storm. Although there exist       various method and formula to compute this parameter that are widely debatable, we chose here the     following parametrization derived in []: 
   
 $$
 \left\{
