@@ -28,6 +28,8 @@ of all Storms available in \code{data}}
 
 \item{\code{basin}}{character. Basin in which the Storms have occured}
 
+\item{\code{loi.basin}}{logical. Whether the loi represents the whole basin or not}
+
 \item{\code{spatial.loi}}{sf object. Represents the location of interest
 Projection is EPSG:4326}
 

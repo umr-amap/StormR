@@ -25,6 +25,7 @@ writeRast = function(rast,
 
   #Check format input
   stopifnot("Invalid format" = format %in% c(".tiff", ".nc"))
+  stopifnot("Only one format can be chosen" = length(format) == 1)
 
   #Check filenames
   if(!is.null(filename)){
