@@ -115,7 +115,11 @@ The following describes the products available: <br />
 
 
 * Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed (m/s)
- at distance $r$ of the eye of the storm according to $\max(v_r(t) | t \in [0,T])$ where $T$ stands
+ at distance $r$ of the eye of the storm according to 
+$$
+\max(v_r(t) | t \in [0,T])
+$$
+ where $T$ stands
  for the whole lifecycle of the storm. <br />
 
 * Power Dissipation Index (PDI): It provides the value of the PDI at distance $r$ of the eye of the     storm according to $\int_T\rho C_d v_r^3 dt$. <br />
