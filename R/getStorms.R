@@ -50,6 +50,7 @@ Storm <- methods::setClass(
 #'  of all Storms available in `data`
 #' @slot nb.storms nuleric. Total Number of Storms available in `data`
 #' @slot basin  character. Basin in which the Storms have occured
+#' @slot loi.basin logical. Whether the loi represents the whole basin or not
 #' @slot spatial.loi sf object. Represents the location of interest
 #' Projection is EPSG:4326
 #' @slot buffer numeric. Buffer used to extent `spatial.loi` (in km)
