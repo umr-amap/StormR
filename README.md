@@ -61,7 +61,7 @@ $$
 
 where <br />
 $v_r \quad$ Radial wind speed (m/s) <br />
-$r$ \quad Distance to the eye of the storm where $v_r$ is computed (km) <br />
+$r \quad$ Distance to the eye of the storm where $v_r$ is computed (km) <br />
 $msw \quad$ Maximum sustained wind speed (m/s) <br />
 $rmw \quad$ Radius of maximum sustained wind speed (km) <br />
 $pc \quad$ Pressure at the eye of the storm (mb) <br />
