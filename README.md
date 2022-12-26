@@ -30,14 +30,14 @@ Two cyclonic models are available within this package in order to compute radial
 Willoughby et al. 2006: <br />
 Insert comments about the model here <br />
 
-$$
-\left\{
+
+$$\left\{
 \begin{aligned}
-v_r &= msw\left(\frac{r}{rmw}\right)^{nn} \quad if \quad r <rmw <br />
-v_r &= msw((1-AA))e^{-\frac{|r-rmw|}{XX1}} + AA e^{-\frac{|r-rmw|}{XX2}}) \quad if \quad r \geq rmw <br />
+v_r &= msw\left(\frac{r}{rmw}\right)^{nn} \quad if \quad r <rmw <\\
+v_r &= msw((1-AA))e^{-\frac{|r-rmw|}{XX1}} + AA e^{-\frac{|r-rmw|}{XX2}}) \quad if \quad r \geq rmw \\
 \end{aligned}
-\right.
-$$
+\right.$$
+
 
 where <br />
 $v_r$ radial wind speed (m/s) <br />
@@ -90,7 +90,7 @@ $v_{r_{as}} = v_r - S(1-\sin(T))\frac{v_h}{2}$
 Version 2: <br />
 $v_{r_{as}} = v_{r_{|v_h}} + v_h\cos(\theta)$
 
-where
+where <br />
 $v_{r_{as}}$: New radial wind speed with asymmetry (m/s) <br />
 $v_r$: Former radial wind speed without asymmetry (m/s) <br />
 $v_h$: Velocity of storm (m/s) <br />
@@ -105,6 +105,31 @@ $\theta$: Angle between the storm direction and the direction of radial wind spe
 Insert comments about the differences here <br />
 
 
+## Product 
+stormR let the user compute several products. They can either be computed on 
+specific longitude/latitute coordinates or rasterized over the location of interest.
+The following describes the products available: <br />
+
+
+* Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed (m/s)
+ at distance $r$ of the eye of the storm according to $\max(v_r(t) | t \in [0,T])$ where $T$ stands
+ for the whole lifecycle of the storm. <br />
+
+* Power Dissipation Index (PDI): It provides the value of the PDI at distance $r$ of the eye of the     storm according to $\int_T\rho C_d v_r^3 dt$.  $T$ stands for the whole lifecycle of the storm,       $\rho$ represents the air density fixed here at $10^{-3}$ kg/m3 ?
+  Finally, $C_d$ models the drag coefficient of the storm. Although there exist various method and      formula to compute this parameter that are widely debatable, we chose here the following              parametrization derived in []: 
+  
+$$
+\left\{
+\begin{aligned}
+C_d &= (0.8 + 0.06v_r) \times 10^{-3} \quad if \quad v_r \leq 31.5 \\
+C_d &= \left(0.55 + 2.97\frac{v_r}{31.5} - 1.49\left(\frac{v_r}{31.5}\right)^2\right) \times 10^{-3} \quad if \quad v_r > 31.5 \\
+\end{aligned}
+\right.
+$$
+
+* Exposure: It provides the time exposure (in hours) for a given category $c$ in the Saffir Simpson     Hurricane Scale, at distance $r$ of the eye of the storm according to  $\int_T v_r^c dt$, where $T$   stands for the whole lifecycle of the storm. <br />
+
+* 2D radial wind speed structures (Only rasterized and not point-wised)
 
 ## Usage
 
