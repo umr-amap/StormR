@@ -102,7 +102,7 @@ and it can be interesting to add asymmetry to the computations in order to get a
 much more accurate 2D structures of radial wind speed. This package proposes two formula
 to add such asymmetries: <br />
 
-\textbf{Version 1 (Boose et al. 2001 version)} <br />
+$\textbf{Version 1 (Boose et al. 2001 version)}$ <br />
 Insert comments here  <br />
 $v_{r_{as}} = v_r - S(1-\sin(\alpha))\frac{v_h}{2}$
 
