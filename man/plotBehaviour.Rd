@@ -2,9 +2,7 @@
 % Please edit documentation in R/plotBehaviour.R
 \name{plotBehaviour}
 \alias{plotBehaviour}
-\title{Plot a rasterize product (Maximum Sustained Wind, Power Dissipation Index,
-Category Exposure, 2D wind speed structure at a given observation ...)
-associated with a Storm contained in a \code{Storms} alongside with its track}
+\title{Plot rasterize informations below the associated track of a storm}
 \usage{
 plotBehaviour(
   sts,
@@ -24,11 +22,11 @@ plotBehaviour(
 It can also be "stormName_profileInd" where Ind stand for the observations if
 \code{raster_product} is a 2D wind speed structure}
 
-\item{xlim}{numerics. A set of longitude coordinates that controls the
+\item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to \code{NULL} which will let
 the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 
-\item{ylim}{numerics. A set of latitude coordinates that controls the
+\item{ylim}{numeric vector. A set of latitude coordinates that controls the
 latitude extent of the plot. Default value is set to \code{NULL} which will let
 the plot extends according to the y bounding box of \code{spatial.loi.buffer}.}
 
@@ -42,7 +40,7 @@ labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 Default value is set to 3}
 }
 \description{
-Plot a rasterize product (Maximum Sustained Wind, Power Dissipation Index,
+This function plots a rasterize product (Maximum Sustained Wind, Power Dissipation Index,
 Category Exposure, 2D wind speed structure at a given observation ...)
-associated with a Storm contained in a \code{Storms} alongside with its track
+associated with a storm contained in a \code{Storms} object alongside with its track
 }

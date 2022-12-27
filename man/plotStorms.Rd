@@ -2,15 +2,16 @@
 % Please edit documentation in R/plotStorms.R
 \name{plotStorms}
 \alias{plotStorms}
-\title{Plot a set of Storms contained in a Storms object.}
+\title{Plot several storm tracks}
 \usage{
 plotStorms(
   sts,
   names = NULL,
   category = NULL,
+  map = NULL,
   ground_color = "grey",
   ocean_color = "white",
-  all_basin = FALSE,
+  whole_basin = FALSE,
   labels = FALSE,
   by = 8,
   pos = 3,
@@ -24,19 +25,22 @@ plotStorms(
 \arguments{
 \item{sts}{Storms object}
 
-\item{names}{character(s). Names of the Storms we would like to plot. Default
+\item{names}{character vector. Names of the Storms we would like to plot. Default
 value is set to \code{NULL} which will consider every Storm in \code{sts}}
 
-\item{category}{numeric(s). Should be either a category or a range of category
+\item{category}{numeric vector. Should be either a category or a range of category
 in the Saffir Simpson scale (-2 to 5). Default value is set to \code{NULL} which
 will consider every Storm in \code{sts}. Otherwise it will consider only storm that
 reached \code{category}}
+
+\item{map}{a \code{shapefile} or \code{sf} object. It should replace
+the default map. Default value is set to NULL.}
 
 \item{ground_color}{character. Color for the ground}
 
 \item{ocean_color}{character. Color for the oceans}
 
-\item{all_basin}{logical. Whether or not to plot the track onto the whole basin.
+\item{whole_basin}{logical. Whether or not to plot the track onto the whole basin.
 Default value is set to \code{FALSE}. Otherwise, the plot focuses on the extent of
 \code{spatial.loi.buffer} of \code{sts}}
 
@@ -59,14 +63,16 @@ Default value is set to TRUE.}
 is set to 1, which plots graticules on multiple of 10 coordinates. Note that
 it should be a power of 2.}
 
-\item{xlim}{numerics. A set of longitude coordinates that controls the
+\item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to \code{NULL} which will let
 the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 
-\item{ylim}{numerics. A set of latitude coordinates that controls the
+\item{ylim}{numeric vector. A set of latitude coordinates that controls the
 latitude extent of the plot. Default value is set to \code{NULL} which will let
 the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
 }
 \description{
-Plot a set of Storms contained in a Storms object.
+This function plots a set of storm tracks contained in a Storms object. Depending
+on the inputs, the user may choose to plot only a desired set of storm extracted
+from the Storms object.
 }

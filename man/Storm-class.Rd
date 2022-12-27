@@ -4,12 +4,12 @@
 \name{Storm-class}
 \alias{Storm-class}
 \alias{Storm}
-\title{Gather all the informations to model a single Storm}
+\title{Storm  object}
 \value{
 A S4 object gathering all the above informations
 }
 \description{
-Gather all the informations to model a single Storm
+Gather all the needed informations to model a single storm
 }
 \section{Slots}{
 
@@ -33,7 +33,7 @@ landfall (Minimum distance to land over next 3 hours,  = 0 means landfall)).}
 
 \item{\code{numobs}}{numeric. Total number of observations available within the location of interest + buffer}
 
-\item{\code{obs}}{numerics. Indices of observations within the location of interest + buffer}
+\item{\code{obs}}{numeric vector. Indices of observations within the location of interest + buffer}
 
 \item{\code{lty.track}}{numeric. Indicates which line type is used to plot the storm}
 }}
