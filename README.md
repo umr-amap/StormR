@@ -56,10 +56,10 @@ $$
 
 
 where <br />
-$v_r \quad$ Radial wind speed ($m.s^{-1}$) <br />
+$v_r \quad$ Radial wind speed $(m.s^{-1})$ <br />
 $r \quad$ Distance to the eye of the storm where $v_r$ is computed ($km$) <br />
-$msw \quad$ Maximum sustained wind speed ($m.s^{-1}$) <br />
-$rmw \quad$ Radius of maximum sustained wind speed ($km$) <br />
+$msw \quad$ Maximum sustained wind speed $(m.s^{-1})$ <br />
+$rmw \quad$ Radius of maximum sustained wind speed $(km)$ <br />
 $XX1 = 287.6 - 1.942msw + 7.799\log(rmw) + 1.819|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
 $XX2 = 25 \quad$ Coefficient <br />
 $nn = 2.1340 + 0.0077msw - 0.4522\log(rmw) - 0.0038|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
@@ -75,13 +75,13 @@ v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\fra
 $$
 
 where <br />
-$v_r \quad$ Radial wind speed ($m.s^{-1}$) <br />
-$r \quad$ Distance to the eye of the storm where $v_r$ is computed ($km$) <br />
-$msw \quad$ Maximum sustained wind speed ($m.s^{-1}$) <br />
-$rmw \quad$ Radius of maximum sustained wind speed ($km$) <br />
-$pc \quad$ Pressure at the eye of the storm ($mb$) <br />
-$poci \quad$ Pressure at Outermost Closed Isobar of the storm ($mb$) <br />
-$\rho = 1.15 \quad$ Air density ($kg.m^{-3}$) <br />
+$v_r \quad$ Radial wind speed $(m.s^{-1})$ <br />
+$r \quad$ Distance to the eye of the storm where $v_r$ is computed $(km)$ <br />
+$msw \quad$ Maximum sustained wind speed $(m.s^{-1})$ <br />
+$rmw \quad$ Radius of maximum sustained wind speed $(km)$ <br />
+$pc \quad$ Pressure at the eye of the storm $(mb)$ <br />
+$poci \quad$ Pressure at Outermost Closed Isobar of the storm $(mb)$ <br />
+$\rho = 1.15 \quad$ Air density $(kg.m^{-3})$ <br />
 $f = 2 \times 7.29 \times10^{-5} \sin(\phi) \quad$ Coriolis force, $\phi$ being the latitude <br />
 $b = \frac{\rho e \times msw^2}{poci - pc} \quad$ Shape factor <br />
 
@@ -111,11 +111,10 @@ Insert comments here  <br />
 $v_{r_{as}} = v_{r_{|v_h}} + v_h\cos(\theta)$
 
 where <br />
-$v_{r_{as}} \quad$ New radial wind speed with asymmetry 
-($m.s^{-1}$) <br />
-$v_r \quad$ Former radial wind speed without asymmetry ($m.s^{-1}$) <br />
-$v_h \quad$ Velocity of storm ($m.s^{-1}$) <br />
-$v_{r_{|v_h}} \quad$ Former radial wind speed without asymmetry ($m.s^{-1}$), where values
+$v_{r_{as}} \quad$ New radial wind speed with asymmetry $(m.s^{-1})$ <br />
+$v_r \quad$ Former radial wind speed without asymmetry $(m.s^{-1})$ <br />
+$v_h \quad$ Velocity of storm $(m.s^{-1})$ <br />
+$v_{r_{|v_h}} \quad$ Former radial wind speed without asymmetry $(m.s^{-1})$, where values
 have been computed substracting $v_h$ to $msw$ i.e $v_{max} = msw-v_h$ in the input
 $S$ Asymmetry coefficient (usually set to 1) <br />
 $\alpha \quad$ Angle between the storm direction and the point where $v_{r_{as}}$ is computed.
@@ -132,7 +131,7 @@ specific longitude/latitute coordinates or rasterized over the location of inter
 The following describes the products available: <br />
 
 
-* Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed ($m.s^{-1}$)
+* Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed $(m.s^{-1})$
   at distance $r$ of the eye of the storm according to 
   
 $$
