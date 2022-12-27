@@ -22,7 +22,7 @@ You can install the development version of stormR like so:
 
 
 ## Data source 
-stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the \href{https://www.ncei.noaa.gov/products/international-best-track-archive}{International Best Track Archive for Climate Stewardship}. It let this package get every informations needed
+stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the $\href{https://www.ncei.noaa.gov/products/international-best-track-archive}{International Best Track Archive for Climate Stewardship}$. It let this package get every informations needed
 to plot, compute and analyze tropical cyclones. This data base provides observations
 every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations comes from a various number of agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
 
@@ -36,13 +36,13 @@ every 3 hours of storms and tropical cyclones on the whole world that occured fr
 * ALL: the above 7 basin all together
 
 Default value for the basin is set to SP as the developpement team are located and interested in this particular region, but it is up to the user to select his basin of interest.
-For the sake of data reability, stormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older stormR will result in an error. \href{https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf}{Click here} for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
+For the sake of data reability, stormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older stormR will result in an error. $\href{https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf}{Click here}$ for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
 
 ## Models
 
 Two cyclonic models are available within this package in order to compute radial wind speed:
 
-\textbf{Willoughby et al. 2006} <br />
+$\textbf{Willoughby et al. 2006}$ <br />
 Insert comments about the model here <br />
 
 $$
@@ -66,7 +66,7 @@ $nn = 2.1340 + 0.0077msw - 0.4522\log(rmw) - 0.0038|\phi| \quad$ Coefficient, $\
 
 
 
-\textbf{Holland et al. 1980} <br />
+$\textbf{Holland et al. 1980}$ <br />
 Insert comments about the model here <br />
 
 
@@ -106,7 +106,7 @@ $\textbf{Version 1 (Boose et al. 2001 version)}$ <br />
 Insert comments here  <br />
 $v_{r_{as}} = v_r - S(1-\sin(\alpha))\frac{v_h}{2}$
 
-\textbf{Version 2} <br />
+$\textbf{Version 2}$ <br />
 Insert comments here  <br />
 $v_{r_{as}} = v_{r_{|v_h}} + v_h\cos(\theta)$
 
