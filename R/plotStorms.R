@@ -2,8 +2,6 @@
 
 
 
-
-
 #' Get the Saffir Simpson Hurricane scale colors associated with a maximum
 #' sustained wind speed
 #'
@@ -20,34 +18,27 @@ getColors = function(msw) {
                              "#BD0026")
   if (is.na(msw)) {
     color = NA
-  } else{
-    if (msw < 18) {
-      color = saffir.simpson.palette[1]
-    } else{
-      if (msw >= 18 & msw < 33) {
-        color = saffir.simpson.palette[2]
-      } else{
-        if (msw >= 33 & msw < 42) {
-          color = saffir.simpson.palette[3]
-        } else{
-          if (msw >= 42 & msw < 49) {
-            color = saffir.simpson.palette[4]
-          } else{
-            if (msw >= 49 & msw < 58) {
-              color = saffir.simpson.palette[5]
-            } else{
-              if (msw >= 58 & msw < 70) {
-                color = saffir.simpson.palette[6]
-              } else{
-                if (msw >= 70) {
-                  color = saffir.simpson.palette[7]
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+
+  } else if (msw < 18) {
+    color = saffir.simpson.palette[1]
+
+  } else if (msw >= 18 & msw < 33) {
+    color = saffir.simpson.palette[2]
+
+  } else if (msw >= 33 & msw < 42) {
+    color = saffir.simpson.palette[3]
+
+  } else if (msw >= 42 & msw < 49) {
+    color = saffir.simpson.palette[4]
+
+  } else if (msw >= 49 & msw < 58) {
+    color = saffir.simpson.palette[5]
+
+  } else if (msw >= 58 & msw < 70) {
+    color = saffir.simpson.palette[6]
+
+  } else if (msw >= 70) {
+    color = saffir.simpson.palette[7]
   }
 
   return(color)
@@ -102,7 +93,6 @@ plotTrack = function(st, all_basin) {
 
 
 
-
 #' Add ISO Times and name labels on the track of a Storm on a map that should be
 #' previsouly plotted
 #'
@@ -113,6 +103,7 @@ plotTrack = function(st, all_basin) {
 #'
 #' @return NULL
 plotLabels = function(st, by, pos) {
+
   cex = 0.6
   ind = round(seq(1, st@numobs.all, by))
 
@@ -130,6 +121,7 @@ plotLabels = function(st, by, pos) {
       cex = cex
     )
   }
+
 }
 
 
@@ -189,28 +181,28 @@ plotStorms = function(sts,
                       ylim = NULL) {
 
 
-  #Check sts input
+  #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
 
-  #Check names input
+  #Checking names input
   if (!is.null(names)) {
     stopifnot("names must be characters" = identical(class(names), "character"))
     stopifnot("Invalid storm names (storm not found)" = names %in% unlist(sts@names))
   }
 
-  #Check category input
+  #Checking category input
   if (!is.null(category)) {
     stopifnot("category must be numeric(s)" = identical(class(category), "numeric"))
     stopifnot("Invalid category input" = category %in% c(-1,-2,0,1,2,3,4,5))
   }
 
-  #Check grtc input
+  #Checking grtc input
   stopifnot("grtc must be numeric" = identical(class(grtc), "numeric"))
   stopifnot("grtc must contains an integer" = is_wholenumber(grtc))
   stopifnot("grtc must be length 1" = length(grtc) == 1)
 
-  #Check xlim input
+  #Checking xlim input
   if (!is.null(xlim)) {
     stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
@@ -219,7 +211,7 @@ plotStorms = function(sts,
                 xlim <= 360)
   }
 
-  #Check ylim input
+  #Checking ylim input
   if (!is.null(ylim)) {
     stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
@@ -228,20 +220,20 @@ plotStorms = function(sts,
                 ylim <= 90)
   }
 
-  #Check logical inputs
+  #Checking logical input
   stopifnot("all_basin must be logical" = identical(class(all_basin), "logical"))
   stopifnot("legends must be logical" = identical(class(legends), "logical"))
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
 
-  #Check labels inputs
+  #Checking labels input
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
 
-  #Check by inputs
+  #Checking by input
   stopifnot("by must be numeric" = identical(class(by), "numeric"))
   stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
   stopifnot("by must length 1" = length(by) == 1)
 
-  #Check pos inputs
+  #Checking pos input
   stopifnot("pos must be numeric" = identical(class(pos), "numeric"))
   stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
   stopifnot("pos must length 1" = length(pos) == 1)
@@ -250,42 +242,52 @@ plotStorms = function(sts,
 
 
 
-  #Check on graticules
+  #Checking grtc input
   l2 = log2(grtc)
   if (!is_wholenumber(l2)) {
     grtc = 2 ** round(l2)
     warning(paste("grtc is not a power of 2, set to", grtc))
   }
 
-
-
-  #Handle spatial extent
+  #Handling spatial extent
   if (all_basin) {
-    xmin = 150
-    xmax = 200
-    ymin = -30
-    ymax = -5
-    if (!is.null(xlim)) {
+    ext = switch(sts@basin,
+                 "SP" = terra::ext(135,290,-60,0),
+                 "SI" = terra::ext(10,135,-60,0),
+                 "SA" = terra::ext(290,359,-60,0),
+                 "NI" = terra::ext(30,100,0,30),
+                 "WP" = terra::ext(100,180,0,60),
+                 "EP" = terra::ext(180,290,0,60),
+                 "NA" = terra::ext(270,359,0,60),
+                 "ALL" = terra::ext(0,359,-60,60)
+                 )
+
+    if (!is.null(xlim))
       warning("xlim ignored")
-    }
-    if (!is.null(ylim)) {
+
+    if (!is.null(ylim))
       warning("ylim ignored")
-    }
+
   } else{
-    xmin = sf::st_bbox(sts@spatial.loi.buffer)$xmin
-    xmax = sf::st_bbox(sts@spatial.loi.buffer)$xmax
-    ymin = sf::st_bbox(sts@spatial.loi.buffer)$ymin
-    ymax = sf::st_bbox(sts@spatial.loi.buffer)$ymax
+
+    ext = terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
+                     sf::st_bbox(sts@spatial.loi.buffer)$xmax,
+                     sf::st_bbox(sts@spatial.loi.buffer)$ymin,
+                     sf::st_bbox(sts@spatial.loi.buffer)$ymax)
+
     if (!is.null(xlim)) {
-      xmin = xlim[1]
-      xmax = xlim[2]
+      ext$xmin = xlim[1]
+      ext$xmax = xlim[2]
     }
+
     if (!is.null(ylim)) {
-      ymin = ylim[1]
-      ymax = ylim[2]
+      ext$ymin = ylim[1]
+      ext$ymax = ylim[2]
     }
+
   }
 
+  #Plotting base map
   world = rworldmap::getMap(resolution = "high")
   maps::map(
     world,
@@ -293,19 +295,18 @@ plotStorms = function(sts,
     col = ground_color,
     bg = ocean_color,
     wrap = c(0, 360),
-    xlim = c(xmin, xmax),
-    ylim = c(ymin, ymax)
+    xlim = c(ext$xmin, ext$xmax),
+    ylim = c(ext$ymin, ext$ymax)
   )
   maps::map.axes(cex.axis = 1)
 
 
-  #Add graticules
-  x.min = round(xmin / 10) * 10 - 20
-  x.max = round(xmax / 10) * 10 + 20
-  y.min = round(ymin / 10) * 10 - 20
-  y.max = round(ymax / 10) * 10 + 20
+  #Adding graticules
+  x.min = round(ext$xmin / 10) * 10 - 20
+  x.max = round(ext$xmax / 10) * 10 + 20
+  y.min = round(ext$ymin / 10) * 10 - 20
+  y.max = round(ext$ymax / 10) * 10 + 20
 
-  #Plot map
   mapproj::map.grid(
     lim = c(x.min, x.max, y.min, y.max),
     nx = abs(x.max - x.min) / 10 * grtc,
@@ -315,32 +316,35 @@ plotStorms = function(sts,
     lty = 3
   )
 
-  #Plot loi
+  #Plotting loi
   if (loi)
     plot(sts@spatial.loi.buffer, lwd = 2, add = T)
 
 
-  #Handle category
+  #Handling categories
   if(!is.null(category) & is.null(names)){
     if(length(category) == 2){
       category = category[order(category)]
       cat.inf = category[1]
       cat.sup = category[2]
       ind = which(unlist(sts@sshs) >= cat.inf & unlist(sts@sshs) <= cat.sup)
+
     }else{
       #length category == 1
       ind = which(unlist(sts@sshs) == category)
     }
     sts.aux = unlist(sts@data)[ind]
+
   }else{
     sts.aux = sts@data
   }
 
-  #Plot track
+  #Plotting track(s) and labels
   if (is.null(names)) {
     lapply(sts.aux, plotTrack, all_basin)
     if (labels)
       lapply(sts.aux, plotLabels, by, pos)
+
   } else{
     for(n in names){
       plotTrack(sts.aux[[n]], all_basin)
@@ -349,6 +353,7 @@ plotStorms = function(sts,
     }
   }
 
+  #Adding legends
   if (legends) {
     graphics::legend(
       x = "bottomleft",
