@@ -4,27 +4,27 @@
 \name{Storms-class}
 \alias{Storms-class}
 \alias{Storms}
-\title{Gather all the informations to model a set of Storms}
+\title{Storms object}
 \value{
 A S4 object gathering all the above informations
 }
 \description{
-Gather all the informations to model a set of Storms
+Gather all the needed informations to model a set of storms
 }
 \section{Slots}{
 
 \describe{
 \item{\code{data}}{A list of Storm object}
 
-\item{\code{time.period}}{numerics. Range of the cyclonic seasons of Storms available
+\item{\code{time.period}}{numeric vector. Range of the cyclonic seasons of Storms available
 in \code{data}}
 
-\item{\code{names}}{characters. Names of Storms available in \code{data}}
+\item{\code{names}}{character vector. Names of Storms available in \code{data}}
 
-\item{\code{sshs}}{numerics. Maximum category in the Saffir Simpson Hurricane Scale
+\item{\code{sshs}}{numerics vector. Maximum category in the Saffir Simpson Hurricane Scale
 of all Storms available in \code{data}}
 
-\item{\code{nb.storms}}{nuleric. Total Number of Storms available in \code{data}}
+\item{\code{nb.storms}}{numeric. Total Number of Storms available in \code{data}}
 
 \item{\code{basin}}{character. Basin in which the Storms have occured}
 

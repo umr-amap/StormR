@@ -2,9 +2,7 @@
 % Please edit documentation in R/stormBehaviour.R
 \name{stormBehaviour}
 \alias{stormBehaviour}
-\title{Compute analytic products for each storm of a \code{Storms} object among Maximum
-Sustained Wind, Power Dissipation Index and Category exposure. It can also
-rasterize and produce the 2D wind speed structure for each observation}
+\title{Compute regimes of wind speed and other for given storms}
 \usage{
 stormBehaviour(
   sts,
@@ -22,11 +20,11 @@ stormBehaviour(
 \arguments{
 \item{sts}{Storms object}
 
-\item{product}{characters. Product to compute, that
+\item{product}{character. Product to compute, that
 is either \code{MSW}, (Maximum Sustained Wind) \code{PDI}, (Power Dissipation Index) or \code{Exposure}
 (hours spent for each and all categories together)}
 
-\item{method}{characters. Cyclonic model used to compute product, that is either
+\item{method}{character. Cyclonic model used to compute product, that is either
 \code{Willoughby} or \code{Holland80}. Default value is set to \code{Willoughby}}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in the
@@ -67,7 +65,7 @@ structures for each observation are returned. If \code{data.frame}, computed pro
 for each coordinates are returned (time series if \code{product = MSW})
 }
 \description{
-Compute analytic products for each storm of a \code{Storms} object among Maximum
+This function computes analytic products for each storm of a \code{Storms} object among Maximum
 Sustained Wind, Power Dissipation Index and Category exposure. It can also
 rasterize and produce the 2D wind speed structure for each observation
 }

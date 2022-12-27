@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeRast.R
 \name{writeRast}
 \alias{writeRast}
-\title{Write a SpatRast raster in the given format}
+\title{Save a raster in the desired format}
 \usage{
 writeRast(rast, format = ".tiff", filename = NULL, path = "./")
 }
@@ -18,5 +18,5 @@ in this case it will be set to \code{names(rast)}}
 \item{path}{character. Relative path where the file should be written}
 }
 \description{
-Write a SpatRast raster in the given format
+This function writes a SpatRast raster in the given format
 }

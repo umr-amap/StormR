@@ -2,7 +2,7 @@
 % Please edit documentation in R/getStorms.R
 \name{getStorms}
 \alias{getStorms}
-\title{Initialize a Storms object depending on a selection}
+\title{Initialize a Storms object}
 \usage{
 getStorms(
   basin = "SP",
@@ -18,12 +18,12 @@ getStorms(
 \item{basin}{character. Name of basin where the Storms should be extracted.
 Default value is set to \code{"SP"}}
 
-\item{time_period}{numerics. Should be either one cyclonic season or a range
+\item{time_period}{numeric vector. Should be either one cyclonic season or a range
 of cyclonic season. It could also be a vector of cyclonic season provided
 that it has the same length as \code{name} and matches the season of each Storm
 listed in \code{name}. Default value is set to c(1980, 2021)}
 
-\item{name}{characters. Name(s) of Storm(s). Default value is set to NULL,
+\item{name}{character vector. Name(s) of Storm(s). Default value is set to NULL,
 otherwise \code{time_period} and \code{name} must have the same length, and these two
 informations must match}
 
@@ -45,5 +45,6 @@ Default value is set to TRUE.}
 a S4 Storms object that gathers all the above informations
 }
 \description{
-Initialize a Storms object depending on a selection
+Depending on values of the inputs, this function return a Storms object that
+gathers all the storms and tropical cyclone the user is interested in
 }
