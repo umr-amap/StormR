@@ -157,11 +157,20 @@ C_d &= \left(0.55 + 2.97\frac{v_r}{31.5} - 1.49\left(\frac{v_r}{31.5}\right)^2\r
 \right.
 $$
 
-* Exposure: It provides the time exposure (in hours) for a given category $c$ in the Saffir Simpson     Hurricane Scale, at distance $r$ of the eye of the storm according to 
+* Exposure: It provides the time exposure (in hours) for a given category $C$ in the Saffir Simpson     Hurricane Scale, at distance $r$ of the eye of the storm according to 
 
 $$
-\int_T v_r^c dt
+\int_T c_{v_r} dt
 $$ 
+
+$$
+\left\{
+\begin{aligned}
+c_{v_r} &= 1 \quad if \quad v_r \in [\min(v_r^c | c = C):\max(v_r^c | c = C)]\\
+c_{v_r} &= 0 \quad if \quad v_r \notin [\min(v_r^c | c = C):\max(v_r^c | c = C)]\\
+\end{aligned}
+\right.
+$$
 
   where $T$ stands for the whole lifecycle of the storm. <br />
 
