@@ -1,10 +1,11 @@
 
 
 
-
-#' Get the Saffir Simpson Hurricane scale colors associated with a maximum
-#' sustained wind speed
+#' Get the right color associated with a wind observation
 #'
+#' This function returns the Saffir Simpson Hurricane Scale color associated
+#' with a maximum sustained wind speed
+#' @noRd
 #' @param msw numeric. Maximum Sustained Wind
 #'
 #' @return color associated with the observation
@@ -47,18 +48,20 @@ getColors = function(msw) {
 
 
 
-
-#' Plot the track of a Storm on a map that should be previsouly plotted
+#' Plot track of a a storm
 #'
+#' This function plots the track of a storm on a map that should be previously plotted
+#'
+#' @noRd
 #' @param st Storm object
-#' @param all_basin logical. Whether or not to plot the track onto the whole basin.
+#' @param whole_basin logical. Whether or not to plot the track onto the whole basin.
 #' Default value is set to `FALSE`. Otherwise, the plot focuses on the extent of
 #' `spatial.loi.buffer` of the Storms object in which `storm` belongs
 #'
 #' @return NULL
-plotTrack = function(st, all_basin) {
+plotTrack = function(st, whole_basin) {
 
-  if (all_basin) {
+  if (whole_basin) {
     cex = 0.6
   } else{
     cex = 1
@@ -95,7 +98,7 @@ plotTrack = function(st, all_basin) {
 
 #' Add ISO Times and name labels on the track of a Storm on a map that should be
 #' previsouly plotted
-#'
+#' @noRd
 #' @param st Storm object
 #' @param by numeric. Increment of the sequence for the labels to plot
 #' @param pos numeric. Must be between 1 and 4 and correspond to the position of
@@ -127,19 +130,24 @@ plotLabels = function(st, by, pos) {
 
 
 
-
-#' Plot a set of Storms contained in a Storms object.
+#' Plot several storm tracks
+#'
+#' This function plots a set of storm tracks contained in a Storms object. Depending
+#' on the inputs, the user may choose to plot only a desired set of storm extracted
+#' from the Storms object.
 #'
 #' @param sts Storms object
-#' @param names character(s). Names of the Storms we would like to plot. Default
+#' @param names character vector. Names of the Storms we would like to plot. Default
 #' value is set to `NULL` which will consider every Storm in `sts`
-#' @param category numeric(s). Should be either a category or a range of category
+#' @param category numeric vector. Should be either a category or a range of category
 #' in the Saffir Simpson scale (-2 to 5). Default value is set to `NULL` which
 #' will consider every Storm in `sts`. Otherwise it will consider only storm that
 #' reached `category`
+#' @param map a `shapefile` or `sf` object. It should replace
+#' the default map. Default value is set to NULL.
 #' @param ground_color character. Color for the ground
 #' @param ocean_color character. Color for the oceans
-#' @param all_basin logical. Whether or not to plot the track onto the whole basin.
+#' @param whole_basin logical. Whether or not to plot the track onto the whole basin.
 #' Default value is set to `FALSE`. Otherwise, the plot focuses on the extent of
 #' `spatial.loi.buffer` of `sts`
 #' @param loi logical. Whether or not to plot `spatial.loi.buffer` on the map
@@ -155,22 +163,23 @@ plotLabels = function(st, by, pos) {
 #' @param grtc numeric. Controls the number of graticules to plot. Default value
 #' is set to 1, which plots graticules on multiple of 10 coordinates. Note that
 #' it should be a power of 2.
-#' @param xlim numerics. A set of longitude coordinates that controls the
+#' @param xlim numeric vector. A set of longitude coordinates that controls the
 #' longitude extent of the plot. Default value is set to `NULL` which will let
 #' the plot extends according to the x bounding box of `spatial.loi.buffer`.
-#' @param ylim numerics. A set of latitude coordinates that controls the
+#' @param ylim numeric vector. A set of latitude coordinates that controls the
 #' latitude extent of the plot. Default value is set to `NULL` which will let
 #' the plot extends according to the x bounding box of `spatial.loi.buffer`.
-#' @return NULL
+#' @returns NULL
 #' @importFrom ds4psy is_wholenumber
 #' @import rworldxtra
 #' @export
 plotStorms = function(sts,
                       names = NULL,
                       category = NULL,
+                      map = NULL,
                       ground_color = "grey",
                       ocean_color = "white",
-                      all_basin = FALSE,
+                      whole_basin = FALSE,
                       labels = FALSE,
                       by = 8,
                       pos = 3,
@@ -188,7 +197,7 @@ plotStorms = function(sts,
   #Checking names input
   if (!is.null(names)) {
     stopifnot("names must be characters" = identical(class(names), "character"))
-    stopifnot("Invalid storm names (storm not found)" = names %in% unlist(sts@names))
+    stopifnot("Invalid storm names (storm not found)" = names %in% sts@names)
   }
 
   #Checking category input
@@ -196,6 +205,18 @@ plotStorms = function(sts,
     stopifnot("category must be numeric(s)" = identical(class(category), "numeric"))
     stopifnot("Invalid category input" = category %in% c(-1,-2,0,1,2,3,4,5))
   }
+
+  #Checking map input
+  if (!is.null(map)){
+    stopifnot(
+      "map must be a SpatialPolygonsDataFrame or a sf object" = identical(class(map)[1], "SpatialPolygonsDataFrame") |
+        identical(class(map)[1], "sf"))
+    #Converting to sf object
+    if(!identical(class(map)[1], "sf"))
+      map = sf::st_as_sf(map)
+  }
+
+
 
   #Checking grtc input
   stopifnot("grtc must be numeric" = identical(class(grtc), "numeric"))
@@ -221,7 +242,7 @@ plotStorms = function(sts,
   }
 
   #Checking logical input
-  stopifnot("all_basin must be logical" = identical(class(all_basin), "logical"))
+  stopifnot("whole_basin must be logical" = identical(class(whole_basin), "logical"))
   stopifnot("legends must be logical" = identical(class(legends), "logical"))
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
 
@@ -250,7 +271,7 @@ plotStorms = function(sts,
   }
 
   #Handling spatial extent
-  if (all_basin) {
+  if (whole_basin) {
     ext = switch(sts@basin,
                  "SP" = terra::ext(135,290,-60,0),
                  "SI" = terra::ext(10,135,-60,0),
@@ -270,10 +291,18 @@ plotStorms = function(sts,
 
   } else{
 
-    ext = terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
-                     sf::st_bbox(sts@spatial.loi.buffer)$xmax,
-                     sf::st_bbox(sts@spatial.loi.buffer)$ymin,
-                     sf::st_bbox(sts@spatial.loi.buffer)$ymax)
+    if(is.null(map)){
+      ext = terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
+                       sf::st_bbox(sts@spatial.loi.buffer)$xmax,
+                       sf::st_bbox(sts@spatial.loi.buffer)$ymin,
+                       sf::st_bbox(sts@spatial.loi.buffer)$ymax)
+    }else{
+      ext = terra::ext(sf::st_bbox(map)$xmin,
+                       sf::st_bbox(map)$xmax,
+                       sf::st_bbox(map)$ymin,
+                       sf::st_bbox(map)$ymax)
+    }
+
 
     if (!is.null(xlim)) {
       ext$xmin = xlim[1]
@@ -288,17 +317,28 @@ plotStorms = function(sts,
   }
 
   #Plotting base map
-  world = rworldmap::getMap(resolution = "high")
-  maps::map(
-    world,
-    fill = TRUE,
-    col = ground_color,
-    bg = ocean_color,
-    wrap = c(0, 360),
-    xlim = c(ext$xmin, ext$xmax),
-    ylim = c(ext$ymin, ext$ymax)
-  )
-  maps::map.axes(cex.axis = 1)
+  if(is.null(map)){
+    world = rworldmap::getMap(resolution = "high")
+    maps::map(
+      world,
+      fill = TRUE,
+      col = ground_color,
+      bg = ocean_color,
+      wrap = c(0, 360),
+      xlim = c(ext$xmin, ext$xmax),
+      ylim = c(ext$ymin, ext$ymax)
+    )
+    maps::map.axes(cex.axis = 1)
+
+  }else{
+    plot(map,
+         col = ground_color,
+         bg = ocean_color,
+         border = 1,
+         xlim = c(ext$xmin, ext$xmax),
+         ylim = c(ext$ymin, ext$ymax),
+         axes = T)
+  }
 
 
   #Adding graticules
@@ -327,11 +367,11 @@ plotStorms = function(sts,
       category = category[order(category)]
       cat.inf = category[1]
       cat.sup = category[2]
-      ind = which(unlist(sts@sshs) >= cat.inf & unlist(sts@sshs) <= cat.sup)
+      ind = which(sts@sshs >= cat.inf & sts@sshs <= cat.sup)
 
     }else{
       #length category == 1
-      ind = which(unlist(sts@sshs) == category)
+      ind = which(sts@sshs == category)
     }
     sts.aux = unlist(sts@data)[ind]
 
@@ -341,13 +381,13 @@ plotStorms = function(sts,
 
   #Plotting track(s) and labels
   if (is.null(names)) {
-    lapply(sts.aux, plotTrack, all_basin)
+    lapply(sts.aux, plotTrack, whole_basin)
     if (labels)
       lapply(sts.aux, plotLabels, by, pos)
 
   } else{
     for(n in names){
-      plotTrack(sts.aux[[n]], all_basin)
+      plotTrack(sts.aux[[n]], whole_basin)
       if (labels)
         plotLabels(sts.aux[[n]], by, pos)
     }

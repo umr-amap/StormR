@@ -1,8 +1,9 @@
 
 
 
-
-#' Gather all the informations to model a single Storm
+#' Storm  object
+#'
+#' Gather all the needed informations to model a single storm
 #'
 #' @slot name character. Name of the storm
 #' @slot season  numeric. Cyclonic season in which the storm has occured
@@ -16,9 +17,9 @@
 #' poci (Pressure of the Outermost Closed Isobar), sshs (Category in the Saffir Simpson Hurricane Scale),
 #' landfall (Minimum distance to land over next 3 hours,  = 0 means landfall)).
 #' @slot numobs numeric. Total number of observations available within the location of interest + buffer
-#' @slot obs numerics. Indices of observations within the location of interest + buffer
+#' @slot obs numeric vector. Indices of observations within the location of interest + buffer
 #' @slot lty.track numeric. Indicates which line type is used to plot the storm
-#' @return A S4 object gathering all the above informations
+#' @returns A S4 object gathering all the above informations
 #' @importFrom methods new
 #' @export
 Storm = methods::setClass(
@@ -37,16 +38,17 @@ Storm = methods::setClass(
 )
 
 
-
-#' Gather all the informations to model a set of Storms
+#' Storms object
+#'
+#' Gather all the needed informations to model a set of storms
 #'
 #' @slot data A list of Storm object
-#' @slot time.period numerics. Range of the cyclonic seasons of Storms available
+#' @slot time.period numeric vector. Range of the cyclonic seasons of Storms available
 #'  in `data`
-#' @slot names characters. Names of Storms available in `data`
-#' @slot  sshs numerics. Maximum category in the Saffir Simpson Hurricane Scale
+#' @slot names character vector. Names of Storms available in `data`
+#' @slot  sshs numerics vector. Maximum category in the Saffir Simpson Hurricane Scale
 #'  of all Storms available in `data`
-#' @slot nb.storms nuleric. Total Number of Storms available in `data`
+#' @slot nb.storms numeric. Total Number of Storms available in `data`
 #' @slot basin  character. Basin in which the Storms have occured
 #' @slot loi.basin logical. Whether the loi represents the whole basin or not
 #' @slot spatial.loi sf object. Represents the location of interest
@@ -62,8 +64,8 @@ Storms = methods::setClass(
   slots = c(
     data = "list",
     time.period = "numeric",
-    names = "list",
-    sshs = "list",
+    names = "character",
+    sshs = "numeric",
     nb.storms = "numeric",
     basin = "character",
     loi.basin = "logical",
@@ -81,15 +83,18 @@ Storms = methods::setClass(
 
 
 
-#' Initialize a Storms object depending on a selection
+#' Initialize a Storms object
+#'
+#' Depending on values of the inputs, this function return a Storms object that
+#' gathers all the storms and tropical cyclone the user is interested in
 #'
 #' @param basin character. Name of basin where the Storms should be extracted.
 #' Default value is set to `"SP"`
-#' @param time_period numerics. Should be either one cyclonic season or a range
+#' @param time_period numeric vector. Should be either one cyclonic season or a range
 #' of cyclonic season. It could also be a vector of cyclonic season provided
 #' that it has the same length as `name` and matches the season of each Storm
 #' listed in `name`. Default value is set to c(1980, 2021)
-#' @param name characters. Name(s) of Storm(s). Default value is set to NULL,
+#' @param name character vector. Name(s) of Storm(s). Default value is set to NULL,
 #' otherwise `time_period` and `name` must have the same length, and these two
 #' informations must match
 #' @param loi Location of Interest. Should be either a `SpatialPolygon`, a `sf`
@@ -103,7 +108,7 @@ Storms = methods::setClass(
 #' @param remove_TD logical. Whether or not to remove Tropical Depression (< 18 m/s).
 #' Default value is set to TRUE.
 #'
-#' @return a S4 Storms object that gathers all the above informations
+#' @returns a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
 #' @export
 getStorms = function(basin = "SP",
@@ -129,7 +134,7 @@ getStorms = function(basin = "SP",
 
   #Checking name input
   if (!is.null(name)) {
-    stopifnot("name must be a vector of characters" = identical(class(name), "character"))
+    stopifnot("name must be a vector of character" = identical(class(name), "character"))
     stopifnot("name and time_period must be the same length" = length(time_period) == length(name))
     name = name[o]
   } else{
@@ -352,7 +357,8 @@ getStorms = function(basin = "SP",
   #Initializing Storms object
   sts = Storms()
   sts@time.period = time_period
-  sts@names = list()
+  sts.names = list()
+  sts.sshs = list()
   sts@nb.storms = 0
   sts@buffer = max_dist
 
@@ -443,8 +449,8 @@ getStorms = function(basin = "SP",
         storm@sshs = max(storm@obs.all$sshs,na.rm = T)
         storm.list = append(storm.list, storm)
         k = k + 1
-        sts@names = append(sts@names, storm@name)
-        sts@sshs = append(sts@sshs, storm@sshs)
+        sts.names = append(sts.names, storm@name)
+        sts.sshs = append(sts.sshs, storm@sshs)
       }
 
 
@@ -461,6 +467,8 @@ getStorms = function(basin = "SP",
 
   ncdf4::nc_close(TC.data.base)
 
+  sts@names = unlist(sts.names)
+  sts@sshs = unlist(sts.sshs)
   sts@basin = basin
   sts@loi.basin = loi.is.basin
   sts@spatial.loi = loi.sf
