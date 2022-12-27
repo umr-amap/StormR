@@ -111,7 +111,8 @@ Insert comments here  <br />
 $v_{r_{as}} = v_{r_{|v_h}} + v_h\cos(\theta)$
 
 where <br />
-$v_{r_{as}} \quad$ New radial wind speed with asymmetry ($m.s^{-1}$) <br />
+$v_{r_{as}} \quad$ New radial wind speed with asymmetry 
+($m.s^{-1}$) <br />
 $v_r \quad$ Former radial wind speed without asymmetry ($m.s^{-1}$) <br />
 $v_h \quad$ Velocity of storm ($m.s^{-1}$) <br />
 $v_{r_{|v_h}} \quad$ Former radial wind speed without asymmetry ($m.s^{-1}$), where values
