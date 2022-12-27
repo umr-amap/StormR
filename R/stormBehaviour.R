@@ -7,27 +7,31 @@
 ##################
 
 
-#' Compute the Radius of Maximum Wind. It is an empirical formula extracted from
-#' Willoughby model
+#' Compute the Radius of Maximum Wind
 #'
+#' It is an empirical formula extracted from Willoughby et al. 2006 model
+#' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the storm
 #'
-#' @return Radius of Maximum Wind (km)
+#' @returns Radius of Maximum Wind (km)
 getRmw = function(msw,
                    lat) {
   return (46.4 * exp(-0.0155 * msw + 0.0169 * abs(lat)))
 }
 
 
-#' Compute radial wind speed according to Willoughby model
+#' Willoughby et al. 2006 model
 #'
+#' Compute radial wind speed according to Willoughby et al. 2006 model
+#'
+#' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
 #' @param rmw numeric. Radius of Maximum Wind (km)
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the storm
 #'
-#' @return radial wind speed value (m/s) according to Willoughby model at distance `r` to the
+#' @returns radial wind speed value (m/s) according to Willoughby model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
 Willoughby_profile = function(r,
                               rmw,
@@ -57,16 +61,18 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 
 
 
-
-#' Compute radial wind speed according to Holland 80 model
+#' Holland et al. 1980 model
 #'
+#' Compute radial wind speed according to Holland et al. 1980 model
+#'
+#' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
 #' @param rmw numeric. Radius of Maximum Wind (km)
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param pc numeric. Pressure at the center of the storm (hPa)
 #' @param poci Pressure at the Outermost Closed Isobar (hPa)
 #' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the storm
-#' @return radial wind speed value (m/s) according to Boose 80 model at distance `r` to the
+#' @returns radial wind speed value (m/s) according to Boose 80 model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
 Holland80_profile = function(r,
                             rmw,
@@ -91,16 +97,17 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 
 
-
-#' Compute analytic products for each storm of a `Storms` object among Maximum
+#' Compute regimes of wind speed and other for given storms
+#'
+#' This function computes analytic products for each storm of a `Storms` object among Maximum
 #' Sustained Wind, Power Dissipation Index and Category exposure. It can also
 #' rasterize and produce the 2D wind speed structure for each observation
 #'
 #' @param sts Storms object
-#' @param product characters. Product to compute, that
+#' @param product character. Product to compute, that
 #' is either `MSW`, (Maximum Sustained Wind) `PDI`, (Power Dissipation Index) or `Exposure`
 #' (hours spent for each and all categories together)
-#' @param method characters. Cyclonic model used to compute product, that is either
+#' @param method character. Cyclonic model used to compute product, that is either
 #' `Willoughby` or `Holland80`. Default value is set to `Willoughby`
 #' @param asymmetry character. Indicates which version of asymmetry to use in the
 #' computations, that is either `None` (no asymmetry) `V1` (first version), or
@@ -126,7 +133,7 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 #' within the `spatial.loi.buffer` from `sts` object. Default value is set to `TRUE`,
 #' otherwise, computations are extended over the whole track of the storms
 #'
-#' @return Depending on `result` input. If `analytic`,
+#' @returns Depending on `result` input. If `analytic`,
 #' analytic rasters (integration in space and time over the track) are returned.
 #' If `profiles`, `product` input is ignored and set to `MSW` and 2D wind speed
 #' structures for each observation are returned. If `data.frame`, computed product

@@ -1,8 +1,9 @@
 
 
 
-
-#' Write a SpatRast raster in the given format
+#' Save a raster in the desired format
+#'
+#' This function writes a SpatRast raster in the given format
 #'
 #' @param rast SpatRast object.
 #' @param format character. Format of the file to export `rast`. Either `.tiff`
@@ -11,10 +12,8 @@
 #' in this case it will be set to `names(rast)`
 #' @param path character. Relative path where the file should be written
 #'
-#' @return NULL
+#' @returns NULL
 #' @export
-
-
 writeRast = function(rast,
                      format = ".tiff",
                      filename = NULL,
