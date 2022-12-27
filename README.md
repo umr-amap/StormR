@@ -5,11 +5,6 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-## Overview
-
-stormR is a package developped to analyze past storms and tropical cyclones that occured in the whole
-world beyond 1980. It let the user gather all its interested storms in a single object and then use it
-to either plot storms on a map, or compute/rasterize regimes of wind speed, 2D structures of radial wind and other products.
 
 
 ## Installation
@@ -19,6 +14,12 @@ You can install the development version of stormR like so:
 ``` r
 # FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
 ```
+
+## Overview
+
+stormR is a package developped to analyze past storms and tropical cyclones that occured in the whole
+world beyond 1980. It let the user gather all its interested storms in a single object and then use it
+to either plot storms on a map, or compute/rasterize regimes of wind speed, 2D structures of radial wind and other products.
 
 
 
@@ -145,7 +146,7 @@ $$
 \int_T \rho C_d v_r^3 dt
 $$
 
-  $T$ stands for the whole lifecycle of the storm, $\rho$ represents the air density fixed here at      $10^{-3}$ $kg.m^{-3}$ ? Finally, $C_d$ models the drag coefficient of the storm. Although there exist       various method and formula to compute this parameter that are widely debatable, we chose here the     following parametrization derived in [Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022)](     https://doi.org/10.1038/s41586-022-05326-4): 
+  $T$ stands for the whole lifecycle of the storm, $\rho$ represents the air density fixed here at      $10^{-3}$ $kg.m^{-3}$ ? Finally, $C_d$ models the drag coefficient of the storm. Although there exist       various methods and formula to compute this parameter that are widely debatable, we chose here the     following parametrization derived in [Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022)](     https://doi.org/10.1038/s41586-022-05326-4): 
   
 $$
 \left\{
