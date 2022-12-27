@@ -1,5 +1,5 @@
 
-\usepackage{hyperref}
+
 # StormR
 
 <!-- badges: start -->
@@ -23,9 +23,7 @@ You can install the development version of stormR like so:
 
 
 ## Data source 
-stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the $\href{https://www.ncei.noaa.gov/products/international-best-track-archive}{International Best Track Archive for Climate Stewardship}$. It let this package get every informations needed
-to plot, compute and analyze tropical cyclones. This data base provides observations
-every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations comes from a various number of agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
+stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). It let this package get every informations needed to plot, compute and analyze tropical cyclones. This data base provides observations every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations comes from a various number of agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
 
 * NA : North Atlantic
 * SA : South Atlantic
@@ -37,7 +35,7 @@ every 3 hours of storms and tropical cyclones on the whole world that occured fr
 * ALL: the above 7 basin all together
 
 Default value for the basin is set to SP as the developpement team are located and interested in this particular region, but it is up to the user to select his basin of interest.
-For the sake of data reability, stormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older stormR will result in an error. $\href{https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf}{Click here}$ for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
+For the sake of data reability, stormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older stormR will result in an error. [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
 
 ## Models
 
@@ -57,10 +55,10 @@ $$
 
 
 where <br />
-$v_r \quad$ Radial wind speed (m/s) <br />
-$r \quad$ Distance to the eye of the storm where $v_r$ is computed (km) <br />
-$msw \quad$ Maximum sustained wind speed (m/s) <br />
-$rmw \quad$ Radius of maximum sustained wind speed (km) <br />
+$v_r \quad$ Radial wind speed ($m.s^{-1}$) <br />
+$r \quad$ Distance to the eye of the storm where $v_r$ is computed ($km$) <br />
+$msw \quad$ Maximum sustained wind speed ($m.s^{-1}$) <br />
+$rmw \quad$ Radius of maximum sustained wind speed ($km$) <br />
 $XX1 = 287.6 - 1.942msw + 7.799\log(rmw) + 1.819|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
 $XX2 = 25 \quad$ Coefficient <br />
 $nn = 2.1340 + 0.0077msw - 0.4522\log(rmw) - 0.0038|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
@@ -76,13 +74,13 @@ v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\fra
 $$
 
 where <br />
-$v_r \quad$ Radial wind speed (m/s) <br />
-$r \quad$ Distance to the eye of the storm where $v_r$ is computed (km) <br />
-$msw \quad$ Maximum sustained wind speed (m/s) <br />
-$rmw \quad$ Radius of maximum sustained wind speed (km) <br />
-$pc \quad$ Pressure at the eye of the storm (mb) <br />
-$poci \quad$ Pressure at Outermost Closed Isobar of the storm (mb) <br />
-$\rho = 1.15 \quad$ Air density (kg/m3) <br />
+$v_r \quad$ Radial wind speed ($m.s^{-1}$) <br />
+$r \quad$ Distance to the eye of the storm where $v_r$ is computed ($km$) <br />
+$msw \quad$ Maximum sustained wind speed ($m.s^{-1}$) <br />
+$rmw \quad$ Radius of maximum sustained wind speed ($km$) <br />
+$pc \quad$ Pressure at the eye of the storm ($mb$) <br />
+$poci \quad$ Pressure at Outermost Closed Isobar of the storm ($mb$) <br />
+$\rho = 1.15 \quad$ Air density ($kg.m^{-3}$) <br />
 $f = 2 \times 7.29 \times10^{-5} \sin(\phi) \quad$ Coriolis force, $\phi$ being the latitude <br />
 $b = \frac{\rho e \times msw^2}{poci - pc} \quad$ Shape factor <br />
 
@@ -112,10 +110,10 @@ Insert comments here  <br />
 $v_{r_{as}} = v_{r_{|v_h}} + v_h\cos(\theta)$
 
 where <br />
-$v_{r_{as}} \quad$ New radial wind speed with asymmetry (m/s) <br />
-$v_r \quad$ Former radial wind speed without asymmetry (m/s) <br />
-$v_h \quad$ Velocity of storm (m/s) <br />
-$v_{r_{|v_h}} \quad$ Former radial wind speed without asymmetry (m/s), where values
+$v_{r_{as}} \quad$ New radial wind speed with asymmetry ($m.s^{-1}$) <br />
+$v_r \quad$ Former radial wind speed without asymmetry ($m.s^{-1}$) <br />
+$v_h \quad$ Velocity of storm ($m.s^{-1}$) <br />
+$v_{r_{|v_h}} \quad$ Former radial wind speed without asymmetry ($m.s^{-1}$), where values
 have been computed substracting $v_h$ to $msw$ i.e $v_{max} = msw-v_h$ in the input
 $S$ Asymmetry coefficient (usually set to 1) <br />
 $\alpha \quad$ Angle between the storm direction and the point where $v_{r_{as}}$ is computed.
@@ -132,7 +130,7 @@ specific longitude/latitute coordinates or rasterized over the location of inter
 The following describes the products available: <br />
 
 
-* Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed (m/s)
+* Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed ($m.s^{-1}$)
   at distance $r$ of the eye of the storm according to 
   
 $$
@@ -147,7 +145,7 @@ $$
 \int_T \rho C_d v_r^3 dt
 $$
 
-  $T$ stands for the whole lifecycle of the storm, $\rho$ represents the air density fixed here at      $10^{-3}$ kg/m3 ? Finally, $C_d$ models the drag coefficient of the storm. Although there exist       various method and formula to compute this parameter that are widely debatable, we chose here the     following parametrization derived in [Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022).      https://doi.org/10.1038/s41586-022-05326-4]: 
+  $T$ stands for the whole lifecycle of the storm, $\rho$ represents the air density fixed here at      $10^{-3}$ $kg.m^{-3}$ ? Finally, $C_d$ models the drag coefficient of the storm. Although there exist       various method and formula to compute this parameter that are widely debatable, we chose here the     following parametrization derived in [Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022)](     https://doi.org/10.1038/s41586-022-05326-4): 
   
 $$
 \left\{
