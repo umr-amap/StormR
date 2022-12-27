@@ -1,6 +1,6 @@
 
 
-# StormR
+# stormR
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -19,12 +19,12 @@ You can install the development version of stormR like so:
 
 stormR is a package developped to analyze past storms and tropical cyclones that occured in the whole
 world beyond 1980. It let the user gather all its interested storms in a single object and then use it
-to either plot storms on a map, or compute/rasterize regimes of wind speed, 2D structures of radial wind and other products.
+to either plot tracks on a map, or compute/rasterize regimes of wind speed, 2D structures of radial wind and various other products.
 
 
 
 ## Data source 
-stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). It let this package get every informations needed to plot, compute and analyze tropical cyclones. This data base provides observations every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations comes from a various number of agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
+stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). It let this package get every informations needed to plot, compute and analyze tropical cyclones. This data base provides observations every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations are derived from various agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
 
 * NA : North Atlantic
 * SA : South Atlantic
@@ -35,8 +35,8 @@ stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [Interna
 * NI : North Indian
 * ALL: the above 7 basin all together
 
-Default value for the basin is set to SP as the developpement team are located and interested in this particular region, but it is up to the user to select his basin of interest.
-For the sake of data reability, stormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older stormR will result in an error. [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
+Default value for the basin is set to SP as the developpement team is located/interested in this particular region, and this basin has been used to test this package but it is up to the user to select his basin of interest.
+For the sake of data reliability, stormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older storms will result in an error. [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
 
 ## Models
 
@@ -49,7 +49,7 @@ $$
 \left\{
 \begin{aligned}
 v_r &= msw\left(\frac{r}{rmw}\right)^{nn} \quad if \quad r < rmw \\
-v_r &= msw((1-AA))e^{-\frac{|r-rmw|}{XX1}} + AA e^{-\frac{|r-rmw|}{XX2}}) \quad if \quad r \geq rmw \\
+v_r &= msw\left((1-AA))e^{-\frac{|r-rmw|}{XX1}} + AA e^{-\frac{|r-rmw|}{XX2}}\right) \quad if \quad r \geq rmw \\
 \end{aligned}
 \right.
 $$
@@ -82,7 +82,7 @@ $rmw \quad$ Radius of maximum sustained wind speed $(km)$ <br />
 $pc \quad$ Pressure at the eye of the storm $(mb)$ <br />
 $poci \quad$ Pressure at Outermost Closed Isobar of the storm $(mb)$ <br />
 $\rho = 1.15 \quad$ Air density $(kg.m^{-3})$ <br />
-$f = 2 \times 7.29 \times10^{-5} \sin(\phi) \quad$ Coriolis force, $\phi$ being the latitude <br />
+$f = 2 \times 7.29 \times10^{-5} \sin(\phi) \quad$ Coriolis force $(N.kg^{-1})$, $\phi$ being the latitude <br />
 $b = \frac{\rho e \times msw^2}{poci - pc} \quad$ Shape factor <br />
 
 
