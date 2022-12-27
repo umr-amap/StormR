@@ -1,4 +1,5 @@
 
+\usepackage{hyperref}
 # StormR
 
 <!-- badges: start -->
