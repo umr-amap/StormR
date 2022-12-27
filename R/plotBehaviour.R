@@ -33,10 +33,10 @@ plotBehaviour = function(sts,
                          labels = FALSE,
                          by = 8,
                          pos = 3) {
-  #Check sts input
+  #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
-  #Check raster_product
+  #Checking raster_product
   stopifnot("no data to plot" = !missing(raster_product))
 
 
@@ -47,7 +47,7 @@ plotBehaviour = function(sts,
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
 
-  #Check xlim input
+  #Checking xlim input
   if (!is.null(xlim)) {
     stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
@@ -56,7 +56,7 @@ plotBehaviour = function(sts,
                 xlim <= 360)
   }
 
-  #Check ylim input
+  #Checking ylim input
   if (!is.null(ylim)) {
     stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
@@ -65,17 +65,18 @@ plotBehaviour = function(sts,
                 ylim <= 90)
   }
 
-  #Check labels inputs
+  #Checking labels inputs
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
 
-  #Check by inputs
+  #Checking by inputs
   stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
 
-  #Check pos inputs
+  #Checking pos inputs
   stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
   stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
 
 
+  #Handling spatial extent
   xmin = terra::ext(raster_product)$xmin
   xmax = terra::ext(raster_product)$xmax
   ymin = terra::ext(raster_product)$ymin
@@ -91,6 +92,7 @@ plotBehaviour = function(sts,
   }
 
 
+  #Plotting track
   plotStorms(
     sts = sts,
     names = name,
@@ -98,14 +100,15 @@ plotBehaviour = function(sts,
     ylim = c(ymin, ymax)
   )
 
-  #Add title
+  #Adding title
   graphics::title(paste0(name," ",sts@data[[name]]@season))
 
 
-
+  #Adding raster_product on map
   if (product == "MSW" | stringr::str_detect(product,"profile")) {
     if(product == "MSW"){
       leg = expression(paste("MSW (m.s" ^ "-1)"))
+
     }else{
       leg = expression(paste("radial wind speed (m.s" ^ "-1)"))
     }
@@ -169,13 +172,12 @@ plotBehaviour = function(sts,
     )
   }
 
-
+  #Adding track again (to emphazise)
   plotTrack(sts@data[[name]], FALSE)
 
+  #Adding labels
   if(labels)
     plotLabels(sts@data[[name]],by,pos)
-
-
 
   if(labels & stringr::str_detect(product,"profile")){
     print(product)
@@ -191,7 +193,5 @@ plotBehaviour = function(sts,
       cex = 0.6
     )
   }
-
-
 
 }

@@ -2,7 +2,6 @@
 
 
 
-
 #' Write a SpatRast raster in the given format
 #'
 #' @param rast SpatRast object.
@@ -35,7 +34,6 @@ writeRast = function(rast,
   #Check path
   stopifnot("path must be characters" = identical(class(path), "character"))
 
-
   name = strsplit(names(rast), split = "_", fixed = TRUE)[[1]][1]
   product = strsplit(names(rast), split = "_", fixed = TRUE)[[1]][2]
 
@@ -44,19 +42,23 @@ writeRast = function(rast,
       varname = "msw"
       unit = "(m/s)"
       longname = "maximum sustained wind (m/s)"
+
     }else if (product == "PDI"){
       varname = "pdi"
       unit = "none"
       longname = "power dissipation index"
+
     }else if (stringr::str_detect(product,"Exposure")){
       c = stringr::str_sub(product,9,nchar(product))
       varname = "exp"
       unit = "none"
       longname = paste("category",c,"exposure")
+
     }else if (stringr::str_detect(product,"profile")){
       varname = "rws"
       unit = "(m/s)"
       longname = "radial wind speed"
+
     }
   }
 
@@ -70,6 +72,7 @@ writeRast = function(rast,
     terra::writeRaster(x = rast,
                        filename = f.name,
                        overwrite = TRUE)
+
   } else if (format == ".nc") {
     terra::writeCDF(x = rast,
                     varname = product,

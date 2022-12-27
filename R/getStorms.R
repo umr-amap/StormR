@@ -2,8 +2,6 @@
 
 
 
-
-
 #' Gather all the informations to model a single Storm
 #'
 #' @slot name character. Name of the storm
@@ -23,7 +21,7 @@
 #' @return A S4 object gathering all the above informations
 #' @importFrom methods new
 #' @export
-Storm <- methods::setClass(
+Storm = methods::setClass(
   "Storm",
   slots = c(
     name = "character",
@@ -59,7 +57,7 @@ Storm <- methods::setClass(
 #' @importFrom methods new
 #' @import sp
 #' @export
-Storms <- methods::setClass(
+Storms = methods::setClass(
   "Storms",
   slots = c(
     data = "list",
@@ -108,7 +106,7 @@ Storms <- methods::setClass(
 #' @return a S4 Storms object that gathers all the above informations
 #' @importFrom methods as
 #' @export
-getStorms <- function(basin = "SP",
+getStorms = function(basin = "SP",
                       time_period = c(1980, 2022),
                       name = NULL,
                       loi = NULL,
@@ -117,10 +115,10 @@ getStorms <- function(basin = "SP",
                       remove_TD = TRUE) {
 
 
-  #Check basin input
+  #Checking basin input
   stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
 
-  #Check time_period input
+  #Checking time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
   stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
   stopifnot("lower bound of time range is not valid" = time_period > 1979)
@@ -129,7 +127,7 @@ getStorms <- function(basin = "SP",
   time_period = time_period[o]
 
 
-  #Check name input
+  #Checking name input
   if (!is.null(name)) {
     stopifnot("name must be a vector of characters" = identical(class(name), "character"))
     stopifnot("name and time_period must be the same length" = length(time_period) == length(name))
@@ -142,7 +140,7 @@ getStorms <- function(basin = "SP",
   }
 
 
-  #Check loi input
+  #Checking loi input
   if(is.null(loi)){
     loi = basin
     loi.is.basin = TRUE
@@ -190,19 +188,17 @@ getStorms <- function(basin = "SP",
   } else{
     loi.is.basin = FALSE
     if (!is.character(loi)) {
-      #loi should be either SpatialPolygon, or sf or points coordinates
+      #loi should be either SpatialPolygon, sf or point coordinates
       if (identical(class(loi), c("SpatialPolygons"))) {
         loi.id = "SpatialPolygons"
       } else if (identical(class(loi), c("sf", "data.frame"))) {
         loi.id = "sf"
       } else if (identical(class(loi), c("numeric"))){
-        stopifnot(
-          "loi must have valid lon/lat coordinates " = length(loi) == 2 &
-            loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90
-        )
+        stopifnot("loi must have valid lon/lat coordinates " = length(loi) == 2
+                  & loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
         loi.id = "Coordinates"
       } else{
-        stop("invalid class for loi")
+        stop("Invalid class for loi")
       }
     } else{
       #loi is a character that represents a country
@@ -217,14 +213,14 @@ getStorms <- function(basin = "SP",
 
 
 
-  #Check max_dist input
+  #Checking max_dist input
   stopifnot("max_dist must be numeric " = identical(class(max_dist), "numeric"))
   stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
 
-  #Check verbose input
+  #Checking verbose input
   stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
 
-  #Check remove_TD input
+  #Checking remove_TD input
   stopifnot("verbose must be logical" = identical(class(remove_TD), "logical"))
 
   #Open data_base
@@ -240,7 +236,7 @@ getStorms <- function(basin = "SP",
   cyclonic.seasons = ncdf4::ncvar_get(TC.data.base, "season")
   basins = ncdf4::ncvar_get(TC.data.base, "basin")
   if (!is.null(name)) {
-    #we are interested in one or several storms
+    #we are interested in one or several storms given by their name and season
     storm.names = ncdf4::ncvar_get(TC.data.base, "name")
     indices = c()
     for (n in 1:length(name)) {
@@ -265,15 +261,15 @@ getStorms <- function(basin = "SP",
     }
   }
 
-  #Filter by basin
+  #Filtering by basin
   if(basin != "ALL")
     indices = indices[which(basins[1,indices] == basin)]
 
-  #Remove NOT_NAMED storms
+  #Removing NOT_NAMED storms
   storm.names = ncdf4::ncvar_get(TC.data.base, "name")
   indices = indices[which(storm.names[indices] != "NOT_NAMED")]
 
-  #Remove TD id remove_TD == T
+  #Removing TD if remove_TD == T
   sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")
   dim = dim(sshs)[1]
   sshs = array(sshs[,indices], dim = c(dim,length(indices)))
@@ -287,7 +283,7 @@ getStorms <- function(basin = "SP",
     cat("Done\nLoading data: ")
 
 
-  #Get remaining data associated with indices
+  #Getting remaining data associated with indices
   storm.names = storm.names[indices]
   num.observations = ncdf4::ncvar_get(TC.data.base, "numobs")[indices]
   basins = basins[indices]
@@ -319,19 +315,22 @@ getStorms <- function(basin = "SP",
     cat("Done\nMaking buffer: ")
 
 
-  #Handle loi
+  #Handling loi
   if (loi.id == "Coordinates") {
-    loi.df   <- data.frame(pt = 1,
-                           lon = loi[1],
-                           lat = loi[2])
-    loi.sf   <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
+    loi.df = data.frame(pt = 1,
+                        lon = loi[1],
+                        lat = loi[2])
+    loi.sf = sf::st_as_sf(loi.df, coords = c("lon", "lat"))
+
   } else if (loi.id == "SpatialPolygons") {
     loi.sf = sf::st_as_sf(loi)
-  } else if (loi.id == "sf") {
-    loi.sf = loi
     if (sf::st_crs(loi.sf) != 4326) {
       sf::st_transform(loi.sf, crs = 4326)
     }
+
+  } else if (loi.id == "sf") {
+    loi.sf = loi
+
   } else{
     #loi.id == "Country"
     loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
@@ -342,7 +341,7 @@ getStorms <- function(basin = "SP",
   loi.sf = sf::st_shift_longitude(loi.sf)
 
 
-  #Handle buffer
+  #Handling buffer
   if (!loi.is.basin) {
     loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * 1000)
     loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
@@ -350,6 +349,7 @@ getStorms <- function(basin = "SP",
     loi.sf.buffer = loi.sf
   }
 
+  #Initializing Storms object
   sts = Storms()
   sts@time.period = time_period
   sts@names = list()
@@ -357,8 +357,8 @@ getStorms <- function(basin = "SP",
   sts@buffer = max_dist
 
   storm.list = list()
-  k = 2 #init line type
-  count = 1 #init count for progression bar
+  k = 2 #initializing line type
+  count = 1 #initializing count for progression bar
 
   if(verbose)
     cat("Done\n")
@@ -374,13 +374,12 @@ getStorms <- function(basin = "SP",
 
     for (i in 1:length(indices)) {
 
-
       numobs = num.observations[i]
       lon = longitude[1:numobs, i]
       lat = latitude[1:numobs, i]
       coords = data.frame(lon = lon, lat = lat)
 
-      #Remove invalid iso_time
+      #Removing invalid iso_time
       iso.time = iso.times[1:numobs, i]
       list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
       ind.iso.time = which(list.iso.time %% 3 == 0)
@@ -389,24 +388,21 @@ getStorms <- function(basin = "SP",
       coords = coords[stats::complete.cases(coords),]
 
 
-      #create sf points coordinates to intersect with loi.sf
+      #Creating sf point coordinates to intersect with loi.sf.buffer
       pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
       sf::st_crs(pts) = 4326
 
-
-      #which coordinates are within loi.sf.buffer
       if(!loi.is.basin){
-        ind = which(sf::st_intersects(pts, loi.sf.buffer,
+        ind = which(sf::st_intersects(pts,
+                                      loi.sf.buffer,
                                       sparse = FALSE) == TRUE)
       }else{
         ind = 1
       }
 
-
-
-
-      #Add TC only if it intersects the LOI
+      #Add TC only if it intersects with loi.sf.buffer
       if (length(ind) > 0) {
+
         sts@nb.storms = sts@nb.storms + 1
 
         storm = Storm()
@@ -427,11 +423,11 @@ getStorms <- function(basin = "SP",
           landfall = landfall[1:numobs, i]
         )
 
-        #wrap longitudes -180/180 to 0/360
+        #Wrapping longitudes from -180/180 to 0/360
         lg = which(storm@obs.all$lon < 0)
         storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
 
-        #Remove invalid iso_time
+        #Removing invalid iso_time
         storm@obs.all = storm@obs.all[ind.iso.time,]
         storm@numobs.all = dim(storm@obs.all)[1]
         row.names(storm@obs.all) = seq(1,storm@numobs.all)
@@ -440,7 +436,6 @@ getStorms <- function(basin = "SP",
         }else{
           ind = seq(1,storm@numobs.all)
         }
-
 
         storm@obs = ind
         storm@numobs = length(ind)
@@ -458,6 +453,7 @@ getStorms <- function(basin = "SP",
 
       count = count + 1
     }
+
     if (verbose & length(indices) > 1)
       close(pb)
 
