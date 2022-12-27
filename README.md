@@ -57,7 +57,7 @@ $$
 
 where <br />
 $v_r \quad$ Radial wind speed $(m.s^{-1})$ <br />
-$r \quad$ Distance to the eye of the storm where $v_r$ is computed ($km$) <br />
+$r \quad$ Distance to the eye of the storm where $v_r$ is computed $(km)$ <br />
 $msw \quad$ Maximum sustained wind speed $(m.s^{-1})$ <br />
 $rmw \quad$ Radius of maximum sustained wind speed $(km)$ <br />
 $XX1 = 287.6 - 1.942msw + 7.799\log(rmw) + 1.819|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
@@ -157,17 +157,17 @@ C_d &= \left(0.55 + 2.97\frac{v_r}{31.5} - 1.49\left(\frac{v_r}{31.5}\right)^2\r
 \right.
 $$
 
-* Exposure: It provides the time exposure (in hours) for a given category $C$ in the Saffir Simpson     Hurricane Scale, at distance $r$ of the eye of the storm according to 
+* Exposure: It provides the time exposure (in hours) for a given category $C$ (in the Saffir Simpson     Hurricane Scale), where radial wind speed $v_r^C$ spans in $C_r := [\min(v_r^c | c = C):\max(v_r^c | c = C)]$ , and at distance $r$ of the eye of the storm, according to 
 
 $$
-\int_T c_{v_r} dt
+\int_T c(v_r) dt
 $$ 
 
 $$
 \left\{
 \begin{aligned}
-c_{v_r} &= 1 \quad if \quad v_r \in [\min(v_r^c | c = C):\max(v_r^c | c = C)]\\
-c_{v_r} &= 0 \quad if \quad v_r \notin [\min(v_r^c | c = C):\max(v_r^c | c = C)]\\
+c(v_r) &= 1 \quad if \quad v_r \in C_r\\
+c(v_r) &= 0 \quad if \quad v_r \notin C_r\\
 \end{aligned}
 \right.
 $$
