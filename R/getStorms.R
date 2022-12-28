@@ -94,30 +94,38 @@ Storms = methods::setClass(
 #' of cyclonic season. It could also be a vector of cyclonic season provided
 #' that it has the same length as `name` and matches the season of each Storm
 #' listed in `name`. Default value is set to c(1980, 2021)
-#' @param name character vector. Name(s) of Storm(s). Default value is set to NULL,
+#' @param name character vector. Name(s) of storm(s). Default value is set to NULL,
 #' otherwise `time_period` and `name` must have the same length, and these two
 #' informations must match
 #' @param loi Location of Interest. Should be either a `SpatialPolygon`, a `sf`
 #' object, a point of coordinates in lon/lat, a character representing a country,
 #' or a basin. Default value is set to `NULL` which will set the `spatial.loi.`
 #' on the whole `basin`
-#' @param max_dist numeric. Indicates the buffer used buffer to generate
+#' @param max_dist numeric. Indicates the buffer used to generate
 #' `spatail.loi.buffer` (in km). Default value is set to 300
 #' @param verbose logical. Whether or not the function must be verbose and display
 #' a text progress bar. Default value is set to `FALSE`
 #' @param remove_TD logical. Whether or not to remove Tropical Depression (< 18 m/s).
 #' Default value is set to TRUE.
 #'
-#' @returns a S4 Storms object that gathers all the above informations
+#' @returns a Storms object that gathers all storms that match the criteria given
+#' in the inputs
+#'
+#' @examples
+#' #Focus on a single storm (object saved in data examples)
+#' pam = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
+#'
+#' #Focus on several storms over Vanuatu (object saved in data examples)
+#' sts_van = getStorms(time_period = c(2004,2020), name = c("IVY","HAROLD"), loi = "Vanuatu")
+#'
+#' #Focus on every storms that occured in the WP basin between 2010 and 2020
+#' #(object saved in data examples)
+#' sts_wp = getStorms(basin = "WP", time_period = c(2010,2020), verbose = TRUE)
+#'
 #' @importFrom methods as
 #' @export
-getStorms = function(basin = "SP",
-                      time_period = c(1980, 2022),
-                      name = NULL,
-                      loi = NULL,
-                      max_dist = 300,
-                      verbose = FALSE,
-                      remove_TD = TRUE) {
+getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi = NULL,
+                     max_dist = 300, verbose = FALSE, remove_TD = TRUE){
 
 
   #Checking basin input
@@ -385,13 +393,16 @@ getStorms = function(basin = "SP",
       lat = latitude[1:numobs, i]
       coords = data.frame(lon = lon, lat = lat)
 
+      print(coords)
+
       #Removing invalid iso_time
       iso.time = iso.times[1:numobs, i]
       list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
       ind.iso.time = which(list.iso.time %% 3 == 0)
       coords = coords[ind.iso.time,]
-      row.names(coords) = seq(1,dim(coords)[1])
       coords = coords[stats::complete.cases(coords),]
+      row.names(coords) = seq(1,dim(coords)[1])
+      print(coords)
 
 
       #Creating sf point coordinates to intersect with loi.sf.buffer
@@ -402,9 +413,12 @@ getStorms = function(basin = "SP",
         ind = which(sf::st_intersects(pts,
                                       loi.sf.buffer,
                                       sparse = FALSE) == TRUE)
+
+        print(ind)
       }else{
         ind = 1
       }
+
 
       #Add TC only if it intersects with loi.sf.buffer
       if (length(ind) > 0) {
@@ -420,14 +434,21 @@ getStorms = function(basin = "SP",
           iso.time = iso.time,
           lon = lon,
           lat = lat,
-          msw = round(msw[1:numobs, i]),
-          rmw = rmw[1:numobs, i],
-          roci = roci[1:numobs, i],
-          pres = pres[1:numobs, i],
-          poci = poci[1:numobs, i],
+          msw = zoo::na.approx(round(msw[1:numobs, i]), na.rm = F, rule = 2),
+          rmw = zoo::na.approx(rmw[1:numobs, i], na.rm = F, rule = 2),
+          roci = zoo::na.approx(roci[1:numobs, i], na.rm = F, rule = 2),
+          pres = zoo::na.approx(pres[1:numobs, i], na.rm = F, rule = 2),
+          poci = zoo::na.approx(poci[1:numobs, i], na.rm = F, rule = 2),
           sshs = sshs[1:numobs, i],
           landfall = landfall[1:numobs, i]
         )
+
+        #Removing wrong approximation to clean data
+        storm@obs.all$msw[is.na(storm@obs.all$lon)] = NA
+        storm@obs.all$rmw[is.na(storm@obs.all$lon)] = NA
+        storm@obs.all$roci[is.na(storm@obs.all$lon)] = NA
+        storm@obs.all$poci[is.na(storm@obs.all$lon)] = NA
+        storm@obs.all$pres[is.na(storm@obs.all$lon)] = NA
 
         #Wrapping longitudes from -180/180 to 0/360
         lg = which(storm@obs.all$lon < 0)
