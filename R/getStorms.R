@@ -322,7 +322,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                dim = c(dim,length(indices)))
   poci = array(ncdf4::ncvar_get(TC.data.base, "usa_poci")[, indices],
                dim = c(dim,length(indices)))
-  sshs = sshs
+  sshs = array(sshs, dim = c(dim,length(indices)))
   landfall = array(ncdf4::ncvar_get(TC.data.base, "landfall")[, indices],
                    dim = c(dim,length(indices)))
 
