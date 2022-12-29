@@ -116,7 +116,7 @@ Storms = methods::setClass(
 #' pam = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
 #'
 #' #Focus on several storms over Vanuatu (object saved in data examples)
-#' sts_van = getStorms(time_period = c(2004,2020), name = c("IVY","HAROLD"), loi = "Vanuatu")
+#' sts_nc = getStorms(time_period = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
 #'
 #' #Focus on every storms that occured in the WP basin between 2010 and 2020
 #' #(object saved in data examples)
@@ -287,8 +287,11 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   dim = dim(sshs)[1]
   sshs = array(sshs[,indices], dim = c(dim,length(indices)))
 
-  if(remove_TD)
-      indices = indices[which(apply(sshs,2,max, na.rm = T) >= 0)]
+  if(remove_TD){
+    i = which(apply(sshs,2,max, na.rm = T) >= 0)
+    indices = indices[i]
+    sshs = sshs[,i]
+  }
 
 
 
@@ -393,7 +396,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
       lat = latitude[1:numobs, i]
       coords = data.frame(lon = lon, lat = lat)
 
-      print(coords)
+
 
       #Removing invalid iso_time
       iso.time = iso.times[1:numobs, i]
@@ -402,7 +405,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
       coords = coords[ind.iso.time,]
       coords = coords[stats::complete.cases(coords),]
       row.names(coords) = seq(1,dim(coords)[1])
-      print(coords)
+
 
 
       #Creating sf point coordinates to intersect with loi.sf.buffer
@@ -414,7 +417,6 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                                       loi.sf.buffer,
                                       sparse = FALSE) == TRUE)
 
-        print(ind)
       }else{
         ind = 1
       }
