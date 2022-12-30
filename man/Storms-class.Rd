@@ -19,12 +19,12 @@ Gather all the needed informations to model a set of storms
 \item{\code{time.period}}{numeric vector. Range of the cyclonic seasons of Storms available
 in \code{data}}
 
-\item{\code{names}}{character vector. Names of Storms available in \code{data}}
+\item{\code{names}}{character vector. Names of Storms available in data}
 
 \item{\code{sshs}}{numerics vector. Maximum category in the Saffir Simpson Hurricane Scale
-of all Storms available in \code{data}}
+of all Storms available in data}
 
-\item{\code{nb.storms}}{numeric. Total Number of Storms available in \code{data}}
+\item{\code{nb.storms}}{numeric. Total Number of Storms available in data}
 
 \item{\code{basin}}{character. Basin in which the Storms have occured}
 
@@ -33,8 +33,8 @@ of all Storms available in \code{data}}
 \item{\code{spatial.loi}}{sf object. Represents the location of interest
 Projection is EPSG:4326}
 
-\item{\code{buffer}}{numeric. Buffer used to extent \code{spatial.loi} (in km)}
+\item{\code{buffer}}{numeric. Buffer used to extent spatial.loi (km)}
 
-\item{\code{spatial.loi.buffer}}{buffer extension of \code{spatial.loi}}
+\item{\code{spatial.loi.buffer}}{buffer extension of spatial.loi}
 }}
 

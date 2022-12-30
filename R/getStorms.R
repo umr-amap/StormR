@@ -45,16 +45,16 @@ Storm = methods::setClass(
 #' @slot data A list of Storm object
 #' @slot time.period numeric vector. Range of the cyclonic seasons of Storms available
 #'  in `data`
-#' @slot names character vector. Names of Storms available in `data`
+#' @slot names character vector. Names of Storms available in data
 #' @slot  sshs numerics vector. Maximum category in the Saffir Simpson Hurricane Scale
-#'  of all Storms available in `data`
-#' @slot nb.storms numeric. Total Number of Storms available in `data`
+#'  of all Storms available in data
+#' @slot nb.storms numeric. Total Number of Storms available in data
 #' @slot basin  character. Basin in which the Storms have occured
 #' @slot loi.basin logical. Whether the loi represents the whole basin or not
 #' @slot spatial.loi sf object. Represents the location of interest
 #' Projection is EPSG:4326
-#' @slot buffer numeric. Buffer used to extent `spatial.loi` (in km)
-#' @slot spatial.loi.buffer buffer extension of `spatial.loi`
+#' @slot buffer numeric. Buffer used to extent spatial.loi (km)
+#' @slot spatial.loi.buffer buffer extension of spatial.loi
 #' @return A S4 object gathering all the above informations
 #' @importFrom methods new
 #' @import sp
@@ -89,22 +89,22 @@ Storms = methods::setClass(
 #' gathers all the storms and tropical cyclone the user is interested in
 #'
 #' @param basin character. Name of basin where the Storms should be extracted.
-#' Default value is set to `"SP"`
+#' Default value is set to "SP"
 #' @param time_period numeric vector. Should be either one cyclonic season or a range
 #' of cyclonic season. It could also be a vector of cyclonic season provided
-#' that it has the same length as `name` and matches the season of each Storm
-#' listed in `name`. Default value is set to c(1980, 2021)
+#' that it has the same length as name and matches the season of each Storm
+#' listed in name. Default value is set to c(1980, 2021)
 #' @param name character vector. Name(s) of storm(s). Default value is set to NULL,
-#' otherwise `time_period` and `name` must have the same length, and these two
+#' otherwise time_period and name must have the same length, and these two
 #' informations must match
-#' @param loi Location of Interest. Should be either a `SpatialPolygon`, a `sf`
+#' @param loi Location of Interest. Should be either a SpatialPolygon, a sf
 #' object, a point of coordinates in lon/lat, a character representing a country,
-#' or a basin. Default value is set to `NULL` which will set the `spatial.loi.`
-#' on the whole `basin`
+#' or a basin. Default value is set to NULL which will set the spatial.loi.buffer
+#' on the whole basin
 #' @param max_dist numeric. Indicates the buffer used to generate
-#' `spatail.loi.buffer` (in km). Default value is set to 300
+#' spatail.loi.buffer (in km). Default value is set to 300
 #' @param verbose logical. Whether or not the function must be verbose and display
-#' a text progress bar. Default value is set to `FALSE`
+#' a text progress bar. Default value is set to FALSE
 #' @param remove_TD logical. Whether or not to remove Tropical Depression (< 18 m/s).
 #' Default value is set to TRUE.
 #'
@@ -112,14 +112,13 @@ Storms = methods::setClass(
 #' in the inputs
 #'
 #' @examples
-#' #Focus on a single storm (object saved in data examples)
+#' #Focus on a single storm
 #' pam = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
 #'
-#' #Focus on several storms over Vanuatu (object saved in data examples)
+#' #Focus on several storms over Vanuatu
 #' sts_nc = getStorms(time_period = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
 #'
 #' #Focus on every storms that occured in the WP basin between 2010 and 2020
-#' #(object saved in data examples)
 #' sts_wp = getStorms(basin = "WP", time_period = c(2010,2020), verbose = TRUE)
 #'
 #' @importFrom methods as

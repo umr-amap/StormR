@@ -1,30 +1,29 @@
 
 
-# stormR
+# StormR
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 
-
-## Installation
-
-You can install the development version of stormR like so:
-
-``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
-```
-
 ## Overview
 
-stormR is a package developped to analyze past storms and tropical cyclones that occured in the whole
+StormR is a package developped to analyze past storms and tropical cyclones that occured in the whole
 world beyond 1980. It let the user gather all its interested storms in a single object and then use it
 to either plot tracks on a map, or compute/rasterize regimes of wind speed, 2D structures of radial wind and various other products.
 
+## Installation
+
+You can install the development version of StormR like so:
+
+``` r
+#install.packages("devtools")
+devtools::install_github("umr-amap/StormR")
+```
 
 
 ## Data source 
-stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). It let this package get every informations needed to plot, compute and analyze tropical cyclones. This data base provides observations every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations are derived from various agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
+StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). It let this package get every informations needed to plot, compute and analyze tropical cyclones. This data base provides observations every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations are derived from various agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
 
 * NA : North Atlantic
 * SA : South Atlantic
@@ -36,7 +35,7 @@ stormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [Interna
 * ALL: the above 7 basin all together
 
 Default value for the basin is set to SP as the developpement team is located/interested in this particular region, and this basin has been used to test this package but it is up to the user to select his basin of interest.
-For the sake of data reliability, stormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older storms will result in an error. [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
+For the sake of data reliability, StormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older storms will result in an error. [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
 
 ## Models
 
@@ -126,7 +125,7 @@ Insert comments about the differences here? <br />
 
 
 ## Products
-stormR let the user compute several products. They can either be computed on 
+StormR let the user compute several products. They can either be computed on 
 specific longitude/latitute coordinates or rasterized over the location of interest.
 The following describes the products available: <br />
 

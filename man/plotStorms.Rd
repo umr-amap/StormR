@@ -25,15 +25,15 @@ plotStorms(
 \arguments{
 \item{sts}{Storms object}
 
-\item{names}{character vector. Names of the Storms we would like to plot. Default
-value is set to \code{NULL} which will consider every Storm in \code{sts}}
+\item{names}{character vector. Names of the Storms to plot on map. Default
+value is set to NULL which will consider every Storm in sts}
 
 \item{category}{numeric vector. Should be either a category or a range of category
-in the Saffir Simpson scale (-2 to 5). Default value is set to \code{NULL} which
-will consider every Storm in \code{sts}. Otherwise it will consider only storm that
-reached \code{category}}
+in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
+will consider every Storm in sts. Otherwise it will consider only storm that
+reached category}
 
-\item{map}{a \code{shapefile} or \code{sf} object. It should replace
+\item{map}{a shapefile or sf object. It should replace
 the default map. Default value is set to NULL.}
 
 \item{ground_color}{character. Color for the ground}
@@ -41,8 +41,8 @@ the default map. Default value is set to NULL.}
 \item{ocean_color}{character. Color for the oceans}
 
 \item{whole_basin}{logical. Whether or not to plot the track onto the whole basin.
-Default value is set to \code{FALSE}. Otherwise, the plot focuses on the extent of
-\code{spatial.loi.buffer} of \code{sts}}
+Default value is set to FALSE. Otherwise, the plot focuses on the extent of
+spatial.loi.buffer of sts}
 
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
@@ -56,7 +56,7 @@ Default value is set to 3}
 \item{legends}{logical. Whether or not to plot legends. Default value is set
 to FALSE.}
 
-\item{loi}{logical. Whether or not to plot \code{spatial.loi.buffer} on the map
+\item{loi}{logical. Whether or not to plot spatial.loi.buffer on the map
 Default value is set to TRUE.}
 
 \item{grtc}{numeric. Controls the number of graticules to plot. Default value
@@ -64,12 +64,12 @@ is set to 1, which plots graticules on multiple of 10 coordinates. Note that
 it should be a power of 2.}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
-longitude extent of the plot. Default value is set to \code{NULL} which will let
-the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
+longitude extent of the plot. Default value is set to NULL which will let
+the plot extends according to the x bounding box of spatial.loi.buffer.}
 
 \item{ylim}{numeric vector. A set of latitude coordinates that controls the
-latitude extent of the plot. Default value is set to \code{NULL} which will let
-the plot extends according to the x bounding box of \code{spatial.loi.buffer}.}
+latitude extent of the plot. Default value is set to NULL which will let
+the plot extends according to the x bounding box of spatial.loi.buffer.}
 }
 \description{
 This function plots a set of storm tracks contained in a Storms object. Depending

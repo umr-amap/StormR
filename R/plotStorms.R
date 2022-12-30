@@ -137,20 +137,20 @@ plotLabels = function(st, by, pos) {
 #' from the Storms object.
 #'
 #' @param sts Storms object
-#' @param names character vector. Names of the Storms we would like to plot. Default
-#' value is set to `NULL` which will consider every Storm in `sts`
+#' @param names character vector. Names of the Storms to plot on map. Default
+#' value is set to NULL which will consider every Storm in sts
 #' @param category numeric vector. Should be either a category or a range of category
-#' in the Saffir Simpson scale (-2 to 5). Default value is set to `NULL` which
-#' will consider every Storm in `sts`. Otherwise it will consider only storm that
-#' reached `category`
-#' @param map a `shapefile` or `sf` object. It should replace
+#' in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
+#' will consider every Storm in sts. Otherwise it will consider only storm that
+#' reached category
+#' @param map a shapefile or sf object. It should replace
 #' the default map. Default value is set to NULL.
 #' @param ground_color character. Color for the ground
 #' @param ocean_color character. Color for the oceans
 #' @param whole_basin logical. Whether or not to plot the track onto the whole basin.
-#' Default value is set to `FALSE`. Otherwise, the plot focuses on the extent of
-#' `spatial.loi.buffer` of `sts`
-#' @param loi logical. Whether or not to plot `spatial.loi.buffer` on the map
+#' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
+#' spatial.loi.buffer of sts
+#' @param loi logical. Whether or not to plot spatial.loi.buffer on the map
 #' Default value is set to TRUE.
 #' @param labels logical. Whether or not to plot ISO Times and name labels
 #' @param by numeric. Increment of the sequence for the labels to plot. Default value
@@ -164,11 +164,11 @@ plotLabels = function(st, by, pos) {
 #' is set to 1, which plots graticules on multiple of 10 coordinates. Note that
 #' it should be a power of 2.
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
-#' longitude extent of the plot. Default value is set to `NULL` which will let
-#' the plot extends according to the x bounding box of `spatial.loi.buffer`.
+#' longitude extent of the plot. Default value is set to NULL which will let
+#' the plot extends according to the x bounding box of spatial.loi.buffer.
 #' @param ylim numeric vector. A set of latitude coordinates that controls the
-#' latitude extent of the plot. Default value is set to `NULL` which will let
-#' the plot extends according to the x bounding box of `spatial.loi.buffer`.
+#' latitude extent of the plot. Default value is set to NULL which will let
+#' the plot extends according to the x bounding box of spatial.loi.buffer.
 #' @returns NULL
 #' @importFrom ds4psy is_wholenumber
 #' @import rworldxtra
