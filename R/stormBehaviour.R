@@ -97,7 +97,7 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 
 
-#' Compute regimes of wind speed and other for given storms
+#' Compute regimes of wind speed and other products for given storms
 #'
 #' This function computes analytic products for each storm of a `Storms` object
 #' among Maximum Sustained Wind, Power Dissipation Index and Category exposure.
@@ -136,38 +136,40 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 #'   is set to `TRUE`, otherwise, computations are extended over the whole track
 #'   of the storms
 #'
-#' @returns Depending on `format` input: * If `analytic`, analytic rasters
+#' @returns Depending on `format` input:
+#' \itemize{
+#'   \item  If `analytic`, analytic rasters
 #'   (integration in space and time over the track) are returned within a raster
 #'   stack. Each layer is named after the storm and the product computed as
-#'   follow: stormName_product * If `profiles`, `product` input is ignored and
-#'   set to `MSW` and 2D wind speed structures for each observation are returned
-#'   within a raster stack. Each layer is named after the storm and the index of
-#'   observation computed as follow: stormName_profileIndex * If `data.frame`,
-#'   computed product for each coordinates are returned throught a name numeric
-#'   vector of dimension (1 ,number of point coordinates) if product = PDI, (6
-#'   ,number of point coordinates) if product = Exposure, or (number of
-#'   observations ,number of point coordinates)  if `product = MSW`
+#'   follow: stormName_product
+#'   \item If `profiles`, `product` input is ignored and set to `MSW` and
+#'   2D wind speed structures for each observation are returned within a raster
+#'   stack. Each layer is named after the storm and the index of observation
+#'  computed as follow: stormName_profileIndex
+#'   \item If `data.frame`, computed product for each coordinates are returned
+#'   through a name numeric vector of dimension (1 ,number of point coordinates)
+#'    if product = PDI, (6,number of point coordinates) if product = Exposure,
+#'    or (number of observations ,number of point coordinates)  if product = MSW
+#' }
 #'
 #' @examples
-#' #Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with version 2 of asymmetry
-#' #(object saved in data examples)
+#' #Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with
+#' #version 2 of asymmetry
 #' msw_pam = stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
 #'
-#' #Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
-#' #(object saved in data examples)
+#' #Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland
+#' # model without asymmetry
 #' pdi_nc = stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
 #'                         product = "PDI", verbose = TRUE)
 #'
 #' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using
 #' #Willoughby model without asymmetry
-#' #(object saved in data examples)
 #' prof_nc = stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
 #'
 #' #Compute time series of wind speed for ERICA and NIRAN in New Caledonia using
 #' #Willoughby model without asymmetry
 #' df = data.frame(lon = c(166.5, 163), lat = c(-22, -19))
 #' ts_nc = stormBehaviour(sts_nc, format = df)
-#'
 #'
 #' @export
 stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry = "None",
