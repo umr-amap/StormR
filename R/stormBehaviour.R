@@ -99,76 +99,77 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 #' Compute regimes of wind speed and other for given storms
 #'
-#' This function computes analytic products for each storm of a `Storms` object among Maximum
-#' Sustained Wind, Power Dissipation Index and Category exposure. It can also
-#' rasterize and produce the 2D wind speed structure for each observation
+#' This function computes analytic products for each storm of a `Storms` object
+#' among Maximum Sustained Wind, Power Dissipation Index and Category exposure.
+#' It can also rasterize and produce the 2D wind speed structure for each
+#' observation
 #'
 #' @param sts Storms object
-#' @param product character. Product to compute, that
-#' is either `MSW`, (Maximum Sustained Wind) `PDI`, (Power Dissipation Index) or `Exposure`
-#' (hours spent for each and all categories together)
-#' @param method character. Cyclonic model used to compute product, that is either
-#' `Willoughby` or `Holland80`. Default value is set to `Willoughby`
-#' @param asymmetry character. Indicates which version of asymmetry to use in the
-#' computations, that is either `None` (no asymmetry) `V1` (first version), or
-#' `V2` (second version). Default value is set to `None`.
+#' @param product character. Product to compute, that is either `MSW`, (Maximum
+#'   Sustained Wind) `PDI`, (Power Dissipation Index) or `Exposure` (hours spent
+#'   for each and all categories together)
+#' @param method character. Cyclonic model used to compute product, that is
+#'   either `Willoughby` or `Holland80`. Default value is set to `Willoughby`
+#' @param asymmetry character. Indicates which version of asymmetry to use in
+#'   the computations, that is either `None` (no asymmetry) `V1` (first
+#'   version), or `V2` (second version). Default value is set to `None`.
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
-#' according to `getRmw` or using the Radius of Maximum Wind from the observations.
-#' Default value is set to `FALSE`
-#' @param format either a character among `analytic` and `profiles`, or a `data.frame`
-#' which contains longitude/latitude coordinates within column names "lon" and "lat".
-#' Represents the format of the result the function should compute. If `analytic`,
-#' analytic rasters (integration in space and time over the track) are returned.
-#' If `profiles`, `product` input is ignored and set to `MSW` and 2D wind speed
-#' structures for each observation are returned. If `data.frame`, computed product
-#' for each coordinates are returned (time series if `product = MSW`)
+#'   according to `getRmw` or using the Radius of Maximum Wind from the
+#'   observations. Default value is set to `FALSE`
+#' @param format either a character among `analytic` and `profiles`, or a
+#'   `data.frame` which contains longitude/latitude coordinates within column
+#'   names "lon" and "lat". Represents the format of the result the function
+#'   should compute. If `analytic`, analytic rasters (integration in space and
+#'   time over the track) are returned. If `profiles`, `product` input is
+#'   ignored and set to `MSW` and 2D wind speed structures for each observation
+#'   are returned. If `data.frame`, computed product for each coordinates are
+#'   returned (time series if `product = MSW`)
 #' @param space_res numeric. Space resolution (km) for the raster to compute.
-#' Default value is set to 10
-#' @param time_res numeric. Time discretization (hours) used to compute the analytic
-#' Storm rasters. Allowed values are `1` (1h), `0.75` (45min), `0.5` (30min),
-#'  and `0.25` (15min). Default value is set to 1
-#' @param verbose logical. Whether or not the function must be verbose and display
-#' a text progress bar. Default value is set to `FALSE`
-#' @param focus_loi logical. Whether or not the computations must only be overtaken
-#' within the `spatial.loi.buffer` from `sts` object. Default value is set to `TRUE`,
-#' otherwise, computations are extended over the whole track of the storms
+#'   Default value is set to 10
+#' @param time_res numeric. Time discretization (hours) used to compute the
+#'   analytic Storm rasters. Allowed values are `1` (1h), `0.75` (45min), `0.5`
+#'   (30min), and `0.25` (15min). Default value is set to 1
+#' @param verbose logical. Whether or not the function must be verbose and
+#'   display a text progress bar. Default value is set to `FALSE`
+#' @param focus_loi logical. Whether or not the computations must only be
+#'   overtaken within the `spatial.loi.buffer` from `sts` object. Default value
+#'   is set to `TRUE`, otherwise, computations are extended over the whole track
+#'   of the storms
 #'
-#' @returns Depending on `format` input:
-#' * If `analytic`, analytic rasters (integration in space and time over the track) are returned
-#'  within a raster stack. Each layer is named after the storm and the product computed as follow:
-#'  stormName_product
-#' * If `profiles`, `product` input is ignored and set to `MSW` and 2D wind speed
-#'   structures for each observation are returned within a raster stack. Each layer is named
-#'   after the storm and the index of observation computed as follow: stormName_profileIndex
-#' * If `data.frame`, computed product for each coordinates are returned throught a name numeric vector
-#'  of dimension (1 ,number of point coordinates) if product = PDI, (6 ,number of point coordinates)
-#'  if product = Exposure, or (number of observations ,number of point coordinates)  if `product = MSW`
+#' @returns Depending on `format` input: * If `analytic`, analytic rasters
+#'   (integration in space and time over the track) are returned within a raster
+#'   stack. Each layer is named after the storm and the product computed as
+#'   follow: stormName_product * If `profiles`, `product` input is ignored and
+#'   set to `MSW` and 2D wind speed structures for each observation are returned
+#'   within a raster stack. Each layer is named after the storm and the index of
+#'   observation computed as follow: stormName_profileIndex * If `data.frame`,
+#'   computed product for each coordinates are returned throught a name numeric
+#'   vector of dimension (1 ,number of point coordinates) if product = PDI, (6
+#'   ,number of point coordinates) if product = Exposure, or (number of
+#'   observations ,number of point coordinates)  if `product = MSW`
 #'
-#'  @examples
-#'  #Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with version 2 of asymmetry
-#'  #(object saved in data examples)
-#'  data(pam)
-#'  msw_pam = stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
+#' @examples
+#' #Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with version 2 of asymmetry
+#' #(object saved in data examples)
+#' msw_pam = stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
 #'
-#'  #Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
-#'  #(object saved in data examples)
-#'  data(sts_van)
-#'  pdi_van = stormBehaviour(sts_van, method = "Holland80", product = "PDI", verbose = TRUE)
+#' #Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
+#' #(object saved in data examples)
+#' pdi_nc = stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
+#'                         product = "PDI", verbose = TRUE)
 #'
-#'  #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using Willoughby model without asymmetry
-#'  #(object saved in data examples)
-#'  prof_van = stormBehaviour(sts_van, format = "profiles", verbose = TRUE)
+#' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using
+#' #Willoughby model without asymmetry
+#' #(object saved in data examples)
+#' prof_nc = stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
 #'
-#'  #Compute time series of wind speed for ERICA and NIRAN in New Caledonia using Willoughby model without asymmetry
-#'  #(object saved in data examples)
-#'  df = data.frame(lon = c(167, 168.5), lat = c(-15, -16.5))
-#'  ts_van = stormBehaviour(sts_van, format = df, verbose = TRUE)
-#'
-#'
+#' #Compute time series of wind speed for ERICA and NIRAN in New Caledonia using
+#' #Willoughby model without asymmetry
+#' df = data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+#' ts_nc = stormBehaviour(sts_nc, format = df)
 #'
 #'
 #' @export
-#'
 stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry = "None",
                           empirical_rmw = FALSE, format = "analytic", space_res = 10,
                           time_res = 1, verbose = FALSE, focus_loi = TRUE){

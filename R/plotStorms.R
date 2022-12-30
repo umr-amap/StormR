@@ -172,22 +172,18 @@ plotLabels = function(st, by, pos) {
 #' @returns NULL
 #' @importFrom ds4psy is_wholenumber
 #' @import rworldxtra
+#'
+#' @examples
+#' #Plot category 5 TCs in the WP Basin between 2010 and 2020
+#' plotStorms(sts_wp, category = c(3,5))
+#'
+#' #Plot a single storm (ERICA)
+#' plotStorms(sts_nc, names = "ERICA", labels = TRUE, legend = TRUE)
+#'
 #' @export
-plotStorms = function(sts,
-                      names = NULL,
-                      category = NULL,
-                      map = NULL,
-                      ground_color = "grey",
-                      ocean_color = "white",
-                      whole_basin = FALSE,
-                      labels = FALSE,
-                      by = 8,
-                      pos = 3,
-                      legends = FALSE,
-                      loi = TRUE,
-                      grtc = 1,
-                      xlim = NULL,
-                      ylim = NULL) {
+plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_color = "grey",
+                      ocean_color = "white", whole_basin = FALSE, labels = FALSE, by = 8,
+                      pos = 3, legends = FALSE, loi = TRUE, grtc = 1, xlim = NULL, ylim = NULL){
 
 
   #Checking sts input
