@@ -66,7 +66,7 @@ $nn = 2.1340 + 0.0077msw - 0.4522\log(rmw) - 0.0038|\phi| \quad$ Coefficient, $\
 
 
 
-$\textbf{Holland et al. 1980}$ <br />
+$\textbf{Holland 1980}$ <br />
 Insert comments about the model here <br />
 
 
