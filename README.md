@@ -32,7 +32,7 @@ StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [Interna
 * SP : South Pacific
 * SI : South Indian
 * NI : North Indian
-* ALL: the above 7 basin all together
+* ALL: the above 7 basins all together
 
 Default value for the basin is set to SP as the developpement team is located/interested in this particular region, and this basin has been used to test this package but it is up to the user to select his basin of interest.
 For the sake of data reliability, StormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older storms will result in an error. [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
