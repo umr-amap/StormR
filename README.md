@@ -44,6 +44,7 @@ Two cyclonic models are available within this package in order to compute radial
 $\textbf{Willoughby et al. 2006}$ <br />
 Insert comments about the model here <br />
 
+
 $$
 \left\{
 \begin{aligned}
@@ -220,7 +221,7 @@ pdi = stormBehaviour(sts, product = "PDI" , verbose = T)
 plotBehaviour(sts, pdi[["ERICA_PDI"]], labels = T)
 
 
-#Compute time series of wind speed on coordinates contained in df according Willoughby et al. 2006 #analytic model, adding version 2 formula of asymmetry 
+#Compute time series of wind speed on coordinates contained in df according to Willoughby et al. 2006 #analytic model, adding version 2 formula of asymmetry 
 df = data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
 wind.ts = stormBehaviour(sts, result = df, verbose = T)
 
@@ -236,6 +237,14 @@ plotStorms(sts, category = 5)
 
 
 ```
+
+## References
+
+ * Willoughby, H. & Darling, Richard & Rahn, M.. (2006). Parametric Representation of the Primary     Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review - MON WEATHER REV. 134. 1102-1120. 10.1175/MWR3106.1.  <br />
+ 
+ * Holland, Greg. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Mon. Weather Rev.. 108. 1212-1218. 10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2. 
+
+* Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022)
 
 ## Getting help
 
