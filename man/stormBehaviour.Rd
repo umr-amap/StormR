@@ -10,7 +10,7 @@ stormBehaviour(
   method = "Willoughby",
   asymmetry = "None",
   empirical_rmw = FALSE,
-  result = "analytic",
+  format = "analytic",
   space_res = 10,
   time_res = 1,
   verbose = FALSE,
@@ -20,52 +20,83 @@ stormBehaviour(
 \arguments{
 \item{sts}{Storms object}
 
-\item{product}{character. Product to compute, that
-is either \code{MSW}, (Maximum Sustained Wind) \code{PDI}, (Power Dissipation Index) or \code{Exposure}
-(hours spent for each and all categories together)}
+\item{product}{character. Product to compute, that is either \code{MSW}, (Maximum
+Sustained Wind) \code{PDI}, (Power Dissipation Index) or \code{Exposure} (hours spent
+for each and all categories together)}
 
-\item{method}{character. Cyclonic model used to compute product, that is either
-\code{Willoughby} or \code{Holland80}. Default value is set to \code{Willoughby}}
+\item{method}{character. Cyclonic model used to compute product, that is
+either \code{Willoughby} or \code{Holland80}. Default value is set to \code{Willoughby}}
 
-\item{asymmetry}{character. Indicates which version of asymmetry to use in the
-computations, that is either \code{None} (no asymmetry) \code{V1} (first version), or
-\code{V2} (second version). Default value is set to \code{None}.}
+\item{asymmetry}{character. Indicates which version of asymmetry to use in
+the computations, that is either \code{None} (no asymmetry) \code{V1} (first
+version), or \code{V2} (second version). Default value is set to \code{None}.}
 
 \item{empirical_rmw}{logical. Whether to compute the Radius of Maximum Wind
-according to \code{getRmw} or using the Radius of Maximum Wind from the observations.
-Default value is set to \code{FALSE}}
+according to \code{getRmw} or using the Radius of Maximum Wind from the
+observations. Default value is set to \code{FALSE}}
 
-\item{result}{either a character among \code{analytic} and \code{profiles}, or a \code{data.frame}
-which contains longitude/latitude coordinates within column names "lon" and "lat".
-Represents the format of the result the function should compute. If \code{analytic},
-analytic rasters (integration in space and time over the track) are returned.
-If \code{profiles}, \code{product} input is ignored and set to \code{MSW} and 2D wind speed
-structures for each observation are returned. If \code{data.frame}, computed product
-for each coordinates are returned (time series if \code{product = MSW})}
+\item{format}{either a character among \code{analytic} and \code{profiles}, or a
+\code{data.frame} which contains longitude/latitude coordinates within column
+names "lon" and "lat". Represents the format of the result the function
+should compute. If \code{analytic}, analytic rasters (integration in space and
+time over the track) are returned. If \code{profiles}, \code{product} input is
+ignored and set to \code{MSW} and 2D wind speed structures for each observation
+are returned. If \code{data.frame}, computed product for each coordinates are
+returned (time series if \code{product = MSW})}
 
 \item{space_res}{numeric. Space resolution (km) for the raster to compute.
 Default value is set to 10}
 
-\item{time_res}{numeric. Time discretization (hours) used to compute the analytic
-Storm rasters. Allowed values are \code{1} (1h), \code{0.75} (45min), \code{0.5} (30min),
-and \code{0.25} (15min). Default value is set to 1}
+\item{time_res}{numeric. Time discretization (hours) used to compute the
+analytic Storm rasters. Allowed values are \code{1} (1h), \code{0.75} (45min), \code{0.5}
+(30min), and \code{0.25} (15min). Default value is set to 1}
 
-\item{verbose}{logical. Whether or not the function must be verbose and display
-a text progress bar. Default value is set to \code{FALSE}}
+\item{verbose}{logical. Whether or not the function must be verbose and
+display a text progress bar. Default value is set to \code{FALSE}}
 
-\item{focus_loi}{logical. Whether or not the computations must only be overtaken
-within the \code{spatial.loi.buffer} from \code{sts} object. Default value is set to \code{TRUE},
-otherwise, computations are extended over the whole track of the storms}
+\item{focus_loi}{logical. Whether or not the computations must only be
+overtaken within the \code{spatial.loi.buffer} from \code{sts} object. Default value
+is set to \code{TRUE}, otherwise, computations are extended over the whole track
+of the storms}
 }
 \value{
-Depending on \code{result} input. If \code{analytic},
-analytic rasters (integration in space and time over the track) are returned.
-If \code{profiles}, \code{product} input is ignored and set to \code{MSW} and 2D wind speed
-structures for each observation are returned. If \code{data.frame}, computed product
-for each coordinates are returned (time series if \code{product = MSW})
+Depending on \code{format} input: * If \code{analytic}, analytic rasters
+(integration in space and time over the track) are returned within a raster
+stack. Each layer is named after the storm and the product computed as
+follow: stormName_product * If \code{profiles}, \code{product} input is ignored and
+set to \code{MSW} and 2D wind speed structures for each observation are returned
+within a raster stack. Each layer is named after the storm and the index of
+observation computed as follow: stormName_profileIndex * If \code{data.frame},
+computed product for each coordinates are returned throught a name numeric
+vector of dimension (1 ,number of point coordinates) if product = PDI, (6
+,number of point coordinates) if product = Exposure, or (number of
+observations ,number of point coordinates)  if \code{product = MSW}
 }
 \description{
-This function computes analytic products for each storm of a \code{Storms} object among Maximum
-Sustained Wind, Power Dissipation Index and Category exposure. It can also
-rasterize and produce the 2D wind speed structure for each observation
+This function computes analytic products for each storm of a \code{Storms} object
+among Maximum Sustained Wind, Power Dissipation Index and Category exposure.
+It can also rasterize and produce the 2D wind speed structure for each
+observation
+}
+\examples{
+#Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with version 2 of asymmetry
+#(object saved in data examples)
+msw_pam = stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
+
+#Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
+#(object saved in data examples)
+pdi_nc = stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
+                        product = "PDI", verbose = TRUE)
+
+#Compute profiles wind speed for ERICA and NIRAN in New Caledonia using
+#Willoughby model without asymmetry
+#(object saved in data examples)
+prof_nc = stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
+
+#Compute time series of wind speed for ERICA and NIRAN in New Caledonia using
+#Willoughby model without asymmetry
+df = data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+ts_nc = stormBehaviour(sts_nc, format = df)
+
+
 }

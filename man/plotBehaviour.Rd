@@ -18,9 +18,9 @@ plotBehaviour(
 \item{sts}{\code{Storms} object}
 
 \item{raster_product}{\code{Spatraster} object. Name of the layer must be
-"stormName_product" where product is either MSW, PDI, Exposure(1,2,3,4,5,All).
-It can also be "stormName_profileInd" where Ind stand for the observations if
-\code{raster_product} is a 2D wind speed structure}
+"stormName_product" where product is either MSW, PDI,
+Exposure(1,2,3,4,5,All). It can also be "stormName_profileInd" where Ind
+stand for the observations if \code{raster_product} is a 2D wind speed structure}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to \code{NULL} which will let
@@ -32,15 +32,35 @@ the plot extends according to the y bounding box of \code{spatial.loi.buffer}.}
 
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
-\item{by}{numeric. Increment of the sequence for the labels to plot. Default value
-is set to 8 which represents a 24h time interval}
+\item{by}{numeric. Increment of the sequence for the labels to plot. Default
+value is set to 8 which represents a 24h time interval}
 
 \item{pos}{numeric. Must be between 1 and 4 and correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 Default value is set to 3}
 }
 \description{
-This function plots a rasterize product (Maximum Sustained Wind, Power Dissipation Index,
-Category Exposure, 2D wind speed structure at a given observation ...)
-associated with a storm contained in a \code{Storms} object alongside with its track
+This function plots a rasterize product (Maximum Sustained Wind, Power
+Dissipation Index, Category Exposure, 2D wind speed structure at a given
+observation ...) associated with a storm contained in a \code{Storms} object
+alongside with its track
+}
+\examples{
+#Plot MSW analytic raster for PAM 2015 in Vanuatu
+pam_msw = terra::rast(system.file("extdata", "PAM_MSW.tiff", package = "StormR"))
+plotBehaviour(pam, pam_msw)
+
+#Plot PDI analytic raster for ERICA 2003 in New Caledonia
+erica_pdi = terra::rast(system.file("extdata", "ERICA_PDI.tiff", package = "StormR"))
+plotBehaviour(sts_nc, erica_pdi)
+
+#Plot PDI analytic raster for NIRAN 2021 in New Caledonia
+niran_pdi = terra::rast(system.file("extdata", "NIRAN_PDI.tiff", package = "StormR"))
+plotBehaviour(sts_nc, niran_pdi)
+
+#Plot 2D wind speed structure for ERICA 2003 at observation 93
+erica_profile93 = terra::rast(system.file("extdata", "ERICA_profile93.tiff", package = "StormR"))
+plotBehaviour(sts_nc, erica_profile93, labels = TRUE)
+
+
 }

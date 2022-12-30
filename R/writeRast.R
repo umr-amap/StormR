@@ -11,13 +11,10 @@
 #' @param filename character. Name of the file. Default value is set to `NULL`,
 #' in this case it will be set to `names(rast)`
 #' @param path character. Relative path where the file should be written
-#'
 #' @returns NULL
 #' @export
-writeRast = function(rast,
-                     format = ".tiff",
-                     filename = NULL,
-                     path = "./") {
+writeRast = function(rast, format = ".tiff", filename = NULL, path = "./"){
+
   #Check rast input
   stopifnot("no data to write" = !missing(rast))
 
