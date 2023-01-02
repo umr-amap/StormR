@@ -2,23 +2,22 @@
 
 
 
-##################
-#Model prototypes#
-##################
-
 
 #' Compute the Radius of Maximum Wind
 #'
 #' It is an empirical formula extracted from Willoughby et al. 2006 model
 #' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
-#' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the storm
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #'
 #' @returns Radius of Maximum Wind (km)
 getRmw = function(msw,
                    lat) {
   return (46.4 * exp(-0.0155 * msw + 0.0169 * abs(lat)))
 }
+
+
+
 
 
 #' Willoughby et al. 2006 model
@@ -61,6 +60,7 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 
 
 
+
 #' Holland et al. 1980 model
 #'
 #' Compute radial wind speed according to Holland et al. 1980 model
@@ -71,8 +71,8 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param pc numeric. Pressure at the center of the storm (hPa)
 #' @param poci Pressure at the Outermost Closed Isobar (hPa)
-#' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the storm
-#' @returns radial wind speed value (m/s) according to Boose 80 model at distance `r` to the
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
+#' @returns radial wind speed value (m/s) according to Holland 80 model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
 Holland80_profile = function(r,
                             rmw,
@@ -97,59 +97,81 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 
 
+
+
 #' Compute regimes of wind speed and other products for given storms
 #'
-#' This function computes analytic products for each storm of a `Storms` object
+#' This function computes/rasterizes analytic products for each storm of a `Storms` object
 #' among Maximum Sustained Wind, Power Dissipation Index and Category exposure.
-#' It can also rasterize and produce the 2D wind speed structure for each
-#' observation
+#' It can also rasterize the 2D wind speed structures or produce time series of wind speed
+#' for every observations
 #'
 #' @param sts Storms object
-#' @param product character. Product to compute, that is either `MSW`, (Maximum
-#'   Sustained Wind) `PDI`, (Power Dissipation Index) or `Exposure` (hours spent
-#'   for each and all categories together)
-#' @param method character. Cyclonic model used to compute product, that is
-#'   either `Willoughby` or `Holland80`. Default value is set to `Willoughby`
+#' @param product character. Product to compute that is either
+#'   \itemize{
+#'     \item "MSW", Maximum Sustained Wind
+#'     \item "PDI", Power Dissipation Index
+#'     \item "Exposure", hours spent for each and all categories together
+#'   }
+#'   Default value is set to "MSW"
+#' @param method character. Cyclonic model used to compute product, that is either
+#'   \itemize{
+#'   \item "Willoughby"
+#'   \item "Holland80"
+#'   }
+#'  Default value is set to "Willoughby"
 #' @param asymmetry character. Indicates which version of asymmetry to use in
-#'   the computations, that is either `None` (no asymmetry) `V1` (first
-#'   version), or `V2` (second version). Default value is set to `None`.
+#'   the computations, that is either
+#'   \itemize{
+#'   \item "None", no asymmetry
+#'   \item "V1", first version
+#'   \item "V2, second version
+#'   }
+#'  Default value is set to "None".
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
-#'   according to `getRmw` or using the Radius of Maximum Wind from the
-#'   observations. Default value is set to `FALSE`
-#' @param format either a character among `analytic` and `profiles`, or a
-#'   `data.frame` which contains longitude/latitude coordinates within column
-#'   names "lon" and "lat". Represents the format of the result the function
-#'   should compute. If `analytic`, analytic rasters (integration in space and
-#'   time over the track) are returned. If `profiles`, `product` input is
-#'   ignored and set to `MSW` and 2D wind speed structures for each observation
-#'   are returned. If `data.frame`, computed product for each coordinates are
-#'   returned (time series if `product = MSW`)
-#' @param space_res numeric. Space resolution (km) for the raster to compute.
+#'   empirically, according to getRmw function or using the Radius of Maximum Wind
+#'    from the observations. Default value is set to FALSE
+#' @param format either a character among "analytic" and "profiles", or a
+#'   data.frame which contains longitude/latitude coordinates within column
+#'   names "lon" and "lat". Represents the format results the function
+#'   should compute.
+#'   \itemize{
+#'     \item  If "analytic", analytic rasters (integration in space and
+#'      time over the track) are returned.
+#'     \item  If "profiles", product input is
+#'   ignored and set to "MSW" and 2D wind speed structures for each observation
+#'   are returned.
+#'     \item If `data.frame`, computed product for each coordinates are
+#'   returned (time series if product == "MSW")
+#'   }
+#' @param space_res numeric. Space resolution (km) for the raster(s) to compute.
 #'   Default value is set to 10
 #' @param time_res numeric. Time discretization (hours) used to compute the
-#'   analytic Storm rasters. Allowed values are `1` (1h), `0.75` (45min), `0.5`
-#'   (30min), and `0.25` (15min). Default value is set to 1
+#'   analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
+#'   (30min), and 0.25 (15min). Default value is set to 1
 #' @param verbose logical. Whether or not the function must be verbose and
-#'   display a text progress bar. Default value is set to `FALSE`
+#'   display a text progress bar. Default value is set to FALSE
 #' @param focus_loi logical. Whether or not the computations must only be
-#'   overtaken within the `spatial.loi.buffer` from `sts` object. Default value
-#'   is set to `TRUE`, otherwise, computations are extended over the whole track
+#'   overtaken within the spatial.loi.buffer from sts object. Default value
+#'   is set to TRUE, otherwise, computations are extended over the whole track
 #'   of the storms
 #'
-#' @returns Depending on `format` input:
+#' @returns Depending on format input:
 #' \itemize{
-#'   \item  If `analytic`, analytic rasters
-#'   (integration in space and time over the track) are returned within a raster
-#'   stack. Each layer is named after the storm and the product computed as
-#'   follow: stormName_product
-#'   \item If `profiles`, `product` input is ignored and set to `MSW` and
+#'   \item  If "analytic", analytic rasters (integration in space and time over the track)
+#'    are returned within a raster stack. Each layer is named after the storm and the product
+#'    computed as follow: stormName_product
+#'   \item If "profiles", product input is ignored and set to "MSW" and
 #'   2D wind speed structures for each observation are returned within a raster
 #'   stack. Each layer is named after the storm and the index of observation
 #'  computed as follow: stormName_profileIndex
 #'   \item If `data.frame`, computed product for each coordinates are returned
-#'   through a name numeric vector of dimension (1 ,number of point coordinates)
-#'    if product = PDI, (6,number of point coordinates) if product = Exposure,
-#'    or (number of observations ,number of point coordinates)  if product = MSW
+#'   through a name numeric vector of dimension
+#'    \itemize{
+#'    \item (number of observations ,number of point coordinates), if product == "MSW"
+#'    \item (1 ,number of point coordinates), if product == "PDI"
+#'    \item (6,number of point coordinates), if product == "Exposure"
+#'    }
 #' }
 #'
 #' @examples

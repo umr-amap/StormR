@@ -1,6 +1,8 @@
 
 
 
+
+
 #' Storm  object
 #'
 #' Gather all the needed informations to model a single storm
@@ -8,18 +10,29 @@
 #' @slot name character. Name of the storm
 #' @slot season  numeric. Cyclonic season in which the storm has occured
 #' @slot basin  character. Basin in which the storm has occured
-#' @slot  sshs numeric. Category in the Saffir Simpson Hurricane Scale
+#' @slot  sshs numeric. Maximum category reached in the Saffir Simpson Hurricane Scale
 #' @slot numobs.all numeric. Total number of observations available.
 #' @slot obs.all  data.frame. Contains all of the observations available.
 #' An observation is made up of several slots which are:
-#' Basin, subbasin, iso.time, lon, lat, msw (Maximum Sustained Wind in), rmw (Radius of Maximum Wind),
-#' roci (Radius of the Outermost Closed Isobar), pres (pressure at the center),
-#' poci (Pressure of the Outermost Closed Isobar), sshs (Category in the Saffir Simpson Hurricane Scale),
-#' landfall (Minimum distance to land over next 3 hours,  = 0 means landfall)).
-#' @slot numobs numeric. Total number of observations available within the location of interest + buffer
-#' @slot obs numeric vector. Indices of observations within the location of interest + buffer
-#' @slot lty.track numeric. Indicates which line type is used to plot the storm
-#' @returns A S4 object gathering all the above informations
+#' \itemize{
+#'   \item basin
+#'   \item subbasin
+#'   \item iso.time, Date and hours of observations (UTC)
+#'   \item lon, Longitude coordinate (deg)
+#'   \item lat, Latitude coordinate (deg)
+#'   \item msw, Maximum Sustained Wind (m/s)
+#'   \item rmw, Radius of Maximum Wind (km)
+#'   \item roci, Radius of the Outermost Closed Isobar (km)
+#'   \item pres, pressure at the center (mb)
+#'   \item poci, Pressure of the Outermost Closed Isobar (mb)
+#'   \item sshs, Category in the Saffir Simpson Hurricane Scale,
+#' }
+#' @slot numobs numeric. Total number of observations available within the location of interest
+#' extented with its corresponding buffer (See class Storms)
+#' @slot obs numeric vector. Indices of observations within the location of interest
+#' extented with its corresponding buffer (See class Storms)
+#' @slot lty.track numeric. Indicates which line type is used to plot the storm on a map
+#' @returns A S4 object gathering all the following informations
 #' @importFrom methods new
 #' @export
 Storm = methods::setClass(
@@ -38,24 +51,26 @@ Storm = methods::setClass(
 )
 
 
+
+
+
 #' Storms object
 #'
 #' Gather all the needed informations to model a set of storms
 #'
-#' @slot data A list of Storm object
-#' @slot time.period numeric vector. Range of the cyclonic seasons of Storms available
+#' @slot data A list of Storm objects
+#' @slot time.period numeric vector. (Range of the) cyclonic seasons of Storms available
 #'  in `data`
 #' @slot names character vector. Names of Storms available in data
-#' @slot  sshs numerics vector. Maximum category in the Saffir Simpson Hurricane Scale
-#'  of all Storms available in data
-#' @slot nb.storms numeric. Total Number of Storms available in data
+#' @slot  sshs numeric vector. Maximum category reached in the Saffir Simpson Hurricane Scale
+#'  for all storms available in data
+#' @slot nb.storms numeric. Total number of storms available in data
 #' @slot basin  character. Basin in which the Storms have occured
-#' @slot loi.basin logical. Whether the loi represents the whole basin or not
-#' @slot spatial.loi sf object. Represents the location of interest
-#' Projection is EPSG:4326
+#' @slot loi.basin logical. Whether the Location Of Interest represents the whole basin or not
+#' @slot spatial.loi sf object. Represents the location of interest. Projection is EPSG:4326
 #' @slot buffer numeric. Buffer used to extent spatial.loi (km)
 #' @slot spatial.loi.buffer buffer extension of spatial.loi
-#' @return A S4 object gathering all the above informations
+#' @return A S4 object gathering all the following informations
 #' @importFrom methods new
 #' @import sp
 #' @export
@@ -79,30 +94,30 @@ Storms = methods::setClass(
 
 
 
-
-
-
-
 #' Initialize a Storms object
 #'
-#' Depending on values of the inputs, this function return a Storms object that
-#' gathers all the storms and tropical cyclone the user is interested in
+#' Depending on values of the inputs, this function returns a Storms object that
+#' gathers all the storms the user is interested in
 #'
-#' @param basin character. Name of basin where the Storms should be extracted.
+#' @param basin character. Name of basin where the storms should be extracted.
 #' Default value is set to "SP"
 #' @param time_period numeric vector. Should be either one cyclonic season or a range
-#' of cyclonic season. It could also be a vector of cyclonic season provided
-#' that it has the same length as name and matches the season of each Storm
-#' listed in name. Default value is set to c(1980, 2021)
+#' of cyclonic seasons. It could also be a vector of cyclonic season provided
+#' that it has the same length as name input and matches the season of each storm
+#' listed in name input. Default value is set to c(1980, 2021)
 #' @param name character vector. Name(s) of storm(s). Default value is set to NULL,
-#' otherwise time_period and name must have the same length, and these two
-#' informations must match
-#' @param loi Location of Interest. Should be either a SpatialPolygon, a sf
-#' object, a point of coordinates in lon/lat, a character representing a country,
-#' or a basin. Default value is set to NULL which will set the spatial.loi.buffer
-#' on the whole basin
-#' @param max_dist numeric. Indicates the buffer used to generate
-#' spatail.loi.buffer (in km). Default value is set to 300
+#' otherwise time_period and name must have the same length, and these two informations must match
+#' @param loi Location of Interest. Should be either:
+#' \itemize{
+#' \item a SpatialPolygon (shapefile)
+#' \item a sf object
+#' \item a point of longitude/latitude coordinates
+#' \item a character representing a country,
+#' \item a character representing the basin
+#' }
+#  Default value is set to NULL which will set the spatial.loi.buffer on the whole basin
+#' @param max_dist numeric. Indicates the buffer used to generate spatial.loi.buffer (km).
+#' Default value is set to 300
 #' @param verbose logical. Whether or not the function must be verbose and display
 #' a text progress bar. Default value is set to FALSE
 #' @param remove_TD logical. Whether or not to remove Tropical Depression (< 18 m/s).
@@ -322,8 +337,6 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   poci = array(ncdf4::ncvar_get(TC.data.base, "usa_poci")[, indices],
                dim = c(dim,length(indices)))
   sshs = array(sshs, dim = c(dim,length(indices)))
-  landfall = array(ncdf4::ncvar_get(TC.data.base, "landfall")[, indices],
-                   dim = c(dim,length(indices)))
 
 
   if (verbose)
@@ -441,7 +454,6 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
           pres = zoo::na.approx(pres[1:numobs, i], na.rm = F, rule = 2),
           poci = zoo::na.approx(poci[1:numobs, i], na.rm = F, rule = 2),
           sshs = sshs[1:numobs, i],
-          landfall = landfall[1:numobs, i]
         )
 
         #Removing wrong approximation to clean data

@@ -18,9 +18,9 @@ plotBehaviour(
 \item{sts}{Storms object}
 
 \item{raster_product}{Spatraster object. Name of the layer must be
-"stormName_product" where product is either MSW, PDI,
-Exposure(1,2,3,4,5,All). It can also be "stormName_profileInd" where Ind
-stand for the observations if raster_product is a 2D wind speed structure}
+"stormName_product" where product is either MSW, PDI, or Exposure(1,2,3,4,5,All).
+It can also be "stormName_profileInd" where Ind stand for the observations if raster_product
+is a 2D wind speed structure}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to NULL which will let
@@ -35,7 +35,7 @@ the plot extends according to the y bounding box of spatial.loi.buffer}
 \item{by}{numeric. Increment of the sequence for the labels to plot. Default
 value is set to 8 which represents a 24h time interval}
 
-\item{pos}{numeric. Must be between 1 and 4 and correspond to the position of
+\item{pos}{numeric. Must be between 1 and 4. Correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 Default value is set to 3}
 }

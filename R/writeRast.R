@@ -1,13 +1,15 @@
 
 
 
-#' Save rasters in the desired format
+
+#' Save raster(s) in the desired format
 #'
-#' This function writes SpatRast rasters in the given format
+#' This function writes SpatRast raster(s) in the given format among Geotiff or
+#' netcdf
 #'
 #' @param rast SpatRast object.
-#' @param format character. Format of the file to export rast. Either .tiff
-#' or .nc. Default value is set to .tiff
+#' @param format character. Format of the file to export rast. Either ".tiff"
+#' or ".nc". Default value is set to ".tiff"
 #' @param filename character. Name of the file. Default value is set to NULL,
 #' in this case it will be set to names(rast)
 #' @param path character. Relative path where the file should be written
