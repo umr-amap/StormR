@@ -25,16 +25,16 @@ plotStorms(
 \arguments{
 \item{sts}{Storms object}
 
-\item{names}{character vector. Names of the Storms to plot on map. Default
-value is set to NULL which will consider every Storm in sts}
+\item{names}{character vector. Name(s) of the storm(s) to plot on map. Default
+value is set to NULL which will consider every storm in sts}
 
 \item{category}{numeric vector. Should be either a category or a range of category
 in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
-will consider every Storm in sts. Otherwise it will consider only storm that
-reached category}
+will consider every storm in sts. Otherwise it will consider only storms that
+reached category input}
 
-\item{map}{a shapefile or sf object. It should replace
-the default map. Default value is set to NULL.}
+\item{map}{a shapefile or sf object. It should replace the default map if non NULL.
+Default value is set to NULL.}
 
 \item{ground_color}{character. Color for the ground}
 
@@ -49,7 +49,7 @@ spatial.loi.buffer of sts}
 \item{by}{numeric. Increment of the sequence for the labels to plot. Default value
 is set to 8 which represents a 24h time interval}
 
-\item{pos}{numeric. Must be between 1 and 4 and correspond to the position of
+\item{pos}{numeric. Must be between 1 and 4. Correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 Default value is set to 3}
 
@@ -60,7 +60,7 @@ to FALSE.}
 Default value is set to TRUE.}
 
 \item{grtc}{numeric. Controls the number of graticules to plot. Default value
-is set to 1, which plots graticules on multiple of 10 coordinates. Note that
+is set to 1, which plots graticules on multiples of 10 coordinates. Note that
 it should be a power of 2.}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the

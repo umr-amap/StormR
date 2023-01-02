@@ -15,25 +15,28 @@ getStorms(
 )
 }
 \arguments{
-\item{basin}{character. Name of basin where the Storms should be extracted.
+\item{basin}{character. Name of basin where the storms should be extracted.
 Default value is set to "SP"}
 
 \item{time_period}{numeric vector. Should be either one cyclonic season or a range
-of cyclonic season. It could also be a vector of cyclonic season provided
-that it has the same length as name and matches the season of each Storm
-listed in name. Default value is set to c(1980, 2021)}
+of cyclonic seasons. It could also be a vector of cyclonic season provided
+that it has the same length as name input and matches the season of each storm
+listed in name input. Default value is set to c(1980, 2021)}
 
 \item{name}{character vector. Name(s) of storm(s). Default value is set to NULL,
-otherwise time_period and name must have the same length, and these two
-informations must match}
+otherwise time_period and name must have the same length, and these two informations must match}
 
-\item{loi}{Location of Interest. Should be either a SpatialPolygon, a sf
-object, a point of coordinates in lon/lat, a character representing a country,
-or a basin. Default value is set to NULL which will set the spatial.loi.buffer
-on the whole basin}
+\item{loi}{Location of Interest. Should be either:
+\itemize{
+\item a SpatialPolygon (shapefile)
+\item a sf object
+\item a point of longitude/latitude coordinates
+\item a character representing a country,
+\item a character representing the basin
+}}
 
-\item{max_dist}{numeric. Indicates the buffer used to generate
-spatail.loi.buffer (in km). Default value is set to 300}
+\item{max_dist}{numeric. Indicates the buffer used to generate spatial.loi.buffer (km).
+Default value is set to 300}
 
 \item{verbose}{logical. Whether or not the function must be verbose and display
 a text progress bar. Default value is set to FALSE}
@@ -46,8 +49,8 @@ a Storms object that gathers all storms that match the criteria given
 in the inputs
 }
 \description{
-Depending on values of the inputs, this function return a Storms object that
-gathers all the storms and tropical cyclone the user is interested in
+Depending on values of the inputs, this function returns a Storms object that
+gathers all the storms the user is interested in
 }
 \examples{
 #Focus on a single storm

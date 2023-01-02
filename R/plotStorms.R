@@ -1,12 +1,13 @@
 
 
 
+
 #' Get the right color associated with a wind observation
 #'
 #' This function returns the Saffir Simpson Hurricane Scale color associated
 #' with a maximum sustained wind speed
 #' @noRd
-#' @param msw numeric. Maximum Sustained Wind
+#' @param msw numeric. Maximum Sustained Wind (m/s)
 #'
 #' @return color associated with the observation
 getColors = function(msw) {
@@ -48,6 +49,7 @@ getColors = function(msw) {
 
 
 
+
 #' Plot track of a a storm
 #'
 #' This function plots the track of a storm on a map that should be previously plotted
@@ -56,7 +58,7 @@ getColors = function(msw) {
 #' @param st Storm object
 #' @param whole_basin logical. Whether or not to plot the track onto the whole basin.
 #' Default value is set to `FALSE`. Otherwise, the plot focuses on the extent of
-#' `spatial.loi.buffer` of the Storms object in which `storm` belongs
+#' `spatial.loi.buffer` of the Storms object in which st belongs
 #'
 #' @return NULL
 plotTrack = function(st, whole_basin) {
@@ -95,13 +97,14 @@ plotTrack = function(st, whole_basin) {
 
 
 
-
-#' Add ISO Times and name labels on the track of a Storm on a map that should be
+#' Add labels on plot
+#'
+#' Add ISO Times and name labels on the track of a storm on a map that should be
 #' previsouly plotted
 #' @noRd
 #' @param st Storm object
 #' @param by numeric. Increment of the sequence for the labels to plot
-#' @param pos numeric. Must be between 1 and 4 and correspond to the position of
+#' @param pos numeric. Must be between 1 and 4. Corresponds to the position of
 #' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)
 #'
 #' @return NULL
@@ -130,6 +133,7 @@ plotLabels = function(st, by, pos) {
 
 
 
+
 #' Plot several storm tracks
 #'
 #' This function plots a set of storm tracks contained in a Storms object. Depending
@@ -137,14 +141,14 @@ plotLabels = function(st, by, pos) {
 #' from the Storms object.
 #'
 #' @param sts Storms object
-#' @param names character vector. Names of the Storms to plot on map. Default
-#' value is set to NULL which will consider every Storm in sts
+#' @param names character vector. Name(s) of the storm(s) to plot on map. Default
+#' value is set to NULL which will consider every storm in sts
 #' @param category numeric vector. Should be either a category or a range of category
 #' in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
-#' will consider every Storm in sts. Otherwise it will consider only storm that
-#' reached category
-#' @param map a shapefile or sf object. It should replace
-#' the default map. Default value is set to NULL.
+#' will consider every storm in sts. Otherwise it will consider only storms that
+#' reached category input
+#' @param map a shapefile or sf object. It should replace the default map if non NULL.
+#'  Default value is set to NULL.
 #' @param ground_color character. Color for the ground
 #' @param ocean_color character. Color for the oceans
 #' @param whole_basin logical. Whether or not to plot the track onto the whole basin.
@@ -155,13 +159,13 @@ plotLabels = function(st, by, pos) {
 #' @param labels logical. Whether or not to plot ISO Times and name labels
 #' @param by numeric. Increment of the sequence for the labels to plot. Default value
 #' is set to 8 which represents a 24h time interval
-#' @param pos numeric. Must be between 1 and 4 and correspond to the position of
+#' @param pos numeric. Must be between 1 and 4. Correspond to the position of
 #' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 #' Default value is set to 3
 #' @param legends logical. Whether or not to plot legends. Default value is set
 #' to FALSE.
 #' @param grtc numeric. Controls the number of graticules to plot. Default value
-#' is set to 1, which plots graticules on multiple of 10 coordinates. Note that
+#' is set to 1, which plots graticules on multiples of 10 coordinates. Note that
 #' it should be a power of 2.
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
 #' longitude extent of the plot. Default value is set to NULL which will let

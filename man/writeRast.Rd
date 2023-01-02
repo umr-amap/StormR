@@ -2,15 +2,15 @@
 % Please edit documentation in R/writeRast.R
 \name{writeRast}
 \alias{writeRast}
-\title{Save rasters in the desired format}
+\title{Save raster(s) in the desired format}
 \usage{
 writeRast(rast, format = ".tiff", filename = NULL, path = "./")
 }
 \arguments{
 \item{rast}{SpatRast object.}
 
-\item{format}{character. Format of the file to export rast. Either .tiff
-or .nc. Default value is set to .tiff}
+\item{format}{character. Format of the file to export rast. Either ".tiff"
+or ".nc". Default value is set to ".tiff"}
 
 \item{filename}{character. Name of the file. Default value is set to NULL,
 in this case it will be set to names(rast)}
@@ -18,7 +18,8 @@ in this case it will be set to names(rast)}
 \item{path}{character. Relative path where the file should be written}
 }
 \description{
-This function writes SpatRast rasters in the given format
+This function writes SpatRast raster(s) in the given format among Geotiff or
+netcdf
 }
 \examples{
 #Save MSW raster in Geotiff file for PAM (2015) over Vanuatu

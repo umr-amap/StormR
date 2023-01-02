@@ -6,7 +6,7 @@
 \alias{Storm}
 \title{Storm  object}
 \value{
-A S4 object gathering all the above informations
+A S4 object gathering all the following informations
 }
 \description{
 Gather all the needed informations to model a single storm
@@ -20,21 +20,32 @@ Gather all the needed informations to model a single storm
 
 \item{\code{basin}}{character. Basin in which the storm has occured}
 
-\item{\code{sshs}}{numeric. Category in the Saffir Simpson Hurricane Scale}
+\item{\code{sshs}}{numeric. Maximum category reached in the Saffir Simpson Hurricane Scale}
 
 \item{\code{numobs.all}}{numeric. Total number of observations available.}
 
 \item{\code{obs.all}}{data.frame. Contains all of the observations available.
 An observation is made up of several slots which are:
-Basin, subbasin, iso.time, lon, lat, msw (Maximum Sustained Wind in), rmw (Radius of Maximum Wind),
-roci (Radius of the Outermost Closed Isobar), pres (pressure at the center),
-poci (Pressure of the Outermost Closed Isobar), sshs (Category in the Saffir Simpson Hurricane Scale),
-landfall (Minimum distance to land over next 3 hours,  = 0 means landfall)).}
+\itemize{
+\item basin
+\item subbasin
+\item iso.time, Date and hours of observations (UTC)
+\item lon, Longitude coordinate (deg)
+\item lat, Latitude coordinate (deg)
+\item msw, Maximum Sustained Wind (m/s)
+\item rmw, Radius of Maximum Wind (km)
+\item roci, Radius of the Outermost Closed Isobar (km)
+\item pres, pressure at the center (mb)
+\item poci, Pressure of the Outermost Closed Isobar (mb)
+\item sshs, Category in the Saffir Simpson Hurricane Scale,
+}}
 
-\item{\code{numobs}}{numeric. Total number of observations available within the location of interest + buffer}
+\item{\code{numobs}}{numeric. Total number of observations available within the location of interest
+extented with its corresponding buffer (See class Storms)}
 
-\item{\code{obs}}{numeric vector. Indices of observations within the location of interest + buffer}
+\item{\code{obs}}{numeric vector. Indices of observations within the location of interest
+extented with its corresponding buffer (See class Storms)}
 
-\item{\code{lty.track}}{numeric. Indicates which line type is used to plot the storm}
+\item{\code{lty.track}}{numeric. Indicates which line type is used to plot the storm on a map}
 }}
 
