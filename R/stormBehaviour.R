@@ -571,8 +571,7 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
             aux.stack = c(aux.stack, raster.msw)
 
           }else if (product == "Exposure"){
-            sshs = c(33,42,49,58,70,100)
-            for(c in 1:5){
+            for(c in 2:6){
               raster.c = raster.template
               if(sts@loi.basin)
                 raster.c = terra::crop(raster.c,ext)
@@ -760,15 +759,14 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
         }else if (product == "Exposure") {
           vr.c = c()
-          sshs = c(33,42,49,58,70,100)
-          for(c in 1:5){
+          for(c in 2:6){
             ind = which(vr >= sshs[c] & vr < sshs[c+1])
             vr.aux = rep(0,length(vr))
-            vr.aux[ind1] = 1
+            vr.aux[ind] = 1
             vr.aux = sum(vr.aux, na.rm = T) * 3
             vr.c = c(vr.c,vr.aux)
           }
-          vr = vr.c
+          # vr = vr.c
         }
         res = cbind(res,vr)
       }

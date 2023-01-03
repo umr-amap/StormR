@@ -11,36 +11,30 @@
 #'
 #' @return color associated with the observation
 getColors = function(msw) {
-  saffir.simpson.palette = c("#00CCFF",
-                             "#00CCCC",
-                             "#FFFFB2",
-                             "#FECC5C",
-                             "#FD8D3C",
-                             "#F03B20",
-                             "#BD0026")
+
   if (is.na(msw)) {
     color = NA
 
-  } else if (msw < 18) {
-    color = saffir.simpson.palette[1]
+  } else if (msw < sshs[1]) {
+    color = sshsPalette[1]
 
-  } else if (msw >= 18 & msw < 33) {
-    color = saffir.simpson.palette[2]
+  } else if (msw >= sshs[1] & msw < sshs[2]) {
+    color = sshsPalette[2]
 
-  } else if (msw >= 33 & msw < 42) {
-    color = saffir.simpson.palette[3]
+  } else if (msw >= sshs[2] & msw < sshs[3]) {
+    color = sshsPalette[3]
 
-  } else if (msw >= 42 & msw < 49) {
-    color = saffir.simpson.palette[4]
+  } else if (msw >= sshs[3] & msw < sshs[4]) {
+    color = sshsPalette[4]
 
-  } else if (msw >= 49 & msw < 58) {
-    color = saffir.simpson.palette[5]
+  } else if (msw >= sshs[4] & msw < sshs[5]) {
+    color = sshsPalette[5]
 
-  } else if (msw >= 58 & msw < 70) {
-    color = saffir.simpson.palette[6]
+  } else if (msw >= sshs[5] & msw < sshs[6]) {
+    color = sshsPalette[6]
 
-  } else if (msw >= 70) {
-    color = saffir.simpson.palette[7]
+  } else if (msw >= sshs[6]) {
+    color = sshsPalette[7]
   }
 
   return(color)

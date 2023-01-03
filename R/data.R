@@ -28,3 +28,18 @@
 #' @format ## `sts_wp`
 #' a Storms object generated with getStorms
 "sts_wp"
+
+
+
+#' Saffir Simpson Hurricane Scale
+#'
+#' @format ## `sshs`
+#' a numeric vector of length 7
+"sshs"
+
+
+#' Saffir Simpson Hurricane Scale color Palette
+#'
+#' @format ## `sshsPalette`
+#' a character vector of length 7
+"sshsPalette"
