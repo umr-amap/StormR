@@ -49,7 +49,7 @@ a Storms object that gathers all storms that match the criteria given
 in the inputs
 }
 \description{
-Depending on values of the inputs, this function returns a Storms object that
+This function returns a Storms object that
 gathers all the storms the user is interested in
 }
 \examples{
