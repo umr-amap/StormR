@@ -93,51 +93,55 @@ Storms = methods::setClass(
 
 
 
-#Retrieving the matching indices, handling time_period and name
 
-retrieveStorms = function(filter_names, filter_time_period, filter_basin, names, seasons, basins)
 
-if (!is.null(filter_names)) {
-  #we are interested in one or several storms given by their name and season
-  indices = c()
-  for (n in 1:length(name)) {
-    seasons.id = which(seasons == filter_time_period[n])
-    storm.id = NULL
-    storm.id = which(names == filter_name[n])
-    stopifnot("Storm not found" = !is.null(storm.id))
-    id = seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]]
-    stopifnot("Storm not found" = !all(is.na(id)))
-    indices = c(indices, id)
-  }
-} else{
-  if (length(filter_time_period) == 1) {
-    #we are interested in only one cyclonic season
-    indices = which(seasons == filter_time_period[1])
+#' Retrieving the matching indices of storms
+#'
+#' @noRd
+#' @param filter_names character vector. Contains name input from the getStorms inputs
+#' @param filter_time_period numeric vector.  Contains time_period input from the getStorms inputs
+#' @param filter_basin character. Contains basin input from the getStorms inputs
+#' @param names character vector. All of the names of storms in the data base to filter
+#' @param seasons numeric 1d array. All of the seasons of storms in the data base to filter
+#' @param basins character vector. All of the basins of storms in the data base to filter
+#'
+#' @return indices of storms in the data base, that match the filter inputs
+retrieveStorms = function(filter_names, filter_time_period, filter_basin, names, seasons, basins){
+
+  if (!is.null(filter_names)) {
+    #we are interested in one or several storms given by their name and season
+    indices = c()
+    for (n in 1:length(filter_names)) {
+      seasons.id = which(seasons == filter_time_period[n])
+      storm.id = NULL
+      storm.id = which(names == filter_names[n])
+      stopifnot("Storm not found" = !is.null(storm.id))
+      id = seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]]
+      stopifnot("Storm not found" = !all(is.na(id)))
+      indices = c(indices, id)
+    }
   } else{
-    #we are interested in successive cyclonic seasons
-    indices = seq(
-      from = which(seasons == filter_time_period[1])[1],
-      to = max(which(seasons == filter_time_period[2])),
-      by = 1)
+    if (length(filter_time_period) == 1) {
+      #we are interested in only one cyclonic season
+      indices = which(seasons == filter_time_period[1])
+    } else{
+      #we are interested in successive cyclonic seasons
+      indices = seq(
+        from = which(seasons == filter_time_period[1])[1],
+        to = max(which(seasons == filter_time_period[2])),
+        by = 1)
+    }
   }
-}
 
-#Filtering by basin
-if(filter_basin != "ALL")
-  indices = indices[which(basins[1,indices] == filter_basin)]
+  #Filtering by basin
+  if(filter_basin != "ALL")
+    indices = indices[which(basins[indices] == filter_basin)]
 
-#Removing NOT_NAMED storms
-indices = indices[which(names[indices] != "NOT_NAMED")]
+  #Removing NOT_NAMED storms
+  indices = indices[which(names[indices] != "NOT_NAMED")]
 
-#Removing TD if remove_TD == T
-sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")
-dim = dim(sshs)[1]
-sshs = array(sshs[,indices], dim = c(dim,length(indices)))
+  return(indices)
 
-if(remove_TD){
-  i = which(apply(sshs,2,max, na.rm = T) >= 0)
-  indices = indices[i]
-  sshs = sshs[,i]
 }
 
 
@@ -314,46 +318,21 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
     cat("Identifying Storms: ")
 
 
-  #Retrieving the matching indices, handling time_period and name
-  cyclonic.seasons = ncdf4::ncvar_get(TC.data.base, "season")
-  basins = ncdf4::ncvar_get(TC.data.base, "basin")
-  if (!is.null(name)) {
-    #we are interested in one or several storms given by their name and season
-    storm.names = ncdf4::ncvar_get(TC.data.base, "name")
-    indices = c()
-    for (n in 1:length(name)) {
-      seasons.id = which(cyclonic.seasons == time_period[n])
-      storm.id = NULL
-      storm.id = which(storm.names == name[n])
-      stopifnot("Storm not found" = !is.null(storm.id))
-      id = seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]]
-      stopifnot("Storm not found" = !all(is.na(id)))
-      indices = c(indices, id)
-    }
-  } else{
-    if (length(time_period) == 1) {
-      #we are interested in only one cyclonic season
-      indices = which(cyclonic.seasons == time_period[1])
-    } else{
-      #we are interested in successive cyclonic seasons
-      indices = seq(
-        from = which(cyclonic.seasons == time_period[1])[1],
-        to = max(which(cyclonic.seasons == time_period[2])),
-        by = 1)
-    }
-  }
-
-  #Filtering by basin
-  if(basin != "ALL")
-    indices = indices[which(basins[1,indices] == basin)]
-
-  #Removing NOT_NAMED storms
+  #Retrieving the matching indices, handling name, time_period and basin
   storm.names = ncdf4::ncvar_get(TC.data.base, "name")
-  indices = indices[which(storm.names[indices] != "NOT_NAMED")]
-
-  #Removing TD if remove_TD == T
+  cyclonic.seasons = ncdf4::ncvar_get(TC.data.base, "season")
+  basins = ncdf4::ncvar_get(TC.data.base, "basin")[1,]
   sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")
   dim = dim(sshs)[1]
+
+  indices = retrieveStorms(filter_names = name,
+                           filter_time_period = time_period,
+                           filter_basin = basin,
+                           names = storm.names,
+                           seasons = cyclonic.seasons,
+                           basins = basins)
+
+  #Removing TD if remove_TD == T
   sshs = array(sshs[,indices], dim = c(dim,length(indices)))
 
   if(remove_TD){
@@ -496,7 +475,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
 
         storm = Storm()
         storm@name = storm.names[i]
-        storm@season =cyclonic.seasons[i]
+        storm@season = cyclonic.seasons[i]
         storm@basin = basins[i]
         storm@obs.all = data.frame(
           subbasin = subbasin[1:numobs, i],

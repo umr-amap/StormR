@@ -65,11 +65,13 @@ it should be a power of 2.}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer.}
+the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
+Ignored if whole_basin is not NULL}
 
 \item{ylim}{numeric vector. A set of latitude coordinates that controls the
 latitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer.}
+the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
+Ignored if whole_basin is not NULL}
 }
 \description{
 This function plots a set of storm tracks contained in a Storms object. Depending
@@ -80,7 +82,15 @@ from the Storms object.
 #Plot category 5 TCs in the WP Basin between 2010 and 2020
 plotStorms(sts_wp, category = c(3,5))
 
-#Plot a single storm (ERICA)
+#Plot a single storm (ERICA) with lables every 24h and legends
 plotStorms(sts_nc, names = "ERICA", labels = TRUE, legend = TRUE)
+
+#Plot a single storm (ERICA), with labels every 6h on the right side
+plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
+
+#Plot a single storm (ERICA), with graticules at each multiples of 2
+#longitude/latitude coordinates
+plotStorms(sts_nc, names = "ERICA", grtc = 4)
+
 
 }
