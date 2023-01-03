@@ -93,10 +93,60 @@ Storms = methods::setClass(
 
 
 
+#Retrieving the matching indices, handling time_period and name
+
+retrieveStorms = function(filter_names, filter_time_period, filter_basin, names, seasons, basins)
+
+if (!is.null(filter_names)) {
+  #we are interested in one or several storms given by their name and season
+  indices = c()
+  for (n in 1:length(name)) {
+    seasons.id = which(seasons == filter_time_period[n])
+    storm.id = NULL
+    storm.id = which(names == filter_name[n])
+    stopifnot("Storm not found" = !is.null(storm.id))
+    id = seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]]
+    stopifnot("Storm not found" = !all(is.na(id)))
+    indices = c(indices, id)
+  }
+} else{
+  if (length(filter_time_period) == 1) {
+    #we are interested in only one cyclonic season
+    indices = which(seasons == filter_time_period[1])
+  } else{
+    #we are interested in successive cyclonic seasons
+    indices = seq(
+      from = which(seasons == filter_time_period[1])[1],
+      to = max(which(seasons == filter_time_period[2])),
+      by = 1)
+  }
+}
+
+#Filtering by basin
+if(filter_basin != "ALL")
+  indices = indices[which(basins[1,indices] == filter_basin)]
+
+#Removing NOT_NAMED storms
+indices = indices[which(names[indices] != "NOT_NAMED")]
+
+#Removing TD if remove_TD == T
+sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")
+dim = dim(sshs)[1]
+sshs = array(sshs[,indices], dim = c(dim,length(indices)))
+
+if(remove_TD){
+  i = which(apply(sshs,2,max, na.rm = T) >= 0)
+  indices = indices[i]
+  sshs = sshs[,i]
+}
+
+
+
+
 
 #' Initialize a Storms object
 #'
-#' Depending on values of the inputs, this function returns a Storms object that
+#' This function returns a Storms object that
 #' gathers all the storms the user is interested in
 #'
 #' @param basin character. Name of basin where the storms should be extracted.
@@ -161,10 +211,15 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
     name = name[o]
   } else{
     stopifnot(
-      "time_period must be either length 1 or 2" = length(time_period) == 1 ||
+      "Incompatible format for time_period (must be either length 1 or 2)" = length(time_period) == 1 ||
         length(time_period) == 2
     )
   }
+
+  #Internal variables
+  knt2ms = 0.514
+  km = 1000
+  wgs84 = 4326
 
 
   #Checking loi input
@@ -209,7 +264,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
     )
 
     loi = sf::st_polygon(list(ext))
-    loi = sf::st_sfc(loi, crs = 4326)
+    loi = sf::st_sfc(loi, crs = wgs84)
     loi = sf::st_as_sf(loi)
     loi.id = "sf"
   } else{
@@ -326,7 +381,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                     dim = c(dim,length(indices)))
   latitude = array(ncdf4::ncvar_get(TC.data.base, "usa_lat")[, indices],
                    dim = c(dim,length(indices)))
-  msw = array(round(ncdf4::ncvar_get(TC.data.base, "usa_wind")[, indices] * 0.514),
+  msw = array(round(ncdf4::ncvar_get(TC.data.base, "usa_wind")[, indices] * knt2ms),
               dim = c(dim,length(indices)))
   rmw = array(ncdf4::ncvar_get(TC.data.base, "usa_rmw")[, indices],
               dim = c(dim,length(indices)))
@@ -352,8 +407,8 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
 
   } else if (loi.id == "SpatialPolygons") {
     loi.sf = sf::st_as_sf(loi)
-    if (sf::st_crs(loi.sf) != 4326) {
-      sf::st_transform(loi.sf, crs = 4326)
+    if (sf::st_crs(loi.sf) != wgs84) {
+      sf::st_transform(loi.sf, crs = wgs84)
     }
 
   } else if (loi.id == "sf") {
@@ -365,13 +420,13 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   }
 
   #Handling time line for Fiji
-  sf::st_crs(loi.sf) = 4326
+  sf::st_crs(loi.sf) = wgs84
   loi.sf = sf::st_shift_longitude(loi.sf)
 
 
   #Handling buffer
   if (!loi.is.basin) {
-    loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * 1000)
+    loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * km)
     loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
   } else{
     loi.sf.buffer = loi.sf
@@ -422,7 +477,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
 
       #Creating sf point coordinates to intersect with loi.sf.buffer
       pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
-      sf::st_crs(pts) = 4326
+      sf::st_crs(pts) = wgs84
 
       if(!loi.is.basin){
         ind = which(sf::st_intersects(pts,
@@ -453,7 +508,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
           roci = zoo::na.approx(roci[1:numobs, i], na.rm = F, rule = 2),
           pres = zoo::na.approx(pres[1:numobs, i], na.rm = F, rule = 2),
           poci = zoo::na.approx(poci[1:numobs, i], na.rm = F, rule = 2),
-          sshs = sshs[1:numobs, i],
+          sshs = sshs[1:numobs, i]
         )
 
         #Removing wrong approximation to clean data

@@ -99,6 +99,30 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 
 
+#' Parametrization of surface drag coefficient according to Wang, G. et al. 2022
+#'
+#'@noRd
+#' @param vr numeric. Radial wind speed (m/s)
+#'
+#' @return Associated surface drag coefficient
+
+compute_Cd = function(vr){
+  if(vr <= 18){
+    return(0)
+
+  }else if(vr > 18 & vr <= 31.5){
+    return((0.8 + 0.06 * vr) * 0.001)
+
+  }else if(vr > 31.5){
+    return((0.55 + 2.97 * vr/31.5 - 1.49 * (vr/ 31.5) ** 2) * 0.001)
+  }
+}
+
+#Vectorize version of the above function
+rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
+
+
+
 #' Compute regimes of wind speed and other products for given storms
 #'
 #' This function computes/rasterizes analytic products for each storm of a `Storms` object
@@ -330,8 +354,7 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
       rmw = st@obs.all$rmw[ind],
       roci = st@obs.all$roci[ind],
       pc = st@obs.all$pres[ind],
-      poci = st@obs.all$poci[ind],
-      landfall = st@obs.all$landfall[ind]
+      poci = st@obs.all$poci[ind]
     )
     dat = dat[stats::complete.cases(dat), ]
     dat$storm.speed = NA
@@ -354,6 +377,7 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
         lonlat = T
       ) * (0.001 / 3) / 3.6
 
+      #component wise velocity in both x and y direction (degree/h)
       dat$vx.deg[i] = (dat$lon[i + 1] - dat$lon[i]) / 3
       dat$vy.deg[i] = (dat$lat[i + 1] - dat$lat[i]) / 3
 
@@ -530,12 +554,8 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
           }else if (product == "PDI"){
             raster.cd = raster.template.model
-            ind1 = terra::values(raster.model) <= 31.5
-            ind2 = terra::values(raster.model) > 31.5
-            terra::values(raster.cd)[ind1] = (0.8 + 0.06 * terra::values(raster.model)[ind1]) * 0.001
-            terra::values(raster.cd)[ind2] = (0.55 + 2.97 * terra::values(raster.model)[ind2] /31.5
-                                       - 1.49 * (terra::values(raster.model)[ind2] / 31.5) ** 2) * 0.001
-            terra::values(raster.cd)[terra::values(raster.model) <= 18] = 0
+            terra::values(raster.cd) = rasterizeCd(terra::values(raster.model))
+
             rho = 0.001
             #Raising to power 3
             raster.model = raster.model ** 3
@@ -724,12 +744,9 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
         }
 
         if (product == "PDI") {
-          cd = vr
-          ind1 = which(cd <= 31.5)
-          ind2 = which(cd > 31.5)
-          cd[ind1] = (0.8 + 0.06 * vr[ind1]) * 0.001
-          cd[ind2] = (0.55 + 2.97 * vr[ind2] / 31.5 - 1.49 * (vr[ind2] / 31.5) ** 2) * 0.001
-          cd[vr <= 18] = 0
+          #Computing surface drag coefficient
+          cd = rasterizeCd(vr)
+
           rho = 0.001
 
           #Raising to power 3
