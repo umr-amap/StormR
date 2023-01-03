@@ -43,3 +43,10 @@
 #' @format ## `sshsPalette`
 #' a character vector of length 7
 "sshsPalette"
+
+
+#' Basins extents
+#'
+#' @format ## `Basins`
+#' a named list of 8 SpatRaster extents
+"Basins"

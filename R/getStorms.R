@@ -147,6 +147,78 @@ retrieveStorms = function(filter_names, filter_time_period, filter_basin, names,
 
 
 
+#' Check inputs for getStorms function
+#'
+#' @noRd
+#' @param basin character
+#' @param time_period, numeric vector
+#' @param name character vector
+#' @param loi Either:
+#'   \itemize{
+#'     \item a SpatialPolygon (shapefile)
+#'     \item a sf object
+#'     \item a point of longitude/latitude coordinates
+#'     \item a character representing a country,
+#'     \item a character representing the basin
+#'   }
+#' @param max_dist numeric
+#' @param verbose logical
+#' @param remove_TD logical
+#' @return NULL
+checkInputs = function(basin, time_period, name, loi, max_dist, verbose, remove_TD){
+
+  #Checking basin input
+  stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
+
+  #Checking time_period input
+  stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
+  stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
+  stopifnot("lower bound of time range is not valid" = time_period > 1979)
+  stopifnot("upper bound of time range is not valid" = time_period < 2023)
+
+  #Checking name input
+  if (!is.null(name)) {
+    stopifnot("name must be a vector of character" = identical(class(name), "character"))
+    stopifnot("name and time_period must be the same length" = length(time_period) == length(name))
+  } else{
+    stopifnot(
+      "Incompatible format for time_period (must be either length 1 or 2)" = length(time_period) == 1 ||
+        length(time_period) == 2
+    )
+  }
+
+  #Checking loi input
+  if(!is.null(loi)){
+
+    stopifnot("Invalid class for loi" = identical(class(loi), c("sf", "data.frame")) ||
+                identical(class(loi), "SpatialPolygons") ||
+                identical(class(loi), "numeric") ||
+                identical(class(loi), "character"))
+
+
+    if(identical(class(loi), "numeric"))
+      stopifnot("loi must have valid lon/lat coordinates " = length(loi) == 2
+                & loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
+
+    if(identical(class(loi), "character"))
+      stopifnot("loi must be length 1 " = length(loi) == 1)
+
+  }
+
+  #Checking max_dist input
+  stopifnot("max_dist must be numeric " = identical(class(max_dist), "numeric"))
+  stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
+
+  #Checking verbose input
+  stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
+
+  #Checking remove_TD input
+  stopifnot("verbose must be logical" = identical(class(remove_TD), "logical"))
+
+}
+
+
+
 
 #' Initialize a Storms object
 #'
@@ -196,29 +268,13 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                      max_dist = 300, verbose = FALSE, remove_TD = TRUE){
 
 
-  #Checking basin input
-  stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
+  checkInputs(basin,time_period,name,loi,max_dist,verbose,remove_TD)
 
-  #Checking time_period input
-  stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
-  stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
-  stopifnot("lower bound of time range is not valid" = time_period > 1979)
-  stopifnot("upper bound of time range is not valid" = time_period < 2023)
   o = order(time_period)
   time_period = time_period[o]
-
-
-  #Checking name input
-  if (!is.null(name)) {
-    stopifnot("name must be a vector of character" = identical(class(name), "character"))
-    stopifnot("name and time_period must be the same length" = length(time_period) == length(name))
+  if (!is.null(name))
     name = name[o]
-  } else{
-    stopifnot(
-      "Incompatible format for time_period (must be either length 1 or 2)" = length(time_period) == 1 ||
-        length(time_period) == 2
-    )
-  }
+
 
   #Internal variables
   knt2ms = 0.514
@@ -226,96 +282,76 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   wgs84 = 4326
 
 
-  #Checking loi input
+  if (verbose)
+    cat("Making buffer: ")
+
+  #Handling loi
   if(is.null(loi)){
     loi = basin
     loi.is.basin = TRUE
+    ext = terra::ext(Basins[basin,1], Basins[basin,2],
+                     Basins[basin,3], Basins[basin,4])
+    poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
+                 c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
 
-    ext = switch(basin,
-                 "SP" = cbind(
-                   c(135, 290, 290, 135, 135),
-                   c(0, 0, -60, -60, 0)
-                   ),
-                 "SI" = cbind(
-                   c(10, 135, 135, 10, 10),
-                   c(0, 0, -60, -60, 0)
-                   ),
-                 "SA" = cbind(
-                   c(290, 359, 359, 290, 290),
-                   c(0, 0, -60, -60, 0)
-                 ),
-                 "NI" = cbind(
-                   c(30, 100, 100, 30, 30),
-                   c(30, 30, 0, 0, 30)
-                 ),
-                 "WP" = cbind(
-                   c(100, 180, 180, 100, 100),
-                   c(60, 60, 0, 0, 60)
-                 ),
-                 "EP" = cbind(
-                   c(180, 290, 290, 180, 180),
-                   c(60, 60, 0, 0, 60)
-                 ),
-                 "NA" = cbind(
-                   c(270, 359, 359, 270, 270),
-                   c(60, 60, 0, 0, 60)
-                 ),
-                 "ALL" = cbind(
-                   c(0, 359, 359, 0, 0),
-                   c(60, 60, -60, -60, 60)
-                 )
-
-    )
-
-    loi = sf::st_polygon(list(ext))
-    loi = sf::st_sfc(loi, crs = wgs84)
-    loi = sf::st_as_sf(loi)
-    loi.id = "sf"
+    loi.sf = sf::st_polygon(list(poly))
+    loi.sf = sf::st_sfc(loi.sf, crs = wgs84)
+    loi.sf = sf::st_as_sf(loi.sf)
   } else{
     loi.is.basin = FALSE
-    if (!is.character(loi)) {
-      #loi should be either SpatialPolygon, sf or point coordinates
-      if (identical(class(loi), c("SpatialPolygons"))) {
-        loi.id = "SpatialPolygons"
-      } else if (identical(class(loi), c("sf", "data.frame"))) {
-        loi.id = "sf"
-      } else if (identical(class(loi), c("numeric"))){
-        stopifnot("loi must have valid lon/lat coordinates " = length(loi) == 2
-                  & loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
-        loi.id = "Coordinates"
-      } else{
-        stop("Invalid class for loi")
+    if (identical(class(loi), c("SpatialPolygons"))) {
+      loi.id = "SpatialPolygons"
+      loi.sf = sf::st_as_sf(loi)
+      if (sf::st_crs(loi.sf) != wgs84) {
+        sf::st_transform(loi.sf, crs = wgs84)
       }
-    } else{
-      #loi is a character that represents a country
-      stopifnot("loi must be length 1 " = length(loi) == 1)
-      map = rworldmap::getMap(resolution = "high")
-      id.country = which(map@data$ADMIN == loi)
-      stopifnot("invalid entry for loi" = length(id.country) > 0)
-      loi.id = "Country"
+    } else if (identical(class(loi), c("sf", "data.frame"))) {
+      loi.sf = loi
+    } else if (identical(class(loi), c("numeric"))){
+      loi.df = data.frame(pt = 1,
+                          lon = loi[1],
+                          lat = loi[2])
+      loi.sf = sf::st_as_sf(loi.df, coords = c("lon", "lat"))
+    } else if (identical(class(loi), c("character"))){
+      if(loi %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL")){
+        loi = basin
+        loi.is.basin = TRUE
+        ext = terra::ext(Basins[basin,1], Basins[basin,2],
+                         Basins[basin,3], Basins[basin,4])
+
+        poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
+                     c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
+        loi.sf = sf::st_polygon(list(poly))
+        loi.sf = sf::st_sfc(loi.sf, crs = wgs84)
+        loi.sf = sf::st_as_sf(loi.sf)
+      }else{
+        map = rworldmap::getMap(resolution = "high")
+        id.country = which(map@data$ADMIN == loi)
+        stopifnot("invalid entry for loi" = length(id.country) > 0)
+        loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
+      }
     }
   }
 
+  #Handling time line for Fiji
+  sf::st_crs(loi.sf) = wgs84
+  loi.sf = sf::st_shift_longitude(loi.sf)
+
+  #Handling buffer
+  if (!loi.is.basin) {
+    loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * km)
+    loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
+  } else{
+    loi.sf.buffer = loi.sf
+  }
 
 
-
-  #Checking max_dist input
-  stopifnot("max_dist must be numeric " = identical(class(max_dist), "numeric"))
-  stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
-
-  #Checking verbose input
-  stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
-
-  #Checking remove_TD input
-  stopifnot("verbose must be logical" = identical(class(remove_TD), "logical"))
+  if (verbose)
+    cat("Done\nIdentifying Storms: ")
 
   #Open data_base
   filename = paste0("IBTrACS.ALL.v04r00.nc")
   TC.data.base = ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
-
-
-  if (verbose)
-    cat("Identifying Storms: ")
 
 
   #Retrieving the matching indices, handling name, time_period and basin
@@ -340,7 +376,6 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
     indices = indices[i]
     sshs = sshs[,i]
   }
-
 
 
   if (verbose)
@@ -372,44 +407,6 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                dim = c(dim,length(indices)))
   sshs = array(sshs, dim = c(dim,length(indices)))
 
-
-  if (verbose)
-    cat("Done\nMaking buffer: ")
-
-
-  #Handling loi
-  if (loi.id == "Coordinates") {
-    loi.df = data.frame(pt = 1,
-                        lon = loi[1],
-                        lat = loi[2])
-    loi.sf = sf::st_as_sf(loi.df, coords = c("lon", "lat"))
-
-  } else if (loi.id == "SpatialPolygons") {
-    loi.sf = sf::st_as_sf(loi)
-    if (sf::st_crs(loi.sf) != wgs84) {
-      sf::st_transform(loi.sf, crs = wgs84)
-    }
-
-  } else if (loi.id == "sf") {
-    loi.sf = loi
-
-  } else{
-    #loi.id == "Country"
-    loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
-  }
-
-  #Handling time line for Fiji
-  sf::st_crs(loi.sf) = wgs84
-  loi.sf = sf::st_shift_longitude(loi.sf)
-
-
-  #Handling buffer
-  if (!loi.is.basin) {
-    loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * km)
-    loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
-  } else{
-    loi.sf.buffer = loi.sf
-  }
 
   #Initializing Storms object
   sts = Storms()
