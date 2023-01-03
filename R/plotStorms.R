@@ -128,6 +128,107 @@ plotLabels = function(st, by, pos) {
 
 
 
+
+#' Check inputs for plotStorms function
+#'
+#' @noRd
+#' @param sts Storms object
+#' @param names character vector
+#' @param category numeric vector
+#' @param map shapefile or sf object
+#' @param ground_color numeric or character vector
+#' @param ocean_color numeric or character vector
+#' @param whole_basin logical
+#' @param labels logical
+#' @param by numeric
+#' @param pos numeric
+#' @param legends logical
+#' @param loi logical
+#' @param grtc numeric
+#' @param xlim numeric vector
+#' @param ylim numeric vector
+#' @return NULL
+checkInputsPs = function(sts, names, category, map, ground_color,
+                       ocean_color, whole_basin, labels, by,
+                       pos, legends, loi, grtc, xlim, ylim){
+
+  #Checking sts input
+  stopifnot("no data to plot" = !missing(sts))
+
+  #Checking names input
+  if (!is.null(names)) {
+    stopifnot("names must be characters" = identical(class(names), "character"))
+    stopifnot("Invalid storm names (storm not found)" = names %in% sts@names)
+  }
+
+  #Checking category input
+  if (!is.null(category)) {
+    stopifnot("category must be numeric(s)" = identical(class(category), "numeric"))
+    stopifnot("Invalid category input" = category %in% c(-1,-2,0,1,2,3,4,5))
+  }
+
+  #Checking map input
+  if (!is.null(map))
+    stopifnot(
+      "map must be a SpatialPolygonsDataFrame or a sf object" = identical(class(map)[1], "SpatialPolygonsDataFrame") |
+        identical(class(map)[1], "sf"))
+
+  #Checking ground_color input
+  stopifnot("Invalid ground_color input" = identical(class(ground_color), "numeric") ||
+              identical(class(ground_color), "character"))
+  stopifnot("ground_color must be length 1" = length(ground_color) == 1)
+
+  #Checking ocean_color input
+  stopifnot("Invalid ocean_color input" = identical(class(ocean_color), "numeric") ||
+              identical(class(ocean_color), "character"))
+  stopifnot("ocean_color must be length 1" = length(ocean_color) == 1)
+
+
+  #Checking grtc input
+  stopifnot("grtc must be numeric" = identical(class(grtc), "numeric"))
+  stopifnot("grtc must contains an integer" = is_wholenumber(grtc))
+  stopifnot("grtc must be length 1" = length(grtc) == 1)
+
+  #Checking xlim input
+  if (!is.null(xlim)) {
+    stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
+    stopifnot("xlim must length 2" = length(xlim) == 2)
+    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
+                xlim <= 360)
+  }
+
+  #Checking ylim input
+  if (!is.null(ylim)) {
+    stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
+    stopifnot("ylim must length 2" = length(ylim) == 2)
+    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
+                ylim <= 90)
+  }
+
+  #Checking logical inputs
+  stopifnot("whole_basin must be logical" = identical(class(whole_basin), "logical"))
+  stopifnot("legends must be logical" = identical(class(legends), "logical"))
+  stopifnot("loi must be logical" = identical(class(loi), "logical"))
+  stopifnot("labels must be logical" = identical(class(labels), "logical"))
+
+  #Checking by input
+  stopifnot("by must be numeric" = identical(class(by), "numeric"))
+  stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
+  stopifnot("by must length 1" = length(by) == 1)
+
+  #Checking pos input
+  stopifnot("pos must be numeric" = identical(class(pos), "numeric"))
+  stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
+  stopifnot("pos must length 1" = length(pos) == 1)
+  stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
+
+
+}
+
+
+
+
+
 #' Plot several storm tracks
 #'
 #' This function plots a set of storm tracks contained in a Storms object. Depending
@@ -151,11 +252,12 @@ plotLabels = function(st, by, pos) {
 #' @param loi logical. Whether or not to plot spatial.loi.buffer on the map
 #' Default value is set to TRUE.
 #' @param labels logical. Whether or not to plot ISO Times and name labels
-#' @param by numeric. Increment of the sequence for the labels to plot. Default value
-#' is set to 8 which represents a 24h time interval
+#' @param by numeric. Add labels every by observations. Default value
+#' is set to 8 which represents a 24h time interval between each labeled observations.
+#' Ignored if labels == FALSE
 #' @param pos numeric. Must be between 1 and 4. Correspond to the position of
 #' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
-#' Default value is set to 3
+#' Default value is set to 3. Ignored if labels == FALSE
 #' @param legends logical. Whether or not to plot legends. Default value is set
 #' to FALSE.
 #' @param grtc numeric. Controls the number of graticules to plot. Default value
@@ -194,98 +296,34 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
                       pos = 3, legends = FALSE, loi = TRUE, grtc = 1, xlim = NULL, ylim = NULL){
 
 
-  #Checking sts input
-  stopifnot("no data to plot" = !missing(sts))
-
-
-  #Checking names input
-  if (!is.null(names)) {
-    stopifnot("names must be characters" = identical(class(names), "character"))
-    stopifnot("Invalid storm names (storm not found)" = names %in% sts@names)
-  }
-
-  #Checking category input
-  if (!is.null(category)) {
-    stopifnot("category must be numeric(s)" = identical(class(category), "numeric"))
-    stopifnot("Invalid category input" = category %in% c(-1,-2,0,1,2,3,4,5))
-  }
+  checkInputsPs(sts, names, category, map, ground_color, ocean_color, whole_basin,
+              labels, by, pos, legends, loi, grtc, xlim, ylim)
 
   #Checking map input
   if (!is.null(map)){
-    stopifnot(
-      "map must be a SpatialPolygonsDataFrame or a sf object" = identical(class(map)[1], "SpatialPolygonsDataFrame") |
-        identical(class(map)[1], "sf"))
     #Converting to sf object
     if(!identical(class(map)[1], "sf"))
       map = sf::st_as_sf(map)
   }
 
-
-
-  #Checking grtc input
-  stopifnot("grtc must be numeric" = identical(class(grtc), "numeric"))
-  stopifnot("grtc must contains an integer" = is_wholenumber(grtc))
-  stopifnot("grtc must be length 1" = length(grtc) == 1)
-
-  #Checking xlim input
-  if (!is.null(xlim)) {
-    stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
-    stopifnot("xlim must length 2" = length(xlim) == 2)
+  if (!is.null(xlim))
     xlim = xlim[order(xlim)]
-    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
-                xlim <= 360)
-  }
 
-  #Checking ylim input
-  if (!is.null(ylim)) {
-    stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
-    stopifnot("ylim must length 2" = length(ylim) == 2)
+  if (!is.null(ylim))
     ylim = ylim[order(ylim)]
-    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
-                ylim <= 90)
-  }
 
-  #Checking logical input
-  stopifnot("whole_basin must be logical" = identical(class(whole_basin), "logical"))
-  stopifnot("legends must be logical" = identical(class(legends), "logical"))
-  stopifnot("loi must be logical" = identical(class(loi), "logical"))
-
-  #Checking labels input
-  stopifnot("labels must be logical" = identical(class(labels), "logical"))
-
-  #Checking by input
-  stopifnot("by must be numeric" = identical(class(by), "numeric"))
-  stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
-  stopifnot("by must length 1" = length(by) == 1)
-
-  #Checking pos input
-  stopifnot("pos must be numeric" = identical(class(pos), "numeric"))
-  stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
-  stopifnot("pos must length 1" = length(pos) == 1)
-  stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
-
-
-
-
-  #Checking grtc input
   l2 = log2(grtc)
   if (!is_wholenumber(l2)) {
     grtc = 2 ** round(l2)
     warning(paste("grtc is not a power of 2, set to", grtc))
   }
 
+
+
   #Handling spatial extent
   if (whole_basin) {
-    ext = switch(sts@basin,
-                 "SP" = terra::ext(135,290,-60,0),
-                 "SI" = terra::ext(10,135,-60,0),
-                 "SA" = terra::ext(290,359,-60,0),
-                 "NI" = terra::ext(30,100,0,30),
-                 "WP" = terra::ext(100,180,0,60),
-                 "EP" = terra::ext(180,290,0,60),
-                 "NA" = terra::ext(270,359,0,60),
-                 "ALL" = terra::ext(0,359,-60,60)
-                 )
+    ext = terra::ext(Basins[sts@basin,1], Basins[sts@basin,2],
+                     Basins[sts@basin,3], Basins[sts@basin,4])
 
     if (!is.null(xlim))
       warning("xlim ignored")

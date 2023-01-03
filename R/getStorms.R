@@ -165,7 +165,7 @@ retrieveStorms = function(filter_names, filter_time_period, filter_basin, names,
 #' @param verbose logical
 #' @param remove_TD logical
 #' @return NULL
-checkInputs = function(basin, time_period, name, loi, max_dist, verbose, remove_TD){
+checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remove_TD){
 
   #Checking basin input
   stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
@@ -268,7 +268,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                      max_dist = 300, verbose = FALSE, remove_TD = TRUE){
 
 
-  checkInputs(basin,time_period,name,loi,max_dist,verbose,remove_TD)
+  checkInputsGs(basin,time_period,name,loi,max_dist,verbose,remove_TD)
 
   o = order(time_period)
   time_period = time_period[o]

@@ -46,12 +46,13 @@ spatial.loi.buffer of sts}
 
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
-\item{by}{numeric. Increment of the sequence for the labels to plot. Default value
-is set to 8 which represents a 24h time interval}
+\item{by}{numeric. Add labels every by observations. Default value
+is set to 8 which represents a 24h time interval between each labeled observations.
+Ignored if labels == FALSE}
 
 \item{pos}{numeric. Must be between 1 and 4. Correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
-Default value is set to 3}
+Default value is set to 3. Ignored if labels == FALSE}
 
 \item{legends}{logical. Whether or not to plot legends. Default value is set
 to FALSE.}
