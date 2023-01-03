@@ -123,6 +123,78 @@ rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 
 
 
+
+#' Check inputs for stormBehaviour function
+#'
+#' @noRd
+#' @param sts Storms object
+#' @param product character
+#' @param method character
+#' @param asymmetry character
+#' @param empirical_rmw logical
+#' @param format character
+#' @param space_res numeric
+#' @param time_res numeric
+#' @param verbose logical
+#' @param focus_loi logical
+#' @return NULL
+checkInputsSb = function(sts, product, method, asymmetry,
+                         empirical_rmw, format, space_res,
+                         time_res, verbose, focus_loi){
+
+  #Checking sts input
+  stopifnot("no data found" = !missing(sts))
+
+  #Checking product input
+  stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Exposure"))
+  stopifnot("Only one product must be chosen" = length(product) == 1)
+
+  #Checking method input
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland80"))
+  stopifnot("Only one method must be chosen" = length(method) == 1)
+
+  #Checking asymmetry input
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "V1", "V2"))
+  stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
+
+  #Checking empirical_rmw input
+  stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
+
+  #Checking format input
+  if(identical(class(format),"data.frame")){
+    stopifnot("colnames of format must be lon, lat" = colnames(format) == c("lon","lat"))
+    stopifnot("Invalid format coordinates" = format$lon >= 0 & format$lon <= 360 &
+                format$lat >= -90 & format$lat <= 90)
+
+  }else{
+    stopifnot("Invalid format input" = format %in% c("profiles","analytic"))
+    stopifnot("format should be length 1" = length(format) == 1)
+  }
+
+  #Checking space_res input
+  stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
+  stopifnot("space_res must be as integer" = is_wholenumber(space_res))
+  stopifnot("space_res must be length 1" = length(space_res) == 1)
+  stopifnot("space_res must be positif" = space_res > 0)
+
+  #Checking time_res input
+  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
+  stopifnot("invalid time_res" = time_res %in% c(1, 0.75, 0.5, 0.25))
+  stopifnot("time_res must be length 1" = length(time_res) == 1)
+
+  #Checking verbose input
+  stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
+
+  #Checking focus_loi input
+  stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
+
+
+}
+
+
+
+
+
 #' Compute regimes of wind speed and other products for given storms
 #'
 #' This function computes/rasterizes analytic products for each storm of a `Storms` object
@@ -221,57 +293,14 @@ rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry = "None",
                           empirical_rmw = FALSE, format = "analytic", space_res = 10,
                           time_res = 1, verbose = FALSE, focus_loi = TRUE){
-  #Checking sts input
-  stopifnot("no data found" = !missing(sts))
 
-  #Checking product input
-  stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Exposure"))
-  stopifnot("Only one product must be chosen" = length(product) == 1)
+  checkInputsSb(sts, product, method, asymmetry, empirical_rmw, format,
+                space_res,time_res, verbose, focus_loi)
 
-  #Checking method input
-  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland80"))
-  stopifnot("Only one method must be chosen" = length(method) == 1)
-
-  #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "V1", "V2"))
-  stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
-
-  #Checking empirical_rmw input
-  stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
-
-  #Checking format input
-  if(identical(class(format),"data.frame")){
-    stopifnot("colnames of format must be lon, lat" = colnames(format) == c("lon","lat"))
-    stopifnot("Invalid format coordinates" = format$lon >= 0 & format$lon <= 360 &
-                format$lat >= -90 & format$lat <= 90)
-
-  }else{
-    stopifnot("Invalid format input" = format %in% c("profiles","analytic"))
-    stopifnot("format should be length 1" = length(format) == 1)
+  if(!identical(class(format),"data.frame")){
     if(format == "profiles")
       product = "MSW"
   }
-
-
-
-  #Checking space_res input
-  stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
-  stopifnot("space_res must be as integer" = is_wholenumber(space_res))
-  stopifnot("space_res must be length 1" = length(space_res) == 1)
-  stopifnot("space_res must be positif" = space_res > 0)
-
-  #Checking time_res input
-  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
-  stopifnot("invalid time_res" = time_res %in% c(1, 0.75, 0.5, 0.25))
-  stopifnot("time_res must be length 1" = length(time_res) == 1)
-
-  #Checking verbose input
-  stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
-
-  #Checking focus_loi input
-  stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
-
-
 
 
   if(!identical(class(format),"data.frame")){
