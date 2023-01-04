@@ -94,59 +94,6 @@ Storms = methods::setClass(
 
 
 
-
-#' Retrieving the matching indices of storms
-#'
-#' @noRd
-#' @param filter_names character vector. Contains name input from the getStorms inputs
-#' @param filter_time_period numeric vector.  Contains time_period input from the getStorms inputs
-#' @param filter_basin character. Contains basin input from the getStorms inputs
-#' @param names character vector. All of the names of storms in the data base to filter
-#' @param seasons numeric 1d array. All of the seasons of storms in the data base to filter
-#' @param basins character vector. All of the basins of storms in the data base to filter
-#'
-#' @return indices of storms in the data base, that match the filter inputs
-retrieveStorms = function(filter_names, filter_time_period, filter_basin, names, seasons, basins){
-
-  if (!is.null(filter_names)) {
-    #we are interested in one or several storms given by their name and season
-    indices = c()
-    for (n in 1:length(filter_names)) {
-      seasons.id = which(seasons == filter_time_period[n])
-      storm.id = NULL
-      storm.id = which(names == filter_names[n])
-      stopifnot("Storm not found" = !is.null(storm.id))
-      id = seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]]
-      stopifnot("Storm not found" = !all(is.na(id)))
-      indices = c(indices, id)
-    }
-  } else{
-    if (length(filter_time_period) == 1) {
-      #we are interested in only one cyclonic season
-      indices = which(seasons == filter_time_period[1])
-    } else{
-      #we are interested in successive cyclonic seasons
-      indices = seq(
-        from = which(seasons == filter_time_period[1])[1],
-        to = max(which(seasons == filter_time_period[2])),
-        by = 1)
-    }
-  }
-
-  #Filtering by basin
-  if(filter_basin != "ALL")
-    indices = indices[which(basins[indices] == filter_basin)]
-
-  #Removing NOT_NAMED storms
-  indices = indices[which(names[indices] != "NOT_NAMED")]
-
-  return(indices)
-
-}
-
-
-
-
 #' Check inputs for getStorms function
 #'
 #' @noRd
@@ -220,6 +167,290 @@ checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remov
 
 
 
+
+#' Convert loi into a sf object
+#'
+#' @noRd
+#' @param loi loi input from getStorms
+#' @param basin basin input form getStorms
+#' @param projection projection used for the sf object
+#'
+#' @return list with 2 slots : loi in a sf format and logical (Whether loi is whole basin or not)
+convertLoi = function(loi, basin, projection){
+
+  if(is.null(loi)){
+    loi = basin
+    loi.is.basin = TRUE
+    ext = terra::ext(Basins[basin,1], Basins[basin,2],
+                     Basins[basin,3], Basins[basin,4])
+    poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
+                 c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
+
+    loi.sf = sf::st_polygon(list(poly))
+    loi.sf = sf::st_sfc(loi.sf, crs = projection)
+    loi.sf = sf::st_as_sf(loi.sf)
+  } else{
+    loi.is.basin = FALSE
+    if (identical(class(loi), c("SpatialPolygons"))) {
+      loi.id = "SpatialPolygons"
+      loi.sf = sf::st_as_sf(loi)
+      if (sf::st_crs(loi.sf) != projection) {
+        sf::st_transform(loi.sf, crs = projection)
+      }
+    } else if (identical(class(loi), c("sf", "data.frame"))) {
+      loi.sf = loi
+    } else if (identical(class(loi), c("numeric"))){
+      loi.df = data.frame(pt = 1,
+                          lon = loi[1],
+                          lat = loi[2])
+      loi.sf = sf::st_as_sf(loi.df, coords = c("lon", "lat"))
+    } else if (identical(class(loi), c("character"))){
+      if(loi %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL")){
+        loi = basin
+        loi.is.basin = TRUE
+        ext = terra::ext(Basins[basin,1], Basins[basin,2],
+                         Basins[basin,3], Basins[basin,4])
+
+        poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
+                     c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
+        loi.sf = sf::st_polygon(list(poly))
+        loi.sf = sf::st_sfc(loi.sf, crs = projection)
+        loi.sf = sf::st_as_sf(loi.sf)
+      }else{
+        map = rworldmap::getMap(resolution = "high")
+        id.country = which(map@data$ADMIN == loi)
+        stopifnot("invalid entry for loi" = length(id.country) > 0)
+        loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
+      }
+    }
+  }
+
+  return(list(sf = loi.sf, basin = loi.is.basin))
+}
+
+
+
+
+
+#' Retrieving the matching indices of storms
+#'
+#' @noRd
+#' @param filter_names character vector. Contains name input from the getStorms inputs
+#' @param filter_time_period numeric vector.  Contains time_period input from the getStorms inputs
+#' @param filter_basin character. Contains basin input from the getStorms inputs
+#' @param names character vector. All of the names of storms in the data base to filter
+#' @param seasons numeric 1d array. All of the seasons of storms in the data base to filter
+#' @param basins character vector. All of the basins of storms in the data base to filter
+#'
+#' @return indices of storms in the data base, that match the filter inputs
+retrieveStorms = function(filter_names, filter_time_period, filter_basin, names, seasons, basins){
+
+  if (!is.null(filter_names)) {
+    #we are interested in one or several storms given by their name and season
+    indices = c()
+    for (n in 1:length(filter_names)) {
+      seasons.id = which(seasons == filter_time_period[n])
+      storm.id = NULL
+      storm.id = which(names == filter_names[n])
+      stopifnot("Storm not found" = !is.null(storm.id))
+      id = seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]]
+      stopifnot("Storm not found" = !all(is.na(id)))
+      indices = c(indices, id)
+    }
+  } else{
+    if (length(filter_time_period) == 1) {
+      #we are interested in only one cyclonic season
+      indices = which(seasons == filter_time_period[1])
+    } else{
+      #we are interested in successive cyclonic seasons
+      indices = seq(
+        from = which(seasons == filter_time_period[1])[1],
+        to = max(which(seasons == filter_time_period[2])),
+        by = 1)
+    }
+  }
+
+  #Filtering by basin
+  if(filter_basin != "ALL")
+    indices = indices[which(basins[indices] == filter_basin)]
+
+  #Removing NOT_NAMED storms
+  indices = indices[which(names[indices] != "NOT_NAMED")]
+
+  return(indices)
+
+}
+
+
+
+
+
+#' Load data that match the indices from the database
+#'
+#' @noRd
+#' @param TC_data_base data base
+#' @param max_obs numeric. Number of maximum observation
+#' @param indices numeric vector, indices in the database of TC to extract data
+#' @param storm_names character vector, storm names previously loaded
+#' @param seasons numeric vector, seasons previously loaded
+#' @param basins character vector, basins previously loaded
+#' @param sshs numeric vector, sshs previously loaded
+#' @return A list of 4 slots which are:
+#' \itemize{
+#'   \item character vector of length dim(indices). storm names
+#'   \item numeric vector of length dim(indices). cyclonic seasons
+#'   \item character vector of length dim(indices). basins
+#'   \item numeric vector of length dim(indices). number of observations or each index
+#'   \item a data frame of dimension number of max_obs : dim(indices)
+#' }
+loadData = function(TC_data_base, max_obs, indices, storm_names, seasons, basins, sshs){
+
+  return(list(stormNames  = storm_names[indices],
+              seasons = seasons[indices],
+              basins = basins[indices],
+              numObservations = ncdf4::ncvar_get(TC_data_base, "numobs")[indices],
+              subbasin = array(ncdf4::ncvar_get(TC_data_base, "subbasin")[, indices],
+                               dim = c(max_obs,length(indices))),
+              iso.times = array(ncdf4::ncvar_get(TC_data_base, "iso_time")[, indices],
+                                dim = c(max_obs,length(indices))),
+              longitude = array(ncdf4::ncvar_get(TC_data_base, "usa_lon")[, indices],
+                                dim = c(max_obs,length(indices))),
+              latitude = array(ncdf4::ncvar_get(TC_data_base, "usa_lat")[, indices],
+                               dim = c(max_obs,length(indices))),
+              msw = array(ncdf4::ncvar_get(TC_data_base, "usa_wind")[, indices],
+                          dim = c(max_obs,length(indices))),
+              rmw = array(ncdf4::ncvar_get(TC_data_base, "usa_rmw")[, indices],
+                          dim = c(max_obs,length(indices))),
+              roci = array(ncdf4::ncvar_get(TC_data_base, "usa_roci")[, indices],
+                           dim = c(max_obs,length(indices))),
+              pres = array(ncdf4::ncvar_get(TC_data_base, "usa_pres")[, indices],
+                           dim = c(max_obs,length(indices))),
+              poci = array(ncdf4::ncvar_get(TC_data_base, "usa_poci")[, indices],
+                           dim = c(max_obs,length(indices))),
+              sshs = array(sshs,
+                           dim = c(max_obs,length(indices)))))
+
+}
+
+
+
+
+
+#' Write data to initialize a Storms object
+#'
+#' Whether or not to add storm at n° index in TC_data in the upcomoing Storm object
+#'
+#' @noRd
+#' @param storm_list list of Storm object. To further integrate in a Storms object
+#' @param storm_names list of storm name. To further integrate in a Storms object
+#' @param storm_sshs list of storm sshs. To further integrate in a Storms object
+#' @param nb_storms numeric. number of storm to already integrate in a Storms object
+#' @param TC_data TC database
+#' @param index numeric, index of the storm in the TC_data
+#' @param loi_sf_buffer sf object. Location of interest extended with buffer
+#' @param loi_is_basin logical. Whether loi is whole basin or not
+#' @param k numeric. linetype
+#' @param projection projection used for sf object
+#'
+#' @return a list with 3 slots:
+#'   \itemize{
+#'     \item list of storm objects
+#'     \item list of character
+#'     \item list of numeric
+#'     \item numeric
+#'   }
+writeStorms = function(storm_list, storm_names, storm_sshs, nb_storms,
+                       TC_data, index, loi_sf_buffer, loi_is_basin, k,
+                       projection){
+  knt2ms = 0.514
+
+  #Getting number of observations
+  numobs = TC_data$numObservations[index]
+
+  #Getting lon/lat coordinates
+  lon = TC_data$longitude[1:numobs, index]
+  lat = TC_data$latitude[1:numobs, index]
+  coords = data.frame(lon = lon, lat = lat)
+
+  #Removing invalid iso_time
+  iso.time = TC_data$iso.times[1:numobs, index]
+  list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
+  ind.iso.time = which(list.iso.time %% 3 == 0)
+  coords = coords[ind.iso.time,]
+  coords = coords[stats::complete.cases(coords),]
+  row.names(coords) = seq(1,dim(coords)[1])
+
+  #Creating sf point coordinates to intersect with loi_sf_buffer
+  pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
+  sf::st_crs(pts) = projection
+
+  if(!loi_is_basin){
+    ind = which(sf::st_intersects(pts, loi_sf_buffer, sparse = FALSE) == TRUE)
+  }else{
+    ind = 1
+  }
+
+  #Add TC only if it intersects with loi_sf_buffer
+  if (length(ind) > 0) {
+
+    nb_storms = nb_storms + 1
+
+    storm = Storm()
+    storm@name = TC_data$stormNames[index]
+    storm@season = TC_data$seasons[index]
+    storm@basin = TC_data$basins[index]
+    storm@obs.all = data.frame(
+      subbasin = TC_data$subbasin[1:numobs, index],
+      iso.time = iso.time,
+      lon = lon,
+      lat = lat,
+      msw = zoo::na.approx(round(TC_data$msw[1:numobs, index] * knt2ms), na.rm = F, rule = 2),
+      rmw = zoo::na.approx(TC_data$rmw[1:numobs, index], na.rm = F, rule = 2),
+      roci = zoo::na.approx(TC_data$roci[1:numobs, index], na.rm = F, rule = 2),
+      pres = zoo::na.approx(TC_data$pres[1:numobs, index], na.rm = F, rule = 2),
+      poci = zoo::na.approx(TC_data$poci[1:numobs, index], na.rm = F, rule = 2),
+      sshs = TC_data$sshs[1:numobs, index]
+    )
+
+    #Removing wrong approximation to clean data
+    storm@obs.all$msw[is.na(storm@obs.all$lon)] = NA
+    storm@obs.all$rmw[is.na(storm@obs.all$lon)] = NA
+    storm@obs.all$roci[is.na(storm@obs.all$lon)] = NA
+    storm@obs.all$poci[is.na(storm@obs.all$lon)] = NA
+    storm@obs.all$pres[is.na(storm@obs.all$lon)] = NA
+
+    #Wrapping longitudes from -180/180 to 0/360
+    lg = which(storm@obs.all$lon < 0)
+    storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
+
+    #Removing invalid iso_time
+    storm@obs.all = storm@obs.all[ind.iso.time,]
+    storm@numobs.all = dim(storm@obs.all)[1]
+    row.names(storm@obs.all) = seq(1,storm@numobs.all)
+    if(!loi_is_basin){
+      ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all),])[ind])
+    }else{
+      ind = seq(1,storm@numobs.all)
+    }
+
+    storm@obs = ind
+    storm@numobs = length(ind)
+    storm@lty.track = k
+    storm@sshs = max(storm@obs.all$sshs,na.rm = T)
+
+    return(list(append(storm_list, storm),
+                append(storm_names, storm@name),
+                append(storm_sshs, storm@sshs),
+                nb_storms))
+
+  }
+
+}
+
+
+
+
+
 #' Initialize a Storms object
 #'
 #' This function returns a Storms object that
@@ -277,61 +508,16 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
 
 
   #Internal variables
-  knt2ms = 0.514
   km = 1000
   wgs84 = 4326
-
 
   if (verbose)
     cat("Making buffer: ")
 
-  #Handling loi
-  if(is.null(loi)){
-    loi = basin
-    loi.is.basin = TRUE
-    ext = terra::ext(Basins[basin,1], Basins[basin,2],
-                     Basins[basin,3], Basins[basin,4])
-    poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
-                 c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
-
-    loi.sf = sf::st_polygon(list(poly))
-    loi.sf = sf::st_sfc(loi.sf, crs = wgs84)
-    loi.sf = sf::st_as_sf(loi.sf)
-  } else{
-    loi.is.basin = FALSE
-    if (identical(class(loi), c("SpatialPolygons"))) {
-      loi.id = "SpatialPolygons"
-      loi.sf = sf::st_as_sf(loi)
-      if (sf::st_crs(loi.sf) != wgs84) {
-        sf::st_transform(loi.sf, crs = wgs84)
-      }
-    } else if (identical(class(loi), c("sf", "data.frame"))) {
-      loi.sf = loi
-    } else if (identical(class(loi), c("numeric"))){
-      loi.df = data.frame(pt = 1,
-                          lon = loi[1],
-                          lat = loi[2])
-      loi.sf = sf::st_as_sf(loi.df, coords = c("lon", "lat"))
-    } else if (identical(class(loi), c("character"))){
-      if(loi %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL")){
-        loi = basin
-        loi.is.basin = TRUE
-        ext = terra::ext(Basins[basin,1], Basins[basin,2],
-                         Basins[basin,3], Basins[basin,4])
-
-        poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
-                     c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
-        loi.sf = sf::st_polygon(list(poly))
-        loi.sf = sf::st_sfc(loi.sf, crs = wgs84)
-        loi.sf = sf::st_as_sf(loi.sf)
-      }else{
-        map = rworldmap::getMap(resolution = "high")
-        id.country = which(map@data$ADMIN == loi)
-        stopifnot("invalid entry for loi" = length(id.country) > 0)
-        loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
-      }
-    }
-  }
+  #Converting loi
+  args = convertLoi(loi, basin, wgs84)
+  loi.sf = args$sf
+  loi.is.basin = args$basin
 
   #Handling time line for Fiji
   sf::st_crs(loi.sf) = wgs84
@@ -381,47 +567,15 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   if (verbose)
     cat("Done\nLoading data: ")
 
-
   #Getting remaining data associated with indices
-  storm.names = storm.names[indices]
-  num.observations = ncdf4::ncvar_get(TC.data.base, "numobs")[indices]
-  basins = basins[indices]
-  subbasin = array(ncdf4::ncvar_get(TC.data.base, "subbasin")[, indices],
-                   dim = c(dim,length(indices)))
-  cyclonic.seasons = cyclonic.seasons[indices]
-  iso.times = array(ncdf4::ncvar_get(TC.data.base, "iso_time")[, indices],
-                    dim = c(dim,length(indices)))
-  longitude = array(ncdf4::ncvar_get(TC.data.base, "usa_lon")[, indices],
-                    dim = c(dim,length(indices)))
-  latitude = array(ncdf4::ncvar_get(TC.data.base, "usa_lat")[, indices],
-                   dim = c(dim,length(indices)))
-  msw = array(round(ncdf4::ncvar_get(TC.data.base, "usa_wind")[, indices] * knt2ms),
-              dim = c(dim,length(indices)))
-  rmw = array(ncdf4::ncvar_get(TC.data.base, "usa_rmw")[, indices],
-              dim = c(dim,length(indices)))
-  roci = array(ncdf4::ncvar_get(TC.data.base, "usa_roci")[, indices],
-               dim = c(dim,length(indices)))
-  pres = array(ncdf4::ncvar_get(TC.data.base, "usa_pres")[, indices],
-               dim = c(dim,length(indices)))
-  poci = array(ncdf4::ncvar_get(TC.data.base, "usa_poci")[, indices],
-               dim = c(dim,length(indices)))
-  sshs = array(sshs, dim = c(dim,length(indices)))
-
-
-  #Initializing Storms object
-  sts = Storms()
-  sts@time.period = time_period
-  sts.names = list()
-  sts.sshs = list()
-  sts@nb.storms = 0
-  sts@buffer = max_dist
-
-  storm.list = list()
-  k = 2 #initializing line type
-  count = 1 #initializing count for progression bar
+  TC.data = loadData(TC.data.base, dim, indices, storm.names, cyclonic.seasons, basins, sshs)
+  ncdf4::nc_close(TC.data.base)
 
   if(verbose)
     cat("Done\n")
+
+
+  count = 1 #initializing count for progression bar
 
   if (verbose & length(indices) > 1) {
     cat("Gathering storms \n")
@@ -432,116 +586,58 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
 
   if(length(indices) > 0){
 
+    storm.list = list()
+    storm.names = list()
+    storm.sshs = list()
+    nb.storms = 0
+    k = 2 #initializing line type
+
     for (i in 1:length(indices)) {
 
-      numobs = num.observations[i]
-      lon = longitude[1:numobs, i]
-      lat = latitude[1:numobs, i]
-      coords = data.frame(lon = lon, lat = lat)
+      sts.output = writeStorms(storm_list = storm.list,
+                               storm_names = storm.names,
+                               storm_sshs = storm.sshs,
+                               nb_storms = nb.storms,
+                               TC_data = TC.data,
+                               index = i,
+                               loi_sf_buffer = loi.sf.buffer,
+                               loi_is_basin = loi.is.basin,
+                               k = k,
+                               projection = wgs84)
 
-
-
-      #Removing invalid iso_time
-      iso.time = iso.times[1:numobs, i]
-      list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
-      ind.iso.time = which(list.iso.time %% 3 == 0)
-      coords = coords[ind.iso.time,]
-      coords = coords[stats::complete.cases(coords),]
-      row.names(coords) = seq(1,dim(coords)[1])
-
-
-
-      #Creating sf point coordinates to intersect with loi.sf.buffer
-      pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
-      sf::st_crs(pts) = wgs84
-
-      if(!loi.is.basin){
-        ind = which(sf::st_intersects(pts,
-                                      loi.sf.buffer,
-                                      sparse = FALSE) == TRUE)
-
-      }else{
-        ind = 1
-      }
-
-
-      #Add TC only if it intersects with loi.sf.buffer
-      if (length(ind) > 0) {
-
-        sts@nb.storms = sts@nb.storms + 1
-
-        storm = Storm()
-        storm@name = storm.names[i]
-        storm@season = cyclonic.seasons[i]
-        storm@basin = basins[i]
-        storm@obs.all = data.frame(
-          subbasin = subbasin[1:numobs, i],
-          iso.time = iso.time,
-          lon = lon,
-          lat = lat,
-          msw = zoo::na.approx(round(msw[1:numobs, i]), na.rm = F, rule = 2),
-          rmw = zoo::na.approx(rmw[1:numobs, i], na.rm = F, rule = 2),
-          roci = zoo::na.approx(roci[1:numobs, i], na.rm = F, rule = 2),
-          pres = zoo::na.approx(pres[1:numobs, i], na.rm = F, rule = 2),
-          poci = zoo::na.approx(poci[1:numobs, i], na.rm = F, rule = 2),
-          sshs = sshs[1:numobs, i]
-        )
-
-        #Removing wrong approximation to clean data
-        storm@obs.all$msw[is.na(storm@obs.all$lon)] = NA
-        storm@obs.all$rmw[is.na(storm@obs.all$lon)] = NA
-        storm@obs.all$roci[is.na(storm@obs.all$lon)] = NA
-        storm@obs.all$poci[is.na(storm@obs.all$lon)] = NA
-        storm@obs.all$pres[is.na(storm@obs.all$lon)] = NA
-
-        #Wrapping longitudes from -180/180 to 0/360
-        lg = which(storm@obs.all$lon < 0)
-        storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
-
-        #Removing invalid iso_time
-        storm@obs.all = storm@obs.all[ind.iso.time,]
-        storm@numobs.all = dim(storm@obs.all)[1]
-        row.names(storm@obs.all) = seq(1,storm@numobs.all)
-        if(!loi.is.basin){
-          ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all),])[ind])
-        }else{
-          ind = seq(1,storm@numobs.all)
-        }
-
-        storm@obs = ind
-        storm@numobs = length(ind)
-        storm@lty.track = k
-        storm@sshs = max(storm@obs.all$sshs,na.rm = T)
-        storm.list = append(storm.list, storm)
-        k = k + 1
-        sts.names = append(sts.names, storm@name)
-        sts.sshs = append(sts.sshs, storm@sshs)
-      }
+      storm.list = sts.output[[1]]
+      storm.names = sts.output[[2]]
+      storm.sshs = sts.output[[3]]
+      nb.storms = sts.output[[4]]
 
 
       if (verbose & length(indices) > 1)
         utils::setTxtProgressBar(pb, count)
 
       count = count + 1
+      k = k + 1
     }
 
     if (verbose & length(indices) > 1)
       close(pb)
 
+    #Initializing Storms object
+    sts = Storms()
+    sts@time.period = time_period
+    sts@nb.storms = nb.storms
+    sts@buffer = max_dist
+    sts@names = unlist(storm.names)
+    sts@sshs = unlist(storm.sshs)
+    sts@basin = basin
+    sts@loi.basin = loi.is.basin
+    sts@spatial.loi = loi.sf
+    sts@spatial.loi.buffer = loi.sf.buffer
+    sts@data = storm.list
+    names(sts@data) = sts@names
+
+    return(sts)
   }
 
-  ncdf4::nc_close(TC.data.base)
-
-  sts@names = unlist(sts.names)
-  sts@sshs = unlist(sts.sshs)
-  sts@basin = basin
-  sts@loi.basin = loi.is.basin
-  sts@spatial.loi = loi.sf
-  sts@spatial.loi.buffer = loi.sf.buffer
-  sts@data = storm.list
-  names(sts@data) = sts@names
-
-  return(sts)
 }
 
 
