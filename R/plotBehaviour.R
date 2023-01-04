@@ -2,6 +2,62 @@
 
 
 
+#' Check inputs for plotBehaviour function
+#'
+#' @noRd
+#' @param sts Storms object
+#' @param raster_product Spatraster
+#' @param xlim numeric vector
+#' @param ylim numeric vector
+#' @param labels logical
+#' @param by numeric
+#' @param pos numeric
+#' @return NULL
+checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos){
+
+  #Checking sts input
+  stopifnot("no data to plot" = !missing(sts))
+
+  #Checking raster_product
+  stopifnot("no data to plot" = !missing(raster_product))
+
+  #Checking xlim input
+  if (!is.null(xlim)) {
+    stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
+    stopifnot("xlim must length 2" = length(xlim) == 2)
+    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
+                xlim <= 360)
+  }
+
+  #Checking ylim input
+  if (!is.null(ylim)) {
+    stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
+    stopifnot("ylim must length 2" = length(ylim) == 2)
+    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
+                ylim <= 90)
+  }
+
+  #Checking labels inputs
+  stopifnot("labels must be logical" = identical(class(labels), "logical"))
+
+  #Checking by inputs
+  stopifnot("by must be numeric" = identical(class(by),"numeric"))
+  stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
+  stopifnot("by must length 1" = length(by) == 1)
+
+  #Checking pos inputs
+  stopifnot("pos must be numeric" = identical(class(pos),"numeric"))
+  stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
+  stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
+  stopifnot("pos must length 1" = length(pos) == 1)
+
+}
+
+
+
+
+
+
 #'Plot rasterize informations below the associated track of a storm
 #'
 #'This function plots a rasterize product (Maximum Sustained Wind, Power
@@ -52,12 +108,9 @@
 #'@export
 plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels = FALSE,
                          by = 8, pos = 3){
-  #Checking sts input
-  stopifnot("no data to plot" = !missing(sts))
 
-  #Checking raster_product
-  stopifnot("no data to plot" = !missing(raster_product))
 
+  checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos)
 
   name = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
   product = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
@@ -65,38 +118,12 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
   if (!(name %in% sts@names))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
-
-  #Checking xlim input
-  if (!is.null(xlim)) {
-    stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
-    stopifnot("xlim must length 2" = length(xlim) == 2)
+  if (!is.null(xlim))
     xlim = xlim[order(xlim)]
-    stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
-                xlim <= 360)
-  }
 
-  #Checking ylim input
-  if (!is.null(ylim)) {
-    stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
-    stopifnot("ylim must length 2" = length(ylim) == 2)
+  if (!is.null(ylim))
     ylim = ylim[order(ylim)]
-    stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
-                ylim <= 90)
-  }
 
-  #Checking labels inputs
-  stopifnot("labels must be logical" = identical(class(labels), "logical"))
-
-  #Checking by inputs
-  stopifnot("by must be numeric" = identical(class(by),"numeric"))
-  stopifnot("by must be as integer" = ds4psy::is_wholenumber(by))
-  stopifnot("by must length 1" = length(by) == 1)
-
-  #Checking pos inputs
-  stopifnot("pos must be numeric" = identical(class(pos),"numeric"))
-  stopifnot("pos must be as integer" = ds4psy::is_wholenumber(pos))
-  stopifnot("pos must be between 1 and 4" = pos >= 1 & pos <= 4)
-  stopifnot("pos must length 1" = length(pos) == 1)
 
 
   #Handling spatial extent
