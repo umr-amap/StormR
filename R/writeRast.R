@@ -2,6 +2,38 @@
 
 
 
+#' Check inputs for writeRast function
+#'
+#' @noRd
+#' @param rast SpatRaster
+#' @param format character
+#' @param filename character
+#' @param path character
+#'
+#' @return NULL
+checkInputsWr = function(rast, format, filename, path){
+
+  #Check rast input
+  stopifnot("no data to write" = !missing(rast))
+
+  #Check format input
+  stopifnot("Invalid format" = format %in% c(".tiff", ".nc"))
+  stopifnot("Only one format can be chosen" = length(format) == 1)
+
+  #Check filenames
+  if(!is.null(filename)){
+    stopifnot("filename must be characters" = identical(class(filename), "character"))
+  }
+
+  #Check path
+  stopifnot("path must be characters" = identical(class(path), "character"))
+
+}
+
+
+
+
+
 #' Save raster(s) in the desired format
 #'
 #' This function writes SpatRast raster(s) in the given format among Geotiff or
@@ -32,20 +64,8 @@
 #' @export
 writeRast = function(rast, format = ".tiff", filename = NULL, path = "./"){
 
-  #Check rast input
-  stopifnot("no data to write" = !missing(rast))
 
-  #Check format input
-  stopifnot("Invalid format" = format %in% c(".tiff", ".nc"))
-  stopifnot("Only one format can be chosen" = length(format) == 1)
-
-  #Check filenames
-  if(!is.null(filename)){
-    stopifnot("filename must be characters" = identical(class(filename), "character"))
-  }
-
-  #Check path
-  stopifnot("path must be characters" = identical(class(path), "character"))
+  checkInputsWr(rast, format, filename, path)
 
   name = strsplit(names(rast), split = "_", fixed = TRUE)[[1]][1]
   product = strsplit(names(rast), split = "_", fixed = TRUE)[[1]][2]
