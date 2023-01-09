@@ -86,13 +86,11 @@ checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos){
 #'
 #' @examples
 #' #Plot MSW analytic raster for PAM 2015 in Vanuatu
-#' pam_msw = terra::rast(system.file("extdata", "PAM_MSW.tiff",
-#'                                   package = "StormR"))
+#' pam_msw = terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
 #' plotBehaviour(pam, pam_msw)
 #'
 #' #Plot PDI analytic raster for ERICA 2003 in New Caledonia
-#' erica_pdi = terra::rast(system.file("extdata", "ERICA_PDI.tiff",
-#'                                     package = "StormR"))
+#' erica_pdi = terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
 #' plotBehaviour(sts_nc, erica_pdi)
 #'
 #' #Plot PDI analytic raster for NIRAN 2021 in New Caledonia
@@ -101,8 +99,7 @@ checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos){
 #' plotBehaviour(sts_nc, niran_pdi)
 #'
 #' #Plot 2D wind speed structure for ERICA 2003 at observation 93
-#' erica_profile93 = terra::rast(system.file("extdata", "ERICA_profile93.tiff",
-#'                                           package = "StormR"))
+#' erica_profile93 = terra::rast(system.file("extdata", "ERICA_profile93.tiff", package = "StormR"))
 #' plotBehaviour(sts_nc, erica_profile93, labels = TRUE)
 #'
 #'@export
@@ -118,12 +115,6 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
   if (!(name %in% sts@names))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
-  if (!is.null(xlim))
-    xlim = xlim[order(xlim)]
-
-  if (!is.null(ylim))
-    ylim = ylim[order(ylim)]
-
 
 
   #Handling spatial extent
@@ -133,10 +124,12 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
   ymax = terra::ext(raster_product)$ymax
 
   if (!is.null(xlim)) {
+    xlim = xlim[order(xlim)]
     xmin = xlim[1]
     xmax = xlim[2]
   }
   if (!is.null(ylim)) {
+    ylim = ylim[order(ylim)]
     ymin = ylim[1]
     ymax = ylim[2]
   }
@@ -230,9 +223,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
     plotLabels(sts@data[[name]],by,pos)
 
   if(labels & stringr::str_detect(product,"profile")){
-    print(product)
     ind = as.numeric(stringr::str_sub(product,8,nchar(product)))
-    print(ind)
     graphics::text(
       sts@data[[name]]@obs.all$lon[ind],
       sts@data[[name]]@obs.all$lat[ind],

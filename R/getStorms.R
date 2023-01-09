@@ -225,9 +225,35 @@ convertLoi = function(loi, basin, projection){
     }
   }
 
+  #Handling time line for Fiji
+  sf::st_crs(loi.sf) = projection
+  loi.sf = sf::st_shift_longitude(loi.sf)
+
   return(list(sf = loi.sf, basin = loi.is.basin))
 }
 
+
+
+
+#' make loi buffer
+#'
+#' @noRd
+#' @param loi sf object. loi input from getStorms already convert into sf object
+#' @param buffer numeric. Buffer size to use
+#' @param is_basin logical. Whether the loi represents the whole basin. In this case
+#' the loi is not extented.
+#'
+#' @return list with 2 slots : loi in a sf format and logical (Whether loi is whole basin or not)
+makeBuffer = function(loi, buffer, is_basin){
+  if (!is_basin) {
+    loi.buffer = sf::st_buffer(loi, dist = buffer)
+    loi.buffer = sf::st_shift_longitude(loi.buffer)
+  } else{
+    loi.buffer = loi
+  }
+
+  return(loi.buffer)
+}
 
 
 
@@ -359,7 +385,7 @@ loadData = function(TC_data_base, max_obs, indices, storm_names, seasons, basins
 #'     \item list of numeric
 #'     \item numeric
 #'   }
-writeStorms = function(storm_list, storm_names, storm_sshs, nb_storms,
+writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
                        TC_data, index, loi_sf_buffer, loi_is_basin, k,
                        projection){
   knt2ms = 0.514
@@ -379,6 +405,7 @@ writeStorms = function(storm_list, storm_names, storm_sshs, nb_storms,
   coords = coords[ind.iso.time,]
   coords = coords[stats::complete.cases(coords),]
   row.names(coords) = seq(1,dim(coords)[1])
+
 
   #Creating sf point coordinates to intersect with loi_sf_buffer
   pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
@@ -519,17 +546,8 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   loi.sf = args$sf
   loi.is.basin = args$basin
 
-  #Handling time line for Fiji
-  sf::st_crs(loi.sf) = wgs84
-  loi.sf = sf::st_shift_longitude(loi.sf)
-
   #Handling buffer
-  if (!loi.is.basin) {
-    loi.sf.buffer = sf::st_buffer(loi.sf, dist = max_dist * km)
-    loi.sf.buffer = sf::st_shift_longitude(loi.sf.buffer)
-  } else{
-    loi.sf.buffer = loi.sf
-  }
+  loi.sf.buffer = makeBuffer(loi.sf, max_dist * km, loi.is.basin)
 
 
   if (verbose)
@@ -575,10 +593,9 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
     cat("Done\n")
 
 
-  count = 1 #initializing count for progression bar
-
   if (verbose & length(indices) > 1) {
     cat("Gathering storms \n")
+    count = 1 #initializing count for progression bar
     pb = utils::txtProgressBar(min = count,
                                max = length(indices),
                                style = 3)
@@ -594,7 +611,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
 
     for (i in 1:length(indices)) {
 
-      sts.output = writeStorms(storm_list = storm.list,
+      sts.output = writeStorm(storm_list = storm.list,
                                storm_names = storm.names,
                                storm_sshs = storm.sshs,
                                nb_storms = nb.storms,
@@ -605,16 +622,19 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                                k = k,
                                projection = wgs84)
 
+
       storm.list = sts.output[[1]]
       storm.names = sts.output[[2]]
       storm.sshs = sts.output[[3]]
       nb.storms = sts.output[[4]]
 
 
-      if (verbose & length(indices) > 1)
-        utils::setTxtProgressBar(pb, count)
 
-      count = count + 1
+      if (verbose & length(indices) > 1){
+        utils::setTxtProgressBar(pb, count)
+        count = count + 1
+      }
+
       k = k + 1
     }
 
