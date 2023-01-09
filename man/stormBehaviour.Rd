@@ -90,9 +90,10 @@ computed as follow: stormName_profileIndex
 \item If \code{data.frame}, computed product for each coordinates are returned
 through a name numeric vector of dimension
 \itemize{
-\item (number of observations ,number of point coordinates), if product == "MSW"
-\item (1 ,number of point coordinates), if product == "PDI"
-\item (6,number of point coordinates), if product == "Exposure"
+\item (number of observations:number of point coordinates), if product == "MSW".
+Correspond in fact of time series of wind speed along every observations
+\item (1:number of point coordinates), if product == "PDI"
+\item (6:number of point coordinates), if product == "Exposure"
 }
 }
 }
