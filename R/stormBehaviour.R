@@ -11,8 +11,7 @@
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #'
 #' @returns Radius of Maximum Wind (km)
-getRmw = function(msw,
-                   lat) {
+getRmw = function(msw, lat) {
   return (46.4 * exp(-0.0155 * msw + 0.0169 * abs(lat)))
 }
 
@@ -32,13 +31,8 @@ getRmw = function(msw,
 #'
 #' @returns radial wind speed value (m/s) according to Willoughby model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Willoughby_profile = function(r,
-                              rmw,
-                              msw,
-                              lat
-                              ){
+Willoughby_profile = function(r, rmw, msw, lat){
 
-  rmw = rep(rmw, length(r))
   if (r >= rmw) {
     xx1 = 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
     xx2 = 25
@@ -50,12 +44,11 @@ Willoughby_profile = function(r,
     vr = msw * abs((r / rmw) ^ nn)
   }
 
-
   return(vr)
 }
 
 #Vectorize version of the above model
-Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
+Willoughby = Vectorize(Willoughby_profile, vectorize.args = "r")
 
 
 
@@ -74,12 +67,7 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #' @returns radial wind speed value (m/s) according to Holland 80 model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Holland80_profile = function(r,
-                            rmw,
-                            msw,
-                            pc,
-                            poci,
-                            lat){
+Holland80_profile = function(r, rmw, msw, pc, poci, lat){
 
   rho = 1.15  #air densiy
   f = 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
@@ -87,13 +75,12 @@ Holland80_profile = function(r,
 
   vr = sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
 
-
   return(vr)
 
 }
 
 #Vectorize version of the above model
-Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
+Holland80 = Vectorize(Holland80_profile, vectorize.args = "r")
 
 
 
@@ -101,11 +88,10 @@ Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 #' Parametrization of surface drag coefficient according to Wang, G. et al. 2022
 #'
-#'@noRd
+#' @noRd
 #' @param vr numeric. Radial wind speed (m/s)
 #'
 #' @return Associated surface drag coefficient
-
 compute_Cd = function(vr){
   if(vr <= 18){
     return(0)
@@ -119,7 +105,8 @@ compute_Cd = function(vr){
 }
 
 #Vectorize version of the above function
-rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
+rasterizeCd = Vectorize(compute_Cd, vectorize.args = "vr")
+
 
 
 
@@ -195,6 +182,801 @@ checkInputsSb = function(sts, product, method, asymmetry,
 
 
 
+#' Generate raster template for the computations
+#'
+#' @noRd
+#' @param buffer sf object. LOI + buffer extention
+#' @param res numeric. Space resolution (km) for the template
+#'
+#' @return a SpatRaster
+makeTemplateRaster = function(buffer, res){
+
+  #Derivating the raster template
+  ext = terra::ext(sf::st_bbox(buffer)$xmin,
+                    sf::st_bbox(buffer)$xmax,
+                    sf::st_bbox(buffer)$ymin,
+                    sf::st_bbox(buffer)$ymax)
+
+  ras = terra::rast(
+    xmin = ext$xmin,
+    xmax = ext$xmax,
+    ymin = ext$ymin,
+    ymax = ext$ymax,
+    vals = NA
+  )
+  #Projection in Mercator
+  ras = terra::project(ras, "EPSG:3857")
+  #Resampling in new resolution in Mercator
+  template = ras
+  terra::res(template) = c(res * 1000, res * 1000)
+  template = terra::resample(ras, template)
+  #Reprojection in lon/lat
+  template = terra::project(template, "EPSG:4326")
+
+  #Handling time line crossing
+  if(terra::ext(template)$xmin < 0)
+    template = terra::rast(resolution = terra::res(template), extent = ext)
+
+  return(template)
+
+}
+
+
+
+
+
+#' Get indices for computations
+#'
+#' Whether to get only observations inside LOI + buffer extention (+ offset) or
+#' getting all the observations
+#'
+#' @noRd
+#' @param st Storm Object
+#' @param format character. format input from stormBehaviour
+#' @param focus_loi logical. logical input from stormBehaviour
+#'
+#' @return numeric vector gathering the indices of observation to use to perform
+#' the further computations
+getIndices = function(st, format, focus_loi){
+
+  #Handling indices inside loi.buffer or not
+  if (focus_loi) {
+    #Use observations within the loi for the computations
+    ind = seq(st@obs[1], st@obs[st@numobs], 1)
+
+    if(!identical(class(format),"data.frame")){
+      if(format == "analytic"){
+        #Handling indices and offset (2 outside of loi at entry and exit)
+        if (st@obs[1] >= 3) {
+          ind = c(st@obs[1] - 2, st@obs[1] - 1, ind)
+
+        } else if (st@obs[1] == 2) {
+          ind = c(st@obs[1] - 1, ind)
+        }
+
+        if (st@obs[st@numobs] <= st@numobs.all - 2) {
+          ind = c(ind, st@obs[st@numobs] + 1, st@obs[st@numobs] + 2)
+
+        } else if (st@obs[st@numobs] == st@numobs.all - 1) {
+          ind = c(ind, st@obs[st@numobs] + 1)
+        }
+      }
+    }
+  } else{
+    #Use all observations available for the computations
+    ind = seq(1, st@numobs.all, 1)
+  }
+
+  return(ind)
+}
+
+
+
+
+
+#' Get data associated with one storm to perform further computations
+#'
+#' @noRd
+#' @param st Storm object
+#' @param indices numeric vector extracted from getIndices
+#' @param asymmetry character. Which version of asymmetry. If "V2", it substract
+#' velocity of storm to maximum sustained windspeed for the further computations
+#' @param empirical_rmw logical. Whether to use rmw from the data or to compute them
+#' according to getRmw function
+#'
+#' @return a data.frame of dimension length(indices) : 10. Columns are
+#'  \itemize{
+#'    \item lon: numeric. Longitude coordinates (degree)
+#'    \item lat: numeric. Latitude coordinates (degree)
+#'    \item msw: numeric. Maximum Sustained Wind (m/s)
+#'    \item rmw: numeric. Radius of Maximum Wind (km)
+#'    \item roci: numeric. Radius of Outermost Closed Isobar (km)
+#'    \item pc: numeric. Pressure at the center of the storm (mb)
+#'    \item poci: numeric. Pressure of Outermost Closed Isobar (mb)
+#'    \item storm.speed: numeric. Velocity of the storm (m/s)
+#'    \item vx.deg: numeric. Velocity of the speed in the x direction (deg/h)
+#'    \item vy.deg: numeric Velocity of the speed in the y direction (deg/h)
+#'  }
+getData = function(st, indices, asymmetry, empirical_rmw){
+
+  data = data.frame(
+    lon = st@obs.all$lon[indices],
+    lat = st@obs.all$lat[indices],
+    msw = st@obs.all$msw[indices],
+    rmw = st@obs.all$rmw[indices],
+    roci = st@obs.all$roci[indices],
+    pc = st@obs.all$pres[indices],
+    poci = st@obs.all$poci[indices]
+  )
+  data = data[stats::complete.cases(data), ]
+  data$storm.speed = NA
+  data$vx.deg = NA
+  data$vy.deg = NA
+
+
+  #Computing storm velocity (m/s)
+  for(i in 1:(dim(data)[1]-1)){
+    data$storm.speed[i] = terra::distance(x = cbind(data$lon[i],data$lat[i]),
+                                         y = cbind(data$lon[i+1],data$lat[i+1]),
+                                         lonlat = T) * (0.001 / 3) / 3.6
+
+    #component wise velocity in both x and y direction (degree/h)
+    data$vx.deg[i] = (data$lon[i + 1] - data$lon[i]) / 3
+    data$vy.deg[i] = (data$lat[i + 1] - data$lat[i]) / 3
+  }
+
+  if(asymmetry == "V2")
+    data$msw = data$msw - data$storm.speed
+
+  if(empirical_rmw)
+    data$rmw = getRmw(data$msw, data$lat)
+
+  return(data)
+
+}
+
+
+
+
+
+#' Compute number of step to perform for the further computations
+#'
+#' (only if verbose == T)
+#'
+#' @noRd
+#' @param format format input from stormBehaviour
+#' @param last_obs numeric. Indicates the number of observations to further
+#' interpolate and compute results
+#' @param dt numeric. time step
+#'
+#' @return
+getNbStep = function(format, last_obs, dt){
+
+  if(format == "analytic"){
+    nb_step = dt * last_obs - last_obs
+  }else if (format == "profiles"){
+    nb_step = last_obs
+  }
+
+  return(nb_step)
+}
+
+
+
+
+#' Interpolate a variable from the data to perfom further computations
+#'
+#' @noRd
+#' @param var numeric vector from data extracted from getData
+#' @param dt numeric. Time step
+#' @param index numeric. Starting index in which var should be interpolated
+#'
+#' @return numeric vector of length d. Interpolated var
+interpolateVariable = function(var, dt, index){
+
+  res = rep(NA, dt)
+  res[1] = var[index]
+  res[dt] = var[index + 1]
+  res = zoo::na.approx(res)
+
+  return(res)
+
+}
+
+
+
+
+#' Interpolate a set of data associated with one storm to perform further computations
+#'
+#' @noRd
+#' @param data data object
+#' @param index numeric. Index of the storm to interpolate data in the overall
+#' dataset generated with getData function
+#' @param dt numeric. time step
+#'
+#' @return a data.frame of dimension  dt: 10. Interpolated data starting at observations
+#' index until index + dt. Columns are
+#'  \itemize{
+#'    \item lon: numeric. Longitude coordinates (degree)
+#'    \item lat: numeric. Latitude coordinates (degree)
+#'    \item msw: numeric. Maximum Sustained Wind (m/s)
+#'    \item rmw: numeric. Radius of Maximum Wind (km)
+#'    \item roci: numeric. Radius of Outermost Closed Isobar (km)
+#'    \item pc: numeric. Pressure at the center of the storm (mb)
+#'    \item poci: numeric. Pressure of Outermost Closed Isobar (mb)
+#'    \item storm.speed: numeric. Velocity of the storm (m/s)
+#'    \item vx.deg: numeric. Velocity of the speed in the x direction (deg/h)
+#'    \item vy.deg: numeric Velocity of the speed in the y direction (deg/h)
+#'  }
+getInterpolatedData = function(data, index, dt){
+
+  df = data.frame(lon = interpolateVariable(data$lon, dt, index),
+                  lat = interpolateVariable(data$lat, dt, index),
+                  msw = interpolateVariable(data$msw, dt, index),
+                  rmw = interpolateVariable(data$rmw, dt, index),
+                  roci = interpolateVariable(data$roci, dt, index),
+                  pc  = interpolateVariable(data$pc, dt, index),
+                  poci = interpolateVariable(data$poci, dt, index),
+                  vx.deg = rep(data$vx.deg[index], dt),
+                  vy.deg = rep(data$vy.deg[index], dt),
+                  storm.speed = rep(data$storm.speed[index], dt))
+
+  return(df)
+
+}
+
+
+
+
+
+#' Generate raster template to compute wind speed according to the different models
+#'
+#' @noRd
+#' @param raster_template SpatRaster. Raster generated with makeTemplateRaster function
+#' @param buffer numeric. Buffer size in degree
+#' @param data data.frame. Data generated with getInterpolatedData function
+#' @param index numeric. Index of interpolated observation in data to use to generate raster
+#'
+#' @return SpatRaster
+makeTemplateModel = function(raster_template, buffer, data, index){
+
+  template = terra::rast(xmin = data$lon[index] - buffer,
+                         xmax = data$lon[index] + buffer,
+                         ymin = data$lat[index] - buffer,
+                         ymax = data$lat[index] + buffer,
+                         res = terra::res(raster_template),
+                         vals = NA)
+  terra::origin(template) = terra::origin(raster_template)
+
+  return(template)
+
+}
+
+
+
+
+
+#' Version 1 of asymmetry (Boose et al. 2001)
+#'
+#' @noRd
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
+#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
+#' @param basin character. Basin
+#'
+#' @return numeric vector. Orientation of wind speed (rad) at each (x,y) position
+asymmetryV1 = function(x, y, vx, vy, basin){
+
+  if(basin %in% c("SA", "SP", "SI")){
+    #Southern Hemisphere, t is counterclockwise
+    res = atan2(vy,vx) - atan2(y,x) + pi
+
+  }else{
+    #Northern Hemisphere, t is clockwise
+    res = atan2(y,x) - atan2(vy,vx)  + pi
+  }
+
+  return(res)
+}
+
+
+
+
+
+#' Version 2 of asymmetry
+#'
+#' @noRd
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
+#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
+#' @param basin character. Basin
+#'
+#' @return numeric vector. Orientation of wind speed (rad) at each (x,y) position
+asymmetryV2 = function(x, y, vx, vy, basin){
+
+  if(basin %in% c("SA", "SP", "SI")){
+    #Southern Hemisphere, t is clockwise
+    res = acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+
+  }else{
+    #Northern Hemisphere, t is counterclockwise
+    res = acos((- y * vx + x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+  }
+
+  return(res)
+}
+
+
+
+
+
+#' Compute wind profile according to the selected method and asymmetry
+#'
+#' @noRd
+#' @param method character. method input form stormBehaviour
+#' @param asymmetry character. asymmetry input from stormBehviour
+#' @param format format input from stormBehaviour
+#' @param basin numeric. basin name to choose wind orientation
+#' @param data data.frame. Data generated with getInterpolatedData function
+#' @param index numeric. Index of interpolated observation in data to use for
+#' the computations
+#' @param dist_m numeric array. Distance in meter from the eye of the storm for
+#' each coordinate of the raster_template_model (or points if format is a data frame)
+#' @param x numeric array. Distance in degree from the eye of storm in the x direction
+#' @param y numeric array. Distance in degree from the eye of storm in the y direction
+#'
+#' @return
+#'   \itemize{
+#'     \item If format is a data frame, the wind speed values at each observation
+#'     \item Otherwise, SpatRaster that contains the wind speed profile at observations index of data
+#'  }
+computeWindProfile = function(method, asymmetry, format, basin, data, index, dist_m, x, y){
+
+
+  if(identical(class(format),"data.frame"))
+    dist_m = dist_m[,index]
+
+
+  #Computing sustained wind according to the input model
+  if (method == "Willoughby") {
+    wind = Willoughby(
+      msw = data$msw[index],
+      lat = data$lat[index],
+      r = dist_m * 0.001,
+      rmw = data$rmw[index]
+    )
+
+  }else if (method == "Holland80") {
+    wind = Holland80(
+      r = dist_m * 0.001,
+      rmw = data$rmw[index],
+      msw = data$msw[index],
+      pc = data$pc[index] * 100,
+      poci = data$poci[index] * 100,
+      lat = data$lat[index]
+    )
+  }
+
+  #Adding asymmetry
+  if (asymmetry == "V1") {
+    #Boose version
+    angle = asymmetryV1(x, y, data$vx.deg[index], data$vy.deg[index], basin)
+    wind = wind - (1 - sin(angle))*(data$storm.speed[index]/3.6)/2
+
+  } else if(asymmetry == "V2"){
+    angle = asymmetryV2(x, y, data$vx.deg[index], data$vy.deg[index], basin)
+    wind = wind + cos(angle)* data$storm.speed[index]
+  }
+
+  return(wind)
+
+}
+
+
+
+
+
+#' Stack a computed layer in a raster stack
+#'
+#' @noRd
+#' @param stack list of SpatRaster. where to stack the layer
+#' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
+#' @param raster_wind SpatRaster. Layer to add to the stack
+#' @param is_basin logical. Whether loi represents the whole basin or not
+#' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
+#'
+#' @return list of SpatRaster
+stackRaster = function(stack, raster_template, raster_wind, is_basin, extent){
+
+  ras = raster_template
+  if(is_basin)
+    ras = terra::crop(ras, extent)
+
+  ras = terra::merge(ras, raster_wind)
+  ras = terra::crop(ras, extent)
+
+  return(c(stack, ras))
+}
+
+
+
+
+
+#' Stack a computed PDI layer in a PDI raster stack
+#'
+#' @noRd
+#' @param stack list of SpatRaster. where to stack the layer
+#' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
+#' @param raster_wind SpatRaster. Layer to add to the stack
+#' @param is_basin logical. Whether loi represents the whole basin or not
+#' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
+#'
+#' @return list of SpatRaster
+stackRasterPDI = function(stack, raster_template, raster_wind, is_basin, extent){
+
+  raster.cd = raster_wind
+  terra::values(raster.cd) = rasterizeCd(terra::values(raster_wind))
+
+  rho = 0.001
+  #Raising to power 3
+  raster_wind = raster_wind ** 3
+  #Applying both rho and surface drag coefficient
+  raster_wind = raster_wind * rho * raster.cd
+
+  return(stackRaster(stack, raster_template, raster_wind, is_basin, extent))
+
+}
+
+
+
+
+
+#' Stack a computed Exposure layer in a Exposure raster stack
+#'
+#' @noRd
+#' @param stack list of SpatRaster. where to stack the layer
+#' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
+#' @param raster_wind SpatRaster. Layer to add to the stack
+#' @param is_basin logical. Whether loi represents the whole basin or not
+#' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
+#'
+#' @return list of SpatRaster
+stackRasterExposure = function(stack, raster_template, raster_wind, is_basin, extent){
+
+  for(c in 2:6){
+    raster_c_model = raster_wind
+    terra::values(raster_c_model) = NA
+    ind = which(terra::values(raster_wind) >= sshs[c] &
+                  terra::values(raster_wind) < sshs[c+1])
+    raster_c_model[ind] = 1
+    stack = stackRaster(stack, raster_template, raster_c_model, is_basin, extent)
+  }
+
+  return(stack)
+}
+
+
+
+
+
+#' Select the stack function to use depending on the product
+#'
+#' @noRd
+#' @param product character. Product input from stormBehaviour
+#' @param stack list of SpatRaster. where to stack the layer
+#' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
+#' @param raster_wind SpatRaster. Layer to add to the stack
+#' @param is_basin logical. Whether loi represents the whole basin or not
+#' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
+#'
+#' @return list of SpatRaster
+stackProduct = function(product, stack, raster_template, raster_wind, is_basin, extent){
+
+  if (product == "MSW") {
+    stack = stackRaster(stack, raster_template, raster_wind, is_basin, extent)
+
+  }else if (product == "PDI"){
+    stack = stackRasterPDI(stack, raster_template, raster_wind, is_basin, extent)
+
+  }else if (product == "Exposure"){
+    stack = stackRasterExposure(stack, raster_template, raster_wind, is_basin, extent)
+  }
+
+  return(stack)
+}
+
+
+
+
+
+#' Compute MSW raster
+#'
+#' @noRd
+#' @param final_stack list of SpatRaster. Where to add the computed MSW raster
+#' @param stack SpatRaster stack. All the wind speed rasters used to compute MSW
+#' @param name character. Name of the storm. Used to give the correct layer name
+#' in final_stack
+#'
+#' @return list of SpatRaster
+rasterizeMSW = function(final_stack, stack, name){
+
+  msw = max(stack, na.rm = T)
+  #Applying focal function twice to smooth results
+  msw = terra::focal(msw, w = matrix(1, 3, 3), max, na.rm = T, pad = T)
+  msw = terra::focal(msw, w = matrix(1, 3, 3), mean, na.rm = T, pad = T)
+  names(msw) = paste0(name, "_MSW")
+
+  return(c(final_stack, msw))
+}
+
+
+
+
+
+#' Compute PDI raster
+#'
+#' @noRd
+#' @param final_stack list of SpatRaster. Where to add the computed MSW raster
+#' @param time_res numeric. Time resolution, used for the numerical integration
+#' over the whole track
+#' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
+#' @param name character. Name of the storm. Used to give the correct layer name
+#' in final_stack
+#'
+#' @return list of SpatRaster
+rasterizePDI = function(final_stack, stack, time_res, name){
+
+  #Integrating over the whole track
+  pdi = sum(stack, na.rm = T) * time_res
+  #Applying focal function to smooth results
+  pdi = terra::focal(pdi, w = matrix(1, 3, 3), sum, na.rm = T, pad = T)
+  names(pdi) = paste0(name, "_PDI")
+
+  return(c(final_stack, pdi))
+}
+
+
+
+
+
+#' Compute Exposure raster
+#'
+#' @noRd
+#' @param final_stack list of SpatRaster. Where to add the computed MSW raster
+#' @param time_res numeric. Time resolution, used for the numerical integration
+#' over the whole track
+#' @param stack SpatRaster stack. All the Exposure rasters used to compute MSW
+#' @param name character. Name of the storm. Used to give the correct layer name
+#' in final_stack
+#'
+#' @return list of SpatRaster
+rasterizeExposure = function(final_stack, stack, time_res, name){
+
+  #For each category in SSHS
+  all.categories = c()
+  for (i in c(1, 2, 3, 4, 0)) {
+    ind = which(seq(1, terra::nlyr(stack)) %% 5 == i)
+    #Integrating over the whole track
+    exposure = sum(terra::subset(stack, ind), na.rm = T) * time_res
+    #Applying focal function to smooth results
+    exposure = terra::focal(exposure, w = matrix(1, 3, 3), sum, na.rm = T, pad = T)
+    if (i == 0)
+      i = 5
+
+    names(exposure) = paste0(name, "_Exposure", i)
+    final_stack = c(final_stack, exposure)
+    all.categories = c(all.categories, exposure)
+  }
+
+  #Adding all categories
+  all.categories = terra::rast(all.categories)
+  all.categories = sum(all.categories, na.rm = T)
+  names(all.categories) = paste0(name, "_ExposureAll")
+
+  return(c(final_stack, all.categories))
+}
+
+
+
+
+
+#' Select the rasterizeProduct function to use depending on the product
+#'
+#' @noRd
+#' @param product character. Product input from stormBehaviour
+#' @param format format input from stormBehaviour
+#' @param final_stack list of SpatRaster. Where to add the computed MSW raster
+#' @param time_res numeric. Time resolution, used for the numerical integration
+#' over the whole track
+#' @param stack SpatRaster stack. All the Exposure rasters used to compute MSW
+#' @param name character. Name of the storm. Used to give the correct layer name
+#' in final_stack
+#' @param indices numeric vector. Indices of observations. Only used to give proper
+#' layer names if format == "profiles"
+#'
+#' @return list of SpatRaster
+rasterizeProduct = function(product, format, final_stack, stack, time_res, name, indices){
+
+
+  if (product == "MSW") {
+    if(format == "profiles"){
+      names(stack) = paste0(name, "_profile", indices[1:length(indices)-1])
+      final_stack = c(final_stack, stack)
+
+    }else{
+      #Computing MSW analytic raster
+      final_stack = rasterizeMSW(final_stack, stack, name)
+    }
+
+  } else if (product == "PDI") {
+    #Computing PDI analytic raster
+    final_stack = rasterizePDI(final_stack, stack, time_res, name)
+
+  } else if (product == "Exposure") {
+    #Computing Exposure analytic raster
+    final_stack = rasterizeExposure(final_stack, stack, time_res, name)
+
+  }
+
+  return(final_stack)
+
+}
+
+
+
+
+
+#' rasterizePDI counterpart function for non raster data
+#'
+#' @noRD
+#' @param wind numeric vector. Wind speed values
+#'
+#' @return numeric. PDI computed using the wind speed values in wind
+computePDI = function(wind){
+  #Computing surface drag coefficient
+  cd = rasterizeCd(wind)
+
+  rho = 0.001
+  #Raising to power 3
+  pdi = wind ** 3
+  #Applying both rho and surface drag coefficient
+  pdi = wind * rho * cd
+  #Integrating over the whole track
+  pdi = sum(pdi, na.rm = T) * 3
+
+  return(pdi)
+}
+
+
+
+
+
+#' rasterizeExposure counterpart function for non raster data
+#'
+#' @noRD
+#' @param wind numeric vector. Wind speed values
+#'
+#' @return numeric vector of length 5 (for each category).
+#'  Exposure computed using the wind speed values in wind
+computeExposure = function(wind){
+
+  exposure = c()
+
+  for(c in 2:6){
+    ind = which(wind >= sshs[c] & wind < sshs[c+1])
+    wind.aux = rep(0,length(wind))
+    wind.aux[ind] = 1
+    wind.aux = sum(wind.aux, na.rm = T) * 3
+    exposure  = c(exposure, wind.aux)
+  }
+
+  return(exposure)
+}
+
+
+
+
+
+#' rasterizeProduct counterpart function for non raster data
+#'
+#' @noRD
+#' @param product character. Product input from stormBehaviour
+#' @param wind numeric vector. Wind speed values
+#' @param result numeric array. Similar as final_stack, i.e where to add the
+#' computed product
+#'
+#' @return numeric array of dimension:
+#' \itemize{
+#'   \item number of observations: number of points. If product == "MSW"
+#'   \item 1 : number of points. If product == "PDI"
+#'   \item 5 : number of points. If product == "Exposure"
+#' }
+computeProduct = function(product, wind, result){
+
+  if(product == "MSW"){
+    #Computing MSW
+    prod = wind
+  }else if (product == "PDI") {
+    #Computing PDI
+    prod = computePDI(wind)
+
+  }else if (product == "Exposure") {
+    #Computing Exposure
+    prod = computeExposure(wind)
+
+  }
+
+  return(cbind(result, prod))
+}
+
+
+
+
+
+#' Whether or not to mask final computed products
+#'
+#' @noRd
+#' @param final_stack SpatRaster stack. Where all final computed products
+#' are gathered
+#' @param focus_loi logical. focus_loi input from stormBehaviour
+#' @param loi sf object. loi used as template to rasterize the mask
+#' @param template SpatRaster. raster.template generated with makeTemplateRaster
+#' function, used as a template to rasterize the mask
+#'
+#' @return final_stack masked or not
+maskProduct = function(final_stack, focus_loi, loi, template){
+
+  if (focus_loi) {
+    #Masking the stack to fit loi
+    v = terra::vect(loi)
+    m = terra::rasterize(v, template)
+    return(terra::mask(final_stack, m))
+  }else{
+    return(final_stack)
+  }
+}
+
+
+
+
+
+#' Arrange result before the end of stormBehaviour
+#'
+#' @noRd
+#' @param final_result list of data.frame. Where to add the computed product
+#' @param result result output from computeProduct function
+#' @param product character. Product input from stormBehaviour
+#' @param format format input from stormBehaviour
+#' @param indices numeric vector. Indices of observations
+#' @param name character. Name of the storm
+#'
+#' @return final_result
+finalizeResult = function(final_result, result, product, format, indices, name){
+
+  if(product == "MSW"){
+    df = data.frame(result, row.names = indices)
+  }else if(product == "PDI"){
+    df = data.frame(result, row.names = "PDI")
+  }else{
+    df = data.frame(result ,row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
+  }
+
+  colnames(df) = paste0("(",format$lon,",",format$lat,")")
+
+
+  dfn = list(df)
+  names(dfn) = name
+  final_result = append(final_result, dfn)
+
+  return(final_result)
+}
+
+
+
+
+
 #' Compute regimes of wind speed and other products for given storms
 #'
 #' This function computes/rasterizes analytic products for each storm of a `Storms` object
@@ -264,9 +1046,10 @@ checkInputsSb = function(sts, product, method, asymmetry,
 #'   \item If `data.frame`, computed product for each coordinates are returned
 #'   through a name numeric vector of dimension
 #'    \itemize{
-#'    \item (number of observations ,number of point coordinates), if product == "MSW"
-#'    \item (1 ,number of point coordinates), if product == "PDI"
-#'    \item (6,number of point coordinates), if product == "Exposure"
+#'    \item (number of observations:number of point coordinates), if product == "MSW".
+#'     Correspond in fact of time series of wind speed along every observations
+#'    \item (1:number of point coordinates), if product == "PDI"
+#'    \item (6:number of point coordinates), if product == "Exposure"
 #'    }
 #' }
 #'
@@ -295,164 +1078,59 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
                           time_res = 1, verbose = FALSE, focus_loi = TRUE){
 
   checkInputsSb(sts, product, method, asymmetry, empirical_rmw, format,
-                space_res,time_res, verbose, focus_loi)
+                space_res, time_res, verbose, focus_loi)
+
 
   if(!identical(class(format),"data.frame")){
+
     if(format == "profiles")
       product = "MSW"
-  }
 
-
-  if(!identical(class(format),"data.frame")){
-
-    #Derivating the raster template
-    ext <- terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
-                    sf::st_bbox(sts@spatial.loi.buffer)$xmax,
-                    sf::st_bbox(sts@spatial.loi.buffer)$ymin,
-                    sf::st_bbox(sts@spatial.loi.buffer)$ymax)
-
-    ras = terra::rast(
-      xmin = ext$xmin,
-      xmax = ext$xmax,
-      ymin = ext$ymin,
-      ymax = ext$ymax,
-      vals = NA
-    )
-    #Projection in Mercator
-    ras = terra::project(ras, "EPSG:3857")
-    #Resampling in new resolution in Mercator
-    raster.template = ras
-    terra::res(raster.template) = c(space_res * 1000, space_res * 1000)
-    raster.template <- terra::resample(ras, raster.template)
-    #Reprojection in lon/lat
-    raster.template = terra::project(raster.template, "EPSG:4326")
-
-    #Handling time line crossing
-    if(terra::ext(raster.template)$xmin < 0)
-      raster.template = terra::rast(resolution = terra::res(raster.template), extent = ext)
-
+    #Make raster template
+    raster.template = makeTemplateRaster(sts@spatial.loi.buffer, space_res)
     #Getting new extent
     ext = terra::ext(raster.template)
-
     #Buffer size in degree
     buffer = terra::res(raster.template)[1] * sts@buffer / space_res
-
     #Initializing final raster stack
     final.stack = c()
+  }else{
+    #Initializing final result
+    final.result = list()
   }
 
-  s = 1 #Initializing count of storms
+  if(verbose)
+    s = 1 #Initializing count of storms
 
   for (st in sts@data) {
 
-
     #Handling indices inside loi.buffer or not
-    if (focus_loi) {
-      #Use observations within the loi for the computations
-      ind = seq(st@obs[1], st@obs[st@numobs], 1)
+    ind = getIndices(st, format, focus_loi)
 
-      if(!identical(class(format),"data.frame")){
-        if(format == "analytic"){
-          #Handling indices and offset (2 outside of loi at entry and exit)
-          if (st@obs[1] >= 3) {
-            ind = c(st@obs[1] - 2, st@obs[1] - 1, ind)
+    #Getting data associated with storm st
+    dat = getData(st, ind, asymmetry, empirical_rmw)
 
-          } else if (st@obs[1] == 2) {
-            ind = c(st@obs[1] - 1, ind)
-          }
-
-          if (st@obs[st@numobs] <= st@numobs.all - 2) {
-            ind = c(ind, st@obs[st@numobs] + 1, st@obs[st@numobs] + 2)
-
-          } else if (st@obs[st@numobs] == st@numobs.all - 1) {
-            ind = c(ind, st@obs[st@numobs] + 1)
-          }
-        }
-      }
-    } else{
-      #Use all observations available for the computations
-      ind = seq(1, st@numobs.all, 1)
-    }
-
-
-    #Getting all variables and removing NAs
-    dat = data.frame(
-      lon = st@obs.all$lon[ind],
-      lat = st@obs.all$lat[ind],
-      msw = st@obs.all$msw[ind],
-      rmw = st@obs.all$rmw[ind],
-      roci = st@obs.all$roci[ind],
-      pc = st@obs.all$pres[ind],
-      poci = st@obs.all$poci[ind]
-    )
-    dat = dat[stats::complete.cases(dat), ]
-    dat$storm.speed = NA
-    dat$vx.deg = NA
-    dat$vy.deg = NA
-
-    #To reduce size of raster if loi represents the whole basin
+    #Reduce extent of raster if loi represents the whole basin
     if(sts@loi.basin & !identical(class(format),"data.frame"))
-      ext = terra::ext(min(dat$lon) - buffer,
-                     max(dat$lon) + buffer,
-                     min(dat$lat) - buffer,
-                     max(dat$lat) + buffer)
-
-
-    #Computing storm velocity (m/s)
-    for(i in 1:(dim(dat)[1]-1)){
-      dat$storm.speed[i] = terra::distance(
-        x = cbind(dat$lon[i],dat$lat[i]),
-        y = cbind(dat$lon[i+1],dat$lat[i+1]),
-        lonlat = T
-      ) * (0.001 / 3) / 3.6
-
-      #component wise velocity in both x and y direction (degree/h)
-      dat$vx.deg[i] = (dat$lon[i + 1] - dat$lon[i]) / 3
-      dat$vy.deg[i] = (dat$lat[i + 1] - dat$lat[i]) / 3
-
-    }
+      ext = terra::ext(min(dat$lon) - buffer, max(dat$lon) + buffer,
+                     min(dat$lat) - buffer, max(dat$lat) + buffer)
 
 
     if(!identical(class(format),"data.frame")){
 
       #Interpolated time step dt, default value dt = 4 --> 1h
       dt = 1 + (1 / time_res * 3) # + 1 for the limit values
-
-      #Computing number of steps
-      last.obs = dim(dat)[1]
-      if(format == "analytic"){
-        last.obs = dim(dat)[1] -1
-        nb.steps = dt * last.obs - (last.obs - 1)
-      }else{
-        last.obs = dim(dat)[1]
-        nb.steps = last.obs
-      }
-      step = 1
+      last.obs = dim(dat)[1] - 1
 
       if (verbose) {
-        cat("Computing",
-            format,
-            product,
-            "rasters using",
-            method,
-            "model (time_res:",
-            time_res,
-            "h, space_ras:",
-            space_res,
-            "km, asymmetry:",
-            asymmetry,
-            ", empirical_rmw:",
-            empirical_rmw,
-            ") for",
-            st@name,
-            "(",
-            s,
-            "/",
-            sts@nb.storms,
-            ")\n")
-        pb = utils::txtProgressBar(min = 1,
-                                   max = last.obs - 1,
-                                   style = 3)
+        #Computing number of steps
+        nb.step = getNbStep(format, last.obs, dt)
+        step = 1
+        cat("Computing", format, product, "rasters using", method,
+            "model (time_res:", time_res, "h, space_ras:", space_res,
+            "km, asymmetry:", asymmetry, ", empirical_rmw:", empirical_rmw,
+            ") for", st@name, "(", s, "/", sts@nb.storms, ")\n")
+        pb = utils::txtProgressBar(min = step, max = nb.step, style = 3)
       }
 
       aux.stack = c()
@@ -460,249 +1138,61 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
       #For every general 3H observations
       for (j in 1:last.obs) {
 
-        lon = rep(NA, dt)
-        lon[1] = dat$lon[j]
-        lon[dt] = dat$lon[j + 1]
-        lon = zoo::na.approx(lon)
-
-        lat = rep(NA, dt)
-        lat[1] = dat$lat[j]
-        lat[dt] = dat$lat[j + 1]
-        lat = zoo::na.approx(lat)
-
-        msw = rep(NA, dt)
-        msw[1] = dat$msw[j]
-        msw[dt] = dat$msw[j + 1]
-        msw = zoo::na.approx(msw)
-
-        pc = rep(NA, dt)
-        pc[1] = dat$pc[j]
-        pc[dt] = dat$pc[j + 1]
-        pc = zoo::na.approx(pc)
-
-        poci = rep(NA, dt)
-        poci[1] = dat$poci[j]
-        poci[dt] = dat$poci[j + 1]
-        poci = zoo::na.approx(poci)
-
-        rmw = rep(NA, dt)
-        rmw[1] = dat$rmw[j]
-        rmw[dt] = dat$rmw[j + 1]
-        rmw = zoo::na.approx(rmw)
-
-        vx.deg = dat$vx.deg[j]
-        vy.deg = dat$vy.deg[j]
-        storm.speed = dat$storm.speed[j]
+        #Interpolate variables
+        dataInter = getInterpolatedData(dat, j, dt)
 
         #For every interpolated time steps dt
         for (i in 1:dt) {
-          if (format == "analytic" & i == dt & j != last.obs)
+
+          if (format == "analytic" & i == dt)
             break #avoid redondance
 
-          #Raster to compute model
-          raster.template.model = terra::rast(xmin = lon[i] - buffer,
-                                       xmax = lon[i] + buffer,
-                                       ymin = lat[i] - buffer,
-                                       ymax = lat[i] + buffer,
-                                       res = terra::res(raster.template),
-                                       vals = NA)
-          terra::origin(raster.template.model) = terra::origin(raster.template)
-          raster.model = raster.template.model
+          #Making template to compute wind profiles
+          raster.template.model = makeTemplateModel(raster.template, buffer, dataInter, i)
+          raster.wind = raster.template.model
 
-          #Computing distances to the eye of the storm for x and y axes
-          x = (terra::crds(raster.model, na.rm = FALSE)[, 1] - lon[i])
-          y = (terra::crds(raster.model, na.rm = FALSE)[, 2] - lat[i])
+          #Computing coordinates to the eye of the storm for x and y axes
+          x = (terra::crds(raster.wind, na.rm = FALSE)[, 1] - dataInter$lon[i])
+          y = (terra::crds(raster.wind, na.rm = FALSE)[, 2] - dataInter$lat[i])
+
           #Computing distances to the eye of the storm in m
-          dist.m = terra::distance(
-            x = terra::crds(raster.model, na.rm = FALSE)[, ],
-            y = cbind(lon[i], lat[i]),
-            lonlat = T
-          )
+          dist.m = terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
+                                   y = cbind(dataInter$lon[i], dataInter$lat[i]),
+                                   lonlat = T)
 
-          if(asymmetry == "V2")
-            msw[i] = msw[i] - storm.speed
+          #Computing wind profile
+          terra::values(raster.wind) = computeWindProfile(method, asymmetry,
+                                                           format, sts@basin,
+                                                           dataInter, i, dist.m,
+                                                           x, y)
 
-          if(empirical_rmw)
-            rmw[i] = getRmw(msw[i],lat[i])
+          #Stacking product
+          aux.stack = stackProduct(product, aux.stack, raster.template,
+                                   raster.wind, sts@loi.basin, ext)
 
-          #Computing sustained wind according to the input model
-          if (method == "Willoughby") {
-            terra::values(raster.model) = Willoughby(
-              msw = msw[i],
-              lat = lat[i],
-              r = dist.m * 0.001,
-              rmw = rmw[i]
-            )
 
-          }else if (method == "Holland80") {
-            terra::values(raster.model) = Holland80(
-              r = dist.m * 0.001,
-              rmw = rmw[i],
-              msw = msw[i],
-              pc = pc[i] * 100,
-              poci = poci[i] * 100,
-              lat = lat[i]
-            )
-          }
 
-          #Adding asymmetry
-          if (asymmetry == "V1") {
-            #Boose version
-            raster.t = raster.template.model
-            if(sts@basin %in% c("SA", "SP", "SI")){
-              #Southern Hemisphere, t is counterclockwise
-              terra::values(raster.t) = atan2(vy.deg,vx.deg) - atan2(y,x) + pi
-
-            }else{
-              #Northern Hemisphere, t is clockwise
-              terra::values(raster.t) = atan2(y,x) - atan2(vy.deg,vx.deg)  + pi
-            }
-            terra::values(raster.model) = terra::values(raster.model) - (1 - sin(terra::values(raster.t)))*(storm.speed/3.6)/2
-
-          } else if(asymmetry == "V2"){
-            raster.t = raster.template.model
-            if(sts@basin %in% c("SA", "SP", "SI")){
-              #Southern Hemisphere, t is clockwise
-              terra::values(raster.t) = acos((y * vx.deg - x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
-
-            }else{
-              #Northern Hemisphere, t is counterclockwise
-              terra::values(raster.t) = acos((- y * vx.deg + x * vy.deg) / (sqrt(vx.deg**2 + vy.deg**2) * sqrt(x**2 + y**2)))
-            }
-            terra::values(raster.model) = terra::values(raster.model) + cos(terra::values(raster.t))* storm.speed
-          }
-
-          if (product == "MSW") {
-            raster.msw = raster.template
-            if(sts@loi.basin)
-              raster.msw = terra::crop(raster.msw,ext)
-
-            raster.msw = terra::merge(raster.msw,raster.model)
-            raster.msw = terra::crop(raster.msw,ext)
-            aux.stack = c(aux.stack, raster.msw)
-
-          }else if (product == "PDI"){
-            raster.cd = raster.template.model
-            terra::values(raster.cd) = rasterizeCd(terra::values(raster.model))
-
-            rho = 0.001
-            #Raising to power 3
-            raster.model = raster.model ** 3
-            #Applying both rho and surface drag coefficient
-            raster.model = raster.model * rho * raster.cd
-
-            raster.msw = raster.template
-            if(sts@loi.basin)
-              raster.msw = terra::crop(raster.msw,ext)
-
-            raster.msw = terra::merge(raster.msw,raster.model)
-            raster.msw = terra::crop(raster.msw,terra::ext(raster.template))
-            aux.stack = c(aux.stack, raster.msw)
-
-          }else if (product == "Exposure"){
-            for(c in 2:6){
-              raster.c = raster.template
-              if(sts@loi.basin)
-                raster.c = terra::crop(raster.c,ext)
-
-              raster.c.model = raster.template.model
-              ind = which(terra::values(raster.model) >= sshs[c] &
-                            terra::values(raster.model) < sshs[c+1])
-              raster.c.model[ind] = 1
-              raster.c = terra::merge(raster.c,raster.c.model)
-              raster.c = terra::crop(raster.c,terra::ext(raster.template))
-              aux.stack = c(aux.stack, raster.c)
-            }
-          }
-
-          step = step + 1
           if(format == "profiles")
-            break
-        }
+            break #profiles only computed on observations
 
-        if (verbose)
-          utils::setTxtProgressBar(pb, j)
+          if (verbose){
+            utils::setTxtProgressBar(pb, step)
+            step = step + 1
+          }
+
+        }
       }
 
       if (verbose)
         close(pb)
 
-
+      #Rasterize final product
       aux.stack = terra::rast(aux.stack)
-      product.raster = raster.template
-
-      if (product == "MSW") {
-        if(format == "profiles"){
-          names(aux.stack) = paste0(st@name, "_profile",ind)
-          final.stack = c(final.stack,aux.stack)
-
-        }else{
-          #Computing MSW analytic raster
-          product.raster = max(aux.stack, na.rm = T)
-          #Applying focal function twice to smooth results
-          product.raster = terra::focal(
-            product.raster,
-            w = matrix(1, 3, 3),
-            max,
-            na.rm = T,
-            pad = T
-          )
-          product.raster = terra::focal(
-            product.raster,
-            w = matrix(1, 3, 3),
-            mean,
-            na.rm = T,
-            pad = T
-          )
-          names(product.raster) = paste0(st@name, "_", product)
-          final.stack = c(final.stack, product.raster)
-        }
-
-      } else if (product == "PDI") {
-        #Integrating over the whole track
-        product.raster = sum(aux.stack, na.rm = T) * time_res
-        #Applying focal function to smooth results
-        product.raster = terra::focal(
-          product.raster,
-          w = matrix(1, 3, 3),
-          sum,
-          na.rm = T,
-          pad = T
-        )
-        names(product.raster) = paste0(st@name, "_", product)
-        final.stack = c(final.stack, product.raster)
-
-      } else if (product == "Exposure") {
-        #For each category in SSHS
-        raster.c = c()
-        for (i in c(1, 2, 3, 4, 0)) {
-          ind = which(seq(1, terra::nlyr(aux.stack)) %% 5 == i)
-          #Integrating over the whole track
-          product.raster = sum(terra::subset(aux.stack, ind), na.rm = T) * time_res
-          #Applying focal function to smooth results
-          product.raster = terra::focal(
-            product.raster,
-            w = matrix(1, 3, 3),
-            sum,
-            na.rm = T,
-            pad = T
-          )
-          if (i == 0)
-            i = 5
-          names(product.raster) = paste0(st@name, "_", product, i)
-          final.stack = c(final.stack, product.raster)
-          raster.c = c(raster.c, product.raster)
-        }
-
-        #Adding all categories
-        raster.c = terra::rast(raster.c)
-        raster.c = sum(raster.c, na.rm = T)
-        names(raster.c) = paste0(st@name, "_", product,"all")
-        final.stack = c(final.stack, raster.c)
-      }
+      final.stack = rasterizeProduct(product, format, final.stack, aux.stack,
+                                     time_res, st@name, ind)
 
     }else{
-      #Compute distances from the eye of storm for every observations x, and
+      #Computing distances from the eye of storm for every observations x, and
       #every points y
       dist.m = terra::distance(
         x = cbind(dat$lon,dat$lat),
@@ -714,120 +1204,39 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
       #For each point
       for(i in 1:dim(format)[1]){
 
-        #Compute distance in deg between eye of storm and point P
+        #Computing coordinates between eye of storm and point P
         x = format$lon[i] - dat$lon
         y = format$lat[i] - dat$lat
 
-        if(asymmetry == "V2"){
-          msw = dat$msw[i] - dat$storm.speed[i]
-        }else{
-          msw = dat$msw[i]
-        }
+        #Computing wind profiles
+        vr = computeWindProfile(method, asymmetry, format, sts@basin, dat, i, dist.m, x, y)
 
-        if(empirical_rmw){
-          rmw = getRmw(msw,dat$lat[i])
-        }else{
-          rmw = dat$rmw[i]
-        }
+        #Computing product
+        res = computeProduct(product, vr, res)
 
-        if (method == "Willoughby") {
-           vr = Willoughby(
-            msw = msw,
-            lat = dat$lat[i],
-            r = dist.m[,i] * 0.001,
-            rmw = rmw
-          )
-
-        }else if (method == "Holland80") {
-          vr = Holland80(
-            r = dist.m[,i] * 0.001,
-            rmw = rmw,
-            msw = msw,
-            pc = dat$pc[i] * 100,
-            poci = dat$poci[i] * 100,
-            lat = dat$lat[i]
-          )
-        }
-
-        if (asymmetry == "V1") {
-          #Boose version
-          if(sts@basin %in% c("SA", "SP", "SI")){
-            #Southern Hemisphere, t is counterclockwise
-            t = (atan2(dat$vy.deg[i],dat$vx.deg[i])) - atan2(y,x) + pi
-          }else{
-            #Northern Hemisphere, t is clockwise
-            t = (atan2(dat$vy.deg[i],dat$vx.deg[i])) - atan2(y,x) + pi
-          }
-          vr = vr - (1 - sin(t)) * dat$storm.speed[i]/2
-
-        } else if(asymmetry == "V2"){
-          if(sts@basin %in% c("SA", "SP", "SI")){
-            #Southern Hemisphere, t is clockwise
-            t = acos((y * dat$vx.deg[i] - x * dat$vy.deg[i]) / (sqrt(dat$vx.deg[i]**2 + dat$vy.deg[i]**2) * sqrt(x**2 + y**2)))
-          }else{
-            #Northern Hemisphere, t is counterclockwise
-            t = acos((y * dat$vx.deg[i] - x * dat$vy.deg[i]) / (sqrt(dat$vx.deg[i]**2 + dat$vy.deg[i]**2) * sqrt(x**2 + y**2)))
-          }
-          vr = vr + cos(t) * dat$storm.speed[i]
-        }
-
-        if (product == "PDI") {
-          #Computing surface drag coefficient
-          cd = rasterizeCd(vr)
-
-          rho = 0.001
-
-          #Raising to power 3
-          vr = vr ** 3
-
-          #Applying both rho and surface drag coefficient
-          vr = vr * rho * cd
-
-          #Integrating over the whole track
-          vr = sum(vr, na.rm = T) * 3
-
-        }else if (product == "Exposure") {
-          vr.c = c()
-          for(c in 2:6){
-            ind = which(vr >= sshs[c] & vr < sshs[c+1])
-            vr.aux = rep(0,length(vr))
-            vr.aux[ind] = 1
-            vr.aux = sum(vr.aux, na.rm = T) * 3
-            vr.c = c(vr.c,vr.aux)
-          }
-          # vr = vr.c
-        }
-        res = cbind(res,vr)
       }
+
+      final.result = finalizeResult(final.result,  res, product, format, ind, st@name)
+
+
     }
-    s = s + 1
+
+    if(verbose)
+      s = s + 1
   }
 
 
   if(!identical(class(format),"data.frame")){
     final.stack = terra::rast(final.stack)
-    if (focus_loi) {
-      #Masking the stack to fit loi.buffer
-      v = terra::vect(sts@spatial.loi.buffer)
-      m = terra::rasterize(v, product.raster)
-      final.stack = terra::mask(final.stack, m)
-    }
+    final.stack = maskProduct(final.stack, focus_loi,
+                              sts@spatial.loi.buffer, raster.template)
 
     return(final.stack)
 
   }else{
 
-    if(product == "MSW"){
-      res = data.frame(res, row.names = ind)
-    }else if(product == "PDI"){
-      res = data.frame(res,row.names = "PDI")
-    }else{
-      res = data.frame(res,row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
-    }
-
-    colnames(res) =paste0("(",format$lon,",",format$lat,")")
-
-    return(res)
+    #names(final.result) = rep(sts@names, dim(format)[1])
+    return(final.result)
   }
 
 }
