@@ -299,18 +299,13 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
   checkInputsPs(sts, names, category, map, ground_color, ocean_color, whole_basin,
               labels, by, pos, legends, loi, grtc, xlim, ylim)
 
-  #Checking map input
+
   if (!is.null(map)){
     #Converting to sf object
     if(!identical(class(map)[1], "sf"))
       map = sf::st_as_sf(map)
   }
 
-  if (!is.null(xlim))
-    xlim = xlim[order(xlim)]
-
-  if (!is.null(ylim))
-    ylim = ylim[order(ylim)]
 
   l2 = log2(grtc)
   if (!is_wholenumber(l2)) {
@@ -339,19 +334,19 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
                        sf::st_bbox(sts@spatial.loi.buffer)$ymin,
                        sf::st_bbox(sts@spatial.loi.buffer)$ymax)
     }else{
-      ext = terra::ext(sf::st_bbox(map)$xmin,
-                       sf::st_bbox(map)$xmax,
-                       sf::st_bbox(map)$ymin,
-                       sf::st_bbox(map)$ymax)
+      ext = terra::ext(sf::st_bbox(map)$xmin, sf::st_bbox(map)$xmax,
+                       sf::st_bbox(map)$ymin, sf::st_bbox(map)$ymax)
     }
 
 
     if (!is.null(xlim)) {
+      xlim = xlim[order(xlim)]
       ext$xmin = xlim[1]
       ext$xmax = xlim[2]
     }
 
     if (!is.null(ylim)) {
+      ylim = ylim[order(ylim)]
       ext$ymin = ylim[1]
       ext$ymax = ylim[2]
     }
