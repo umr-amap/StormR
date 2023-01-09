@@ -223,7 +223,7 @@ plotBehaviour(sts, pdi[["ERICA_PDI"]], labels = T)
 
 #Compute time series of wind speed on coordinates contained in df according to Willoughby et al. 2006 #analytic model, adding version 2 formula of asymmetry 
 df = data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
-wind.ts = stormBehaviour(sts, result = df, verbose = T)
+wind.ts = stormBehaviour(sts, format = df, verbose = T)
 
 ##############
 #Get all TCs #
