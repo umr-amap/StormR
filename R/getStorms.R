@@ -155,6 +155,7 @@ checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remov
   #Checking max_dist input
   stopifnot("max_dist must be numeric " = identical(class(max_dist), "numeric"))
   stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
+  stopifnot("max_dist must > 0 " = max_dist > 0)
 
   #Checking verbose input
   stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
@@ -179,6 +180,7 @@ checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remov
 convertLoi = function(loi, basin, projection){
 
   if(is.null(loi)){
+
     loi = basin
     loi.is.basin = TRUE
     ext = terra::ext(Basins[basin,1], Basins[basin,2],
@@ -189,7 +191,9 @@ convertLoi = function(loi, basin, projection){
     loi.sf = sf::st_polygon(list(poly))
     loi.sf = sf::st_sfc(loi.sf, crs = projection)
     loi.sf = sf::st_as_sf(loi.sf)
+
   } else{
+
     loi.is.basin = FALSE
     if (identical(class(loi), c("SpatialPolygons"))) {
       loi.id = "SpatialPolygons"
@@ -197,14 +201,18 @@ convertLoi = function(loi, basin, projection){
       if (sf::st_crs(loi.sf) != projection) {
         sf::st_transform(loi.sf, crs = projection)
       }
+
     } else if (identical(class(loi), c("sf", "data.frame"))) {
+
       loi.sf = loi
+
     } else if (identical(class(loi), c("numeric"))){
-      loi.df = data.frame(pt = 1,
-                          lon = loi[1],
-                          lat = loi[2])
+
+      loi.df = data.frame(lon = loi[1], lat = loi[2])
       loi.sf = sf::st_as_sf(loi.df, coords = c("lon", "lat"))
+
     } else if (identical(class(loi), c("character"))){
+
       if(loi %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL")){
         loi = basin
         loi.is.basin = TRUE
@@ -216,11 +224,14 @@ convertLoi = function(loi, basin, projection){
         loi.sf = sf::st_polygon(list(poly))
         loi.sf = sf::st_sfc(loi.sf, crs = projection)
         loi.sf = sf::st_as_sf(loi.sf)
+
       }else{
+
         map = rworldmap::getMap(resolution = "high")
         id.country = which(map@data$ADMIN == loi)
         stopifnot("invalid entry for loi" = length(id.country) > 0)
         loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
+
       }
     }
   }
@@ -321,14 +332,7 @@ retrieveStorms = function(filter_names, filter_time_period, filter_basin, names,
 #' @param seasons numeric vector, seasons previously loaded
 #' @param basins character vector, basins previously loaded
 #' @param sshs numeric vector, sshs previously loaded
-#' @return A list of 4 slots which are:
-#' \itemize{
-#'   \item character vector of length dim(indices). storm names
-#'   \item numeric vector of length dim(indices). cyclonic seasons
-#'   \item character vector of length dim(indices). basins
-#'   \item numeric vector of length dim(indices). number of observations or each index
-#'   \item a data frame of dimension number of max_obs : dim(indices)
-#' }
+#' @return A list of 14 slots
 loadData = function(TC_data_base, max_obs, indices, storm_names, seasons, basins, sshs){
 
   return(list(stormNames  = storm_names[indices],
@@ -401,11 +405,11 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
   #Removing invalid iso_time
   iso.time = TC_data$iso.times[1:numobs, index]
   list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
+  #Keep only 03H 06H 09H 12H 15H 18h 21H 00h iso times
   ind.iso.time = which(list.iso.time %% 3 == 0)
   coords = coords[ind.iso.time,]
   coords = coords[stats::complete.cases(coords),]
   row.names(coords) = seq(1,dim(coords)[1])
-
 
   #Creating sf point coordinates to intersect with loi_sf_buffer
   pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
@@ -450,12 +454,14 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
     lg = which(storm@obs.all$lon < 0)
     storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
 
-    #Removing invalid iso_time
+    #Removing invalid iso_time from obs.all
     storm@obs.all = storm@obs.all[ind.iso.time,]
     storm@numobs.all = dim(storm@obs.all)[1]
     row.names(storm@obs.all) = seq(1,storm@numobs.all)
+
+
     if(!loi_is_basin){
-      ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all),])[ind])
+      ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all$lon),])[ind])
     }else{
       ind = seq(1,storm@numobs.all)
     }
@@ -465,10 +471,15 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
     storm@lty.track = k
     storm@sshs = max(storm@obs.all$sshs,na.rm = T)
 
+
     return(list(append(storm_list, storm),
                 append(storm_names, storm@name),
                 append(storm_sshs, storm@sshs),
                 nb_storms))
+
+  }else{
+
+    return(list(NULL,NULL,NULL,NULL))
 
   }
 
@@ -501,7 +512,8 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
 #' }
 #  Default value is set to NULL which will set the spatial.loi.buffer on the whole basin
 #' @param max_dist numeric. Indicates the buffer used to generate spatial.loi.buffer (km).
-#' Default value is set to 300
+#' Default value is set to 300. This value also represents the maximum distance from the track
+#' of the storm where computations should be performed afterwards.
 #' @param verbose logical. Whether or not the function must be verbose and display
 #' a text progress bar. Default value is set to FALSE
 #' @param remove_TD logical. Whether or not to remove Tropical Depression (< 18 m/s).
@@ -549,7 +561,6 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   #Handling buffer
   loi.sf.buffer = makeBuffer(loi.sf, max_dist * km, loi.is.basin)
 
-
   if (verbose)
     cat("Done\nIdentifying Storms: ")
 
@@ -572,6 +583,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                            seasons = cyclonic.seasons,
                            basins = basins)
 
+
   #Removing TD if remove_TD == T
   sshs = array(sshs[,indices], dim = c(dim,length(indices)))
 
@@ -588,6 +600,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   #Getting remaining data associated with indices
   TC.data = loadData(TC.data.base, dim, indices, storm.names, cyclonic.seasons, basins, sshs)
   ncdf4::nc_close(TC.data.base)
+
 
   if(verbose)
     cat("Done\n")
@@ -622,12 +635,12 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                                k = k,
                                projection = wgs84)
 
-
-      storm.list = sts.output[[1]]
-      storm.names = sts.output[[2]]
-      storm.sshs = sts.output[[3]]
-      nb.storms = sts.output[[4]]
-
+      if(!is.null(sts.output[[1]])){
+        storm.list = sts.output[[1]]
+        storm.names = sts.output[[2]]
+        storm.sshs = sts.output[[3]]
+        nb.storms = sts.output[[4]]
+      }
 
 
       if (verbose & length(indices) > 1){

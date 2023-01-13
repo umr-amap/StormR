@@ -183,7 +183,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
       ylim = c(ymin, ymax),
       alpha = 0.7,
       axes = FALSE,
-      range = c(0, 30),
+      range = c(0, max(terra::values(raster_product),na.rm = T)),
       plg = list(
         title = expression(paste("PDI")),
         title.cex = 0.9,

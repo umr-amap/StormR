@@ -93,9 +93,10 @@ Holland80 = Vectorize(Holland80_profile, vectorize.args = "r")
 #'
 #' @return Associated surface drag coefficient
 compute_Cd = function(vr){
-  if(vr <= 18){
+  if(is.na(vr)){
+    return(NA)
+  }else if(vr <= 18){
     return(0)
-
   }else if(vr > 18 & vr <= 31.5){
     return((0.8 + 0.06 * vr) * 0.001)
 
@@ -283,6 +284,7 @@ getIndices = function(st, format, focus_loi){
 #' velocity of storm to maximum sustained windspeed for the further computations
 #' @param empirical_rmw logical. Whether to use rmw from the data or to compute them
 #' according to getRmw function
+#' @param method character. method input from stormBehaviour
 #'
 #' @return a data.frame of dimension length(indices) : 10. Columns are
 #'  \itemize{
@@ -297,22 +299,16 @@ getIndices = function(st, format, focus_loi){
 #'    \item vx.deg: numeric. Velocity of the speed in the x direction (deg/h)
 #'    \item vy.deg: numeric Velocity of the speed in the y direction (deg/h)
 #'  }
-getData = function(st, indices, asymmetry, empirical_rmw){
+getData = function(st, indices , asymmetry, empirical_rmw, method){
 
   data = data.frame(
     lon = st@obs.all$lon[indices],
-    lat = st@obs.all$lat[indices],
-    msw = st@obs.all$msw[indices],
-    rmw = st@obs.all$rmw[indices],
-    roci = st@obs.all$roci[indices],
-    pc = st@obs.all$pres[indices],
-    poci = st@obs.all$poci[indices]
+    lat = st@obs.all$lat[indices]
   )
-  data = data[stats::complete.cases(data), ]
+
   data$storm.speed = NA
   data$vx.deg = NA
   data$vy.deg = NA
-
 
   #Computing storm velocity (m/s)
   for(i in 1:(dim(data)[1]-1)){
@@ -325,11 +321,28 @@ getData = function(st, indices, asymmetry, empirical_rmw){
     data$vy.deg[i] = (data$lat[i + 1] - data$lat[i]) / 3
   }
 
-  if(asymmetry == "V2")
-    data$msw = data$msw - data$storm.speed
+  if(asymmetry == "V2"){
+    data$msw = st@obs.all$msw[indices] - data$storm.speed
+  }else{
+    data$msw = st@obs.all$msw[indices]
+  }
 
-  if(empirical_rmw)
+  if(empirical_rmw){
     data$rmw = getRmw(data$msw, data$lat)
+  }else{
+    if(all(is.na(st@obs.all$rmw[indices])))
+      stop("Missing rmw data to perform model. Consider setting empirical_rmw to TRUE")
+    data$rmw = st@obs.all$rmw[indices]
+  }
+
+  if(method == "Holland80"){
+    if(all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices])))
+      stop("Missing pressure data to perform Holland80 model")
+
+    data$poci = st@obs.all$poci[indices]
+    data$pc = st@obs.all$pres[indices]
+  }
+
 
   return(data)
 
@@ -348,8 +361,6 @@ getData = function(st, indices, asymmetry, empirical_rmw){
 #' @param last_obs numeric. Indicates the number of observations to further
 #' interpolate and compute results
 #' @param dt numeric. time step
-#'
-#' @return
 getNbStep = function(format, last_obs, dt){
 
   if(format == "analytic"){
@@ -393,6 +404,7 @@ interpolateVariable = function(var, dt, index){
 #' @param index numeric. Index of the storm to interpolate data in the overall
 #' dataset generated with getData function
 #' @param dt numeric. time step
+#' @param method character. method input from stormBehvaiour
 #'
 #' @return a data.frame of dimension  dt: 10. Interpolated data starting at observations
 #' index until index + dt. Columns are
@@ -408,18 +420,28 @@ interpolateVariable = function(var, dt, index){
 #'    \item vx.deg: numeric. Velocity of the speed in the x direction (deg/h)
 #'    \item vy.deg: numeric Velocity of the speed in the y direction (deg/h)
 #'  }
-getInterpolatedData = function(data, index, dt){
+getInterpolatedData = function(data, index, dt, method){
 
-  df = data.frame(lon = interpolateVariable(data$lon, dt, index),
-                  lat = interpolateVariable(data$lat, dt, index),
-                  msw = interpolateVariable(data$msw, dt, index),
-                  rmw = interpolateVariable(data$rmw, dt, index),
-                  roci = interpolateVariable(data$roci, dt, index),
-                  pc  = interpolateVariable(data$pc, dt, index),
-                  poci = interpolateVariable(data$poci, dt, index),
-                  vx.deg = rep(data$vx.deg[index], dt),
-                  vy.deg = rep(data$vy.deg[index], dt),
-                  storm.speed = rep(data$storm.speed[index], dt))
+  if(method == "Holland80"){
+    df = data.frame(lon = interpolateVariable(data$lon, dt, index),
+                    lat = interpolateVariable(data$lat, dt, index),
+                    msw = interpolateVariable(data$msw, dt, index),
+                    rmw = interpolateVariable(data$rmw, dt, index),
+                    pc  = interpolateVariable(data$pc, dt, index),
+                    poci = interpolateVariable(data$poci, dt, index),
+                    vx.deg = rep(data$vx.deg[index], dt),
+                    vy.deg = rep(data$vy.deg[index], dt),
+                    storm.speed = rep(data$storm.speed[index], dt))
+  }else{
+    df = data.frame(lon = interpolateVariable(data$lon, dt, index),
+                    lat = interpolateVariable(data$lat, dt, index),
+                    msw = interpolateVariable(data$msw, dt, index),
+                    rmw = interpolateVariable(data$rmw, dt, index),
+                    vx.deg = rep(data$vx.deg[index], dt),
+                    vy.deg = rep(data$vy.deg[index], dt),
+                    storm.speed = rep(data$storm.speed[index], dt))
+  }
+
 
   return(df)
 
@@ -830,7 +852,7 @@ rasterizeProduct = function(product, format, final_stack, stack, time_res, name,
 
 #' rasterizePDI counterpart function for non raster data
 #'
-#' @noRD
+#' @noRd
 #' @param wind numeric vector. Wind speed values
 #'
 #' @return numeric. PDI computed using the wind speed values in wind
@@ -855,7 +877,7 @@ computePDI = function(wind){
 
 #' rasterizeExposure counterpart function for non raster data
 #'
-#' @noRD
+#' @noRd
 #' @param wind numeric vector. Wind speed values
 #'
 #' @return numeric vector of length 5 (for each category).
@@ -881,7 +903,7 @@ computeExposure = function(wind){
 
 #' rasterizeProduct counterpart function for non raster data
 #'
-#' @noRD
+#' @noRd
 #' @param product character. Product input from stormBehaviour
 #' @param wind numeric vector. Wind speed values
 #' @param result numeric array. Similar as final_stack, i.e where to add the
@@ -1108,7 +1130,7 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
     ind = getIndices(st, format, focus_loi)
 
     #Getting data associated with storm st
-    dat = getData(st, ind, asymmetry, empirical_rmw)
+    dat = getData(st, ind, asymmetry, empirical_rmw, method)
 
     #Reduce extent of raster if loi represents the whole basin
     if(sts@loi.basin & !identical(class(format),"data.frame"))
@@ -1139,7 +1161,7 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
       for (j in 1:last.obs) {
 
         #Interpolate variables
-        dataInter = getInterpolatedData(dat, j, dt)
+        dataInter = getInterpolatedData(dat, j, dt, method)
 
         #For every interpolated time steps dt
         for (i in 1:dt) {
