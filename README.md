@@ -188,17 +188,19 @@ library(StormR)
 ######################
 
 #Load TC
-sts = getStorm(time_period = 2015, name = "PAM", loi = "Vanuatu")
+st = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
 
-#Plot TC over the location of interest
-plotStorms(sts, labels = T, legends = T)
+#Plot TC over the location of interest with legend activated
+plotStorms(st, labels = T, legends = T)
 
-#Compute Maximum Sustained Wind raster according to Willoughby et al. 2006 analytic model
-#adding version 2 formula of asymmetry 
-msw = stormBehaviour(sts, asymmetry = "V2", verbose = T)
+#Compute Maximum Sustained Wind raster according to Willoughby et al. 2006 analytic model adding version 2 formula of asymmetry 
+st_msw = stormBehaviour(st, asymmetry = "None", verbose = T)
 
 #Plot the above raster alongside with the track of the storm
-plotBehaviour(sts, msw, labels = T)
+plotBehaviour(st, st_msw, labels = T)
+
+
+
 
 
 ######################
@@ -206,31 +208,147 @@ plotBehaviour(sts, msw, labels = T)
 ######################
 
 #Load TC
-sts = getStorm(time_period = c(2003, 2021), name = c("ERICA", "NIRAN"), loi = "New Caledonia")
+sts = getStorms(time_period = c(2003, 2021), name = c("ERICA", "NIRAN"), loi = "New Caledonia")
 
 #Plot TCs over the location of interest
 plotStorms(sts, labels = T, legends = T)
 
-#Plot NIRAN alone over the location of interest
+#Plot NIRAN over the location of interest
 plotStorms(sts, names = "NIRAN", labels = T)
 
 #Compute Power Dissipation index raster according to Willoughby et al. 2006 analytic model
-pdi = stormBehaviour(sts, product = "PDI" , verbose = T)
+sts_pdi = stormBehaviour(sts, product = "PDI" , verbose = T)
 
-#Plot the PDI for ERICA alongside with the ERICA's track 
-plotBehaviour(sts, pdi[["ERICA_PDI"]], labels = T)
+#Plot the PDI for ERICA alongside with the its track 
+plotBehaviour(sts, sts_pdi[["ERICA_PDI"]], labels = T)
 
 
-#Compute time series of wind speed on coordinates contained in df according to Willoughby et al. 2006 #analytic model, adding version 2 formula of asymmetry 
+#Compute time series of wind speed on coordinates contained in df according to Willoughby et al. 2006 analytic model, adding version 2 formula of asymmetry 
 df = data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
+<<<<<<< HEAD
 wind.ts = stormBehaviour(sts, format = df, verbose = T)
+=======
+wind_ts = stormBehaviour(sts, format = df, verbose = T)
+
+
+
+
+
+#############################
+#Focus on a point coordinate#
+#############################
+
+pt = c(188.17,-13.92)
+#Get all TCs that pass through a cirlce buffer of 300km around point pt
+stsPt = getStorms(loi = pt, verbose = T)
+
+#Check tracks
+plotStorms(stsPt)
+
+#Plot category 5 TCs
+plotStorms(stsPt, category = 4, labels = T)
+
+#Compute MSW and PDI for TC VAL 1991
+val = getStorms(time_period = 1992, name = "VAL", loi = pt, verbose = T)
+val_msw = stormBehaviour(val, verbose = T, empirical_rmw = T)
+val_pdi = stormBehaviour(val, verbose = T,empirical_rmw = T, product = "PDI")
+
+#Plot result
+plotBehaviour(val, val_msw, labels = T)
+plotBehaviour(val, val_pdi, labels = T)
+
+
+ 
+
+
+##########################
+#Eastern Pacific Analyzis#
+##########################
+
+#Get all TCs over Tropical Depression in the Eastern Pacific between 1980 and 2021
+stsEP = getStorms(basin = "EP", verbose = T)
+
+#Plot TCs over category 5
+plotStorms(stsEP, category = 5)
+
+#Plot TCs between category 1 and 3
+plotStorms(stsEP, category = c(1,3))
+
+#Plot TC IGNACIO 1979 focus on lon/lat 250-270/10-20 with labels every 12h on the right side of observations and add graticules at each degree
+plotStorms(stsEP, names = "IGNACIO", category = c(1,3), labels = T, by = 4, pos = 4,
+xlim = c(250,270), ylim = c(10,20), grtc = 8)
+
+
+#Make loi
+pol1 = sf::st_sfc(sf::st_polygon(list(cbind(c(220,250,250,220,220),c(10,10,30,30,10)))))
+loi1 = sf::st_sf(pol, crs = 4326)
+
+#Get data for TC KENNETH 2017 within loi1 
+kenneth = getStorms(basin = "EP", time_period = 2017, name = "KENNETH", loi = loi1, max_dist = 10, verbose = T)
+
+#Note: max_dist is set here to 10km, which means further computations will be performed within a 10km buffer on both sides of the track
+
+#Check track of KENNETH 2017
+plotStorms(kenneth)
+
+#Compute MSW according to Holland80 model without asymmetry
+kenneth_msw = stormBehaviour(kenneth, method = "Holland80", time_res = 0.5, verbose = T)
+
+
+#Note: time_res set here to 30min to increase accuracy
+
+#Plot results
+plotBehaviour(kenneth, kenneth_msw, labels = T, xlim = c(225,235), ylim = c(16,22))
+
+
+
+#########################################################
+#Harold Exposure and profiles on Northen part of Vanuatu#
+#########################################################
+
+#Make loi
+pol2 = sf::st_sfc(sf::st_polygon(list(cbind(c(167,168,168,167,167),c(-16,-16,-13,-13,-16)))))
+loi2 = sf::st_sf(pol, crs = 4326)
+
+#Get TC HAROLD 2020 data
+harold = getStorms(time_period = 2020, name= "HAROLD", loi = loi2, verbose = T)
+
+#Check track 
+plotStorms(harold)
+
+#Compute Exposure
+expo = stormBehaviour(harold, product = "Exposure", asymmetry = "V1", verbose = T)
+
+#Plot exposure to category 5
+plotBehaviour(harold, expo[["HAROLD_Exposure5"]], labels = T, xlim = c(167,169), ylim = c(-16.5, -15))
+
+#Plot exposure to category 4 and higher
+plotBehaviour(harold, expo[["HAROLD_Exposure4"]], labels = T, xlim = c(165,170), ylim = c(-16.5, -15))
+
+
+#Compute exposure on Luganville
+luganville = data.frame(lon = 167.17, lat = -15.54)
+expo_lv = stormBehaviour(harold, format = luganville, product = "Exposure", asymmetry = "V1", verbose = T)
+
+
+#Compute wind profiles
+pf = stormBehaviour(harold, format = "profiles", asymmetry = "V1", verbose = T)
+
+#Plot profiles on Espiritu Santo
+plotBehaviour(harold,pf["HAROLD_profile40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,pf["HAROLD_profile41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,pf["HAROLD_profile42"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,pf["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+
+
+>>>>>>> Fix several bugs + add examples README
 
 ##############
 #Get all TCs #
 ##############
 
 #Get all TCs over Tropical Depression around the world between 1980 and 2021
-sts = getStorm(basin = "SA", verbose = T)
+sts = getStorms(basin = "ALL", verbose = T)
 
 #Plot TCs over category 5
 plotStorms(sts, category = 5)
