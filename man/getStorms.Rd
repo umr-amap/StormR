@@ -36,7 +36,8 @@ otherwise time_period and name must have the same length, and these two informat
 }}
 
 \item{max_dist}{numeric. Indicates the buffer used to generate spatial.loi.buffer (km).
-Default value is set to 300}
+Default value is set to 300. This value also represents the maximum distance from the track
+of the storm where computations should be performed afterwards.}
 
 \item{verbose}{logical. Whether or not the function must be verbose and display
 a text progress bar. Default value is set to FALSE}
