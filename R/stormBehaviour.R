@@ -612,20 +612,12 @@ computeWindProfile = function(method, asymmetry, format, basin, data, index, dis
 #' @return list of SpatRaster
 stackRaster = function(stack, raster_template, raster_wind, is_basin, extent){
 
-  cat("STACKRASTER\n")
-
   ras = raster_template
   if(is_basin)
     ras = terra::crop(ras, extent)
 
-  # cat("Before merge\n")
-  # print(ras)
   ras = terra::merge(raster_wind, ras)
-  # cat("\nBefore crop\n")
-  # print(ras)
   ras = terra::crop(ras, extent)
-  # cat("\nAftercrop\n")
-  # print(ras)
 
   return(c(stack, ras))
 }
@@ -1217,10 +1209,6 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
       #Rasterize final product
       aux.stack = terra::rast(aux.stack)
-      cat("aux.stack done\n")
-      print(aux.stack)
-      cat("\n")
-
       final.stack = rasterizeProduct(product, format, final.stack, aux.stack,
                                      time_res, st@name, ind)
 
@@ -1261,9 +1249,6 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
   if(!identical(class(format),"data.frame")){
     final.stack = terra::rast(final.stack)
-    cat("final.stack\n")
-    print(final.stack)
-    cat("\n")
     final.stack = maskProduct(final.stack, focus_loi,
                               sts@spatial.loi.buffer, raster.template)
 
