@@ -19,6 +19,7 @@ You can install the development version of StormR like so:
 ``` r
 #install.packages("devtools")
 devtools::install_github("umr-amap/StormR")
+devtools::install_deps("umr-amap/StormR")
 ```
 
 
@@ -199,7 +200,8 @@ st_msw = stormBehaviour(st, asymmetry = "None", verbose = T)
 #Plot the above raster alongside with the track of the storm
 plotBehaviour(st, st_msw, labels = T)
 
-
+#Write sts_msw raster in a temporary directory
+writeRast(st_msw, path = paste0(tempdir(),"/"))
 
 
 
@@ -221,6 +223,7 @@ sts_pdi = stormBehaviour(sts, product = "PDI" , verbose = T)
 
 #Plot the PDI for ERICA alongside with the its track 
 plotBehaviour(sts, sts_pdi[["ERICA_PDI"]], labels = T)
+
 
 
 #Compute time series of wind speed on coordinates contained in df according to Willoughby et al. 2006 analytic model, adding version 2 formula of asymmetry 
