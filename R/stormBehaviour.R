@@ -1130,8 +1130,15 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
     #Handling indices inside loi.buffer or not
     ind = getIndices(st, format, focus_loi)
 
+    cat("indices")
+    print(ind)
+    cat("\n")
+
     #Getting data associated with storm st
     dat = getData(st, ind, asymmetry, empirical_rmw, method)
+    cat("data")
+    print(ind)
+    cat("\n")
 
     #Reduce extent of raster if loi represents the whole basin
     if(sts@loi.basin & !identical(class(format),"data.frame"))
@@ -1163,6 +1170,9 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
         #Interpolate variables
         dataInter = getInterpolatedData(dat, j, dt, method)
+        cat("datainter")
+        print(dataInter)
+        cat("\n")
 
         #For every interpolated time steps dt
         for (i in 1:dt) {
@@ -1188,6 +1198,9 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
                                                            format, sts@basin,
                                                            dataInter, i, dist.m,
                                                            x, y)
+          cat("wind")
+          print(raster.wind)
+          cat("\n")
 
           #Stacking product
           aux.stack = stackProduct(product, aux.stack, raster.template,
@@ -1211,6 +1224,10 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
       #Rasterize final product
       aux.stack = terra::rast(aux.stack)
+      cat("aux.stack")
+      print(aux.stack)
+      cat("\n")
+
       final.stack = rasterizeProduct(product, format, final.stack, aux.stack,
                                      time_res, st@name, ind)
 
@@ -1251,6 +1268,9 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
   if(!identical(class(format),"data.frame")){
     final.stack = terra::rast(final.stack)
+    cat("final.stack")
+    print(final.stack)
+    cat("\n")
     final.stack = maskProduct(final.stack, focus_loi,
                               sts@spatial.loi.buffer, raster.template)
 
