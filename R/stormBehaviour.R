@@ -620,7 +620,7 @@ stackRaster = function(stack, raster_template, raster_wind, is_basin, extent){
 
   cat("Before merge\n")
   print(ras)
-  ras = terra::merge(ras, raster_wind)
+  ras = terra::merge(raster_wind, ras)
   cat("\nBefore crop\n")
   print(ras)
   ras = terra::crop(ras, extent)
