@@ -7,5 +7,8 @@ Basins = data.frame(row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL
                     ymin = c(0, -60, 0, 0, -60, -60, 0, -60),
                     ymax = c(60, 0, 60, 60, 0, 0, 30, 60))
 
+sshs = c(18, 33, 42, 49, 58, 70, 100)
 
-usethis::use_data(Basins, overwrite = TRUE)
+sshsPalette = c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
+
+usethis::use_data(Basins, sshs, sshsPalette, internal = TRUE, overwrite = T)

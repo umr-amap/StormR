@@ -667,6 +667,7 @@ stackRasterPDI = function(stack, raster_template, raster_wind, is_basin, extent)
 #' @return list of SpatRaster
 stackRasterExposure = function(stack, raster_template, raster_wind, is_basin, extent){
 
+  sshs <- NULL
   for(c in 2:6){
     raster_c_model = raster_wind
     terra::values(raster_c_model) = NA
