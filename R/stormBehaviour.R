@@ -612,12 +612,24 @@ computeWindProfile = function(method, asymmetry, format, basin, data, index, dis
 #' @return list of SpatRaster
 stackRaster = function(stack, raster_template, raster_wind, is_basin, extent){
 
+  cat("STACKRASTER\n")
+  print(raster_template)
+  print(raster_wind)
+  print(is_basin)
+  print(extent)
+
   ras = raster_template
   if(is_basin)
     ras = terra::crop(ras, extent)
 
+  cat("before merge\n")
+  print(ras)
   ras = terra::merge(ras, raster_wind)
+  cat("\nbefore crop\n")
+  print(ras)
   ras = terra::crop(ras, extent)
+  cat("\naftercrop\n")
+  print(ras)
 
   return(c(stack, ras))
 }
