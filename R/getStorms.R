@@ -53,7 +53,7 @@ Storm = methods::setClass(
 
 
 
-
+setOldClass("sf")
 #' Storms object
 #'
 #' Gather all the needed informations to model a set of storms
@@ -119,7 +119,7 @@ checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remov
 
   #Checking time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
-  stopifnot("time_period must be as integers" = ds4psy::is_wholenumber(time_period))
+  time_period = as.integer(time_period)
   stopifnot("lower bound of time range is not valid" = time_period > 1979)
   stopifnot("upper bound of time range is not valid" = time_period < 2023)
 
