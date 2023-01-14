@@ -613,22 +613,18 @@ computeWindProfile = function(method, asymmetry, format, basin, data, index, dis
 stackRaster = function(stack, raster_template, raster_wind, is_basin, extent){
 
   cat("STACKRASTER\n")
-  print(raster_template)
-  print(raster_wind)
-  print(is_basin)
-  print(extent)
 
   ras = raster_template
   if(is_basin)
     ras = terra::crop(ras, extent)
 
-  cat("before merge\n")
+  cat("Before merge\n")
   print(ras)
   ras = terra::merge(ras, raster_wind)
-  cat("\nbefore crop\n")
+  cat("\nBefore crop\n")
   print(ras)
   ras = terra::crop(ras, extent)
-  cat("\naftercrop\n")
+  cat("\nAftercrop\n")
   print(ras)
 
   return(c(stack, ras))
@@ -1142,15 +1138,8 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
     #Handling indices inside loi.buffer or not
     ind = getIndices(st, format, focus_loi)
 
-    cat("indices")
-    print(ind)
-    cat("\n")
-
     #Getting data associated with storm st
     dat = getData(st, ind, asymmetry, empirical_rmw, method)
-    cat("data")
-    print(ind)
-    cat("\n")
 
     #Reduce extent of raster if loi represents the whole basin
     if(sts@loi.basin & !identical(class(format),"data.frame"))
@@ -1182,9 +1171,6 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
         #Interpolate variables
         dataInter = getInterpolatedData(dat, j, dt, method)
-        cat("datainter")
-        print(dataInter)
-        cat("\n")
 
         #For every interpolated time steps dt
         for (i in 1:dt) {
@@ -1210,17 +1196,10 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
                                                            format, sts@basin,
                                                            dataInter, i, dist.m,
                                                            x, y)
-          cat("wind\n")
-          print(raster.wind)
-          cat("\n")
 
           #Stacking product
           aux.stack = stackProduct(product, aux.stack, raster.template,
                                    raster.wind, sts@loi.basin, ext)
-
-          cat("aux.stack list\n")
-          print(aux.stack)
-          cat("\n")
 
 
           if(format == "profiles")
