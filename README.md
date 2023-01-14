@@ -195,7 +195,7 @@ st = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
 plotStorms(st, labels = T, legends = T)
 
 #Compute Maximum Sustained Wind raster according to Willoughby et al. 2006 analytic model adding version 2 formula of asymmetry 
-st_msw = stormBehaviour(st, asymmetry = "None", verbose = T)
+st_msw = stormBehaviour(st, asymmetry = "V2", verbose = T)
 
 #Plot the above raster alongside with the track of the storm
 plotBehaviour(st, st_msw, labels = T)
@@ -281,7 +281,7 @@ xlim = c(250,270), ylim = c(10,20), grtc = 8)
 
 #Make loi
 pol1 = sf::st_sfc(sf::st_polygon(list(cbind(c(220,250,250,220,220),c(10,10,30,30,10)))))
-loi1 = sf::st_sf(pol, crs = 4326)
+loi1 = sf::st_sf(pol1, crs = 4326)
 
 #Get data for TC KENNETH 2017 within loi1 
 kenneth = getStorms(basin = "EP", time_period = 2017, name = "KENNETH", loi = loi1, max_dist = 10, verbose = T)
@@ -308,7 +308,7 @@ plotBehaviour(kenneth, kenneth_msw, labels = T, xlim = c(225,235), ylim = c(16,2
 
 #Make loi
 pol2 = sf::st_sfc(sf::st_polygon(list(cbind(c(167,168,168,167,167),c(-16,-16,-13,-13,-16)))))
-loi2 = sf::st_sf(pol, crs = 4326)
+loi2 = sf::st_sf(pol2, crs = 4326)
 
 #Get TC HAROLD 2020 data
 harold = getStorms(time_period = 2020, name= "HAROLD", loi = loi2, verbose = T)
