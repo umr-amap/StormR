@@ -1198,7 +1198,7 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
                                                            format, sts@basin,
                                                            dataInter, i, dist.m,
                                                            x, y)
-          cat("wind")
+          cat("wind\n")
           print(raster.wind)
           cat("\n")
 
@@ -1206,6 +1206,9 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
           aux.stack = stackProduct(product, aux.stack, raster.template,
                                    raster.wind, sts@loi.basin, ext)
 
+          cat("aux.stack list\n")
+          print(aux.stack)
+          cat("\n")
 
 
           if(format == "profiles")
@@ -1224,7 +1227,7 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
       #Rasterize final product
       aux.stack = terra::rast(aux.stack)
-      cat("aux.stack")
+      cat("aux.stack done\n")
       print(aux.stack)
       cat("\n")
 
@@ -1268,7 +1271,7 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
   if(!identical(class(format),"data.frame")){
     final.stack = terra::rast(final.stack)
-    cat("final.stack")
+    cat("final.stack\n")
     print(final.stack)
     cat("\n")
     final.stack = maskProduct(final.stack, focus_loi,
