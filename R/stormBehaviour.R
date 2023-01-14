@@ -618,14 +618,14 @@ stackRaster = function(stack, raster_template, raster_wind, is_basin, extent){
   if(is_basin)
     ras = terra::crop(ras, extent)
 
-  cat("Before merge\n")
-  print(ras)
+  # cat("Before merge\n")
+  # print(ras)
   ras = terra::merge(raster_wind, ras)
-  cat("\nBefore crop\n")
-  print(ras)
+  # cat("\nBefore crop\n")
+  # print(ras)
   ras = terra::crop(ras, extent)
-  cat("\nAftercrop\n")
-  print(ras)
+  # cat("\nAftercrop\n")
+  # print(ras)
 
   return(c(stack, ras))
 }
@@ -675,7 +675,6 @@ stackRasterPDI = function(stack, raster_template, raster_wind, is_basin, extent)
 #' @return list of SpatRaster
 stackRasterExposure = function(stack, raster_template, raster_wind, is_basin, extent){
 
-  sshs <- NULL
   for(c in 2:6){
     raster_c_model = raster_wind
     terra::values(raster_c_model) = NA
