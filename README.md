@@ -340,7 +340,6 @@ plotBehaviour(harold,pf["HAROLD_profile42"], labels = T, xlim = c(166,168), ylim
 plotBehaviour(harold,pf["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
 
->>>>>>> Fix several bugs + add examples README
 
 ##############
 #Get all TCs #
