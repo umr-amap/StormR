@@ -19,7 +19,6 @@ You can install the development version of StormR like so:
 ``` r
 #install.packages("devtools")
 devtools::install_github("umr-amap/StormR")
-devtools::install_deps("umr-amap/StormR")
 ```
 
 
