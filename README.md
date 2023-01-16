@@ -19,7 +19,6 @@ You can install the development version of StormR like so:
 ``` r
 #install.packages("devtools")
 devtools::install_github("umr-amap/StormR")
-devtools::install_deps("umr-amap/StormR")
 ```
 
 
@@ -228,9 +227,6 @@ plotBehaviour(sts, sts_pdi[["ERICA_PDI"]], labels = T)
 
 #Compute time series of wind speed on coordinates contained in df according to Willoughby et al. 2006 analytic model, adding version 2 formula of asymmetry 
 df = data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
-<<<<<<< HEAD
-wind.ts = stormBehaviour(sts, format = df, verbose = T)
-=======
 wind_ts = stormBehaviour(sts, format = df, verbose = T)
 
 
