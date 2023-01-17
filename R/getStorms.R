@@ -289,9 +289,15 @@ retrieveStorms = function(filter_names, filter_time_period, filter_basin, names,
       seasons.id = which(seasons == filter_time_period[n])
       storm.id = NULL
       storm.id = which(names == filter_names[n])
-      stopifnot("Storm not found" = !is.null(storm.id))
-      id = seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]]
-      stopifnot("Storm not found" = !all(is.na(id)))
+      stopifnot("Storm not found, invalid name ?" = !is.null(storm.id))
+
+      # print(stats::na.omit(match(storm.id, seasons.id))[1])
+      # print(match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))])
+      # print(seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]])
+      # print(seasons.id[!is.na(match(storm.id, seasons.id))])
+
+      id = seasons.id[match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))]]
+      stopifnot("Storm not found, time_period and name do not match" = !all(is.na(id)))
       indices = c(indices, id)
     }
   } else{
