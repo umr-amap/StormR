@@ -119,7 +119,7 @@ checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remov
 
   #Checking time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
-  time_period = as.integer(time_period)
+  stopifnot("time_period must be as integer" = all(round(time_period) == time_period))
   stopifnot("lower bound of time range is not valid" = time_period > 1979)
   stopifnot("upper bound of time range is not valid" = time_period < 2023)
 
@@ -402,14 +402,18 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
   lat = TC_data$latitude[1:numobs, index]
   coords = data.frame(lon = lon, lat = lat)
 
+  #Keep only non NA data (that are either the first or last observations)
+  valid_indices = which(!is.na(coords$lon))
+  coords = coords[valid_indices,]
+
   #Removing invalid iso_time
-  iso.time = TC_data$iso.times[1:numobs, index]
+  iso.time = TC_data$iso.times[valid_indices, index]
   list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
   #Keep only 03H 06H 09H 12H 15H 18h 21H 00h iso times
   ind.iso.time = which(list.iso.time %% 3 == 0)
   coords = coords[ind.iso.time,]
-  coords = coords[stats::complete.cases(coords),]
   row.names(coords) = seq(1,dim(coords)[1])
+  #print(coords)
 
   #Creating sf point coordinates to intersect with loi_sf_buffer
   pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
@@ -431,24 +435,26 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
     storm@season = TC_data$seasons[index]
     storm@basin = TC_data$basins[index]
     storm@obs.all = data.frame(
-      subbasin = TC_data$subbasin[1:numobs, index],
+      subbasin = TC_data$subbasin[valid_indices, index],
       iso.time = iso.time,
-      lon = lon,
-      lat = lat,
-      msw = zoo::na.approx(round(TC_data$msw[1:numobs, index] * knt2ms), na.rm = F, rule = 2),
-      rmw = zoo::na.approx(TC_data$rmw[1:numobs, index], na.rm = F, rule = 2),
-      roci = zoo::na.approx(TC_data$roci[1:numobs, index], na.rm = F, rule = 2),
-      pres = zoo::na.approx(TC_data$pres[1:numobs, index], na.rm = F, rule = 2),
-      poci = zoo::na.approx(TC_data$poci[1:numobs, index], na.rm = F, rule = 2),
-      sshs = TC_data$sshs[1:numobs, index]
+      lon = lon[valid_indices],
+      lat = lat[valid_indices],
+      msw = zoo::na.approx(round(TC_data$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2),
+      rmw = zoo::na.approx(TC_data$rmw[valid_indices, index], na.rm = F, rule = 2),
+      roci = zoo::na.approx(TC_data$roci[valid_indices, index], na.rm = F, rule = 2),
+      pres = zoo::na.approx(TC_data$pres[valid_indices, index], na.rm = F, rule = 2),
+      poci = zoo::na.approx(TC_data$poci[valid_indices, index], na.rm = F, rule = 2),
+      sshs = TC_data$sshs[valid_indices, index]
     )
 
+
     #Removing wrong approximation to clean data
-    storm@obs.all$msw[is.na(storm@obs.all$lon)] = NA
-    storm@obs.all$rmw[is.na(storm@obs.all$lon)] = NA
-    storm@obs.all$roci[is.na(storm@obs.all$lon)] = NA
-    storm@obs.all$poci[is.na(storm@obs.all$lon)] = NA
-    storm@obs.all$pres[is.na(storm@obs.all$lon)] = NA
+    # storm@obs.all$msw[is.na(storm@obs.all$lon)] = NA
+    # storm@obs.all$rmw[is.na(storm@obs.all$lon)] = NA
+    # storm@obs.all$roci[is.na(storm@obs.all$lon)] = NA
+    # storm@obs.all$poci[is.na(storm@obs.all$lon)] = NA
+    # storm@obs.all$pres[is.na(storm@obs.all$lon)] = NA
+
 
     #Wrapping longitudes from -180/180 to 0/360
     lg = which(storm@obs.all$lon < 0)
@@ -461,7 +467,8 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
 
 
     if(!loi_is_basin){
-      ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all$lon),])[ind])
+      #ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all$lon),])[ind])
+      ind = ind
     }else{
       ind = seq(1,storm@numobs.all)
     }
