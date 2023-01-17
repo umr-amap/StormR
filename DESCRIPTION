@@ -29,7 +29,6 @@ Imports:
     rworldxtra,
     sf,
     sp,
-    stats,
     stringr,
     terra,
     utils,
