@@ -47,7 +47,6 @@ test_that("Tests invalid inputs", {
   #Checking space_res validity
   expect_error(stormBehaviour(pam, space_res  = "TRUE"))
   expect_error(stormBehaviour(pam, space_res  = T))
-  expect_error(stormBehaviour(pam, space_res  = 2.3))
   expect_error(stormBehaviour(pam, space_res  = c(2,3)))
 
 

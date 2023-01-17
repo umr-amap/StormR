@@ -2,6 +2,24 @@
 
 
 
+#' Linear interpolation of a vector
+#'
+#' @noRd
+#' @param x numeric vector, to approximate
+#'
+#' @return linear interpolated x vector
+linearInterpolation = function(x){
+
+  l = length(x)
+  step = (x[l] - x[1])/l
+
+  return(seq(x[1], x[l], step))
+
+}
+
+
+
+
 
 #' Compute the Radius of Maximum Wind
 #'
@@ -161,14 +179,13 @@ checkInputsSb = function(sts, product, method, asymmetry,
 
   #Checking space_res input
   stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
-  stopifnot("space_res must be as integer" = is_wholenumber(space_res))
   stopifnot("space_res must be length 1" = length(space_res) == 1)
   stopifnot("space_res must be positif" = space_res > 0)
 
   #Checking time_res input
   stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
-  stopifnot("invalid time_res" = time_res %in% c(1, 0.75, 0.5, 0.25))
   stopifnot("time_res must be length 1" = length(time_res) == 1)
+  stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
 
   #Checking verbose input
   stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
@@ -1256,7 +1273,6 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
 
   }else{
 
-    #names(final.result) = rep(sts@names, dim(format)[1])
     return(final.result)
   }
 
