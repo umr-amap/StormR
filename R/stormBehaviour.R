@@ -2,25 +2,6 @@
 
 
 
-#' Linear interpolation of a vector
-#'
-#' @noRd
-#' @param x numeric vector, to approximate
-#'
-#' @return linear interpolated x vector
-linearInterpolation = function(x){
-
-  l = length(x)
-  step = (x[l] - x[1])/l
-
-  return(seq(x[1], x[l], step))
-
-}
-
-
-
-
-
 #' Compute the Radius of Maximum Wind
 #'
 #' It is an empirical formula extracted from Willoughby et al. 2006 model

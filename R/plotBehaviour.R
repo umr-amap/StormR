@@ -13,7 +13,7 @@
 #' @param by numeric
 #' @param pos numeric
 #' @return NULL
-checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos){
+checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos, color_palette){
 
   #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -37,18 +37,21 @@ checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos){
                 ylim <= 90)
   }
 
-  #Checking labels inputs
+  #Checking labels input
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
 
-  #Checking by inputs
+  #Checking by input
   stopifnot("by must be numeric" = identical(class(by),"numeric"))
   stopifnot("by must length 1" = length(by) == 1)
   stopifnot("by must be as integer" = round(by) == by)
 
-  #Checking pos inputs
+  #Checking pos input
   stopifnot("pos must be numeric" = identical(class(pos),"numeric"))
   stopifnot("pos must length 1" = length(pos) == 1)
   stopifnot("pos must be between either 1, 2, 3 or 4" = pos %in% c(1, 2, 3, 4))
+
+  #Checking color_palette input
+  stopifnot("color_palette must be character" = identical(class(color_palette),"character"))
 
 }
 
@@ -81,6 +84,9 @@ checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos){
 #'@param pos numeric. Must be between 1 and 4. Correspond to the position of
 #'  labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 #'  Default value is set to 3
+#'@param color_palette character vector. Represents the color palette used for the plot.
+#'  Default value is set to NULL, which will automatically choose a color palette
+#'  depending on the product of raster_product
 #'@returns NULL
 #'
 #' @examples
@@ -103,7 +109,7 @@ checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos){
 #'
 #'@export
 plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels = FALSE,
-                         by = 8, pos = 3){
+                         by = 8, pos = 3, color_palette = NULL){
 
 
   checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos)
@@ -113,7 +119,6 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
 
   if (!(name %in% sts@names))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
-
 
 
   #Handling spatial extent
@@ -135,19 +140,16 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
 
 
   #Plotting track
-  plotStorms(
-    sts = sts,
-    names = name,
-    xlim = c(xmin, xmax),
-    ylim = c(ymin, ymax)
-  )
+  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax))
 
   #Adding title
   graphics::title(paste0(name," ",sts@data[[name]]@season))
 
-
   #Adding raster_product on map
   if (product == "MSW" | stringr::str_detect(product,"profile")) {
+
+    col = mswPalette
+    range = c(17, 80)
     if(product == "MSW"){
       leg = expression(paste("MSW (m.s" ^ "-1)"))
 
@@ -155,64 +157,28 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
       leg = expression(paste("radial wind speed (m.s" ^ "-1)"))
     }
 
-    plot(
-      raster_product,
-      col = rev(grDevices::heat.colors(50)),
-      xlim = c(xmin, xmax),
-      ylim = c(ymin, ymax),
-      alpha = 0.7,
-      axes = FALSE,
-      range = c(17, 80),
-      legend = T,
-      plg = list(
-        title = leg,
-        title.cex = 0.9,
-        cex = 0.7,
-        shrink = 0
-      ),
-      add = T,
-    )
-
-
   } else if (product == "PDI") {
-    plot(
-      raster_product,
-      col = rev(viridis::inferno(50)),
-      xlim = c(xmin, xmax),
-      ylim = c(ymin, ymax),
-      alpha = 0.7,
-      axes = FALSE,
-      range = c(0, max(terra::values(raster_product),na.rm = T)),
-      plg = list(
-        title = expression(paste("PDI")),
-        title.cex = 0.9,
-        cex = 0.7,
-        shrink = 0
-      ),
-      add = T
-    )
-  } else if (product %in% c("Exposure1",
-                            "Exposure2",
-                            "Exposure3",
-                            "Exposure4",
-                            "Exposure5",
-                            "ExposureAll")) {
-    plot(
-      raster_product,
-      col = rev(viridis::viridis(50)),
-      xlim = c(xmin, xmax),
-      ylim = c(ymin, ymax),
-      alpha = 0.7,
-      axes = FALSE,
-      plg = list(
-        title = expression(paste("Time spent (h)")),
-        title.cex = 0.9,
-        cex = 0.7,
-        shrink = 0
-      ),
-      add = T
-    )
+
+    col = pdiPalette
+    range = c(0, max(terra::values(raster_product), na.rm = T))
+    leg = expression(paste("PDI"))
+
+
+  } else if (stringr::str_detect(product,"Exposure")) {
+
+    col = exposurePalette
+    range = c(0, max(terra::values(raster_product), na.rm = T))
+    leg = expression(paste("Time spent (h)"))
+
   }
+
+  if(!is.null(color_palette))
+    col = color_palette
+
+  plot(raster_product, col = col, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
+       alpha = 0.7, axes = FALSE, range = range, legend = T,
+       plg = list(title = leg, title.cex = 0.9, cex = 0.7, shrink = 0), add = T)
+
 
   #Adding track again (to emphazise)
   plotTrack(sts@data[[name]], FALSE)

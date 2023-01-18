@@ -11,7 +11,8 @@ plotBehaviour(
   ylim = NULL,
   labels = FALSE,
   by = 8,
-  pos = 3
+  pos = 3,
+  color_palette = NULL
 )
 }
 \arguments{
@@ -38,6 +39,10 @@ value is set to 8 which represents a 24h time interval}
 \item{pos}{numeric. Must be between 1 and 4. Correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 Default value is set to 3}
+
+\item{color_palette}{character vector. Represents the color palette used for the plot.
+Default value is set to NULL, which will automatically choose a color palette
+depending on the product of raster_product}
 }
 \description{
 This function plots a rasterize product (Maximum Sustained Wind, Power

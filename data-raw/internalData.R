@@ -11,4 +11,10 @@ sshs = c(18, 33, 42, 49, 58, 70, 100)
 
 sshsPalette = c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 
-usethis::use_data(Basins, sshs, sshsPalette, internal = TRUE, overwrite = T)
+mswPalette = rev(grDevices::heat.colors(50))
+
+pdiPalette = rev(viridis::inferno(50))
+
+exposurePalette = rev(viridis::viridis(50))
+
+usethis::use_data(Basins, sshs, sshsPalette, mswPalette, pdiPalette, exposurePalette, internal = TRUE, overwrite = T)
