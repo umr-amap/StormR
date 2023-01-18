@@ -304,10 +304,12 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
       map = sf::st_as_sf(map)
   }
 
-  grtc = 2 ** round(log2(grtc))
-  warning(paste("grtc is not a power of 2, set to", grtc))
 
-
+  l2 = log2(grtc)
+  if (!(l2 == round(l2))) {
+    grtc = 2 ** round(l2)
+    warning(paste("grtc is not a power of 2, set to", grtc))
+  }
 
 
   #Handling spatial extent
