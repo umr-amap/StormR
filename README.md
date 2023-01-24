@@ -32,11 +32,11 @@ StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' from the [International Best
 * ALL: the above 7 basins combined
 
 in the StormR package, the default value for the basin is set to SP, as the developpement team is located/interested in this particular region and because this basin has been used to test the package. However, the user can select a different basin.
-For the purpose of data reliability and accuracy, StormR only faciltates access to storms and tropical cyclones after 1980. Data for older storms is spatially less accurate and may therefore produce errors. [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
+For the purpose of data reliability and accuracy, StormR only faciltates access to storms and tropical cyclones after 1980. Data for older storms is spatially less accurate and may therefore produce errors: you can [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for more details on data limitations of the IBTrACS database.
 
 ## Models
 
-Two cyclonic models are available within this package in order to compute radial wind speed:
+StormR allows computing radial wind speed using two cyclonic models:
 
 $\textbf{Willoughby et al. 2006}$ <br />
 Insert comments about the model here <br />
