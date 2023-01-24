@@ -8,13 +8,11 @@
 
 ## Overview
 
-StormR is a package developped to analyze past storms and tropical cyclones that occured in the whole
-world beyond 1980. It let the user gather all its interested storms in a single object and then use it
-to either plot tracks on a map, or compute/rasterize regimes of wind speed, 2D structures of radial wind and various other products.
+StormR is a package developped to analyze past storms and tropical cyclones that occurred after 1980 anywhere in the world beyond 1980. It allows users to compute cyclone characteristics (e.g., maximum sustained wind speed, exposure period), gather storms of interest in a single object, rasterize available data, and plot maps of cyclone tracks and charateristics.
 
 ## Installation
 
-You can install the development version of StormR like so:
+You can install the development version of StormR as follows:
 
 ``` r
 #install.packages("devtools")
