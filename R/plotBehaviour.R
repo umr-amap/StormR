@@ -12,6 +12,7 @@
 #' @param labels logical
 #' @param by numeric
 #' @param pos numeric
+#' @param color_palette character vector
 #' @return NULL
 checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos, color_palette){
 
@@ -51,7 +52,8 @@ checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos, color
   stopifnot("pos must be between either 1, 2, 3 or 4" = pos %in% c(1, 2, 3, 4))
 
   #Checking color_palette input
-  stopifnot("color_palette must be character" = identical(class(color_palette),"character"))
+  if(!is.null(color_palette))
+    stopifnot("color_palette must be character" = identical(class(color_palette),"character"))
 
 }
 
@@ -112,7 +114,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
                          by = 8, pos = 3, color_palette = NULL){
 
 
-  checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos)
+  checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos, color_palette)
 
   name = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
   product = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
@@ -148,7 +150,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
   #Adding raster_product on map
   if (product == "MSW" | stringr::str_detect(product,"profile")) {
 
-    col = mswPalette
+    col = mswSSHSPalette
     range = c(17, 80)
     if(product == "MSW"){
       leg = expression(paste("MSW (m.s" ^ "-1)"))

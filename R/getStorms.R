@@ -174,10 +174,9 @@ checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remov
 #' @noRd
 #' @param loi loi input from getStorms
 #' @param basin basin input form getStorms
-#' @param projection projection used for the sf object
 #'
 #' @return list with 2 slots : loi in a sf format and logical (Whether loi is whole basin or not)
-convertLoi = function(loi, basin, projection){
+convertLoi = function(loi, basin){
 
   if(is.null(loi)){
 
@@ -189,7 +188,7 @@ convertLoi = function(loi, basin, projection){
                  c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
 
     loi.sf = sf::st_polygon(list(poly))
-    loi.sf = sf::st_sfc(loi.sf, crs = projection)
+    loi.sf = sf::st_sfc(loi.sf, crs = wgs84)
     loi.sf = sf::st_as_sf(loi.sf)
 
   } else{
@@ -198,8 +197,8 @@ convertLoi = function(loi, basin, projection){
     if (identical(class(loi), c("SpatialPolygons"))) {
       loi.id = "SpatialPolygons"
       loi.sf = sf::st_as_sf(loi)
-      if (sf::st_crs(loi.sf) != projection) {
-        sf::st_transform(loi.sf, crs = projection)
+      if (sf::st_crs(loi.sf) != wgs84) {
+        sf::st_transform(loi.sf, crs = wgs84)
       }
 
     } else if (identical(class(loi), c("sf", "data.frame"))) {
@@ -222,7 +221,7 @@ convertLoi = function(loi, basin, projection){
         poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
                      c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
         loi.sf = sf::st_polygon(list(poly))
-        loi.sf = sf::st_sfc(loi.sf, crs = projection)
+        loi.sf = sf::st_sfc(loi.sf, crs = wgs84)
         loi.sf = sf::st_as_sf(loi.sf)
 
       }else{
@@ -231,13 +230,12 @@ convertLoi = function(loi, basin, projection){
         id.country = which(map@data$ADMIN == loi)
         stopifnot("invalid entry for loi" = length(id.country) > 0)
         loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
-
       }
     }
   }
 
   #Handling time line for Fiji
-  sf::st_crs(loi.sf) = projection
+  sf::st_crs(loi.sf) = wgs84
   loi.sf = sf::st_shift_longitude(loi.sf)
 
   return(list(sf = loi.sf, basin = loi.is.basin))
@@ -386,7 +384,6 @@ loadData = function(TC_data_base, max_obs, indices, storm_names, seasons, basins
 #' @param loi_sf_buffer sf object. Location of interest extended with buffer
 #' @param loi_is_basin logical. Whether loi is whole basin or not
 #' @param k numeric. linetype
-#' @param projection projection used for sf object
 #'
 #' @return a list with 3 slots:
 #'   \itemize{
@@ -396,9 +393,7 @@ loadData = function(TC_data_base, max_obs, indices, storm_names, seasons, basins
 #'     \item numeric
 #'   }
 writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
-                       TC_data, index, loi_sf_buffer, loi_is_basin, k,
-                       projection){
-  knt2ms = 0.514
+                       TC_data, index, loi_sf_buffer, loi_is_basin, k){
 
   #Getting number of observations
   numobs = TC_data$numObservations[index]
@@ -423,7 +418,7 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
 
   #Creating sf point coordinates to intersect with loi_sf_buffer
   pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
-  sf::st_crs(pts) = projection
+  sf::st_crs(pts) = wgs84
 
   if(!loi_is_basin){
     ind = which(sf::st_intersects(pts, loi_sf_buffer, sparse = FALSE) == TRUE)
@@ -453,15 +448,6 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
       sshs = TC_data$sshs[valid_indices, index]
     )
 
-
-    #Removing wrong approximation to clean data
-    # storm@obs.all$msw[is.na(storm@obs.all$lon)] = NA
-    # storm@obs.all$rmw[is.na(storm@obs.all$lon)] = NA
-    # storm@obs.all$roci[is.na(storm@obs.all$lon)] = NA
-    # storm@obs.all$poci[is.na(storm@obs.all$lon)] = NA
-    # storm@obs.all$pres[is.na(storm@obs.all$lon)] = NA
-
-
     #Wrapping longitudes from -180/180 to 0/360
     lg = which(storm@obs.all$lon < 0)
     storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
@@ -472,12 +458,9 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
     row.names(storm@obs.all) = seq(1,storm@numobs.all)
 
 
-    if(!loi_is_basin){
-      #ind = as.numeric(row.names(storm@obs.all[stats::complete.cases(storm@obs.all$lon),])[ind])
-      ind = ind
-    }else{
+    if(loi_is_basin)
       ind = seq(1,storm@numobs.all)
-    }
+
 
     storm@obs = ind
     storm@numobs = length(ind)
@@ -558,16 +541,11 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
   if (!is.null(name))
     name = name[o]
 
-
-  #Internal variables
-  km = 1000
-  wgs84 = 4326
-
   if (verbose)
     cat("Making buffer: ")
 
   #Converting loi
-  args = convertLoi(loi, basin, wgs84)
+  args = convertLoi(loi, basin)
   loi.sf = args$sf
   loi.is.basin = args$basin
 
@@ -645,8 +623,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                                index = i,
                                loi_sf_buffer = loi.sf.buffer,
                                loi_is_basin = loi.is.basin,
-                               k = k,
-                               projection = wgs84)
+                               k = k)
 
       if(!is.null(sts.output[[1]])){
         storm.list = sts.output[[1]]
