@@ -106,20 +106,20 @@ for every observations
 \examples{
 #Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with
 #version 2 of asymmetry
-msw_pam = stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
+msw_pam <- stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
 
 #Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland
 # model without asymmetry
-pdi_nc = stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
+pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
                         product = "PDI", verbose = TRUE)
 
 #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using
 #Willoughby model without asymmetry
-prof_nc = stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
+prof_nc <- stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
 
 #Compute time series of wind speed for ERICA and NIRAN in New Caledonia using
 #Willoughby model without asymmetry
-df = data.frame(lon = c(166.5, 163), lat = c(-22, -19))
-ts_nc = stormBehaviour(sts_nc, format = df)
+df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+ts_nc <- stormBehaviour(sts_nc, format = df)
 
 }

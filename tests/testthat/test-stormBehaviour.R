@@ -31,9 +31,9 @@ test_that("Tests invalid inputs", {
 
 
   #Checking result validity
-  res = data.frame(longitude = c(160,162), latitude = c(160,162))
-  res2 = data.frame(longitude = c(380,-180), latitude = c(100,-100))
-  m = cbind(c(160,162),c(160,162))
+  res <- data.frame(longitude = c(160,162), latitude = c(160,162))
+  res2 <- data.frame(longitude = c(380,-180), latitude = c(100,-100))
+  m <- cbind(c(160,162),c(160,162))
   expect_error(stormBehaviour(pam, result = "2Dstruct"))
   expect_error(stormBehaviour(pam, result = T))
   expect_error(stormBehaviour(pam, result = 2))

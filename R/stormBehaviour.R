@@ -10,7 +10,7 @@
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #'
 #' @returns Radius of Maximum Wind (km)
-getRmw = function(msw, lat) {
+getRmw <- function(msw, lat) {
   return (46.4 * exp(-0.0155 * msw + 0.0169 * abs(lat)))
 }
 
@@ -30,24 +30,24 @@ getRmw = function(msw, lat) {
 #'
 #' @returns radial wind speed value (m/s) according to Willoughby model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Willoughby_profile = function(r, rmw, msw, lat){
+Willoughby_profile <- function(r, rmw, msw, lat){
 
   if (r >= rmw) {
-    xx1 = 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
-    xx2 = 25
-    aa = 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
-    vr = msw * ((1 - aa) * exp(-abs((r - rmw) / xx1)) + aa * exp(-abs(r -
+    xx1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
+    xx2 <- 25
+    aa <- 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
+    vr <- msw * ((1 - aa) * exp(-abs((r - rmw) / xx1)) + aa * exp(-abs(r -
                                                                           rmw) / xx2))
   } else{
-    nn = 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
-    vr = msw * abs((r / rmw) ^ nn)
+    nn <- 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
+    vr <- msw * abs((r / rmw) ^ nn)
   }
 
   return(vr)
 }
 
 #Vectorize version of the above model
-Willoughby = Vectorize(Willoughby_profile, vectorize.args = "r")
+Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 
 
 
@@ -66,20 +66,20 @@ Willoughby = Vectorize(Willoughby_profile, vectorize.args = "r")
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #' @returns radial wind speed value (m/s) according to Holland 80 model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Holland80_profile = function(r, rmw, msw, pc, poci, lat){
+Holland80_profile <- function(r, rmw, msw, pc, poci, lat){
 
-  rho = 1.15  #air densiy
-  f = 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
-  b = rho * exp(1) * msw**2 / (poci - pc)
+  rho <- 1.15  #air densiy
+  f <- 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
+  b <- rho * exp(1) * msw**2 / (poci - pc)
 
-  vr = sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
+  vr <- sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
 
   return(vr)
 
 }
 
 #Vectorize version of the above model
-Holland80 = Vectorize(Holland80_profile, vectorize.args = "r")
+Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
 
 
 
@@ -91,7 +91,8 @@ Holland80 = Vectorize(Holland80_profile, vectorize.args = "r")
 #' @param vr numeric. Radial wind speed (m/s)
 #'
 #' @return Associated surface drag coefficient
-compute_Cd = function(vr){
+compute_Cd <- function(vr){
+
   if(is.na(vr)){
     return(NA)
   }else if(vr <= 18){
@@ -105,7 +106,7 @@ compute_Cd = function(vr){
 }
 
 #Vectorize version of the above function
-rasterizeCd = Vectorize(compute_Cd, vectorize.args = "vr")
+rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 
 
 
@@ -125,7 +126,7 @@ rasterizeCd = Vectorize(compute_Cd, vectorize.args = "vr")
 #' @param verbose logical
 #' @param focus_loi logical
 #' @return NULL
-checkInputsSb = function(sts, product, method, asymmetry,
+checkInputsSb <- function(sts, product, method, asymmetry,
                          empirical_rmw, format, space_res,
                          time_res, verbose, focus_loi){
 
@@ -188,15 +189,15 @@ checkInputsSb = function(sts, product, method, asymmetry,
 #' @param res numeric. Space resolution (km) for the template
 #'
 #' @return a SpatRaster
-makeTemplateRaster = function(buffer, res){
+makeTemplateRaster <- function(buffer, res){
 
   #Derivating the raster template
-  ext = terra::ext(sf::st_bbox(buffer)$xmin,
+  ext <- terra::ext(sf::st_bbox(buffer)$xmin,
                     sf::st_bbox(buffer)$xmax,
                     sf::st_bbox(buffer)$ymin,
                     sf::st_bbox(buffer)$ymax)
 
-  ras = terra::rast(
+  ras <- terra::rast(
     xmin = ext$xmin,
     xmax = ext$xmax,
     ymin = ext$ymin,
@@ -204,17 +205,17 @@ makeTemplateRaster = function(buffer, res){
     vals = NA
   )
   #Projection in Mercator
-  ras = terra::project(ras, "EPSG:3857")
+  ras <- terra::project(ras, "EPSG:3857")
   #Resampling in new resolution in Mercator
-  template = ras
-  terra::res(template) = c(res * 1000, res * 1000)
-  template = terra::resample(ras, template)
+  template <- ras
+  terra::res(template) <- c(res * 1000, res * 1000)
+  template <- terra::resample(ras, template)
   #Reprojection in lon/lat
-  template = terra::project(template, "EPSG:4326")
+  template <- terra::project(template, "EPSG:4326")
 
   #Handling time line crossing
   if(terra::ext(template)$xmin < 0)
-    template = terra::rast(resolution = terra::res(template), extent = ext)
+    template <- terra::rast(resolution = terra::res(template), extent = ext)
 
   return(template)
 
@@ -237,29 +238,29 @@ makeTemplateRaster = function(buffer, res){
 #'
 #' @return numeric vector gathering the indices of observation to use to perform
 #' the further computations
-getIndices = function(st, offset, format, focus_loi){
+getIndices <- function(st, offset, format, focus_loi){
 
   #Handling indices inside loi.buffer or not
   if (focus_loi) {
     #Use observations within the loi for the computations
-    ind = seq(st@obs[1], st@obs[length(st@obs)], 1)
+    ind <- seq(st@obs[1], st@obs[length(st@obs)], 1)
 
     if(!identical(class(format),"data.frame")){
       if(format == "analytic"){
         #Handling indices and offset (outside of loi at entry and exit)
         for(o in 1:offset){
-          ind = c(st@obs[1] - o, ind)
-          ind = c(ind, st@obs[length(st@obs)] + o)
+          ind <- c(st@obs[1] - o, ind)
+          ind <- c(ind, st@obs[length(st@obs)] + o)
         }
 
         #Remove negative values and values beyond st@numobs.all
-        ind = ind[ind > 0 & ind <= st@numobs.all]
+        ind <- ind[ind > 0 & ind <= st@numobs.all]
 
       }
     }
   } else{
     #Use all observations available for the computations
-    ind = seq(1, st@numobs.all, 1)
+    ind <- seq(1, st@numobs.all, 1)
   }
 
   return(ind)
@@ -293,86 +294,86 @@ getIndices = function(st, offset, format, focus_loi){
 #'    \item vx.deg: numeric. Velocity of the speed in the x direction (deg/h)
 #'    \item vy.deg: numeric Velocity of the speed in the y direction (deg/h)
 #'  }
-getDataInterpolate = function(st, indices, dt, asymmetry, empirical_rmw, method){
+getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method){
 
 
-  len.indices = length(indices)
-  len.data = dt * (len.indices - 1) - (len.indices-2)
-  indices.obs = seq(1, len.data, dt-1)
+  len.indices <- length(indices)
+  len.data <- dt * (len.indices - 1) - (len.indices-2)
+  indices.obs <- seq(1, len.data, dt-1)
 
 
-  data = data.frame(lon = rep(NA, len.data),
-                    lat = rep(NA, len.data),
-                    storm.speed = rep(NA,len.data),
-                    vx.deg = rep(NA,len.data),
-                    vy.deg = rep(NA,len.data),
-                    msw = rep(NA,len.data),
-                    rmw = rep(NA,len.data))
+  data <- data.frame(lon <- rep(NA, len.data),
+                    lat <- rep(NA, len.data),
+                    storm.speed <- rep(NA,len.data),
+                    vx.deg <- rep(NA,len.data),
+                    vy.deg <- rep(NA,len.data),
+                    msw <- rep(NA,len.data),
+                    rmw <- rep(NA,len.data))
 
-  lon = st@obs.all$lon[indices]
-  lat = st@obs.all$lat[indices]
+  lon <- st@obs.all$lon[indices]
+  lat <- st@obs.all$lat[indices]
 
-  storm.speed = rep(NA, len.indices)
-  vx.deg = rep(NA, len.indices)
-  vy.deg = rep(NA, len.indices)
+  storm.speed <- rep(NA, len.indices)
+  vx.deg <- rep(NA, len.indices)
+  vy.deg <- rep(NA, len.indices)
 
   #Computing storm velocity (m/s)
   for(i in 1:(len.indices-1)){
-    storm.speed[i] = terra::distance(x = cbind(lon[i],lat[i]),
+    storm.speed[i] <- terra::distance(x = cbind(lon[i],lat[i]),
                                      y = cbind(lon[i+1],lat[i+1]),
                                      lonlat = T) * (0.001 / 3) / 3.6
 
     #component wise velocity in both x and y direction (degree/h)
-    vx.deg[i] = (lon[i + 1] - lon[i]) / 3
-    vy.deg[i] = (lat[i + 1] - lat[i]) / 3
+    vx.deg[i] <- (lon[i + 1] - lon[i]) / 3
+    vy.deg[i] <- (lat[i + 1] - lat[i]) / 3
   }
 
   if(asymmetry == "V2"){
-    data$msw[indices.obs] = st@obs.all$msw[indices] - storm.speed
+    data$msw[indices.obs] <- st@obs.all$msw[indices] - storm.speed
   }else{
-    data$msw[indices.obs] = st@obs.all$msw[indices]
+    data$msw[indices.obs] <- st@obs.all$msw[indices]
   }
 
   if(empirical_rmw){
-    data$rmw[indices.obs] = getRmw(msw, lat)
+    data$rmw[indices.obs] <- getRmw(msw, lat)
   }else{
     if(all(is.na(st@obs.all$rmw[indices])))
       stop("Missing rmw data to perform model. Consider setting empirical_rmw to TRUE")
-    data$rmw[indices.obs] = st@obs.all$rmw[indices]
+    data$rmw[indices.obs] <- st@obs.all$rmw[indices]
   }
 
-  data$lon[indices.obs] = lon
-  data$lat[indices.obs] = lat
-  data$storm.speed[indices.obs] = storm.speed
-  data$vx.deg[indices.obs] = vx.deg
-  data$vy.deg[indices.obs] = vy.deg
+  data$lon[indices.obs] <- lon
+  data$lat[indices.obs] <- lat
+  data$storm.speed[indices.obs] <- storm.speed
+  data$vx.deg[indices.obs] <- vx.deg
+  data$vy.deg[indices.obs] <- vy.deg
 
   #Interpolate data
-  data$lon = zoo::na.approx(data$lon)
-  data$lat = zoo::na.approx(data$lat)
-  data$msw = zoo::na.approx(data$msw, rule = 2)
-  data$rmw = zoo::na.approx(data$rmw)
+  data$lon <- zoo::na.approx(data$lon)
+  data$lat <- zoo::na.approx(data$lat)
+  data$msw <- zoo::na.approx(data$msw, rule = 2)
+  data$rmw <- zoo::na.approx(data$rmw)
 
   for(i in 1:(dt-2)){
-    ind = indices.obs + i
-    ind = ind[1:(length(ind) - 1)]
-    data$storm.speed[ind] = storm.speed[1:length(ind)]
-    data$vx.deg[ind] = vx.deg[1:length(ind)]
-    data$vy.deg[ind] = vy.deg[1:length(ind)]
+    ind <- indices.obs + i
+    ind <- ind[1:(length(ind) - 1)]
+    data$storm.speed[ind] <- storm.speed[1:length(ind)]
+    data$vx.deg[ind] <- vx.deg[1:length(ind)]
+    data$vy.deg[ind] <- vy.deg[1:length(ind)]
   }
 
   if(method == "Holland80"){
     if(all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices])))
       stop("Missing pressure data to perform Holland80 model")
 
-    data$poci = rep(NA, len.data)
-    data$pc = rep(NA, len.data)
-    data$poci[indices.obs] = st@obs.all$poci[indices]
-    data$pc[indices.obs] = st@obs.all$pres[indices]
+    data$poci <- rep(NA, len.data)
+    data$pc <- rep(NA, len.data)
+    data$poci[indices.obs] <- st@obs.all$poci[indices]
+    data$pc[indices.obs] <- st@obs.all$pres[indices]
 
     #Interpolate data
-    data$poci = zoo::na.approx(data$poci)
-    data$pc = zoo::na.approx(data$pc)
+    data$poci <- zoo::na.approx(data$poci)
+    data$pc <- zoo::na.approx(data$pc)
   }
 
 
@@ -408,48 +409,48 @@ getDataInterpolate = function(st, indices, dt, asymmetry, empirical_rmw, method)
 #'    \item vx.deg: numeric. Velocity of the speed in the x direction (deg/h)
 #'    \item vy.deg: numeric Velocity of the speed in the y direction (deg/h)
 #'  }
-getData = function(st, indices , asymmetry, empirical_rmw, method){
+getData <- function(st, indices , asymmetry, empirical_rmw, method){
 
-  data = data.frame(
-    lon = st@obs.all$lon[indices],
-    lat = st@obs.all$lat[indices]
+  data <- data.frame(
+    lon <- st@obs.all$lon[indices],
+    lat <- st@obs.all$lat[indices]
   )
 
-  data$storm.speed = NA
-  data$vx.deg = NA
-  data$vy.deg = NA
+  data$storm.speed <- NA
+  data$vx.deg <- NA
+  data$vy.deg <- NA
 
   #Computing storm velocity (m/s)
   for(i in 1:(dim(data)[1]-1)){
-    data$storm.speed[i] = terra::distance(x = cbind(data$lon[i],data$lat[i]),
+    data$storm.speed[i] <- terra::distance(x = cbind(data$lon[i],data$lat[i]),
                                          y = cbind(data$lon[i+1],data$lat[i+1]),
                                          lonlat = T) * (0.001 / 3) / 3.6
 
     #component wise velocity in both x and y direction (degree/h)
-    data$vx.deg[i] = (data$lon[i + 1] - data$lon[i]) / 3
-    data$vy.deg[i] = (data$lat[i + 1] - data$lat[i]) / 3
+    data$vx.deg[i] <- (data$lon[i + 1] - data$lon[i]) / 3
+    data$vy.deg[i] <- (data$lat[i + 1] - data$lat[i]) / 3
   }
 
   if(asymmetry == "V2"){
-    data$msw = st@obs.all$msw[indices] - data$storm.speed
+    data$msw <- st@obs.all$msw[indices] - data$storm.speed
   }else{
-    data$msw = st@obs.all$msw[indices]
+    data$msw <- st@obs.all$msw[indices]
   }
 
   if(empirical_rmw){
-    data$rmw = getRmw(data$msw, data$lat)
+    data$rmw <- getRmw(data$msw, data$lat)
   }else{
     if(all(is.na(st@obs.all$rmw[indices])))
       stop("Missing rmw data to perform model. Consider setting empirical_rmw to TRUE")
-    data$rmw = st@obs.all$rmw[indices]
+    data$rmw <- st@obs.all$rmw[indices]
   }
 
   if(method == "Holland80"){
     if(all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices])))
       stop("Missing pressure data to perform Holland80 model")
 
-    data$poci = st@obs.all$poci[indices]
-    data$pc = st@obs.all$pres[indices]
+    data$poci <- st@obs.all$poci[indices]
+    data$pc <- st@obs.all$pres[indices]
   }
 
 
@@ -470,15 +471,15 @@ getData = function(st, indices , asymmetry, empirical_rmw, method){
 #' @param index numeric. Index of interpolated observation in data to use to generate raster
 #'
 #' @return SpatRaster
-makeTemplateModel = function(raster_template, buffer, data, index){
+makeTemplateModel <- function(raster_template, buffer, data, index){
 
-  template = terra::rast(xmin = data$lon[index] - buffer,
+  template <- terra::rast(xmin = data$lon[index] - buffer,
                          xmax = data$lon[index] + buffer,
                          ymin = data$lat[index] - buffer,
                          ymax = data$lat[index] + buffer,
                          res = terra::res(raster_template),
                          vals = NA)
-  terra::origin(template) = terra::origin(raster_template)
+  terra::origin(template) <- terra::origin(raster_template)
 
   return(template)
 
@@ -498,15 +499,15 @@ makeTemplateModel = function(raster_template, buffer, data, index){
 #' @param basin character. Basin
 #'
 #' @return numeric vector. Orientation of wind speed (rad) at each (x,y) position
-asymmetryV1 = function(x, y, vx, vy, basin){
+asymmetryV1 <- function(x, y, vx, vy, basin){
 
   if(basin %in% c("SA", "SP", "SI")){
     #Southern Hemisphere, t is counterclockwise
-    res = atan2(vy,vx) - atan2(y,x) + pi
+    res <- atan2(vy,vx) - atan2(y,x) + pi
 
   }else{
     #Northern Hemisphere, t is clockwise
-    res = atan2(y,x) - atan2(vy,vx)  + pi
+    res <- atan2(y,x) - atan2(vy,vx)  + pi
   }
 
   return(res)
@@ -526,15 +527,15 @@ asymmetryV1 = function(x, y, vx, vy, basin){
 #' @param basin character. Basin
 #'
 #' @return numeric vector. Orientation of wind speed (rad) at each (x,y) position
-asymmetryV2 = function(x, y, vx, vy, basin){
+asymmetryV2 <- function(x, y, vx, vy, basin){
 
   if(basin %in% c("SA", "SP", "SI")){
     #Southern Hemisphere, t is clockwise
-    res = acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+    res <- acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
 
   }else{
     #Northern Hemisphere, t is counterclockwise
-    res = acos((- y * vx + x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+    res <- acos((- y * vx + x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
   }
 
   return(res)
@@ -563,12 +564,12 @@ asymmetryV2 = function(x, y, vx, vy, basin){
 #'     \item If format is a data frame, the wind speed values at each observation
 #'     \item Otherwise, SpatRaster that contains the wind speed profile at observations index of data
 #'  }
-computeWindProfile = function(data, index, dist_m, method, asymmetry, basin, x, y){
+computeWindProfile <- function(data, index, dist_m, method, asymmetry, basin, x, y){
 
 
   #Computing sustained wind according to the input model
   if (method == "Willoughby") {
-    wind = Willoughby(
+    wind <- Willoughby(
       msw = data$msw[index],
       lat = data$lat[index],
       r = dist_m * 0.001,
@@ -576,7 +577,7 @@ computeWindProfile = function(data, index, dist_m, method, asymmetry, basin, x, 
     )
 
   }else if (method == "Holland80") {
-    wind = Holland80(
+    wind <- Holland80(
       r = dist_m * 0.001,
       rmw = data$rmw[index],
       msw = data$msw[index],
@@ -589,12 +590,12 @@ computeWindProfile = function(data, index, dist_m, method, asymmetry, basin, x, 
   #Adding asymmetry
   if (asymmetry == "V1") {
     #Boose version
-    angle = asymmetryV1(x, y, data$vx.deg[index], data$vy.deg[index], basin)
-    wind = wind - (1 - sin(angle))*(data$storm.speed[index]/3.6)/2
+    angle <- asymmetryV1(x, y, data$vx.deg[index], data$vy.deg[index], basin)
+    wind <- wind - (1 - sin(angle))*(data$storm.speed[index]/3.6)/2
 
   } else if(asymmetry == "V2"){
-    angle = asymmetryV2(x, y, data$vx.deg[index], data$vy.deg[index], basin)
-    wind = wind + cos(angle)* data$storm.speed[index]
+    angle <- asymmetryV2(x, y, data$vx.deg[index], data$vy.deg[index], basin)
+    wind <- wind + cos(angle)* data$storm.speed[index]
   }
 
   return(wind)
@@ -615,14 +616,14 @@ computeWindProfile = function(data, index, dist_m, method, asymmetry, basin, x, 
 #' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
 #'
 #' @return list of SpatRaster
-stackRaster = function(stack, raster_template, raster_wind, is_basin, extent){
+stackRaster <- function(stack, raster_template, raster_wind, is_basin, extent){
 
-  ras = raster_template
+  ras <- raster_template
   if(is_basin)
-    ras = terra::crop(ras, extent)
+    ras <- terra::crop(ras, extent)
 
-  ras = terra::merge(raster_wind, ras)
-  ras = terra::crop(ras, extent)
+  ras <- terra::merge(raster_wind, ras)
+  ras <- terra::crop(ras, extent)
 
   return(c(stack, ras))
 }
@@ -641,16 +642,16 @@ stackRaster = function(stack, raster_template, raster_wind, is_basin, extent){
 #' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
 #'
 #' @return list of SpatRaster
-stackRasterPDI = function(stack, raster_template, raster_wind, is_basin, extent){
+stackRasterPDI <- function(stack, raster_template, raster_wind, is_basin, extent){
 
-  raster.cd = raster_wind
-  terra::values(raster.cd) = rasterizeCd(terra::values(raster_wind))
+  raster.cd <- raster_wind
+  terra::values(raster.cd) <- rasterizeCd(terra::values(raster_wind))
 
-  rho = 0.001
+  rho <- 0.001
   #Raising to power 3
-  raster_wind = raster_wind ** 3
+  raster_wind <- raster_wind ** 3
   #Applying both rho and surface drag coefficient
-  raster_wind = raster_wind * rho * raster.cd
+  raster_wind <- raster_wind * rho * raster.cd
 
   return(stackRaster(stack, raster_template, raster_wind, is_basin, extent))
 
@@ -670,15 +671,15 @@ stackRasterPDI = function(stack, raster_template, raster_wind, is_basin, extent)
 #' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
 #'
 #' @return list of SpatRaster
-stackRasterExposure = function(stack, raster_template, raster_wind, is_basin, extent){
+stackRasterExposure <- function(stack, raster_template, raster_wind, is_basin, extent){
 
   for(c in 2:6){
-    raster_c_model = raster_wind
-    terra::values(raster_c_model) = NA
-    ind = which(terra::values(raster_wind) >= sshs[c] &
+    raster_c_model <- raster_wind
+    terra::values(raster_c_model) <- NA
+    ind <- which(terra::values(raster_wind) >= sshs[c] &
                   terra::values(raster_wind) < sshs[c+1])
-    raster_c_model[ind] = 1
-    stack = stackRaster(stack, raster_template, raster_c_model, is_basin, extent)
+    raster_c_model[ind] <- 1
+    stack <- stackRaster(stack, raster_template, raster_c_model, is_basin, extent)
   }
 
   return(stack)
@@ -699,16 +700,16 @@ stackRasterExposure = function(stack, raster_template, raster_wind, is_basin, ex
 #' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
 #'
 #' @return list of SpatRaster
-stackProduct = function(product, stack, raster_template, raster_wind, is_basin, extent){
+stackProduct <- function(product, stack, raster_template, raster_wind, is_basin, extent){
 
   if (product == "MSW") {
-    stack = stackRaster(stack, raster_template, raster_wind, is_basin, extent)
+    stack <- stackRaster(stack, raster_template, raster_wind, is_basin, extent)
 
   }else if (product == "PDI"){
-    stack = stackRasterPDI(stack, raster_template, raster_wind, is_basin, extent)
+    stack <- stackRasterPDI(stack, raster_template, raster_wind, is_basin, extent)
 
   }else if (product == "Exposure"){
-    stack = stackRasterExposure(stack, raster_template, raster_wind, is_basin, extent)
+    stack <- stackRasterExposure(stack, raster_template, raster_wind, is_basin, extent)
   }
 
   return(stack)
@@ -727,13 +728,13 @@ stackProduct = function(product, stack, raster_template, raster_wind, is_basin, 
 #' in final_stack
 #'
 #' @return list of SpatRaster
-rasterizeMSW = function(final_stack, stack, name){
+rasterizeMSW <- function(final_stack, stack, name){
 
-  msw = max(stack, na.rm = T)
+  msw <- max(stack, na.rm <- T)
   #Applying focal function twice to smooth results
-  msw = terra::focal(msw, w = matrix(1, 3, 3), max, na.rm = T, pad = T)
-  msw = terra::focal(msw, w = matrix(1, 3, 3), mean, na.rm = T, pad = T)
-  names(msw) = paste0(name, "_MSW")
+  msw <- terra::focal(msw, w = matrix(1, 3, 3), max, na.rm = T, pad = T)
+  msw <- terra::focal(msw, w = matrix(1, 3, 3), mean, na.rm = T, pad = T)
+  names(msw) <- paste0(name, "_MSW")
 
   return(c(final_stack, msw))
 }
@@ -753,13 +754,13 @@ rasterizeMSW = function(final_stack, stack, name){
 #' in final_stack
 #'
 #' @return list of SpatRaster
-rasterizePDI = function(final_stack, stack, time_res, name){
+rasterizePDI <- function(final_stack, stack, time_res, name){
 
   #Integrating over the whole track
-  pdi = sum(stack, na.rm = T) * time_res
+  pdi <- sum(stack, na.rm = T) * time_res
   #Applying focal function to smooth results
-  pdi = terra::focal(pdi, w = matrix(1, 3, 3), sum, na.rm = T, pad = T)
-  names(pdi) = paste0(name, "_PDI")
+  pdi <- terra::focal(pdi, w = matrix(1, 3, 3), sum, na.rm = T, pad = T)
+  names(pdi) <- paste0(name, "_PDI")
 
   return(c(final_stack, pdi))
 }
@@ -779,28 +780,28 @@ rasterizePDI = function(final_stack, stack, time_res, name){
 #' in final_stack
 #'
 #' @return list of SpatRaster
-rasterizeExposure = function(final_stack, stack, time_res, name){
+rasterizeExposure <- function(final_stack, stack, time_res, name){
 
   #For each category in SSHS
-  all.categories = c()
+  all.categories <- c()
   for (i in c(1, 2, 3, 4, 0)) {
-    ind = which(seq(1, terra::nlyr(stack)) %% 5 == i)
+    ind <- which(seq(1, terra::nlyr(stack)) %% 5 == i)
     #Integrating over the whole track
-    exposure = sum(terra::subset(stack, ind), na.rm = T) * time_res
+    exposure <- sum(terra::subset(stack, ind), na.rm = T) * time_res
     #Applying focal function to smooth results
-    exposure = terra::focal(exposure, w = matrix(1, 3, 3), sum, na.rm = T, pad = T)
+    exposure <- terra::focal(exposure, w = matrix(1, 3, 3), sum, na.rm = T, pad = T)
     if (i == 0)
-      i = 5
+      i <- 5
 
-    names(exposure) = paste0(name, "_Exposure", i)
-    final_stack = c(final_stack, exposure)
-    all.categories = c(all.categories, exposure)
+    names(exposure) <- paste0(name, "_Exposure", i)
+    final_stack <- c(final_stack, exposure)
+    all.categories <- c(all.categories, exposure)
   }
 
   #Adding all categories
-  all.categories = terra::rast(all.categories)
-  all.categories = sum(all.categories, na.rm = T)
-  names(all.categories) = paste0(name, "_ExposureAll")
+  all.categories <- terra::rast(all.categories)
+  all.categories <- sum(all.categories, na.rm = T)
+  names(all.categories) <- paste0(name, "_ExposureAll")
 
   return(c(final_stack, all.categories))
 }
@@ -824,26 +825,26 @@ rasterizeExposure = function(final_stack, stack, time_res, name){
 #' layer names if format == "profiles"
 #'
 #' @return list of SpatRaster
-rasterizeProduct = function(product, format, final_stack, stack, time_res, name, indices){
+rasterizeProduct <- function(product, format, final_stack, stack, time_res, name, indices){
 
 
   if (product == "MSW") {
     if(format == "profiles"){
-      names(stack) = paste0(name, "_profile", indices[1:length(indices)-1])
-      final_stack = c(final_stack, stack)
+      names(stack) <- paste0(name, "_profile", indices[1:length(indices)-1])
+      final_stack <- c(final_stack, stack)
 
     }else{
       #Computing MSW analytic raster
-      final_stack = rasterizeMSW(final_stack, stack, name)
+      final_stack <- rasterizeMSW(final_stack, stack, name)
     }
 
   } else if (product == "PDI") {
     #Computing PDI analytic raster
-    final_stack = rasterizePDI(final_stack, stack, time_res, name)
+    final_stack <- rasterizePDI(final_stack, stack, time_res, name)
 
   } else if (product == "Exposure") {
     #Computing Exposure analytic raster
-    final_stack = rasterizeExposure(final_stack, stack, time_res, name)
+    final_stack <- rasterizeExposure(final_stack, stack, time_res, name)
 
   }
 
@@ -863,17 +864,17 @@ rasterizeProduct = function(product, format, final_stack, stack, time_res, name,
 #' over the whole track
 #'
 #' @return numeric. PDI computed using the wind speed values in wind
-computePDI = function(wind, time_res){
+computePDI <- function(wind, time_res){
   #Computing surface drag coefficient
-  cd = rasterizeCd(wind)
+  cd <- rasterizeCd(wind)
 
-  rho = 0.001
+  rho <- 0.001
   #Raising to power 3
-  pdi = wind ** 3
+  pdi <- wind ** 3
   #Applying both rho and surface drag coefficient
-  pdi = wind * rho * cd
+  pdi <- wind * rho * cd
   #Integrating over the whole track
-  pdi = sum(pdi, na.rm = T) * time_res
+  pdi <- sum(pdi, na.rm <- T) * time_res
 
   return(pdi)
 }
@@ -891,16 +892,16 @@ computePDI = function(wind, time_res){
 #'
 #' @return numeric vector of length 5 (for each category).
 #'  Exposure computed using the wind speed values in wind
-computeExposure = function(wind, time_res){
+computeExposure <- function(wind, time_res){
 
-  exposure = c()
+  exposure <- c()
 
   for(c in 2:6){
-    ind = which(wind >= sshs[c] & wind < sshs[c+1])
-    expo = rep(0,length(wind))
-    expo[ind] = 1
-    expo = sum(expo, na.rm = T) * time_res
-    exposure  = c(exposure, expo)
+    ind <- which(wind >= sshs[c] & wind < sshs[c+1])
+    expo <- rep(0,length(wind))
+    expo[ind] <- 1
+    expo <- sum(expo, na.rm = T) * time_res
+    exposure  <- c(exposure, expo)
   }
 
   return(exposure)
@@ -926,15 +927,15 @@ computeExposure = function(wind, time_res){
 #'   \item 1 : number of points. If product == "PDI"
 #'   \item 5 : number of points. If product == "Exposure"
 #' }
-computeProduct = function(product, wind, time_res, result){
+computeProduct <- function(product, wind, time_res, result){
 
   if(product == "MSW"){
-    prod = wind
+    prod <- wind
   }else if (product == "PDI") {
-    prod = computePDI(wind, time_res)
+    prod <- computePDI(wind, time_res)
 
   }else if (product == "Exposure") {
-    prod = computeExposure(wind, time_res)
+    prod <- computeExposure(wind, time_res)
 
   }
 
@@ -956,12 +957,12 @@ computeProduct = function(product, wind, time_res, result){
 #' function, used as a template to rasterize the mask
 #'
 #' @return final_stack masked or not
-maskProduct = function(final_stack, focus_loi, loi, template){
+maskProduct <- function(final_stack, focus_loi, loi, template){
 
   if (focus_loi) {
     #Masking the stack to fit loi
-    v = terra::vect(loi)
-    m = terra::rasterize(v, template)
+    v <- terra::vect(loi)
+    m <- terra::rasterize(v, template)
     return(terra::mask(final_stack, m))
   }else{
     return(final_stack)
@@ -983,22 +984,22 @@ maskProduct = function(final_stack, focus_loi, loi, template){
 #' @param name character. Name of the storm
 #'
 #' @return final_result
-finalizeResult = function(final_result, result, product, format, indices, name){
+finalizeResult <- function(final_result, result, product, format, indices, name){
 
   if(product == "MSW"){
-    df = data.frame(result)
+    df <- data.frame(result)
   }else if(product == "PDI"){
-    df = data.frame(result, row.names = "PDI")
+    df <- data.frame(result, row.names = "PDI")
   }else{
-    df = data.frame(result ,row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
+    df <- data.frame(result ,row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
   }
 
-  colnames(df) = paste0("(",format$lon,",",format$lat,")")
+  colnames(df) <- paste0("(",format$lon,",",format$lat,")")
 
 
-  dfn = list(df)
-  names(dfn) = name
-  final_result = append(final_result, dfn)
+  dfn <- list(df)
+  names(dfn) <- name
+  final_result <- append(final_result, dfn)
 
   return(final_result)
 }
@@ -1007,72 +1008,72 @@ finalizeResult = function(final_result, result, product, format, indices, name){
 
 
 
-mergeRaster = function(stack, raster_template, raster_wind, is_basin, extent){}
+mergeRaster <- function(stack, raster_template, raster_wind, is_basin, extent){}
 
 
-onestep = function(index, raster_template, buffer, data, method, asymmetry, format, product, basin, is_basin, extent){
+onestep <- function(index, raster_template, buffer, data, method, asymmetry, format, product, basin, is_basin, extent){
 
     #Making template to compute wind profiles
-    raster.template.model = makeTemplateModel(raster_template, buffer, data, index)
-    raster.wind = raster.template.model
+    raster.template.model <- makeTemplateModel(raster_template, buffer, data, index)
+    raster.wind <- raster.template.model
 
     #Computing coordinates to the eye of the storm for x and y axes
-    x = (terra::crds(raster.wind, na.rm = FALSE)[, 1] - data$lon[index])
-    y = (terra::crds(raster.wind, na.rm = FALSE)[, 2] - data$lat[index])
+    x <- (terra::crds(raster.wind, na.rm <- FALSE)[, 1] - data$lon[index])
+    y <- (terra::crds(raster.wind, na.rm <- FALSE)[, 2] - data$lat[index])
 
     #Computing distances to the eye of the storm in m
-    dist.m = terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
+    dist.m <- terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
                              y = cbind(data$lon[index], data$lat[index]),
                              lonlat = T)
 
     #Computing wind profile
-    terra::values(raster.wind) = computeWindProfile(data, index, dist.m, method, asymmetry, basin, x, y)
+    terra::values(raster.wind) <- computeWindProfile(data, index, dist.m, method, asymmetry, basin, x, y)
 
     if(product == "MSW"){
-      ras = raster_template
+      ras <- raster_template
       if(is_basin)
-        ras = terra::crop(ras, extent)
+        ras <- terra::crop(ras, extent)
 
-      ras = terra::merge(raster.wind, ras)
-      ras = terra::crop(ras, extent)
+      ras <- terra::merge(raster.wind, ras)
+      ras <- terra::crop(ras, extent)
 
       return(ras)
 
     }else if(product == "PDI"){
-      raster.cd = raster.wind
-      terra::values(raster.cd) = rasterizeCd(terra::values(raster.wind))
+      raster.cd <- raster.wind
+      terra::values(raster.cd) <- rasterizeCd(terra::values(raster.wind))
 
-      rho = 0.001
+      rho <- 0.001
       #Raising to power 3
-      raster.wind = raster.wind ** 3
+      raster.wind <- raster.wind ** 3
       #Applying both rho and surface drag coefficient
-      raster.wind = raster.wind * rho * raster.cd
+      raster.wind <- raster.wind * rho * raster.cd
 
-      ras = raster_template
+      ras <- raster_template
       if(is_basin)
-        ras = terra::crop(ras, extent)
+        ras <- terra::crop(ras, extent)
 
-      ras = terra::merge(raster.wind, ras)
-      ras = terra::crop(ras, extent)
+      ras <- terra::merge(raster.wind, ras)
+      ras <- terra::crop(ras, extent)
 
       return(ras)
 
     }else if (product == "Exposure"){
-      stack = c()
+      stack <- c()
       for(c in 2:6){
-        raster.c.model = raster.wind
-        terra::values(raster.c.model) = NA
-        ind = which(terra::values(raster.wind) >= sshs[c] &
+        raster.c.model <- raster.wind
+        terra::values(raster.c.model) <- NA
+        ind <- which(terra::values(raster.wind) >= sshs[c] &
                       terra::values(raster.wind) < sshs[c+1])
-        raster.c.model[ind] = 1
+        raster.c.model[ind] <- 1
 
-        ras = raster_template
+        ras <- raster_template
         if(is_basin)
-          ras = terra::crop(ras, extent)
+          ras <- terra::crop(ras, extent)
 
-        ras = terra::merge(raster.wind, ras)
-        ras = terra::crop(ras, extent)
-        stack = c(stack, ras)
+        ras <- terra::merge(raster.wind, ras)
+        ras <- terra::crop(ras, extent)
+        stack <- c(stack, ras)
       }
 
       return(stack)
@@ -1161,136 +1162,119 @@ onestep = function(index, raster_template, buffer, data, method, asymmetry, form
 #' @examples
 #' #Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with
 #' #version 2 of asymmetry
-#' msw_pam = stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
+#' msw_pam <- stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
 #'
 #' #Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland
 #' # model without asymmetry
-#' pdi_nc = stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
+#' pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
 #'                         product = "PDI", verbose = TRUE)
 #'
 #' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using
 #' #Willoughby model without asymmetry
-#' prof_nc = stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
+#' prof_nc <- stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
 #'
 #' #Compute time series of wind speed for ERICA and NIRAN in New Caledonia using
 #' #Willoughby model without asymmetry
-#' df = data.frame(lon = c(166.5, 163), lat = c(-22, -19))
-#' ts_nc = stormBehaviour(sts_nc, format = df)
+#' df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+#' ts_nc <- stormBehaviour(sts_nc, format = df)
 #'
 #' @export
-stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry = "None",
+stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetry = "None",
                           empirical_rmw = FALSE, format = "analytic", space_res = 10,
                           time_res = 1, verbose = FALSE, focus_loi = TRUE){
 
   checkInputsSb(sts, product, method, asymmetry, empirical_rmw, format,
                 space_res, time_res, verbose, focus_loi)
 
-  format.id = switch(class(format), "data.frame" = "data.frame", "character" = format)
+  format.id <- switch(class(format), "data.frame" = "data.frame", "character" = format)
 
 
   if(format.id != "data.frame"){
 
     if(format == "profiles")
-      product = "MSW"
+      product <- "MSW"
 
     #Make raster template
-    raster.template = makeTemplateRaster(sts@spatial.loi.buffer, space_res)
+    raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, space_res)
     #Getting new extent
-    ext = terra::ext(raster.template)
+    ext <- terra::ext(raster.template)
     #Buffer size in degree
-    buffer = terra::res(raster.template)[1] * sts@buffer / space_res
+    buffer <- terra::res(raster.template)[1] * sts@buffer / space_res
     #Initializing final raster stack
-    final.stack = c()
+    final.stack <- c()
   }else{
     #Initializing final result
-    final.result = list()
+    final.result <- list()
   }
 
   if(verbose)
-    s = 1 #Initializing count of storms
+    s <- 1 #Initializing count of storms
 
   for (st in sts@data) {
 
     #Handling indices inside loi.buffer or not
-    ind = getIndices(st, 2, format, focus_loi)
+    ind <- getIndices(st, 2, format, focus_loi)
 
 
 
-    #Interpolated time step dt, default value dt = 4 --> 1h
-    dt = 1 + (1 / time_res * 3) # + 1 for the limit values
+    #Interpolated time step dt, default value dt <- 4 --> 1h
+    dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Getting data associated with storm st
     if(format.id == "profiles"){
-      dataTC = getData(st, ind, asymmetry, empirical_rmw, method)
+      dataTC <- getData(st, ind, asymmetry, empirical_rmw, method)
     }else{
-      dataTC = getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
+      dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
     }
 
     #Reduce extent of raster if loi represents the whole basin
     if(sts@loi.basin & format.id != "data.frame")
-      ext = terra::ext(min(dataTC$lon) - buffer, max(dataTC$lon) + buffer,
+      ext <- terra::ext(min(dataTC$lon) - buffer, max(dataTC$lon) + buffer,
                      min(dataTC$lat) - buffer, max(dataTC$lat) + buffer)
 
 
     if(format.id != "data.frame"){
 
-      nb.step = dim(dataTC)[1] - 1
+      nb.step <- dim(dataTC)[1] - 1
       if (verbose) {
-        step = 1
+        step <- 1
         cat("Computing", format, product, "rasters using", method,
             "model (time_res:", time_res, "h, space_ras:", space_res,
             "km, asymmetry:", asymmetry, ", empirical_rmw:", empirical_rmw,
             ") for", st@name, "(", s, "/", sts@nb.storms, ")\n")
-        pb = utils::txtProgressBar(min = step, max = nb.step, style = 3)
+        pb <- utils::txtProgressBar(min = step, max = nb.step, style = 3)
       }
 
-      aux.stack = c()
-
-
-      # start_time <- Sys.time()
-      # aux.stack = lapply(X = as.list(seq(1,dim(dataTC)[1]-1)), FUN = onestep,
-      #                    raster_template = raster.template,
-      #                    buffer = buffer,
-      #                    data = dataTC,
-      #                    method = method,
-      #                    asymmetry = asymmetry,
-      #                    format = format,
-      #                    product = product,
-      #                    basin = sts@basin,
-      #                    is_basin = sts@loi.basin,
-      #                    extent = ext)
-      #
-      # end_time <- Sys.time()
-      # print(end_time - start_time)
+      aux.stack <- c()
 
       start_time <- Sys.time()
       for (j in 1:nb.step) {
 
         #Making template to compute wind profiles
-        raster.template.model = makeTemplateModel(raster.template, buffer, dataTC, j)
-        raster.wind = raster.template.model
+        raster.template.model <- makeTemplateModel(raster.template, buffer, dataTC, j)
+        raster.wind <- raster.template.model
 
         #Computing coordinates to the eye of the storm for x and y axes
-        x = (terra::crds(raster.wind, na.rm = FALSE)[, 1] - dataTC$lon[j])
-        y = (terra::crds(raster.wind, na.rm = FALSE)[, 2] - dataTC$lat[j])
+        x <- (terra::crds(raster.wind, na.rm = FALSE)[, 1] - dataTC$lon[j])
+        y <- (terra::crds(raster.wind, na.rm = FALSE)[, 2] - dataTC$lat[j])
 
         #Computing distances to the eye of the storm in m
-        dist.m = terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
+        dist.m <- terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
                                  y = cbind(dataTC$lon[j], dataTC$lat[j]),
                                  lonlat = T)
 
         #Computing wind profile
-        terra::values(raster.wind) = computeWindProfile(dataTC, j, dist.m, method,
+        terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method,
                                                         asymmetry, sts@basin, x, y)
 
         #Stacking product
-        aux.stack = stackProduct(product, aux.stack, raster.template,
+        aux.stack <- stackProduct(product, aux.stack, raster.template,
                                  raster.wind, sts@loi.basin, ext)
 
 
         if (verbose){
           utils::setTxtProgressBar(pb, step)
-          step = step + 1
+          step <- step + 1
         }
       }
       end_time <- Sys.time()
@@ -1300,49 +1284,49 @@ stormBehaviour = function(sts, product = "MSW", method = "Willoughby", asymmetry
         close(pb)
 
       #Rasterize final product
-      aux.stack = terra::rast(aux.stack)
-      final.stack = rasterizeProduct(product, format, final.stack, aux.stack,
+      aux.stack <- terra::rast(aux.stack)
+      final.stack <- rasterizeProduct(product, format, final.stack, aux.stack,
                                      time_res, st@name, ind)
 
     }else{
       #Computing distances from the eye of storm for every observations x, and
       #every points y
-      dist.m = terra::distance(
-        x = cbind(dataTC$lon,dataTC$lat),
-        y = cbind(format$lon, format$lat),
-        lonlat = T
+      dist.m <- terra::distance(
+        x <- cbind(dataTC$lon,dataTC$lat),
+        y <- cbind(format$lon, format$lat),
+        lonlat <- T
       )
 
-      res = c()
+      res <- c()
       #For each point
       for(i in 1:dim(format)[1]){
 
         #Computing coordinates between eye of storm and point P
-        x = format$lon[i] - dataTC$lon
-        y = format$lat[i] - dataTC$lat
+        x <- format$lon[i] - dataTC$lon
+        y <- format$lat[i] - dataTC$lat
 
         #Computing wind profiles
-        dist2p = dist.m[,i]
-        vr = computeWindProfile(dataTC, j, dist2p, method, asymmetry, sts@basin, x, y)
+        dist2p <- dist.m[,i]
+        vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, sts@basin, x, y)
 
         #Computing product
-        res = computeProduct(product, vr, time_res, res)
+        res <- computeProduct(product, vr, time_res, res)
 
       }
 
-      final.result = finalizeResult(final.result,  res, product, format, ind, st@name)
+      final.result <- finalizeResult(final.result,  res, product, format, ind, st@name)
 
 
     }
 
     if(verbose)
-      s = s + 1
+      s <- s + 1
   }
 
 
   if(format.id != "data.frame"){
-    final.stack = terra::rast(final.stack)
-    final.stack = maskProduct(final.stack, focus_loi,
+    final.stack <- terra::rast(final.stack)
+    final.stack <- maskProduct(final.stack, focus_loi,
                               sts@spatial.loi.buffer, raster.template)
 
     return(final.stack)

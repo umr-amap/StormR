@@ -10,31 +10,31 @@
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #'
 #' @return color associated with the observation
-getColors = function(msw) {
+getColors <- function(msw) {
 
   if (is.na(msw)) {
-    color = NA
+    color <- NA
 
   } else if (msw < sshs[1]) {
-    color = sshsPalette[1]
+    color <- sshsPalette[1]
 
   } else if (msw >= sshs[1] & msw < sshs[2]) {
-    color = sshsPalette[2]
+    color <- sshsPalette[2]
 
   } else if (msw >= sshs[2] & msw < sshs[3]) {
-    color = sshsPalette[3]
+    color <- sshsPalette[3]
 
   } else if (msw >= sshs[3] & msw < sshs[4]) {
-    color = sshsPalette[4]
+    color <- sshsPalette[4]
 
   } else if (msw >= sshs[4] & msw < sshs[5]) {
-    color = sshsPalette[5]
+    color <- sshsPalette[5]
 
   } else if (msw >= sshs[5] & msw < sshs[6]) {
-    color = sshsPalette[6]
+    color <- sshsPalette[6]
 
   } else if (msw >= sshs[6]) {
-    color = sshsPalette[7]
+    color <- sshsPalette[7]
   }
 
   return(color)
@@ -55,18 +55,18 @@ getColors = function(msw) {
 #' `spatial.loi.buffer` of the Storms object in which st belongs
 #'
 #' @return NULL
-plotTrack = function(st, whole_basin) {
+plotTrack <- function(st, whole_basin) {
 
   if (whole_basin) {
-    cex = 0.6
+    cex <- 0.6
   } else{
-    cex = 1
+    cex <- 1
   }
 
-  lon = st@obs.all$lon
-  lat = st@obs.all$lat
-  msw = st@obs.all$msw
-  colors = unlist(lapply(msw, getColors))
+  lon <- st@obs.all$lon
+  lat <- st@obs.all$lat
+  msw <- st@obs.all$msw
+  colors <- unlist(lapply(msw, getColors))
 
   graphics::lines(
     lon,
@@ -102,14 +102,14 @@ plotTrack = function(st, whole_basin) {
 #' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)
 #'
 #' @return NULL
-plotLabels = function(st, by, pos) {
+plotLabels <- function(st, by, pos) {
 
-  cex = 0.6
-  ind = round(seq(1, st@numobs.all, by))
+  cex <- 0.6
+  ind <- round(seq(1, st@numobs.all, by))
 
   for (i in ind) {
-    lon = st@obs.all$lon[i]
-    lat = st@obs.all$lat[i]
+    lon <- st@obs.all$lon[i]
+    lat <- st@obs.all$lat[i]
 
     graphics::text(
       lon,
@@ -148,7 +148,7 @@ plotLabels = function(st, by, pos) {
 #' @param xlim numeric vector
 #' @param ylim numeric vector
 #' @return NULL
-checkInputsPs = function(sts, names, category, map, ground_color,
+checkInputsPs <- function(sts, names, category, map, ground_color,
                        ocean_color, whole_basin, labels, by,
                        pos, legends, loi, grtc, xlim, ylim){
 
@@ -289,7 +289,7 @@ checkInputsPs = function(sts, names, category, map, ground_color,
 #'
 #'
 #' @export
-plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_color = "grey",
+plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, ground_color = "grey",
                       ocean_color = "white", whole_basin = FALSE, labels = FALSE, by = 8,
                       pos = 3, legends = FALSE, loi = TRUE, grtc = 1, xlim = NULL, ylim = NULL){
 
@@ -301,20 +301,20 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
   if (!is.null(map)){
     #Converting to sf object
     if(!identical(class(map)[1], "sf"))
-      map = sf::st_as_sf(map)
+      map <- sf::st_as_sf(map)
   }
 
 
-  l2 = log2(grtc)
+  l2 <- log2(grtc)
   if (!(l2 == round(l2))) {
-    grtc = 2 ** round(l2)
+    grtc <- 2 ** round(l2)
     warning(paste("grtc is not a power of 2, set to", grtc))
   }
 
 
   #Handling spatial extent
   if (whole_basin) {
-    ext = terra::ext(Basins[sts@basin,1], Basins[sts@basin,2],
+    ext <- terra::ext(Basins[sts@basin,1], Basins[sts@basin,2],
                      Basins[sts@basin,3], Basins[sts@basin,4])
 
     if (!is.null(xlim))
@@ -326,33 +326,33 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
   } else{
 
     if(is.null(map)){
-      ext = terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
+      ext <- terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
                        sf::st_bbox(sts@spatial.loi.buffer)$xmax,
                        sf::st_bbox(sts@spatial.loi.buffer)$ymin,
                        sf::st_bbox(sts@spatial.loi.buffer)$ymax)
     }else{
-      ext = terra::ext(sf::st_bbox(map)$xmin, sf::st_bbox(map)$xmax,
+      ext <- terra::ext(sf::st_bbox(map)$xmin, sf::st_bbox(map)$xmax,
                        sf::st_bbox(map)$ymin, sf::st_bbox(map)$ymax)
     }
 
 
     if (!is.null(xlim)) {
-      xlim = xlim[order(xlim)]
-      ext$xmin = xlim[1]
-      ext$xmax = xlim[2]
+      xlim <- xlim[order(xlim)]
+      ext$xmin <- xlim[1]
+      ext$xmax <- xlim[2]
     }
 
     if (!is.null(ylim)) {
-      ylim = ylim[order(ylim)]
-      ext$ymin = ylim[1]
-      ext$ymax = ylim[2]
+      ylim <- ylim[order(ylim)]
+      ext$ymin <- ylim[1]
+      ext$ymax <- ylim[2]
     }
 
   }
 
   #Plotting base map
   if(is.null(map)){
-    world = rworldmap::getMap(resolution = "high")
+    world <- rworldmap::getMap(resolution <- "high")
     maps::map(
       world,
       fill = TRUE,
@@ -376,10 +376,10 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
 
 
   #Adding graticules
-  x.min = round(ext$xmin / 10) * 10 - 20
-  x.max = round(ext$xmax / 10) * 10 + 20
-  y.min = round(ext$ymin / 10) * 10 - 20
-  y.max = round(ext$ymax / 10) * 10 + 20
+  x.min <- round(ext$xmin / 10) * 10 - 20
+  x.max <- round(ext$xmax / 10) * 10 + 20
+  y.min <- round(ext$ymin / 10) * 10 - 20
+  y.max <- round(ext$ymax / 10) * 10 + 20
 
   mapproj::map.grid(
     lim = c(x.min, x.max, y.min, y.max),
@@ -398,19 +398,19 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
   #Handling categories
   if(!is.null(category) & is.null(names)){
     if(length(category) == 2){
-      category = category[order(category)]
-      cat.inf = category[1]
-      cat.sup = category[2]
-      ind = which(sts@sshs >= cat.inf & sts@sshs <= cat.sup)
+      category <- category[order(category)]
+      cat.inf <- category[1]
+      cat.sup <- category[2]
+      ind <- which(sts@sshs >= cat.inf & sts@sshs <= cat.sup)
 
     }else{
       #length category == 1
-      ind = which(sts@sshs == category)
+      ind <- which(sts@sshs == category)
     }
-    sts.aux = unlist(sts@data)[ind]
+    sts.aux <- unlist(sts@data)[ind]
 
   }else{
-    sts.aux = sts@data
+    sts.aux <- sts@data
   }
 
   #Plotting track(s) and labels
@@ -455,5 +455,3 @@ plotStorms = function(sts, names = NULL, category = NULL, map = NULL, ground_col
   }
 
 }
-
-
