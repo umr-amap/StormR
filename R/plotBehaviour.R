@@ -14,7 +14,7 @@
 #' @param pos numeric
 #' @param color_palette character vector
 #' @return NULL
-checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos, color_palette){
+checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, color_palette){
 
   #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -93,51 +93,51 @@ checkInputsPb = function(sts, raster_product, xlim, ylim, labels, by, pos, color
 #'
 #' @examples
 #' #Plot MSW analytic raster for PAM 2015 in Vanuatu
-#' pam_msw = terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
+#' pam_msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
 #' plotBehaviour(pam, pam_msw)
 #'
 #' #Plot PDI analytic raster for ERICA 2003 in New Caledonia
-#' erica_pdi = terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
+#' erica_pdi <- terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
 #' plotBehaviour(sts_nc, erica_pdi)
 #'
 #' #Plot PDI analytic raster for NIRAN 2021 in New Caledonia
-#' niran_pdi = terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
+#' niran_pdi <- terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
 #'                                     package = "StormR"))
 #' plotBehaviour(sts_nc, niran_pdi)
 #'
 #' #Plot 2D wind speed structure for ERICA 2003 at observation 93
-#' erica_profile93 = terra::rast(system.file("extdata", "ERICA_profile93.tiff", package = "StormR"))
-#' plotBehaviour(sts_nc, erica_profile93, labels = TRUE)
+#' erica_profile78 <- terra::rast(system.file("extdata", "ERICA_profile78.tiff", package = "StormR"))
+#' plotBehaviour(sts_nc, erica_profile78, labels = TRUE)
 #'
 #'@export
-plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels = FALSE,
+plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels = FALSE,
                          by = 8, pos = 3, color_palette = NULL){
 
 
   checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos, color_palette)
 
-  name = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
-  product = strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
+  name <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
+  product <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
 
   if (!(name %in% sts@names))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
 
   #Handling spatial extent
-  xmin = terra::ext(raster_product)$xmin
-  xmax = terra::ext(raster_product)$xmax
-  ymin = terra::ext(raster_product)$ymin
-  ymax = terra::ext(raster_product)$ymax
+  xmin <- terra::ext(raster_product)$xmin
+  xmax <- terra::ext(raster_product)$xmax
+  ymin <- terra::ext(raster_product)$ymin
+  ymax <- terra::ext(raster_product)$ymax
 
   if (!is.null(xlim)) {
-    xlim = xlim[order(xlim)]
-    xmin = xlim[1]
-    xmax = xlim[2]
+    xlim <- xlim[order(xlim)]
+    xmin <- xlim[1]
+    xmax <- xlim[2]
   }
   if (!is.null(ylim)) {
-    ylim = ylim[order(ylim)]
-    ymin = ylim[1]
-    ymax = ylim[2]
+    ylim <- ylim[order(ylim)]
+    ymin <- ylim[1]
+    ymax <- ylim[2]
   }
 
 
@@ -150,32 +150,32 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
   #Adding raster_product on map
   if (product == "MSW" | stringr::str_detect(product,"profile")) {
 
-    col = mswSSHSPalette
-    range = c(17, 80)
+    col <- mswSSHSPalette
+    range <- c(17, 80)
     if(product == "MSW"){
-      leg = expression(paste("MSW (m.s" ^ "-1)"))
+      leg <- expression(paste("MSW (m.s" ^ "-1)"))
 
     }else{
-      leg = expression(paste("radial wind speed (m.s" ^ "-1)"))
+      leg <- expression(paste("radial wind speed (m.s" ^ "-1)"))
     }
 
   } else if (product == "PDI") {
 
-    col = pdiPalette
-    range = c(0, max(terra::values(raster_product), na.rm = T))
-    leg = expression(paste("PDI"))
+    col <- pdiPalette
+    range <- c(0, max(terra::values(raster_product), na.rm = T))
+    leg <- expression(paste("PDI"))
 
 
   } else if (stringr::str_detect(product,"Exposure")) {
 
-    col = exposurePalette
-    range = c(0, max(terra::values(raster_product), na.rm = T))
-    leg = expression(paste("Time spent (h)"))
+    col <- exposurePalette
+    range <- c(0, max(terra::values(raster_product), na.rm = T))
+    leg <- expression(paste("Time spent (h)"))
 
   }
 
   if(!is.null(color_palette))
-    col = color_palette
+    col <- color_palette
 
   plot(raster_product, col = col, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
        alpha = 0.7, axes = FALSE, range = range, legend = T,
@@ -190,7 +190,7 @@ plotBehaviour = function(sts, raster_product, xlim = NULL, ylim = NULL, labels =
     plotLabels(sts@data[[name]],by,pos)
 
   if(labels & stringr::str_detect(product,"profile")){
-    ind = as.numeric(stringr::str_sub(product,8,nchar(product)))
+    ind <- as.numeric(stringr::str_sub(product,8,nchar(product)))
     graphics::text(
       sts@data[[name]]@obs.all$lon[ind],
       sts@data[[name]]@obs.all$lat[ind],

@@ -55,12 +55,12 @@ gathers all the storms the user is interested in
 }
 \examples{
 #Focus on a single storm
-pam = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
+pam <- getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
 
 #Focus on several storms over Vanuatu
-sts_nc = getStorms(time_period = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
+sts_nc <- getStorms(time_period = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
 
 #Focus on every storms that occured in the WP basin between 2010 and 2020
-sts_wp = getStorms(basin = "WP", time_period = c(2010,2020), verbose = TRUE)
+sts_wp <- getStorms(basin = "WP", time_period = c(2010,2020), verbose = TRUE)
 
 }

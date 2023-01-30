@@ -35,7 +35,7 @@
 #' @returns A S4 object gathering all the following informations
 #' @importFrom methods new
 #' @export
-Storm = methods::setClass(
+Storm <- methods::setClass(
   "Storm",
   slots = c(
     name = "character",
@@ -74,7 +74,7 @@ setOldClass("sf")
 #' @importFrom methods new
 #' @import sp
 #' @export
-Storms = methods::setClass(
+Storms <- methods::setClass(
   "Storms",
   slots = c(
     data = "list",
@@ -112,10 +112,10 @@ Storms = methods::setClass(
 #' @param verbose logical
 #' @param remove_TD logical
 #' @return NULL
-checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remove_TD){
+checkInputsGs <- function(basin, time_period, name, loi, max_dist, verbose, remove_TD){
 
   #Checking basin input
-  stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
+  stopifnot("Invalid basin input" <- basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
 
   #Checking time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
@@ -176,67 +176,67 @@ checkInputsGs = function(basin, time_period, name, loi, max_dist, verbose, remov
 #' @param basin basin input form getStorms
 #'
 #' @return list with 2 slots : loi in a sf format and logical (Whether loi is whole basin or not)
-convertLoi = function(loi, basin){
+convertLoi <- function(loi, basin){
 
   if(is.null(loi)){
 
-    loi = basin
-    loi.is.basin = TRUE
-    ext = terra::ext(Basins[basin,1], Basins[basin,2],
+    loi <- basin
+    loi.is.basin <- TRUE
+    ext <- terra::ext(Basins[basin,1], Basins[basin,2],
                      Basins[basin,3], Basins[basin,4])
-    poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
+    poly <- cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
                  c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
 
-    loi.sf = sf::st_polygon(list(poly))
-    loi.sf = sf::st_sfc(loi.sf, crs = wgs84)
-    loi.sf = sf::st_as_sf(loi.sf)
+    loi.sf <- sf::st_polygon(list(poly))
+    loi.sf <- sf::st_sfc(loi.sf, crs = wgs84)
+    loi.sf <- sf::st_as_sf(loi.sf)
 
   } else{
 
-    loi.is.basin = FALSE
+    loi.is.basin <- FALSE
     if (identical(class(loi), c("SpatialPolygons"))) {
-      loi.id = "SpatialPolygons"
-      loi.sf = sf::st_as_sf(loi)
+      loi.id <- "SpatialPolygons"
+      loi.sf <- sf::st_as_sf(loi)
       if (sf::st_crs(loi.sf) != wgs84) {
         sf::st_transform(loi.sf, crs = wgs84)
       }
 
     } else if (identical(class(loi), c("sf", "data.frame"))) {
 
-      loi.sf = loi
+      loi.sf <- loi
 
     } else if (identical(class(loi), c("numeric"))){
 
-      loi.df = data.frame(lon = loi[1], lat = loi[2])
-      loi.sf = sf::st_as_sf(loi.df, coords = c("lon", "lat"))
+      loi.df <- data.frame(lon = loi[1], lat = loi[2])
+      loi.sf <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
 
     } else if (identical(class(loi), c("character"))){
 
       if(loi %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL")){
-        loi = basin
-        loi.is.basin = TRUE
-        ext = terra::ext(Basins[basin,1], Basins[basin,2],
+        loi <- basin
+        loi.is.basin <- TRUE
+        ext <- terra::ext(Basins[basin,1], Basins[basin,2],
                          Basins[basin,3], Basins[basin,4])
 
-        poly = cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
+        poly <- cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
                      c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
-        loi.sf = sf::st_polygon(list(poly))
-        loi.sf = sf::st_sfc(loi.sf, crs = wgs84)
-        loi.sf = sf::st_as_sf(loi.sf)
+        loi.sf <- sf::st_polygon(list(poly))
+        loi.sf <- sf::st_sfc(loi.sf, crs = wgs84)
+        loi.sf <- sf::st_as_sf(loi.sf)
 
       }else{
 
-        map = rworldmap::getMap(resolution = "high")
-        id.country = which(map@data$ADMIN == loi)
+        map <- rworldmap::getMap(resolution <- "high")
+        id.country <- which(map@data$ADMIN == loi)
         stopifnot("invalid entry for loi" = length(id.country) > 0)
-        loi.sf = sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
+        loi.sf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
       }
     }
   }
 
   #Handling time line for Fiji
   sf::st_crs(loi.sf) = wgs84
-  loi.sf = sf::st_shift_longitude(loi.sf)
+  loi.sf <- sf::st_shift_longitude(loi.sf)
 
   return(list(sf = loi.sf, basin = loi.is.basin))
 }
@@ -253,12 +253,12 @@ convertLoi = function(loi, basin){
 #' the loi is not extented.
 #'
 #' @return list with 2 slots : loi in a sf format and logical (Whether loi is whole basin or not)
-makeBuffer = function(loi, buffer, is_basin){
+makeBuffer <- function(loi, buffer, is_basin){
   if (!is_basin) {
-    loi.buffer = sf::st_buffer(loi, dist = buffer)
-    loi.buffer = sf::st_shift_longitude(loi.buffer)
+    loi.buffer <- sf::st_buffer(loi, dist = buffer)
+    loi.buffer <- sf::st_shift_longitude(loi.buffer)
   } else{
-    loi.buffer = loi
+    loi.buffer <- loi
   }
 
   return(loi.buffer)
@@ -278,15 +278,15 @@ makeBuffer = function(loi, buffer, is_basin){
 #' @param basins character vector. All of the basins of storms in the data base to filter
 #'
 #' @return indices of storms in the data base, that match the filter inputs
-retrieveStorms = function(filter_names, filter_time_period, filter_basin, names, seasons, basins){
+retrieveStorms <- function(filter_names, filter_time_period, filter_basin, names, seasons, basins){
 
   if (!is.null(filter_names)) {
     #we are interested in one or several storms given by their name and season
-    indices = c()
+    indices <- c()
     for (n in 1:length(filter_names)) {
-      seasons.id = which(seasons == filter_time_period[n])
-      storm.id = NULL
-      storm.id = which(names == filter_names[n])
+      seasons.id <- which(seasons == filter_time_period[n])
+      storm.id <- NULL
+      storm.id <- which(names == filter_names[n])
       stopifnot("Storm not found, invalid name ?" = !is.null(storm.id))
 
       # print(stats::na.omit(match(storm.id, seasons.id))[1])
@@ -294,17 +294,17 @@ retrieveStorms = function(filter_names, filter_time_period, filter_basin, names,
       # print(seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]])
       # print(seasons.id[!is.na(match(storm.id, seasons.id))])
 
-      id = seasons.id[match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))]]
+      id <- seasons.id[match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))]]
       stopifnot("Storm not found, time_period and name do not match" = !all(is.na(id)))
-      indices = c(indices, id)
+      indices <- c(indices, id)
     }
   } else{
     if (length(filter_time_period) == 1) {
       #we are interested in only one cyclonic season
-      indices = which(seasons == filter_time_period[1])
+      indices <- which(seasons == filter_time_period[1])
     } else{
       #we are interested in successive cyclonic seasons
-      indices = seq(
+      indices <- seq(
         from = which(seasons == filter_time_period[1])[1],
         to = max(which(seasons == filter_time_period[2])),
         by = 1)
@@ -313,10 +313,10 @@ retrieveStorms = function(filter_names, filter_time_period, filter_basin, names,
 
   #Filtering by basin
   if(filter_basin != "ALL")
-    indices = indices[which(basins[indices] == filter_basin)]
+    indices <- indices[which(basins[indices] == filter_basin)]
 
   #Removing NOT_NAMED storms
-  indices = indices[which(names[indices] != "NOT_NAMED")]
+  indices <- indices[which(names[indices] != "NOT_NAMED")]
 
   return(indices)
 
@@ -337,7 +337,7 @@ retrieveStorms = function(filter_names, filter_time_period, filter_basin, names,
 #' @param basins character vector, basins previously loaded
 #' @param sshs numeric vector, sshs previously loaded
 #' @return A list of 14 slots
-loadData = function(TC_data_base, max_obs, indices, storm_names, seasons, basins, sshs){
+loadData <- function(TC_data_base, max_obs, indices, storm_names, seasons, basins, sshs){
 
   return(list(stormNames  = storm_names[indices],
               seasons = seasons[indices],
@@ -392,50 +392,50 @@ loadData = function(TC_data_base, max_obs, indices, storm_names, seasons, basins
 #'     \item list of numeric
 #'     \item numeric
 #'   }
-writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
+writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
                        TC_data, index, loi_sf_buffer, loi_is_basin, k){
 
   #Getting number of observations
-  numobs = TC_data$numObservations[index]
+  numobs <- TC_data$numObservations[index]
 
   #Getting lon/lat coordinates
-  lon = TC_data$longitude[1:numobs, index]
-  lat = TC_data$latitude[1:numobs, index]
-  coords = data.frame(lon = lon, lat = lat)
+  lon <- TC_data$longitude[1:numobs, index]
+  lat <- TC_data$latitude[1:numobs, index]
+  coords <- data.frame(lon = lon, lat = lat)
 
   #Keep only non NA data (that are either the first or last observations)
-  valid_indices = which(!is.na(coords$lon))
-  coords = coords[valid_indices,]
+  valid_indices <- which(!is.na(coords$lon))
+  coords <- coords[valid_indices,]
 
   #Removing invalid iso_time
-  iso.time = TC_data$iso.times[valid_indices, index]
-  list.iso.time = as.numeric(stringr::str_sub(iso.time,12,13))
+  iso.time <- TC_data$iso.times[valid_indices, index]
+  list.iso.time <- as.numeric(stringr::str_sub(iso.time,12,13))
   #Keep only 03H 06H 09H 12H 15H 18h 21H 00h iso times
-  ind.iso.time = which(list.iso.time %% 3 == 0)
-  coords = coords[ind.iso.time,]
-  row.names(coords) = seq(1,dim(coords)[1])
+  ind.iso.time <- which(list.iso.time %% 3 == 0)
+  coords <- coords[ind.iso.time,]
+  row.names(coords) <- seq(1,dim(coords)[1])
   #print(coords)
 
   #Creating sf point coordinates to intersect with loi_sf_buffer
-  pts = sf::st_as_sf(coords, coords = c("lon", "lat"))
-  sf::st_crs(pts) = wgs84
+  pts <- sf::st_as_sf(coords, coords = c("lon", "lat"))
+  sf::st_crs(pts) <- wgs84
 
   if(!loi_is_basin){
-    ind = which(sf::st_intersects(pts, loi_sf_buffer, sparse = FALSE) == TRUE)
+    ind <- which(sf::st_intersects(pts, loi_sf_buffer, sparse <- FALSE) == TRUE)
   }else{
-    ind = 1
+    ind <- 1
   }
 
   #Add TC only if it intersects with loi_sf_buffer
   if (length(ind) > 0) {
 
-    nb_storms = nb_storms + 1
+    nb_storms <- nb_storms + 1
 
-    storm = Storm()
-    storm@name = TC_data$stormNames[index]
-    storm@season = TC_data$seasons[index]
-    storm@basin = TC_data$basins[index]
-    storm@obs.all = data.frame(
+    storm <- Storm()
+    storm@name <- TC_data$stormNames[index]
+    storm@season <- TC_data$seasons[index]
+    storm@basin <- TC_data$basins[index]
+    storm@obs.all <- data.frame(
       subbasin = TC_data$subbasin[valid_indices, index],
       iso.time = iso.time,
       lon = lon[valid_indices],
@@ -449,23 +449,23 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
     )
 
     #Wrapping longitudes from -180/180 to 0/360
-    lg = which(storm@obs.all$lon < 0)
-    storm@obs.all$lon[lg] = storm@obs.all$lon[lg] + 360
+    lg <- which(storm@obs.all$lon < 0)
+    storm@obs.all$lon[lg] <- storm@obs.all$lon[lg] + 360
 
     #Removing invalid iso_time from obs.all
-    storm@obs.all = storm@obs.all[ind.iso.time,]
-    storm@numobs.all = dim(storm@obs.all)[1]
-    row.names(storm@obs.all) = seq(1,storm@numobs.all)
+    storm@obs.all <- storm@obs.all[ind.iso.time,]
+    storm@numobs.all <- dim(storm@obs.all)[1]
+    row.names(storm@obs.all) <- seq(1,storm@numobs.all)
 
 
     if(loi_is_basin)
-      ind = seq(1,storm@numobs.all)
+      ind <- seq(1,storm@numobs.all)
 
 
-    storm@obs = ind
-    storm@numobs = length(ind)
-    storm@lty.track = k
-    storm@sshs = max(storm@obs.all$sshs,na.rm = T)
+    storm@obs <- ind
+    storm@numobs <- length(ind)
+    storm@lty.track <- k
+    storm@sshs <- max(storm@obs.all$sshs,na.rm = T)
 
 
     return(list(append(storm_list, storm),
@@ -520,54 +520,54 @@ writeStorm = function(storm_list, storm_names, storm_sshs, nb_storms,
 #'
 #' @examples
 #' #Focus on a single storm
-#' pam = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
+#' pam <- getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
 #'
 #' #Focus on several storms over Vanuatu
-#' sts_nc = getStorms(time_period = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
+#' sts_nc <- getStorms(time_period = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
 #'
 #' #Focus on every storms that occured in the WP basin between 2010 and 2020
-#' sts_wp = getStorms(basin = "WP", time_period = c(2010,2020), verbose = TRUE)
+#' sts_wp <- getStorms(basin = "WP", time_period = c(2010,2020), verbose = TRUE)
 #'
 #' @importFrom methods as
 #' @export
-getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi = NULL,
+getStorms <- function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi = NULL,
                      max_dist = 300, verbose = FALSE, remove_TD = TRUE){
 
 
   checkInputsGs(basin,time_period,name,loi,max_dist,verbose,remove_TD)
 
-  o = order(time_period)
-  time_period = time_period[o]
+  o <- order(time_period)
+  time_period <- time_period[o]
   if (!is.null(name))
-    name = name[o]
+    name <- name[o]
 
   if (verbose)
     cat("Making buffer: ")
 
   #Converting loi
-  args = convertLoi(loi, basin)
-  loi.sf = args$sf
-  loi.is.basin = args$basin
+  args <- convertLoi(loi, basin)
+  loi.sf <- args$sf
+  loi.is.basin <- args$basin
 
   #Handling buffer
-  loi.sf.buffer = makeBuffer(loi.sf, max_dist * km, loi.is.basin)
+  loi.sf.buffer <- makeBuffer(loi.sf, max_dist * km, loi.is.basin)
 
   if (verbose)
     cat("Done\nIdentifying Storms: ")
 
   #Open data_base
-  filename = paste0("IBTrACS.ALL.v04r00.nc")
-  TC.data.base = ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
+  filename <- paste0("IBTrACS.ALL.v04r00.nc")
+  TC.data.base <- ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
 
 
   #Retrieving the matching indices, handling name, time_period and basin
-  storm.names = ncdf4::ncvar_get(TC.data.base, "name")
-  cyclonic.seasons = ncdf4::ncvar_get(TC.data.base, "season")
-  basins = ncdf4::ncvar_get(TC.data.base, "basin")[1,]
-  sshs = ncdf4::ncvar_get(TC.data.base, "usa_sshs")
-  dim = dim(sshs)[1]
+  storm.names <- ncdf4::ncvar_get(TC.data.base, "name")
+  cyclonic.seasons <- ncdf4::ncvar_get(TC.data.base, "season")
+  basins <- ncdf4::ncvar_get(TC.data.base, "basin")[1,]
+  sshs <- ncdf4::ncvar_get(TC.data.base, "usa_sshs")
+  dim <- dim(sshs)[1]
 
-  indices = retrieveStorms(filter_names = name,
+  indices <- retrieveStorms(filter_names = name,
                            filter_time_period = time_period,
                            filter_basin = basin,
                            names = storm.names,
@@ -576,12 +576,12 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
 
 
   #Removing TD if remove_TD == T
-  sshs = array(sshs[,indices], dim = c(dim,length(indices)))
+  sshs <- array(sshs[,indices], dim = c(dim,length(indices)))
 
   if(remove_TD){
-    i = which(apply(sshs,2,max, na.rm = T) >= 0)
-    indices = indices[i]
-    sshs = sshs[,i]
+    i <- which(apply(sshs,2,max, na.rm = T) >= 0)
+    indices <- indices[i]
+    sshs <- sshs[,i]
   }
 
 
@@ -589,7 +589,7 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
     cat("Done\nLoading data: ")
 
   #Getting remaining data associated with indices
-  TC.data = loadData(TC.data.base, dim, indices, storm.names, cyclonic.seasons, basins, sshs)
+  TC.data <- loadData(TC.data.base, dim, indices, storm.names, cyclonic.seasons, basins, sshs)
   ncdf4::nc_close(TC.data.base)
 
 
@@ -599,23 +599,23 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
 
   if (verbose & length(indices) > 1) {
     cat("Gathering storms \n")
-    count = 1 #initializing count for progression bar
-    pb = utils::txtProgressBar(min = count,
+    count <- 1 #initializing count for progression bar
+    pb <- utils::txtProgressBar(min = count,
                                max = length(indices),
                                style = 3)
   }
 
   if(length(indices) > 0){
 
-    storm.list = list()
-    storm.names = list()
-    storm.sshs = list()
-    nb.storms = 0
-    k = 2 #initializing line type
+    storm.list <- list()
+    storm.names <- list()
+    storm.sshs <- list()
+    nb.storms <- 0
+    k <- 2 #initializing line type
 
     for (i in 1:length(indices)) {
 
-      sts.output = writeStorm(storm_list = storm.list,
+      sts.output <- writeStorm(storm_list = storm.list,
                                storm_names = storm.names,
                                storm_sshs = storm.sshs,
                                nb_storms = nb.storms,
@@ -626,43 +626,39 @@ getStorms = function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi
                                k = k)
 
       if(!is.null(sts.output[[1]])){
-        storm.list = sts.output[[1]]
-        storm.names = sts.output[[2]]
-        storm.sshs = sts.output[[3]]
-        nb.storms = sts.output[[4]]
+        storm.list <- sts.output[[1]]
+        storm.names <- sts.output[[2]]
+        storm.sshs <- sts.output[[3]]
+        nb.storms <- sts.output[[4]]
       }
 
 
       if (verbose & length(indices) > 1){
         utils::setTxtProgressBar(pb, count)
-        count = count + 1
+        count <- count + 1
       }
 
-      k = k + 1
+      k <- k + 1
     }
 
     if (verbose & length(indices) > 1)
       close(pb)
 
     #Initializing Storms object
-    sts = Storms()
-    sts@time.period = time_period
-    sts@nb.storms = nb.storms
-    sts@buffer = max_dist
-    sts@names = unlist(storm.names)
-    sts@sshs = unlist(storm.sshs)
-    sts@basin = basin
-    sts@loi.basin = loi.is.basin
-    sts@spatial.loi = loi.sf
-    sts@spatial.loi.buffer = loi.sf.buffer
-    sts@data = storm.list
-    names(sts@data) = sts@names
+    sts <- Storms()
+    sts@time.period <- time_period
+    sts@nb.storms <- nb.storms
+    sts@buffer <- max_dist
+    sts@names <- unlist(storm.names)
+    sts@sshs <- unlist(storm.sshs)
+    sts@basin <- basin
+    sts@loi.basin <- loi.is.basin
+    sts@spatial.loi <- loi.sf
+    sts@spatial.loi.buffer <- loi.sf.buffer
+    sts@data <- storm.list
+    names(sts@data) <- sts@names
 
     return(sts)
   }
 
 }
-
-
-
-

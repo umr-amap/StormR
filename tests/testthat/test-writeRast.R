@@ -4,7 +4,7 @@
 test_that("Tests invalid inputs", {
 
 
-  msw = terra::rast(system.file("extdata", "PAM_MSW.tiff", package = "StormR"))
+  msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff", package = "StormR"))
 
   #Checking rast validity
   expect_error(writeRast())

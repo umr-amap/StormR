@@ -11,7 +11,7 @@
 #' @param path character
 #'
 #' @return NULL
-checkInputsWr = function(rast, format, filename, path){
+checkInputsWr <- function(rast, format, filename, path){
 
   #Check rast input
   stopifnot("no data to write" = !missing(rast))
@@ -48,57 +48,57 @@ checkInputsWr = function(rast, format, filename, path){
 #' @returns NULL
 #' @examples
 #' #Save MSW raster in Geotiff file for PAM (2015) over Vanuatu
-#' pam_msw = terra::rast(system.file("extdata", "PAM_MSW.tiff",
+#' pam_msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff",
 #'                                   package = "StormR"))
 #' writeRast(pam_msw, path = paste0(tempdir(),"/"))
 #'
 #' #Save PDI rasters in Geotiff files for ERICA (2003) and NIRAN (2015)
 #' #over New Caledonia
-#' erica_pdi = terra::rast(system.file("extdata", "ERICA_PDI.tiff",
+#' erica_pdi <- terra::rast(system.file("extdata", "ERICA_PDI.tiff",
 #'                                     package = "StormR"))
-#' niran_pdi = terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
+#' niran_pdi <- terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
 #'                                     package = "StormR"))
-#' pdi_nc = c(erica_pdi,niran_pdi)
+#' pdi_nc <- c(erica_pdi,niran_pdi)
 #' writeRast(pdi_nc, path = paste0(tempdir(),"/"))
 #'
 #' @export
-writeRast = function(rast, format = ".tiff", filename = NULL, path = "./"){
+writeRast <- function(rast, format = ".tiff", filename = NULL, path = "./"){
 
 
   checkInputsWr(rast, format, filename, path)
 
-  name = strsplit(names(rast), split = "_", fixed = TRUE)[[1]][1]
-  product = strsplit(names(rast), split = "_", fixed = TRUE)[[1]][2]
+  name <- strsplit(names(rast), split = "_", fixed = TRUE)[[1]][1]
+  product <- strsplit(names(rast), split = "_", fixed = TRUE)[[1]][2]
 
   if(format == ".nc"){
     if(product == "MSW"){
-      varname = "msw"
-      unit = "(m/s)"
-      longname = "maximum sustained wind (m/s)"
+      varname <- "msw"
+      unit <- "(m/s)"
+      longname <- "maximum sustained wind (m/s)"
 
     }else if (product == "PDI"){
-      varname = "pdi"
-      unit = "none"
-      longname = "power dissipation index"
+      varname <- "pdi"
+      unit <- "none"
+      longname <- "power dissipation index"
 
     }else if (stringr::str_detect(product,"Exposure")){
-      c = stringr::str_sub(product,9,nchar(product))
-      varname = "exp"
-      unit = "none"
-      longname = paste("category",c,"exposure")
+      c <- stringr::str_sub(product,9,nchar(product))
+      varname <- "exp"
+      unit <- "none"
+      longname <- paste("category",c,"exposure")
 
     }else if (stringr::str_detect(product,"profile")){
-      varname = "rws"
-      unit = "(m/s)"
-      longname = "radial wind speed"
+      varname <- "rws"
+      unit <- "(m/s)"
+      longname <- "radial wind speed"
 
     }
   }
 
   if(!is.null(filename)){
-    f.name = paste0(path, filename, format)
+    f.name <- paste0(path, filename, format)
   }else{
-    f.name = paste0(path, names(rast), format)
+    f.name <- paste0(path, names(rast), format)
   }
 
   if (format == ".tiff") {
