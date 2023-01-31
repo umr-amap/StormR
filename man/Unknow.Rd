@@ -32,7 +32,7 @@ Default value is set to "MSW"}
 \item{method}{character. Cyclonic model used to compute product, that is either
 \itemize{
 \item "Willoughby"
-\item "Holland80"
+\item "Holland"
 }
 Default value is set to "Willoughby"}
 

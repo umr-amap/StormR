@@ -20,7 +20,7 @@ test_that("Tests invalid inputs", {
   expect_error(stormBehaviour(pam, method = "willi"))
   expect_error(stormBehaviour(pam, method = 2))
   expect_error(stormBehaviour(pam, method = T))
-  expect_error(stormBehaviour(pam, method = c("Willoughby", "Holland80")))
+  expect_error(stormBehaviour(pam, method = c("Willoughby", "Holland")))
 
 
   #Checking asymmetry validity

@@ -496,7 +496,7 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 #' of cyclonic seasons. It could also be a vector of cyclonic season provided
 #' that it has the same length as name input and matches the season of each storm
 #' listed in name input. Default value is set to c(1980, 2021)
-#' @param name character vector. Name(s) of storm(s). Default value is set to NULL,
+#' @param name character vector. Name(s) of storm(s) in capital letters. Default value is set to NULL,
 #' otherwise time_period and name must have the same length, and these two informations must match
 #' @param loi Location of Interest. Should be either:
 #' \itemize{

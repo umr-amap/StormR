@@ -66,7 +66,7 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #' @returns radial wind speed value (m/s) according to Holland 80 model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Holland80_profile <- function(r, rmw, msw, pc, poci, lat){
+Holland_profile <- function(r, rmw, msw, pc, poci, lat){
 
   rho <- 1.15  #air densiy
   f <- 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
@@ -79,7 +79,7 @@ Holland80_profile <- function(r, rmw, msw, pc, poci, lat){
 }
 
 #Vectorize version of the above model
-Holland80 <- Vectorize(Holland80_profile, vectorize.args = "r")
+Holland <- Vectorize(Holland_profile, vectorize.args = "r")
 
 
 
@@ -138,7 +138,7 @@ checkInputsSb <- function(sts, product, method, asymmetry,
   stopifnot("Only one product must be chosen" = length(product) == 1)
 
   #Checking method input
-  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland80"))
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
   stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Checking asymmetry input
@@ -205,7 +205,7 @@ checkInputsUnknow <- function(sts, points, product, method, asymmetry,
   stopifnot("Only one product must be chosen" = length(product) == 1)
 
   #Checking method input
-  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland80"))
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
   stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Checking asymmetry input
@@ -412,9 +412,9 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
   }
 
 
-  if(method == "Holland80"){
+  if(method == "Holland"){
     if(all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices])))
-      stop("Missing pressure data to perform Holland80 model")
+      stop("Missing pressure data to perform Holland model")
 
     data$poci <- rep(NA, len.data)
     data$pc <- rep(NA, len.data)
@@ -493,9 +493,9 @@ getData <- function(st, indices , asymmetry, empirical_rmw, method){
     data$rmw <- st@obs.all$rmw[indices]
   }
 
-  if(method == "Holland80"){
+  if(method == "Holland"){
     if(all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices])))
-      stop("Missing pressure data to perform Holland80 model")
+      stop("Missing pressure data to perform Holland model")
 
     data$poci <- st@obs.all$poci[indices]
     data$pc <- st@obs.all$pres[indices]
@@ -624,8 +624,8 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, basin, x,
       rmw = data$rmw[index]
     )
 
-  }else if (method == "Holland80") {
-    wind <- Holland80(
+  }else if (method == "Holland") {
+    wind <- Holland(
       r = dist_m * 0.001,
       rmw = data$rmw[index],
       msw = data$msw[index],
@@ -1144,7 +1144,7 @@ onestep <- function(index, raster_template, buffer, data, method, asymmetry, for
 #' @param method character. Cyclonic model used to compute product, that is either
 #'   \itemize{
 #'   \item "Willoughby"
-#'   \item "Holland80"
+#'   \item "Holland"
 #'   }
 #'  Default value is set to "Willoughby"
 #' @param asymmetry character. Indicates which version of asymmetry to use in
@@ -1195,7 +1195,7 @@ onestep <- function(index, raster_template, buffer, data, method, asymmetry, for
 #' msw_pam <- stormBehaviour(pam)
 #'
 #' #Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
-#' pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
+#' pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland",
 #'                         product = "PDI", verbose = TRUE)
 #'
 #' #Compute Exposure for PAM 2015 in Vanuatu using default settings
@@ -1337,7 +1337,7 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
 #' @param method character. Cyclonic model used to compute product, that is either
 #'   \itemize{
 #'     \item "Willoughby"
-#'     \item "Holland80"
+#'     \item "Holland"
 #'   }
 #'  Default value is set to "Willoughby"
 #' @param asymmetry character. Indicates which version of asymmetry to use in
