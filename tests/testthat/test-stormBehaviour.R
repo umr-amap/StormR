@@ -30,17 +30,13 @@ test_that("Tests invalid inputs", {
   expect_error(stormBehaviour(pam, asymmetry = c("V1", "V2")))
 
 
-  #Checking result validity
-  res <- data.frame(longitude = c(160,162), latitude = c(160,162))
-  res2 <- data.frame(longitude = c(380,-180), latitude = c(100,-100))
+  #Checking format validity
   m <- cbind(c(160,162),c(160,162))
-  expect_error(stormBehaviour(pam, result = "2Dstruct"))
-  expect_error(stormBehaviour(pam, result = T))
-  expect_error(stormBehaviour(pam, result = 2))
-  expect_error(stormBehaviour(pam, result = c("profiles","analytic")))
-  expect_error(stormBehaviour(pam, result = res))
-  expect_error(stormBehaviour(pam, result = res2))
-  expect_error(stormBehaviour(pam, result = m))
+  expect_error(stormBehaviour(pam, format = "2Dstruct"))
+  expect_error(stormBehaviour(pam, format = T))
+  expect_error(stormBehaviour(pam, format = 2))
+  expect_error(stormBehaviour(pam, format = c("profiles","analytic")))
+  expect_error(stormBehaviour(pam, format = m))
 
 
 
