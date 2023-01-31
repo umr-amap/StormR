@@ -2,6 +2,7 @@
 
 export(Storm)
 export(Storms)
+export(Unknow)
 export(getStorms)
 export(plotBehaviour)
 export(plotStorms)

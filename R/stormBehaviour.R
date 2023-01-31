@@ -149,15 +149,8 @@ checkInputsSb <- function(sts, product, method, asymmetry,
   stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
 
   #Checking format input
-  if(identical(class(format),"data.frame")){
-    stopifnot("colnames of format must be lon, lat" = colnames(format) == c("lon","lat"))
-    stopifnot("Invalid format coordinates" = format$lon >= 0 & format$lon <= 360 &
-                format$lat >= -90 & format$lat <= 90)
-
-  }else{
-    stopifnot("Invalid format input" = format %in% c("profiles","analytic"))
-    stopifnot("format should be length 1" = length(format) == 1)
-  }
+  stopifnot("Invalid format input" = format %in% c("profiles","analytic"))
+  stopifnot("format should be length 1" = length(format) == 1)
 
   #Checking space_res input
   stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
@@ -171,6 +164,61 @@ checkInputsSb <- function(sts, product, method, asymmetry,
 
   #Checking verbose input
   stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
+
+  #Checking focus_loi input
+  stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
+
+
+}
+
+
+
+
+
+#' Check inputs for Unknow function
+#'
+#' @noRd
+#' @param sts Storms object
+#' @param points data.frame
+#' @param product character
+#' @param method character
+#' @param asymmetry character
+#' @param empirical_rmw logical
+#' @param time_res numeric
+#' @param focus_loi logical
+#' @return NULL
+checkInputsUnknow <- function(sts, points, product, method, asymmetry,
+                          empirical_rmw, time_res, focus_loi){
+
+  #Checking sts input
+  stopifnot("no data found" = !missing(sts))
+
+  #Checking points input
+  stopifnot("no data found" = !missing(points))
+  stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
+  stopifnot("colnames of points must be lon, lat" = colnames(points) == c("lon","lat"))
+  stopifnot("Invalid points coordinates" = points$lon >= 0 & points$lon <= 360 &
+              points$lat >= -90 & points$lat <= 90)
+
+  #Checking product input
+  stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
+  stopifnot("Only one product must be chosen" = length(product) == 1)
+
+  #Checking method input
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland80"))
+  stopifnot("Only one method must be chosen" = length(method) == 1)
+
+  #Checking asymmetry input
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "V1", "V2"))
+  stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
+
+  #Checking empirical_rmw input
+  stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
+
+  #Checking time_res input
+  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
+  stopifnot("time_res must be length 1" = length(time_res) == 1)
+  stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
 
   #Checking focus_loi input
   stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
@@ -245,19 +293,18 @@ getIndices <- function(st, offset, format, focus_loi){
     #Use observations within the loi for the computations
     ind <- seq(st@obs[1], st@obs[length(st@obs)], 1)
 
-    if(!identical(class(format),"data.frame")){
-      if(format == "analytic"){
-        #Handling indices and offset (outside of loi at entry and exit)
-        for(o in 1:offset){
-          ind <- c(st@obs[1] - o, ind)
-          ind <- c(ind, st@obs[length(st@obs)] + o)
-        }
-
-        #Remove negative values and values beyond st@numobs.all
-        ind <- ind[ind > 0 & ind <= st@numobs.all]
-
+    if(format == "analytic"){
+      #Handling indices and offset (outside of loi at entry and exit)
+      for(o in 1:offset){
+        ind <- c(st@obs[1] - o, ind)
+        ind <- c(ind, st@obs[length(st@obs)] + o)
       }
+
+      #Remove negative values and values beyond st@numobs.all
+      ind <- ind[ind > 0 & ind <= st@numobs.all]
+
     }
+
   } else{
     #Use all observations available for the computations
     ind <- seq(1, st@numobs.all, 1)
@@ -914,7 +961,7 @@ computeExposure <- function(wind, time_res){
 #' rasterizeProduct counterpart function for non raster data
 #'
 #' @noRd
-#' @param product character. Product input from stormBehaviour
+#' @param product character. Product input from Unknow
 #' @param wind numeric vector. Wind speed values
 #' @param time_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
@@ -929,7 +976,7 @@ computeExposure <- function(wind, time_res){
 #' }
 computeProduct <- function(product, wind, time_res, result){
 
-  if(product == "MSW"){
+  if(product == "TS"){
     prod <- wind
   }else if (product == "PDI") {
     prod <- computePDI(wind, time_res)
@@ -973,20 +1020,20 @@ maskProduct <- function(final_stack, focus_loi, loi, template){
 
 
 
-#' Arrange result before the end of stormBehaviour
+#' Arrange result before the end of Unknow
 #'
 #' @noRd
 #' @param final_result list of data.frame. Where to add the computed product
 #' @param result result output from computeProduct function
-#' @param product character. Product input from stormBehaviour
-#' @param format format input from stormBehaviour
+#' @param product character. Product input from Unknow
+#' @param points points input from Unknow
 #' @param indices numeric vector. Indices of observations
 #' @param name character. Name of the storm
 #'
 #' @return final_result
-finalizeResult <- function(final_result, result, product, format, indices, name){
+finalizeResult <- function(final_result, result, product, points, indices, name){
 
-  if(product == "MSW"){
+  if(product == "TS"){
     df <- data.frame(result)
   }else if(product == "PDI"){
     df <- data.frame(result, row.names = "PDI")
@@ -994,7 +1041,7 @@ finalizeResult <- function(final_result, result, product, format, indices, name)
     df <- data.frame(result ,row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
   }
 
-  colnames(df) <- paste0("(",format$lon,",",format$lat,")")
+  colnames(df) <- paste0("(",points$lon,",",points$lat,")")
 
 
   dfn <- list(df)
@@ -1004,11 +1051,6 @@ finalizeResult <- function(final_result, result, product, format, indices, name)
   return(final_result)
 }
 
-
-
-
-
-mergeRaster <- function(stack, raster_template, raster_wind, is_basin, extent){}
 
 
 onestep <- function(index, raster_template, buffer, data, method, asymmetry, format, product, basin, is_basin, extent){
@@ -1115,18 +1157,13 @@ onestep <- function(index, raster_template, buffer, data, method, asymmetry, for
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
 #'   empirically, according to getRmw function or using the Radius of Maximum Wind
 #'    from the observations. Default value is set to FALSE
-#' @param format either a character among "analytic" and "profiles", or a
-#'   data.frame which contains longitude/latitude coordinates within column
-#'   names "lon" and "lat". Represents the format results the function
-#'   should compute.
+#' @param format either a character among "analytic" and "profiles":
 #'   \itemize{
 #'     \item  If "analytic", analytic rasters (integration in space and
 #'      time over the track) are returned.
 #'     \item  If "profiles", product input is
 #'   ignored and set to "MSW" and 2D wind speed structures for each observation
 #'   are returned.
-#'     \item If `data.frame`, computed product for each coordinates are
-#'   returned (time series if product == "MSW")
 #'   }
 #' @param space_res numeric. Space resolution (km) for the raster(s) to compute.
 #'   Default value is set to 10
@@ -1148,35 +1185,23 @@ onestep <- function(index, raster_template, buffer, data, method, asymmetry, for
 #'   \item If "profiles", product input is ignored and set to "MSW" and
 #'   2D wind speed structures for each observation are returned within a raster
 #'   stack. Each layer is named after the storm and the index of observation
-#'  computed as follow: stormName_profileIndex
-#'   \item If `data.frame`, computed product for each coordinates are returned
-#'   through a name numeric vector of dimension
-#'    \itemize{
-#'    \item (number of observations:number of point coordinates), if product == "MSW".
-#'     Correspond in fact of time series of wind speed along every observations
-#'    \item (1:number of point coordinates), if product == "PDI"
-#'    \item (6:number of point coordinates), if product == "Exposure"
-#'    }
-#' }
+#'   computed as follow: stormName_profileIndex
+#'  }
+#'
 #'
 #' @examples
-#' #Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with
-#' #version 2 of asymmetry
-#' msw_pam <- stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
+#' #Compute MSW for PAM 2015 in Vanuatu using default settings
+#' msw_pam <- stormBehaviour(pam)
 #'
-#' #Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland
-#' # model without asymmetry
+#' #Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
 #' pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
 #'                         product = "PDI", verbose = TRUE)
 #'
-#' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using
-#' #Willoughby model without asymmetry
-#' prof_nc <- stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
+#' #Compute Exposure for PAM 2015 in Vanuatu using default settings
+#' exp_pam <- stormBehaviour(pam, product = "Exposure")
 #'
-#' #Compute time series of wind speed for ERICA and NIRAN in New Caledonia using
-#' #Willoughby model without asymmetry
-#' df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
-#' ts_nc <- stormBehaviour(sts_nc, format = df)
+#' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
+#' prof_nc <- stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
 #'
 #' @export
 stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetry = "V2",
@@ -1186,26 +1211,19 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
   checkInputsSb(sts, product, method, asymmetry, empirical_rmw, format,
                 space_res, time_res, verbose, focus_loi)
 
-  format.id <- switch(class(format), "data.frame" = "data.frame", "character" = format)
 
+  if(format == "profiles")
+    product <- "MSW"
 
-  if(format.id != "data.frame"){
+  #Make raster template
+  raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, space_res)
+  #Getting new extent
+  ext <- terra::ext(raster.template)
+  #Buffer size in degree
+  buffer <- terra::res(raster.template)[1] * sts@buffer / space_res
+  #Initializing final raster stack
+  final.stack <- c()
 
-    if(format == "profiles")
-      product <- "MSW"
-
-    #Make raster template
-    raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, space_res)
-    #Getting new extent
-    ext <- terra::ext(raster.template)
-    #Buffer size in degree
-    buffer <- terra::res(raster.template)[1] * sts@buffer / space_res
-    #Initializing final raster stack
-    final.stack <- c()
-  }else{
-    #Initializing final result
-    final.result <- list()
-  }
 
   if(verbose)
     s <- 1 #Initializing count of storms
@@ -1221,119 +1239,201 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
     dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Getting data associated with storm st
-    if(format.id == "profiles"){
+    if(format == "profiles"){
       dataTC <- getData(st, ind, asymmetry, empirical_rmw, method)
     }else{
       dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
     }
 
     #Reduce extent of raster if loi represents the whole basin
-    if(sts@loi.basin & format.id != "data.frame")
+    if(sts@loi.basin)
       ext <- terra::ext(min(dataTC$lon) - buffer, max(dataTC$lon) + buffer,
                      min(dataTC$lat) - buffer, max(dataTC$lat) + buffer)
 
+    nb.step <- dim(dataTC)[1] - 1
 
-    if(format.id != "data.frame"){
+    if (verbose) {
+      step <- 1
+      cat("Computing", format, product, "rasters using", method,
+          "model (time_res:", time_res, "h, space_ras:", space_res,
+          "km, asymmetry:", asymmetry, ", empirical_rmw:", empirical_rmw,
+          ") for", st@name, "(", s, "/", sts@nb.storms, ")\n")
+      pb <- utils::txtProgressBar(min = step, max = nb.step, style = 3)
+    }
 
-      nb.step <- dim(dataTC)[1] - 1
-      if (verbose) {
-        step <- 1
-        cat("Computing", format, product, "rasters using", method,
-            "model (time_res:", time_res, "h, space_ras:", space_res,
-            "km, asymmetry:", asymmetry, ", empirical_rmw:", empirical_rmw,
-            ") for", st@name, "(", s, "/", sts@nb.storms, ")\n")
-        pb <- utils::txtProgressBar(min = step, max = nb.step, style = 3)
+    aux.stack <- c()
+
+    for (j in 1:nb.step) {
+
+      #Making template to compute wind profiles
+      raster.template.model <- makeTemplateModel(raster.template, buffer, dataTC, j)
+      raster.wind <- raster.template.model
+
+      #Computing coordinates to the eye of the storm for x and y axes
+      x <- (terra::crds(raster.wind, na.rm = FALSE)[, 1] - dataTC$lon[j])
+      y <- (terra::crds(raster.wind, na.rm = FALSE)[, 2] - dataTC$lat[j])
+
+      #Computing distances to the eye of the storm in m
+      dist.m <- terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
+                                y = cbind(dataTC$lon[j], dataTC$lat[j]),
+                                lonlat = T)
+
+      #Computing wind profile
+      terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method,
+                                                       asymmetry, sts@basin, x, y)
+
+      #Stacking product
+      aux.stack <- stackProduct(product, aux.stack, raster.template,
+                                raster.wind, sts@loi.basin, ext)
+
+
+      if (verbose){
+        utils::setTxtProgressBar(pb, step)
+        step <- step + 1
       }
 
-      aux.stack <- c()
-
-      start_time <- Sys.time()
-      for (j in 1:nb.step) {
-
-        #Making template to compute wind profiles
-        raster.template.model <- makeTemplateModel(raster.template, buffer, dataTC, j)
-        raster.wind <- raster.template.model
-
-        #Computing coordinates to the eye of the storm for x and y axes
-        x <- (terra::crds(raster.wind, na.rm = FALSE)[, 1] - dataTC$lon[j])
-        y <- (terra::crds(raster.wind, na.rm = FALSE)[, 2] - dataTC$lat[j])
-
-        #Computing distances to the eye of the storm in m
-        dist.m <- terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
-                                 y = cbind(dataTC$lon[j], dataTC$lat[j]),
-                                 lonlat = T)
-
-        #Computing wind profile
-        terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method,
-                                                        asymmetry, sts@basin, x, y)
-
-        #Stacking product
-        aux.stack <- stackProduct(product, aux.stack, raster.template,
-                                 raster.wind, sts@loi.basin, ext)
+    }
 
 
-        if (verbose){
-          utils::setTxtProgressBar(pb, step)
-          step <- step + 1
-        }
-      }
-      end_time <- Sys.time()
-      print(end_time - start_time)
-
-      if (verbose)
-        close(pb)
+    if (verbose)
+      close(pb)
 
       #Rasterize final product
       aux.stack <- terra::rast(aux.stack)
       final.stack <- rasterizeProduct(product, format, final.stack, aux.stack,
                                      time_res, st@name, ind)
 
-    }else{
-      #Computing distances from the eye of storm for every observations x, and
-      #every points y
-      dist.m <- terra::distance(
-        x <- cbind(dataTC$lon,dataTC$lat),
-        y <- cbind(format$lon, format$lat),
-        lonlat <- T
-      )
-
-      res <- c()
-      #For each point
-      for(i in 1:dim(format)[1]){
-
-        #Computing coordinates between eye of storm and point P
-        x <- format$lon[i] - dataTC$lon
-        y <- format$lat[i] - dataTC$lat
-
-        #Computing wind profiles
-        dist2p <- dist.m[,i]
-        vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, sts@basin, x, y)
-
-        #Computing product
-        res <- computeProduct(product, vr, time_res, res)
-
-      }
-
-      final.result <- finalizeResult(final.result,  res, product, format, ind, st@name)
-
-
-    }
 
     if(verbose)
       s <- s + 1
   }
 
 
-  if(format.id != "data.frame"){
-    final.stack <- terra::rast(final.stack)
-    final.stack <- maskProduct(final.stack, focus_loi,
-                              sts@spatial.loi.buffer, raster.template)
+  final.stack <- terra::rast(final.stack)
+  final.stack <- maskProduct(final.stack, focus_loi,
+                             sts@spatial.loi.buffer, raster.template)
 
-    return(final.stack)
+  return(final.stack)
+}
 
-  }else{
 
-    return(final.result)
+#' Compute product on given points coordinates for given storms
+#'
+#' This function computes products for each storm of a `Storms` object
+#' among TS (time series of wind speed), Power Dissipation Index and Category exposure for each
+#' given points provided in points input
+#'
+#' @param sts Storms object
+#' @param points data.frame. Contains longitude/latitude coordinates within column
+#'   names "lon" and "lat".
+#' @param product character. Product to compute that is either
+#'   \itemize{
+#'     \item "MSW", Maximum Sustained Wind
+#'     \item "PDI", Power Dissipation Index
+#'     \item "Exposure", hours spent for each and all categories together
+#'   }
+#'   Default value is set to "MSW"
+#' @param method character. Cyclonic model used to compute product, that is either
+#'   \itemize{
+#'     \item "Willoughby"
+#'     \item "Holland80"
+#'   }
+#'  Default value is set to "Willoughby"
+#' @param asymmetry character. Indicates which version of asymmetry to use in
+#'   the computations, that is either
+#'   \itemize{
+#'     \item "None", no asymmetry
+#'     \item "V1", first version
+#'     \item "V2, second version
+#'   }
+#'  Default value is set to "None".
+#' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
+#'   empirically, according to getRmw function or using the Radius of Maximum Wind
+#'    from the observations. Default value is set to FALSE
+#' @param time_res numeric. Time discretization (hours) used to compute the
+#'   analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
+#'   (30min), and 0.25 (15min). Default value is set to 1
+#' @param focus_loi logical. Whether or not the computations must only be
+#'   overtaken within the spatial.loi.buffer from sts object. Default value
+#'   is set to TRUE, otherwise, computations are extended over the whole track
+#'   of the storms
+#'
+#' @returns Computed product for each points are returned
+#'   through a named list. Each slot is named after the storm and has dimensions:
+#'    \itemize{
+#'      \item (number of observations:number of point coordinates), if product == "MSW".
+#'       Correspond in fact of time series of wind speed on every observations (real and interpolated)
+#'      \item (1:number of point coordinates), if product == "PDI"
+#'      \item (6:number of point coordinates), if product == "Exposure"
+#'    }
+#'
+#' @examples
+#' df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+#' #Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings
+#' ts_nc <- Unknow(sts_nc, points = df)
+#' #Compute PDI for ERICA and NIRAN on points provided in df using default settings
+#' pdiPt_nc <- Unknow(sts_nc, points = df, product = "PDI)
+#' #Compute Exposure for ERICA and NIRAN on points provided in df using default settings
+#' expPt_nc <- Unknow(sts_nc, points = df, product = "Exposure")
+#'
+#' @export
+Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry = "V2",
+                   empirical_rmw = FALSE, time_res = 1, focus_loi = TRUE){
+
+  checkInputsUnknow(sts, points, product, method, asymmetry, empirical_rmw, time_res, focus_loi)
+
+
+
+  #Initializing final result
+  final.result <- list()
+
+  for (st in sts@data) {
+
+    #Handling indices inside loi.buffer or not
+    ind <- getIndices(st, 2, "none", focus_loi)
+
+    #Interpolated time step dt, default value dt <- 4 --> 1h
+    dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
+
+    #Getting data associated with storm st
+    dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
+
+    #Computing distances from the eye of storm for every observations x, and
+    #every points y
+    dist.m <- terra::distance(
+      x <- cbind(dataTC$lon,dataTC$lat),
+      y <- cbind(points$lon, points$lat),
+      lonlat <- T
+    )
+
+    res <- c()
+    #For each point
+    for(i in 1:dim(points)[1]){
+
+      #Computing coordinates between eye of storm and point P
+      x <- points$lon[i] - dataTC$lon
+      y <- points$lat[i] - dataTC$lat
+
+      #Computing wind profiles
+      dist2p <- dist.m[,i]
+      vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, sts@basin, x, y)
+
+      #Computing product
+      res <- computeProduct(product, vr, time_res, res)
+
+    }
+
+    final.result <- finalizeResult(final.result, res, product, points, ind, st@name)
+
   }
 
+  return(final.result)
 }
+
+
+
+
+
+
+
+
