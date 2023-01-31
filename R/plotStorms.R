@@ -136,21 +136,17 @@ plotLabels <- function(st, by, pos) {
 #' @param names character vector
 #' @param category numeric vector
 #' @param map shapefile or sf object
-#' @param ground_color numeric or character vector
-#' @param ocean_color numeric or character vector
 #' @param whole_basin logical
 #' @param labels logical
 #' @param by numeric
 #' @param pos numeric
 #' @param legends logical
 #' @param loi logical
-#' @param grtc numeric
 #' @param xlim numeric vector
 #' @param ylim numeric vector
 #' @return NULL
-checkInputsPs <- function(sts, names, category, map, ground_color,
-                       ocean_color, whole_basin, labels, by,
-                       pos, legends, loi, grtc, xlim, ylim){
+checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
+                          pos, legends, loi, xlim, ylim){
 
   #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -172,22 +168,6 @@ checkInputsPs <- function(sts, names, category, map, ground_color,
     stopifnot(
       "map must be a SpatialPolygonsDataFrame or a sf object" = identical(class(map)[1], "SpatialPolygonsDataFrame") |
         identical(class(map)[1], "sf"))
-
-  #Checking ground_color input
-  stopifnot("Invalid ground_color input" = identical(class(ground_color), "numeric") ||
-              identical(class(ground_color), "character"))
-  stopifnot("ground_color must be length 1" = length(ground_color) == 1)
-
-  #Checking ocean_color input
-  stopifnot("Invalid ocean_color input" = identical(class(ocean_color), "numeric") ||
-              identical(class(ocean_color), "character"))
-  stopifnot("ocean_color must be length 1" = length(ocean_color) == 1)
-
-
-  #Checking grtc input
-  stopifnot("grtc must be numeric" = identical(class(grtc), "numeric"))
-  stopifnot("grtc must be length 1" = length(grtc) == 1)
-  stopifnot("grtc must be as integer" = round(grtc) == grtc)
 
   #Checking xlim input
   if (!is.null(xlim)) {
@@ -243,8 +223,6 @@ checkInputsPs <- function(sts, names, category, map, ground_color,
 #' reached category input
 #' @param map a shapefile or sf object. It should replace the default map if non NULL.
 #'  Default value is set to NULL.
-#' @param ground_color character. Color for the ground
-#' @param ocean_color character. Color for the oceans
 #' @param whole_basin logical. Whether or not to plot the track onto the whole basin.
 #' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
 #' spatial.loi.buffer of sts
@@ -259,9 +237,6 @@ checkInputsPs <- function(sts, names, category, map, ground_color,
 #' Default value is set to 3. Ignored if labels == FALSE
 #' @param legends logical. Whether or not to plot legends. Default value is set
 #' to FALSE.
-#' @param grtc numeric. Controls the number of graticules to plot. Default value
-#' is set to 1, which plots graticules on multiples of 10 coordinates. Note that
-#' it should be a power of 2.
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
 #' longitude extent of the plot. Default value is set to NULL which will let
 #' the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
@@ -283,32 +258,24 @@ checkInputsPs <- function(sts, names, category, map, ground_color,
 #' #Plot a single storm (ERICA), with labels every 6h on the right side
 #' plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
 #'
-#' #Plot a single storm (ERICA), with graticules at each multiples of 2
-#' #longitude/latitude coordinates
-#' plotStorms(sts_nc, names = "ERICA", grtc = 4)
+#' #Plot a single storm (ERICA)
+#' plotStorms(sts_nc, names = "ERICA")
 #'
 #'
 #' @export
-plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, ground_color = "grey",
-                      ocean_color = "white", whole_basin = FALSE, labels = FALSE, by = 8,
-                      pos = 3, legends = FALSE, loi = TRUE, grtc = 1, xlim = NULL, ylim = NULL){
+plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_basin = FALSE,
+                       labels = FALSE, by = 8, pos = 3, legends = FALSE, loi = TRUE,
+                       xlim = NULL, ylim = NULL){
 
 
-  checkInputsPs(sts, names, category, map, ground_color, ocean_color, whole_basin,
-              labels, by, pos, legends, loi, grtc, xlim, ylim)
+  checkInputsPs(sts, names, category, map, whole_basin,
+              labels, by, pos, legends, loi, xlim, ylim)
 
 
   if (!is.null(map)){
     #Converting to sf object
     if(!identical(class(map)[1], "sf"))
       map <- sf::st_as_sf(map)
-  }
-
-
-  l2 <- log2(grtc)
-  if (!(l2 == round(l2))) {
-    grtc <- 2 ** round(l2)
-    warning(paste("grtc is not a power of 2, set to", grtc))
   }
 
 
@@ -356,8 +323,8 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, ground_co
     maps::map(
       world,
       fill = TRUE,
-      col = ground_color,
-      bg = ocean_color,
+      col = oceanColor,
+      bg = groundColor,
       wrap = c(0, 360),
       xlim = c(ext$xmin, ext$xmax),
       ylim = c(ext$ymin, ext$ymax)
@@ -366,29 +333,13 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, ground_co
 
   }else{
     plot(map,
-         col = ground_color,
-         bg = ocean_color,
+         col = oceanColor,
+         bg = groundColor,
          border = 1,
          xlim = c(ext$xmin, ext$xmax),
          ylim = c(ext$ymin, ext$ymax),
          axes = T)
   }
-
-
-  #Adding graticules
-  x.min <- round(ext$xmin / 10) * 10 - 20
-  x.max <- round(ext$xmax / 10) * 10 + 20
-  y.min <- round(ext$ymin / 10) * 10 - 20
-  y.max <- round(ext$ymax / 10) * 10 + 20
-
-  mapproj::map.grid(
-    lim = c(x.min, x.max, y.min, y.max),
-    nx = abs(x.max - x.min) / 10 * grtc,
-    ny = abs(y.max - y.min) / 10 * grtc,
-    col = "blue",
-    labels = FALSE,
-    lty = 3
-  )
 
   #Plotting loi
   if (loi)

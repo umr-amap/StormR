@@ -16,11 +16,6 @@ test_that("Tests invalid inputs", {
   expect_error(plotStorms(sts_wp, category = 2.5))
   expect_error(plotStorms(sts_wp, category = "1"))
 
-  #Checking grtc validity
-  expect_error(plotStorms(sts_wp, grtc = "2"))
-  expect_error(plotStorms(sts_wp, grtc = 3.6))
-  expect_error(plotStorms(sts_wp, grtc = c(2,4)))
-
   #Checking xlim/ylim validity
   expect_error(plotStorms(sts_wp, xlim = "132"))
   expect_error(plotStorms(sts_wp, xlim = 160))

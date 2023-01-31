@@ -9,15 +9,12 @@ plotStorms(
   names = NULL,
   category = NULL,
   map = NULL,
-  ground_color = "grey",
-  ocean_color = "white",
   whole_basin = FALSE,
   labels = FALSE,
   by = 8,
   pos = 3,
   legends = FALSE,
   loi = TRUE,
-  grtc = 1,
   xlim = NULL,
   ylim = NULL
 )
@@ -35,10 +32,6 @@ reached category input}
 
 \item{map}{a shapefile or sf object. It should replace the default map if non NULL.
 Default value is set to NULL.}
-
-\item{ground_color}{character. Color for the ground}
-
-\item{ocean_color}{character. Color for the oceans}
 
 \item{whole_basin}{logical. Whether or not to plot the track onto the whole basin.
 Default value is set to FALSE. Otherwise, the plot focuses on the extent of
@@ -59,10 +52,6 @@ to FALSE.}
 
 \item{loi}{logical. Whether or not to plot spatial.loi.buffer on the map
 Default value is set to TRUE.}
-
-\item{grtc}{numeric. Controls the number of graticules to plot. Default value
-is set to 1, which plots graticules on multiples of 10 coordinates. Note that
-it should be a power of 2.}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to NULL which will let
@@ -89,9 +78,8 @@ plotStorms(sts_nc, names = "ERICA", labels = TRUE, legend = TRUE)
 #Plot a single storm (ERICA), with labels every 6h on the right side
 plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
 
-#Plot a single storm (ERICA), with graticules at each multiples of 2
-#longitude/latitude coordinates
-plotStorms(sts_nc, names = "ERICA", grtc = 4)
+#Plot a single storm (ERICA)
+plotStorms(sts_nc, names = "ERICA")
 
 
 }

@@ -20,7 +20,6 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     graphics,
-    mapproj,
     maps,
     methods,
     ncdf4,
