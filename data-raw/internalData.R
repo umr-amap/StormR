@@ -5,6 +5,8 @@
 knt2ms <- 0.514
 km <- 1000
 wgs84 <- 4326
+oceanColor <- "white"
+groundColor <- "grey"
 
 Basins <- data.frame(row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"),
                     xmin = c(270, 290, 180, 100, 135, 10, 30, 0),
@@ -34,7 +36,7 @@ pdiPalette <- rev(viridis::inferno(50))
 
 exposurePalette <- rev(viridis::viridis(50))
 
-usethis::use_data(knt2ms, km, wgs84, Basins, sshs, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette, internal = TRUE, overwrite = T)
+usethis::use_data(knt2ms, km, wgs84, oceanColor, groundColor, Basins, sshs, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette, internal = TRUE, overwrite = T)
 
 
 
