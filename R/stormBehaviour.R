@@ -348,14 +348,13 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
   len.data <- dt * (len.indices - 1) - (len.indices-2)
   indices.obs <- seq(1, len.data, dt-1)
 
-
-  data <- data.frame(lon <- rep(NA, len.data),
-                    lat <- rep(NA, len.data),
-                    storm.speed <- rep(NA,len.data),
-                    vx.deg <- rep(NA,len.data),
-                    vy.deg <- rep(NA,len.data),
-                    msw <- rep(NA,len.data),
-                    rmw <- rep(NA,len.data))
+  data <- data.frame(lon = rep(NA, len.data),
+                    lat = rep(NA, len.data),
+                    storm.speed = rep(NA,len.data),
+                    vx.deg = rep(NA,len.data),
+                    vy.deg = rep(NA,len.data),
+                    msw = rep(NA,len.data),
+                    rmw = rep(NA,len.data))
 
   lon <- st@obs.all$lon[indices]
   lat <- st@obs.all$lat[indices]
@@ -382,11 +381,11 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
   }
 
   if(empirical_rmw){
-    data$rmw[indices.obs] <- getRmw(msw, lat)
+    data$rmw[indices.obs] <- getRmw(data$msw[indices.obs], lat)
   }else{
     if(all(is.na(st@obs.all$rmw[indices]))){
       warning("Missing rmw data to perform model. Consider setting empirical_rmw to TRUE")
-      data$rmw[indices.obs] <- getRmw(msw, lat)
+      data$rmw[indices.obs] <- getRmw(data$msw[indices.obs], lat)
     }else{
       data$rmw[indices.obs] <- st@obs.all$rmw[indices]
     }
@@ -402,7 +401,7 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
   data$lon <- zoo::na.approx(data$lon)
   data$lat <- zoo::na.approx(data$lat)
   data$msw <- zoo::na.approx(data$msw, rule = 2)
-  data$rmw <- zoo::na.approx(data$rmw)
+  data$rmw <- zoo::na.approx(data$rmw, rule = 2)
 
   for(i in 1:(dt-2)){
     ind <- indices.obs + i
@@ -411,6 +410,7 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
     data$vx.deg[ind] <- vx.deg[1:length(ind)]
     data$vy.deg[ind] <- vy.deg[1:length(ind)]
   }
+
 
   if(method == "Holland80"){
     if(all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices])))
@@ -461,10 +461,8 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
 #'  }
 getData <- function(st, indices , asymmetry, empirical_rmw, method){
 
-  data <- data.frame(
-    lon <- st@obs.all$lon[indices],
-    lat <- st@obs.all$lat[indices]
-  )
+  data <- data.frame(lon = st@obs.all$lon[indices],
+                     lat = st@obs.all$lat[indices])
 
   data$storm.speed <- NA
   data$vx.deg <- NA
