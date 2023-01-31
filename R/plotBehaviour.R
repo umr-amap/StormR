@@ -142,10 +142,9 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
 
 
   #Plotting track
-  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax))
-
-  #Adding title
-  graphics::title(paste0(name," ",sts@data[[name]]@season))
+  plotStorms(sts = sts, names = name,
+             xlim = c(xmin, xmax), ylim = c(ymin, ymax),
+             reset_setting = FALSE)
 
   #Adding raster_product on map
   if (product == "MSW" | stringr::str_detect(product,"profile")) {
@@ -153,10 +152,10 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
     col <- mswSSHSPalette
     range <- c(17, 80)
     if(product == "MSW"){
-      leg <- expression(paste("MSW (m.s" ^ "-1)"))
+      leg <- expression(paste("MSW (m.s" ^ "-1",")"))
 
     }else{
-      leg <- expression(paste("radial wind speed (m.s" ^ "-1)"))
+      leg <- expression(paste("radial wind speed (m.s" ^ "-1",")"))
     }
 
   } else if (product == "PDI") {
@@ -177,9 +176,26 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
   if(!is.null(color_palette))
     col <- color_palette
 
-  plot(raster_product, col = col, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
-       alpha = 0.7, axes = FALSE, range = range, legend = T,
-       plg = list(title = leg, title.cex = 0.9, cex = 0.7, shrink = 0), add = T)
+  #Adding title
+  #graphics::title(paste(name,sts@data[[name]]@season,product))
+  graphics::title(leg)
+
+  plot(raster_product,
+       col = col,
+       xlim = c(xmin, xmax),
+       ylim = c(ymin, ymax),
+       alpha = 0.7,
+       axes = FALSE,
+       range = range,
+       legend = TRUE,
+       plg = list(loc = "bottom",
+                  ext = c(terra::ext(raster_product)$xmin,
+                          terra::ext(raster_product)$xmax,
+                          terra::ext(raster_product)$ymin-1.75,
+                          terra::ext(raster_product)$ymin-1.2),
+                  cex = 0.7,
+                  shrink = 0),
+       add = T)
 
 
   #Adding track again (to emphazise)

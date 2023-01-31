@@ -144,9 +144,10 @@ plotLabels <- function(st, by, pos) {
 #' @param loi logical
 #' @param xlim numeric vector
 #' @param ylim numeric vector
+#' @param reset_setting logical
 #' @return NULL
 checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
-                          pos, legends, loi, xlim, ylim){
+                          pos, legends, loi, xlim, ylim, reset_setting){
 
   #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -190,6 +191,7 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
   stopifnot("legends must be logical" = identical(class(legends), "logical"))
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
+  stopifnot("reset_setting must be logical" = identical(class(reset_setting), "logical"))
 
   #Checking by input
   stopifnot("by must be numeric" = identical(class(by), "numeric"))
@@ -236,7 +238,7 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
 #' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 #' Default value is set to 3. Ignored if labels == FALSE
 #' @param legends logical. Whether or not to plot legends. Default value is set
-#' to FALSE.
+#' to TRUE
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
 #' longitude extent of the plot. Default value is set to NULL which will let
 #' the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
@@ -245,6 +247,9 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
 #' latitude extent of the plot. Default value is set to NULL which will let
 #' the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
 #' Ignored if whole_basin is not NULL
+#' @param reset_setting logical. Whether the graphical parameter should be reset on exit. Default
+#' value is set to TRUE. It is usefull for the plotBehaviour function. We highly recommand not to change this
+#' input.
 #' @returns NULL
 #' @import rworldxtra
 #'
@@ -252,8 +257,8 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
 #' #Plot category 5 TCs in the WP Basin between 2010 and 2020
 #' plotStorms(sts_wp, category = c(3,5))
 #'
-#' #Plot a single storm (ERICA) with lables every 24h and legends
-#' plotStorms(sts_nc, names = "ERICA", labels = TRUE, legend = TRUE)
+#' #Plot a single storm (ERICA) with labels every 24h
+#' plotStorms(sts_nc, names = "ERICA", labels = TRUE)
 #'
 #' #Plot a single storm (ERICA), with labels every 6h on the right side
 #' plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
@@ -264,12 +269,12 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
 #'
 #' @export
 plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_basin = FALSE,
-                       labels = FALSE, by = 8, pos = 3, legends = FALSE, loi = TRUE,
-                       xlim = NULL, ylim = NULL){
+                       labels = FALSE, by = 8, pos = 3, legends = TRUE, loi = TRUE,
+                       xlim = NULL, ylim = NULL, reset_setting = TRUE){
 
 
   checkInputsPs(sts, names, category, map, whole_basin,
-              labels, by, pos, legends, loi, xlim, ylim)
+              labels, by, pos, legends, loi, xlim, ylim, reset_setting)
 
 
   if (!is.null(map)){
@@ -318,13 +323,17 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_bas
   }
 
   #Plotting base map
+  #grDevices::dev.new(width = 10, height = 9)
+  opar <- graphics::par(no.readonly = TRUE)
+  graphics::par(mar = c(5, 4, 4, 6))
+
   if(is.null(map)){
     world <- rworldmap::getMap(resolution <- "high")
     maps::map(
       world,
       fill = TRUE,
-      col = oceanColor,
-      bg = groundColor,
+      col = groundColor,
+      bg = oceanColor,
       wrap = c(0, 360),
       xlim = c(ext$xmin, ext$xmax),
       ylim = c(ext$ymin, ext$ymax)
@@ -333,8 +342,8 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_bas
 
   }else{
     plot(map,
-         col = oceanColor,
-         bg = groundColor,
+         col = groundColor,
+         bg = oceanColor,
          border = 1,
          xlim = c(ext$xmin, ext$xmax),
          ylim = c(ext$ymin, ext$ymax),
@@ -380,17 +389,19 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_bas
 
   #Adding legends
   if (legends) {
+
     graphics::legend(
-      x = "bottomleft",
+      x = "topright",
+      inset = c(-0.7, 0),
+      xpd = TRUE,
       legend = c(
-        expression(paste("Tropical Depression (below 17 m.s" ^ "-1)")),
-        expression(paste("Tropical Storm (18 to 32 m.s" ^ "-1)")),
-        expression(paste("Category 1 (33 to 42 m.s" ^ "-1)")),
-        expression(paste("Category 2 (43 to 49 m.s" ^ "-1)")),
-        expression(paste("Category 3 (50 to 58 m.s" ^ "-1)")),
-        expression(paste("Category 4 (58 to 70 m.s" ^ "-1)")),
-        expression(paste("Category 5 (70 m.s" ^ "-1","and higher))"))
-      ),
+        expression(paste("Tropical Depression (below 17 m.s" ^ "-1",")")),
+        expression(paste("Tropical Storm (18 to 32 m.s" ^ "-1",")")),
+        expression(paste("Category 1 (33 to 42 m.s" ^ "-1",")")),
+        expression(paste("Category 2 (43 to 49 m.s" ^ "-1",")")),
+        expression(paste("Category 3 (50 to 58 m.s" ^ "-1",")")),
+        expression(paste("Category 4 (58 to 70 m.s" ^ "-1",")")),
+        expression(paste("Category 5 (70 m.s" ^ "-1","and higher)"))),
       col = c(
         "#00CCFF",
         "#00CCCC",
@@ -401,8 +412,11 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_bas
         "#BD0026"
       ),
       pch = 19,
-      cex = 0.6
+      cex = 0.8
     )
   }
+
+  if(reset_setting)
+    on.exit(graphics::par(opar))
 
 }

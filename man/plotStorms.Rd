@@ -13,10 +13,11 @@ plotStorms(
   labels = FALSE,
   by = 8,
   pos = 3,
-  legends = FALSE,
+  legends = TRUE,
   loi = TRUE,
   xlim = NULL,
-  ylim = NULL
+  ylim = NULL,
+  reset_setting = TRUE
 )
 }
 \arguments{
@@ -48,7 +49,7 @@ labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 Default value is set to 3. Ignored if labels == FALSE}
 
 \item{legends}{logical. Whether or not to plot legends. Default value is set
-to FALSE.}
+to TRUE}
 
 \item{loi}{logical. Whether or not to plot spatial.loi.buffer on the map
 Default value is set to TRUE.}
@@ -62,6 +63,10 @@ Ignored if whole_basin is not NULL}
 latitude extent of the plot. Default value is set to NULL which will let
 the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
 Ignored if whole_basin is not NULL}
+
+\item{reset_setting}{logical. Whether the graphical parameter should be reset on exit. Default
+value is set to TRUE. It is usefull for the plotBehaviour function. We highly recommand not to change this
+input.}
 }
 \description{
 This function plots a set of storm tracks contained in a Storms object. Depending
@@ -72,8 +77,8 @@ from the Storms object.
 #Plot category 5 TCs in the WP Basin between 2010 and 2020
 plotStorms(sts_wp, category = c(3,5))
 
-#Plot a single storm (ERICA) with lables every 24h and legends
-plotStorms(sts_nc, names = "ERICA", labels = TRUE, legend = TRUE)
+#Plot a single storm (ERICA) with labels every 24h
+plotStorms(sts_nc, names = "ERICA", labels = TRUE)
 
 #Plot a single storm (ERICA), with labels every 6h on the right side
 plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
