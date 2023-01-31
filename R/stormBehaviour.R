@@ -778,7 +778,7 @@ stackProduct <- function(product, stack, raster_template, raster_wind, is_basin,
 #' @return list of SpatRaster
 rasterizeMSW <- function(final_stack, stack, name){
 
-  msw <- max(stack, na.rm <- T)
+  msw <- max(stack, na.rm = T)
   #Applying focal function twice to smooth results
   msw <- terra::focal(msw, w = matrix(1, 3, 3), max, na.rm = T, pad = T)
   msw <- terra::focal(msw, w = matrix(1, 3, 3), mean, na.rm = T, pad = T)
@@ -874,7 +874,6 @@ rasterizeExposure <- function(final_stack, stack, time_res, name){
 #'
 #' @return list of SpatRaster
 rasterizeProduct <- function(product, format, final_stack, stack, time_res, name, indices){
-
 
   if (product == "MSW") {
     if(format == "profiles"){
@@ -1246,6 +1245,7 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
       dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
     }
 
+
     #Reduce extent of raster if loi represents the whole basin
     if(sts@loi.basin)
       ext <- terra::ext(min(dataTC$lon) - buffer, max(dataTC$lon) + buffer,
@@ -1303,7 +1303,6 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
       aux.stack <- terra::rast(aux.stack)
       final.stack <- rasterizeProduct(product, format, final.stack, aux.stack,
                                      time_res, st@name, ind)
-
 
     if(verbose)
       s <- s + 1
@@ -1369,6 +1368,7 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
 #'    }
 #'
 #' @examples
+#'
 #' df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
 #' #Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings
 #' ts_nc <- Unknow(sts_nc, points = df)
