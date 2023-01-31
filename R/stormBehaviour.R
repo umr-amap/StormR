@@ -384,9 +384,12 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
   if(empirical_rmw){
     data$rmw[indices.obs] <- getRmw(msw, lat)
   }else{
-    if(all(is.na(st@obs.all$rmw[indices])))
-      stop("Missing rmw data to perform model. Consider setting empirical_rmw to TRUE")
-    data$rmw[indices.obs] <- st@obs.all$rmw[indices]
+    if(all(is.na(st@obs.all$rmw[indices]))){
+      warning("Missing rmw data to perform model. Consider setting empirical_rmw to TRUE")
+      data$rmw[indices.obs] <- getRmw(msw, lat)
+    }else{
+      data$rmw[indices.obs] <- st@obs.all$rmw[indices]
+    }
   }
 
   data$lon[indices.obs] <- lon

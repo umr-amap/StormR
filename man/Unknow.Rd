@@ -73,9 +73,3 @@ This function computes products for each storm of a \code{Storms} object
 among TS (time series of wind speed), Power Dissipation Index and Category exposure for each
 given points provided in points input
 }
-\examples{
-#Compute time series of wind speed for ERICA and NIRAN in New Caledonia using default settings
-df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
-ts_nc <- Unknow(sts_nc, points = df)
-
-}
