@@ -8,7 +8,7 @@ stormBehaviour(
   sts,
   product = "MSW",
   method = "Willoughby",
-  asymmetry = "None",
+  asymmetry = "V2",
   empirical_rmw = FALSE,
   format = "analytic",
   space_res = 10,
