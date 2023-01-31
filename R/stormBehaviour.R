@@ -1179,7 +1179,7 @@ onestep <- function(index, raster_template, buffer, data, method, asymmetry, for
 #' ts_nc <- stormBehaviour(sts_nc, format = df)
 #'
 #' @export
-stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetry = "None",
+stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetry = "V2",
                           empirical_rmw = FALSE, format = "analytic", space_res = 10,
                           time_res = 1, verbose = FALSE, focus_loi = TRUE){
 
