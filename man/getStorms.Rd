@@ -23,7 +23,7 @@ of cyclonic seasons. It could also be a vector of cyclonic season provided
 that it has the same length as name input and matches the season of each storm
 listed in name input. Default value is set to c(1980, 2021)}
 
-\item{name}{character vector. Name(s) of storm(s). Default value is set to NULL,
+\item{name}{character vector. Name(s) of storm(s) in capital letters. Default value is set to NULL,
 otherwise time_period and name must have the same length, and these two informations must match}
 
 \item{loi}{Location of Interest. Should be either:

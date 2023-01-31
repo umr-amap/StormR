@@ -31,7 +31,7 @@ Default value is set to "MSW"}
 \item{method}{character. Cyclonic model used to compute product, that is either
 \itemize{
 \item "Willoughby"
-\item "Holland80"
+\item "Holland"
 }
 Default value is set to "Willoughby"}
 
@@ -95,7 +95,7 @@ for every observations
 msw_pam <- stormBehaviour(pam)
 
 #Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
-pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
+pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland",
                         product = "PDI", verbose = TRUE)
 
 #Compute Exposure for PAM 2015 in Vanuatu using default settings
