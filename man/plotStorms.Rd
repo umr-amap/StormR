@@ -24,14 +24,15 @@ plotStorms(
 \item{sts}{Storms object}
 
 \item{names}{character vector. Name(s) of the storm(s) to plot on map. Default
-value is set to NULL which will consider every storm in sts}
+value is set to NULL, which will plot every storm in sts. To see which storms
+are included in a Storms object, you can use "sts@names"}
 
-\item{category}{numeric vector. Should be either a category or a range of category
+\item{category}{numeric vector. Should be either a category or a range of categories
 in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
 will consider every storm in sts. Otherwise it will consider only storms that
 reached category input}
 
-\item{map}{a shapefile or sf object. It should replace the default map if non NULL.
+\item{map}{a shapefile or sf object. It will replace the default map if non NULL.
 Default value is set to NULL.}
 
 \item{whole_basin}{logical. Whether or not to plot the track onto the whole basin.
@@ -40,9 +41,9 @@ spatial.loi.buffer of sts}
 
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
-\item{by}{numeric. Add labels every by observations. Default value
-is set to 8 which represents a 24h time interval between each labeled observations.
-Ignored if labels == FALSE}
+\item{by}{numeric. Defines the frequency at which labels are plotted for the
+3-hourly records. Default value is set to 8 which represents a 24h time interval
+between each labeled observations. Ignored if labels == FALSE}
 
 \item{pos}{numeric. Must be between 1 and 4. Correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
@@ -69,9 +70,9 @@ value is set to TRUE. It is usefull for the plotBehaviour function. We highly re
 input.}
 }
 \description{
-This function plots a set of storm tracks contained in a Storms object. Depending
-on the inputs, the user may choose to plot only a desired set of storm extracted
-from the Storms object.
+This function plots a set of storm tracks contained in a Storms object (see “getStorms” function).
+Depending on the inputs, the user can choose to plot only a desired set of storms
+extracted from the Storms object .
 }
 \examples{
 #Plot category 5 TCs in the WP Basin between 2010 and 2020

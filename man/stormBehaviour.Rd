@@ -2,7 +2,7 @@
 % Please edit documentation in R/stormBehaviour.R
 \name{stormBehaviour}
 \alias{stormBehaviour}
-\title{Compute regimes of wind speed and other products for given storms}
+\title{Compute indicators of storm behaviour}
 \usage{
 stormBehaviour(
   sts,
@@ -57,20 +57,19 @@ ignored and set to "MSW" and 2D wind speed structures for each observation
 are returned.
 }}
 
-\item{space_res}{numeric. Space resolution (km) for the raster(s) to compute.
-Default value is set to 10}
+\item{space_res}{numeric. Space resolution (in km) for the raster(s) to compute.
+Default value is set to 10km}
 
-\item{time_res}{numeric. Time discretization (hours) used to compute the
+\item{time_res}{numeric. Period of time (hours) used to compute the
 analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 (30min), and 0.25 (15min). Default value is set to 1}
 
 \item{verbose}{logical. Whether or not the function must be verbose and
-display a text progress bar. Default value is set to FALSE}
+displays a text progress bar while operating. Default value is set to FALSE}
 
-\item{focus_loi}{logical. Whether or not the computations must only be
-overtaken within the spatial.loi.buffer from sts object. Default value
-is set to TRUE, otherwise, computations are extended over the whole track
-of the storms}
+\item{focus_loi}{logical. Whether or not the computations are restricted to within
+the spatial.loi.buffer from sts object. Default value is set to TRUE. Otherwise,
+computations are extended over the whole track of the storms}
 }
 \value{
 Depending on format input:
@@ -85,8 +84,8 @@ computed as follow: stormName_profileIndex
 }
 }
 \description{
-This function computes/rasterizes analytic products for each storm of a \code{Storms} object
-among Maximum Sustained Wind, Power Dissipation Index and Category exposure.
+This function computes/rasterizes analytic products for each storm of a \code{Storms}
+object, including Maximum Sustained Wind, Power Dissipation Index and Category exposure.
 It can also rasterize the 2D wind speed structures or produce time series of wind speed
 for every observations
 }
