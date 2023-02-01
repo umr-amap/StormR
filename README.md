@@ -238,7 +238,11 @@ plotBehaviour(sts, sts_pdi[["NIRAN_PDI"]], labels = T)
 #Tropical cyclones around a spatial polygon (created or imported)#
 ##################################################################
 
-#...
+#Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2021
+stsEEZnc <- getStorms(loi = eezNC, verbose = T)
+
+#Plot category 3 tropical cyclones (Saffir-Simpson hurricane wind scale, SSHWS) 
+plotStorms(stsEEZnc, category = 3)
 
 
 #################################################
