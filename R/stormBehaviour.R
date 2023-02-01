@@ -1028,13 +1028,14 @@ maskProduct <- function(final_stack, focus_loi, loi, template){
 #' @param product character. Product input from Unknow
 #' @param points points input from Unknow
 #' @param indices numeric vector. Indices of observations
-#' @param name character. Name of the storm
+#' @param st Storm object.
 #'
 #' @return final_result
-finalizeResult <- function(final_result, result, product, points, indices, name){
+finalizeResult <- function(final_result, result, product, points, indices, st){
 
   if(product == "TS"){
     df <- data.frame(result)
+    row.names(df) <- st@obs.all$iso.time[indices]
   }else if(product == "PDI"){
     df <- data.frame(result, row.names = "PDI")
   }else{
@@ -1045,7 +1046,7 @@ finalizeResult <- function(final_result, result, product, points, indices, name)
 
 
   dfn <- list(df)
-  names(dfn) <- name
+  names(dfn) <- st@name
   final_result <- append(final_result, dfn)
 
   return(final_result)
@@ -1397,7 +1398,12 @@ Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry
     dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Getting data associated with storm st
-    dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
+    if(product == "TS"){
+      dataTC <- getData(st, ind, asymmetry, empirical_rmw, method)
+    }else{
+      #Interpolate data iif product == "PDI" or "Exposure"
+      dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
+    }
 
     #Computing distances from the eye of storm for every observations x, and
     #every points y
@@ -1424,7 +1430,7 @@ Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry
 
     }
 
-    final.result <- finalizeResult(final.result, res, product, points, ind, st@name)
+    final.result <- finalizeResult(final.result, res, product, points, ind, st)
 
   }
 

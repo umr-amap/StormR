@@ -354,6 +354,10 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_bas
   if (loi)
     plot(sts@spatial.loi.buffer, lwd = 2, add = T)
 
+  if(as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT")
+    plot(sts@spatial.loi, lwd = 2, pch = 4, add = T)
+
+
 
   #Handling categories
   if(!is.null(category) & is.null(names)){
