@@ -201,7 +201,7 @@ convertLoi <- function(loi, basin){
       loi.sf = sf::st_sf(loi.sf)
       loi.sf <- sf::st_as_sf(loi.sf)
       if (sf::st_crs(loi.sf) != wgs84) {
-        sf::st_transform(loi.sf, crs = wgs84)
+        loi.sf = sf::st_transform(loi.sf, crs = wgs84)
       }
 
     } else if (identical(class(loi), c("sf", "data.frame"))) {
@@ -209,11 +209,15 @@ convertLoi <- function(loi, basin){
       loi.sf = sf::st_geometry(loi)
       loi.sf = sf::st_sf(loi.sf)
       loi.sf <- sf::st_as_sf(loi.sf)
+      if (sf::st_crs(loi.sf) != wgs84) {
+        loi.sf = sf::st_transform(loi.sf, crs = wgs84)
+      }
 
     } else if (identical(class(loi), c("numeric"))){
 
       loi.df <- data.frame(lon = loi[1], lat = loi[2])
       loi.sf <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
+      loi.sf = sf::st_transform(loi.sf) = wgs84
 
     } else if (identical(class(loi), c("character"))){
 
@@ -235,12 +239,12 @@ convertLoi <- function(loi, basin){
         id.country <- which(map@data$ADMIN == loi)
         stopifnot("invalid entry for loi" = length(id.country) > 0)
         loi.sf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
+        sf::st_crs(loi.sf) = wgs84
       }
     }
   }
 
   #Handling time line for Fiji
-  sf::st_crs(loi.sf) = wgs84
   loi.sf <- sf::st_shift_longitude(loi.sf)
 
   return(list(sf = loi.sf, basin = loi.is.basin))
@@ -293,11 +297,6 @@ retrieveStorms <- function(filter_names, filter_time_period, filter_basin, names
       storm.id <- NULL
       storm.id <- which(names == filter_names[n])
       stopifnot("Storm not found, invalid name ?" = !is.null(storm.id))
-
-      # print(stats::na.omit(match(storm.id, seasons.id))[1])
-      # print(match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))])
-      # print(seasons.id[stats::na.omit(match(storm.id, seasons.id))[1]])
-      # print(seasons.id[!is.na(match(storm.id, seasons.id))])
 
       id <- seasons.id[match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))]]
       stopifnot("Storm not found, time_period and name do not match" = !all(is.na(id)))
@@ -419,7 +418,6 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
   ind.iso.time <- which(list.iso.time %% 3 == 0)
   coords <- coords[ind.iso.time,]
   row.names(coords) <- seq(1,dim(coords)[1])
-  #print(coords)
 
   #Creating sf point coordinates to intersect with loi_sf_buffer
   pts <- sf::st_as_sf(coords, coords = c("lon", "lat"))
