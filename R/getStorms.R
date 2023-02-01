@@ -115,7 +115,7 @@ Storms <- methods::setClass(
 checkInputsGs <- function(basin, time_period, name, loi, max_dist, verbose, remove_TD){
 
   #Checking basin input
-  stopifnot("Invalid basin input" <- basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
+  stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
 
   #Checking time_period input
   stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
@@ -512,7 +512,7 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 #' }
 #  Default value is set to NULL which will set the spatial.loi.buffer on the whole basin
 #' @param max_dist numeric. Indicates the buffer used to generate spatial.loi.buffer (km).
-#' Default value is set to 300. This value also represents the maximum distance from the track
+#' Default value is set to 300km. This value also represents the maximum distance from the track
 #' of the storm where computations should be performed afterwards.
 #' @param verbose logical. Whether or not the function must be verbose and display
 #' a text progress bar. Default value is set to FALSE
@@ -647,6 +647,9 @@ getStorms <- function(basin = "SP", time_period = c(1980, 2022), name = NULL, lo
 
     if (verbose & length(indices) > 1)
       close(pb)
+
+    print(unlist(storm.names))
+    stopifnot("No storms found. Please check compatibilities between inputs (basin and loi ?)" = !is.null(unlist(storm.names)))
 
     #Initializing Storms object
     sts <- Storms()
