@@ -138,7 +138,7 @@ checkInputsGs <- function(basin, time_period, name, loi, max_dist, verbose, remo
   if(!is.null(loi)){
 
     stopifnot("Invalid class for loi" = identical(class(loi), c("sf", "data.frame")) ||
-                identical(class(loi), "SpatialPolygons") ||
+                identical(class(loi)[1], "SpatialPolygonsDataFrame") ||
                 identical(class(loi), "numeric") ||
                 identical(class(loi), "character"))
 
@@ -194,16 +194,21 @@ convertLoi <- function(loi, basin){
   } else{
 
     loi.is.basin <- FALSE
-    if (identical(class(loi), c("SpatialPolygons"))) {
-      loi.id <- "SpatialPolygons"
+    if (identical(class(loi)[1], c("SpatialPolygonsDataFrame"))) {
+
       loi.sf <- sf::st_as_sf(loi)
+      loi.sf = sf::st_geometry(loi.sf)
+      loi.sf = sf::st_sf(loi.sf)
+      loi.sf <- sf::st_as_sf(loi.sf)
       if (sf::st_crs(loi.sf) != wgs84) {
         sf::st_transform(loi.sf, crs = wgs84)
       }
 
     } else if (identical(class(loi), c("sf", "data.frame"))) {
 
-      loi.sf <- loi
+      loi.sf = sf::st_geometry(loi)
+      loi.sf = sf::st_sf(loi.sf)
+      loi.sf <- sf::st_as_sf(loi.sf)
 
     } else if (identical(class(loi), c("numeric"))){
 
