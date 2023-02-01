@@ -210,14 +210,15 @@ convertLoi <- function(loi, basin){
       loi.sf = sf::st_sf(loi.sf)
       loi.sf <- sf::st_as_sf(loi.sf)
       if (sf::st_crs(loi.sf) != wgs84) {
-        loi.sf = sf::st_transform(loi.sf, crs = wgs84)
+        loi.sf <- sf::st_transform(loi.sf, crs = wgs84)
       }
 
     } else if (identical(class(loi), c("numeric"))){
 
       loi.df <- data.frame(lon = loi[1], lat = loi[2])
       loi.sf <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
-      loi.sf = sf::st_transform(loi.sf) = wgs84
+      sf::st_crs(loi.sf) = wgs84
+      loi.sf <- sf::st_transform(loi.sf, crs = wgs84)
 
     } else if (identical(class(loi), c("character"))){
 
