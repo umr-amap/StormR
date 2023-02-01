@@ -18,32 +18,36 @@ getStorms(
 \item{basin}{character. Name of basin where the storms should be extracted.
 Default value is set to "SP"}
 
-\item{time_period}{numeric vector. Should be either one cyclonic season or a range
-of cyclonic seasons. It could also be a vector of cyclonic season provided
+\item{time_period}{numeric vector. Should be either one or a range of calendar
+years. For cyclones that formed in one year and dissipated in the following
+year, the latter should be used. It could also be a vector of cyclonic season provided
 that it has the same length as name input and matches the season of each storm
 listed in name input. Default value is set to c(1980, 2021)}
 
-\item{name}{character vector. Name(s) of storm(s) in capital letters. Default value is set to NULL,
-otherwise time_period and name must have the same length, and these two informations must match}
+\item{name}{character vector. Name(s) of storm(s). Default value is set to NULL,
+otherwise time_period and name must have the same length, and must match with
+a storm on the IBTrACS database}
 
 \item{loi}{Location of Interest. Should be either:
 \itemize{
 \item a SpatialPolygon (shapefile)
 \item a sf object
-\item a point of longitude/latitude coordinates
+\item a point of longitude/latitude coordinates provided in a numeric vector
 \item a character representing a country,
 \item a character representing the basin
-}}
+}
+Default value is set to NULL which will set the spatial.loi.buffer on the whole
+basin}
 
-\item{max_dist}{numeric. Indicates the buffer used to generate spatial.loi.buffer (km).
-Default value is set to 300km. This value also represents the maximum distance from the track
-of the storm where computations should be performed afterwards.}
+\item{max_dist}{numeric. Indicates the buffer distance (in km) used to generate
+spatial.loi.buffer. Default value is set to 300km. This value also represents
+the maximum distance from the track of the storm where computations can be performed}
 
 \item{verbose}{logical. Whether or not the function must be verbose and display
 a text progress bar. Default value is set to FALSE}
 
-\item{remove_TD}{logical. Whether or not to remove Tropical Depression (< 18 m/s).
-Default value is set to TRUE.}
+\item{remove_TD}{logical. Whether or not to remove tropical depressions (< 18 m/s)
+and include cyclones only. Default value is set to TRUE.}
 }
 \value{
 a Storms object that gathers all storms that match the criteria given
@@ -51,7 +55,7 @@ in the inputs
 }
 \description{
 This function returns a Storms object that
-gathers all the storms the user is interested in
+gathers all the storms specified by the user
 }
 \examples{
 #Focus on a single storm

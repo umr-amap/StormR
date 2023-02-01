@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotBehaviour.R
 \name{plotBehaviour}
 \alias{plotBehaviour}
-\title{Plot rasterize informations below the associated track of a storm}
+\title{Plot rasterized information storm behaviour}
 \usage{
 plotBehaviour(
   sts,
@@ -33,8 +33,9 @@ the plot extends according to the y bounding box of spatial.loi.buffer}
 
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
-\item{by}{numeric. Increment of the sequence for the labels to plot. Default
-value is set to 8 which represents a 24h time interval}
+\item{by}{numeric. Defines the frequency at which labels are plotted for the
+3-hourly records. Default value is set to 8 which represents a 24h time interval
+between each labeled observations. Ignored if labels == FALSE}
 
 \item{pos}{numeric. Must be between 1 and 4. Correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).

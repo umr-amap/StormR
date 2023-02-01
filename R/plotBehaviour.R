@@ -62,7 +62,7 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 
 
 
-#'Plot rasterize informations below the associated track of a storm
+#'Plot rasterized information storm behaviour
 #'
 #'This function plots a rasterize product (Maximum Sustained Wind, Power
 #'Dissipation Index, Category Exposure, 2D wind speed structure at a given
@@ -81,8 +81,9 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'  latitude extent of the plot. Default value is set to NULL which will let
 #'  the plot extends according to the y bounding box of spatial.loi.buffer
 #'@param labels logical. Whether or not to plot ISO Times and name labels
-#'@param by numeric. Increment of the sequence for the labels to plot. Default
-#'  value is set to 8 which represents a 24h time interval
+#'@param by numeric. Defines the frequency at which labels are plotted for the
+#' 3-hourly records. Default value is set to 8 which represents a 24h time interval
+#' between each labeled observations. Ignored if labels == FALSE
 #'@param pos numeric. Must be between 1 and 4. Correspond to the position of
 #'  labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 #'  Default value is set to 3

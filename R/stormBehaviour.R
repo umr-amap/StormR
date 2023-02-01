@@ -1126,10 +1126,10 @@ onestep <- function(index, raster_template, buffer, data, method, asymmetry, for
 
 
 
-#' Compute regimes of wind speed and other products for given storms
+#' Compute indicators of storm behaviour
 #'
-#' This function computes/rasterizes analytic products for each storm of a `Storms` object
-#' among Maximum Sustained Wind, Power Dissipation Index and Category exposure.
+#' This function computes/rasterizes analytic products for each storm of a `Storms`
+#' object, including Maximum Sustained Wind, Power Dissipation Index and Category exposure.
 #' It can also rasterize the 2D wind speed structures or produce time series of wind speed
 #' for every observations
 #'
@@ -1166,17 +1166,16 @@ onestep <- function(index, raster_template, buffer, data, method, asymmetry, for
 #'   ignored and set to "MSW" and 2D wind speed structures for each observation
 #'   are returned.
 #'   }
-#' @param space_res numeric. Space resolution (km) for the raster(s) to compute.
-#'   Default value is set to 10
-#' @param time_res numeric. Time discretization (hours) used to compute the
+#' @param space_res numeric. Space resolution (in km) for the raster(s) to compute.
+#' Default value is set to 10km
+#' @param time_res numeric. Period of time (hours) used to compute the
 #'   analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 #'   (30min), and 0.25 (15min). Default value is set to 1
 #' @param verbose logical. Whether or not the function must be verbose and
-#'   display a text progress bar. Default value is set to FALSE
-#' @param focus_loi logical. Whether or not the computations must only be
-#'   overtaken within the spatial.loi.buffer from sts object. Default value
-#'   is set to TRUE, otherwise, computations are extended over the whole track
-#'   of the storms
+#'   displays a text progress bar while operating. Default value is set to FALSE
+#' @param focus_loi logical. Whether or not the computations are restricted to within
+#' the spatial.loi.buffer from sts object. Default value is set to TRUE. Otherwise,
+#' computations are extended over the whole track of the storms
 #'
 #' @returns Depending on format input:
 #' \itemize{
