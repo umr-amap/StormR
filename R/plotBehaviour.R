@@ -140,6 +140,9 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
     ymax <- ylim[2]
   }
 
+  #Handling gap with legend
+  size.map = ymax - ymin
+  y.leg = ymin - size.map * 0.09
 
   #Plotting track
   plotStorms(sts = sts, names = name,
@@ -177,7 +180,6 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
     col <- color_palette
 
   #Adding title
-  #graphics::title(paste(name,sts@data[[name]]@season,product))
   graphics::title(leg)
 
   plot(raster_product,
@@ -189,10 +191,10 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
        range = range,
        legend = TRUE,
        plg = list(loc = "bottom",
-                  ext = c(terra::ext(raster_product)$xmin,
-                          terra::ext(raster_product)$xmax,
-                          terra::ext(raster_product)$ymin-1.75,
-                          terra::ext(raster_product)$ymin-1.2),
+                  ext = c(xmin,
+                          xmax,
+                          y.leg,
+                          y.leg-0.05),
                   cex = 0.7,
                   shrink = 0),
        add = T)
