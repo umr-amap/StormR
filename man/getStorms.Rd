@@ -6,7 +6,7 @@
 \usage{
 getStorms(
   basin = "SP",
-  time_period = c(1980, 2022),
+  seasons = c(1980, 2022),
   name = NULL,
   loi = NULL,
   max_dist = 300,
@@ -18,14 +18,14 @@ getStorms(
 \item{basin}{character. Name of basin where the storms should be extracted.
 Default value is set to "SP"}
 
-\item{time_period}{numeric vector. Should be either one or a range of calendar
+\item{seasons}{numeric vector. Should be either one or a range of calendar
 years. For cyclones that formed in one year and dissipated in the following
 year, the latter should be used. It could also be a vector of cyclonic season provided
 that it has the same length as name input and matches the season of each storm
 listed in name input. Default value is set to c(1980, 2021)}
 
 \item{name}{character vector. Name(s) of storm(s). Default value is set to NULL,
-otherwise time_period and name must have the same length, and must match with
+otherwise seasons and name must have the same length, and must match with
 a storm on the IBTrACS database}
 
 \item{loi}{Location of Interest. Should be either:
@@ -59,12 +59,12 @@ gathers all the storms specified by the user
 }
 \examples{
 #Focus on a single storm
-pam <- getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
+pam <- getStorms(seasons = 2015, name = "PAM", loi = "Vanuatu")
 
 #Focus on several storms over Vanuatu
-sts_nc <- getStorms(time_period = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
+sts_nc <- getStorms(seasons = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
 
 #Focus on every storms that occured in the WP basin between 2010 and 2020
-sts_wp <- getStorms(basin = "WP", time_period = c(2010,2020), verbose = TRUE)
+sts_wp <- getStorms(basin = "WP", seasons = c(2010,2020), verbose = TRUE)
 
 }

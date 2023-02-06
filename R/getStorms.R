@@ -98,7 +98,7 @@ Storms <- methods::setClass(
 #'
 #' @noRd
 #' @param basin character
-#' @param time_period, numeric vector
+#' @param seasons, numeric vector
 #' @param name character vector
 #' @param loi Either:
 #'   \itemize{
@@ -112,25 +112,25 @@ Storms <- methods::setClass(
 #' @param verbose logical
 #' @param remove_TD logical
 #' @return NULL
-checkInputsGs <- function(basin, time_period, name, loi, max_dist, verbose, remove_TD){
+checkInputsGs <- function(basin, seasons, name, loi, max_dist, verbose, remove_TD){
 
   #Checking basin input
   stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
 
-  #Checking time_period input
-  stopifnot("time_period must be numeric" = identical(class(time_period), "numeric"))
-  stopifnot("time_period must be as integer" = all(round(time_period) == time_period))
-  stopifnot("lower bound of time range is not valid" = time_period > 1979)
-  stopifnot("upper bound of time range is not valid" = time_period < 2023)
+  #Checking seasons input
+  stopifnot("seasons must be numeric" = identical(class(seasons), "numeric"))
+  stopifnot("seasons must be as integer" = all(round(seasons) == seasons))
+  stopifnot("lower bound of time range is not valid" = seasons > 1979)
+  stopifnot("upper bound of time range is not valid" = seasons < 2023)
 
   #Checking name input
   if (!is.null(name)) {
     stopifnot("name must be a vector of character" = identical(class(name), "character"))
-    stopifnot("name and time_period must be the same length" = length(time_period) == length(name))
+    stopifnot("name and seasons must be the same length" = length(seasons) == length(name))
   } else{
     stopifnot(
-      "Incompatible format for time_period (must be either length 1 or 2)" = length(time_period) == 1 ||
-        length(time_period) == 2
+      "Incompatible format for seasons (must be either length 1 or 2)" = length(seasons) == 1 ||
+        length(seasons) == 2
     )
   }
 
@@ -281,37 +281,37 @@ makeBuffer <- function(loi, buffer, is_basin){
 #'
 #' @noRd
 #' @param filter_names character vector. Contains name input from the getStorms inputs
-#' @param filter_time_period numeric vector.  Contains time_period input from the getStorms inputs
+#' @param filter_seasons numeric vector.  Contains seasons input from the getStorms inputs
 #' @param filter_basin character. Contains basin input from the getStorms inputs
 #' @param names character vector. All of the names of storms in the data base to filter
 #' @param seasons numeric 1d array. All of the seasons of storms in the data base to filter
 #' @param basins character vector. All of the basins of storms in the data base to filter
 #'
 #' @return indices of storms in the data base, that match the filter inputs
-retrieveStorms <- function(filter_names, filter_time_period, filter_basin, names, seasons, basins){
+retrieveStorms <- function(filter_names, filter_seasons, filter_basin, names, seasons, basins){
 
   if (!is.null(filter_names)) {
     #we are interested in one or several storms given by their name and season
     indices <- c()
     for (n in 1:length(filter_names)) {
-      seasons.id <- which(seasons == filter_time_period[n])
+      seasons.id <- which(seasons == filter_seasons[n])
       storm.id <- NULL
       storm.id <- which(names == filter_names[n])
       stopifnot("Storm not found, invalid name ?" = !is.null(storm.id))
 
       id <- seasons.id[match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))]]
-      stopifnot("Storm not found, time_period and name do not match" = !all(is.na(id)))
+      stopifnot("Storm not found, seasons and name do not match" = !all(is.na(id)))
       indices <- c(indices, id)
     }
   } else{
-    if (length(filter_time_period) == 1) {
+    if (length(filter_seasons) == 1) {
       #we are interested in only one cyclonic season
-      indices <- which(seasons == filter_time_period[1])
+      indices <- which(seasons == filter_seasons[1])
     } else{
       #we are interested in successive cyclonic seasons
       indices <- seq(
-        from = which(seasons == filter_time_period[1])[1],
-        to = max(which(seasons == filter_time_period[2])),
+        from = which(seasons == filter_seasons[1])[1],
+        to = max(which(seasons == filter_seasons[2])),
         by = 1)
     }
   }
@@ -496,13 +496,13 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 #'
 #' @param basin character. Name of basin where the storms should be extracted.
 #' Default value is set to "SP"
-#' @param time_period numeric vector. Should be either one or a range of calendar
+#' @param seasons numeric vector. Should be either one or a range of calendar
 #' years. For cyclones that formed in one year and dissipated in the following
 #' year, the latter should be used. It could also be a vector of cyclonic season provided
 #' that it has the same length as name input and matches the season of each storm
 #' listed in name input. Default value is set to c(1980, 2021)
 #' @param name character vector. Name(s) of storm(s). Default value is set to NULL,
-#' otherwise time_period and name must have the same length, and must match with
+#' otherwise seasons and name must have the same length, and must match with
 #' a storm on the IBTrACS database
 #' @param loi Location of Interest. Should be either:
 #' \itemize{
@@ -527,24 +527,24 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 #'
 #' @examples
 #' #Focus on a single storm
-#' pam <- getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
+#' pam <- getStorms(seasons = 2015, name = "PAM", loi = "Vanuatu")
 #'
 #' #Focus on several storms over Vanuatu
-#' sts_nc <- getStorms(time_period = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
+#' sts_nc <- getStorms(seasons = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
 #'
 #' #Focus on every storms that occured in the WP basin between 2010 and 2020
-#' sts_wp <- getStorms(basin = "WP", time_period = c(2010,2020), verbose = TRUE)
+#' sts_wp <- getStorms(basin = "WP", seasons = c(2010,2020), verbose = TRUE)
 #'
 #' @importFrom methods as
 #' @export
-getStorms <- function(basin = "SP", time_period = c(1980, 2022), name = NULL, loi = NULL,
+getStorms <- function(basin = "SP", seasons = c(1980, 2022), name = NULL, loi = NULL,
                      max_dist = 300, verbose = FALSE, remove_TD = TRUE){
 
 
-  checkInputsGs(basin,time_period,name,loi,max_dist,verbose,remove_TD)
+  checkInputsGs(basin,seasons,name,loi,max_dist,verbose,remove_TD)
 
-  o <- order(time_period)
-  time_period <- time_period[o]
+  o <- order(seasons)
+  seasons <- seasons[o]
   if (!is.null(name))
     name <- name[o]
 
@@ -567,7 +567,7 @@ getStorms <- function(basin = "SP", time_period = c(1980, 2022), name = NULL, lo
   TC.data.base <- ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
 
 
-  #Retrieving the matching indices, handling name, time_period and basin
+  #Retrieving the matching indices, handling name, seasons and basin
   storm.names <- ncdf4::ncvar_get(TC.data.base, "name")
   cyclonic.seasons <- ncdf4::ncvar_get(TC.data.base, "season")
   basins <- ncdf4::ncvar_get(TC.data.base, "basin")[1,]
@@ -575,7 +575,7 @@ getStorms <- function(basin = "SP", time_period = c(1980, 2022), name = NULL, lo
   dim <- dim(sshs)[1]
 
   indices <- retrieveStorms(filter_names = name,
-                           filter_time_period = time_period,
+                           filter_seasons = seasons,
                            filter_basin = basin,
                            names = storm.names,
                            seasons = cyclonic.seasons,
@@ -656,7 +656,7 @@ getStorms <- function(basin = "SP", time_period = c(1980, 2022), name = NULL, lo
 
     #Initializing Storms object
     sts <- Storms()
-    sts@time.period <- time_period
+    sts@time.period <- seasons
     sts@nb.storms <- nb.storms
     sts@buffer <- max_dist
     sts@names <- unlist(storm.names)
