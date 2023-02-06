@@ -16,7 +16,6 @@
 #' An observation is made up of several slots which are:
 #' \itemize{
 #'   \item basin
-#'   \item subbasin
 #'   \item iso.time, Date and hours of observations (UTC)
 #'   \item lon, Longitude coordinate (deg)
 #'   \item lat, Latitude coordinate (deg)
@@ -420,8 +419,6 @@ loadData <- function(TC_data_base, max_obs, indices, storm_names, seasons, basin
               seasons = seasons[indices],
               basins = basins[indices],
               numObservations = ncdf4::ncvar_get(TC_data_base, "numobs")[indices],
-              subbasin = array(ncdf4::ncvar_get(TC_data_base, "subbasin")[, indices],
-                               dim = c(max_obs,length(indices))),
               iso.times = array(ncdf4::ncvar_get(TC_data_base, "iso_time")[, indices],
                                 dim = c(max_obs,length(indices))),
               longitude = array(ncdf4::ncvar_get(TC_data_base, "usa_lon")[, indices],
@@ -512,7 +509,6 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
     storm@season <- TC_data$seasons[index]
     storm@basin <- TC_data$basins[index]
     storm@obs.all <- data.frame(
-      subbasin = TC_data$subbasin[valid_indices, index],
       iso.time = iso.time,
       lon = lon[valid_indices],
       lat = lat[valid_indices],

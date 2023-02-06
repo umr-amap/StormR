@@ -28,7 +28,6 @@ Gather all the needed informations to model a single storm
 An observation is made up of several slots which are:
 \itemize{
 \item basin
-\item subbasin
 \item iso.time, Date and hours of observations (UTC)
 \item lon, Longitude coordinate (deg)
 \item lat, Latitude coordinate (deg)
