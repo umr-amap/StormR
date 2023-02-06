@@ -10,7 +10,7 @@ getStorms(
   seasons = c(1980, 2022),
   names = NULL,
   max_dist = 300,
-  verbose = FALSE,
+  verbose = 3,
   remove_TD = TRUE
 )
 }
@@ -39,8 +39,15 @@ a storm on the IBTrACS database}
 spatial.loi.buffer. Default value is set to 300km. This value also represents
 the maximum distance from the track of the storm where computations can be performed}
 
-\item{verbose}{logical. Whether or not the function must be verbose and display
-a text progress bar. Default value is set to FALSE}
+\item{verbose}{numeric. Either 0, 1, 2 or 3. Whether or not the function must be verbose and display
+a text progress bar and informations about the process and/or outputs.
+\itemize{
+\item 0 Nothing will be displayed
+\item 1 Informations about the process are displayed
+\item 2 Outputs are also displayed
+\item 3 Additional helper guides to manipulate Storms objects are displayed
+}
+Default value is set to 3}
 
 \item{remove_TD}{logical. Whether or not to remove tropical depressions (< 18 m/s)
 and include cyclones only. Default value is set to TRUE.}
@@ -65,6 +72,6 @@ poly <- cbind(c(100, 180, 180, 100, 100),c(0, 0, 60, 60, 0))
 wp <- sf::st_polygon(list(poly))
 wp <- sf::st_sfc(wp, crs = 4326)
 wp <- sf::st_as_sf(wp)
-sts_wp <- getStorms(loi = wp, seasons = c(2010,2020), verbose = TRUE)
+sts_wp <- getStorms(loi = wp, seasons = c(2010,2020))
 
 }
