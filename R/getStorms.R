@@ -160,6 +160,7 @@ setMethod("getStormInObs", signature("Storms"), function(sts, name) getInObs(get
 #' Check inputs for getStorms function
 #'
 #' @noRd
+#' @param sdb StormDatabase object
 #' @param loi Either:
 #'   \itemize{
 #'     \item a SpatialPolygon (shapefile)
@@ -173,7 +174,10 @@ setMethod("getStormInObs", signature("Storms"), function(sts, name) getInObs(get
 #' @param verbose logical
 #' @param remove_TD logical
 #' @return NULL
-checkInputsGs <- function(loi, seasons, names, max_dist, verbose, remove_TD){
+checkInputsGs <- function(sdb, loi, seasons, names, max_dist, verbose, remove_TD){
+
+  #checking sdb input
+  stopifnot("sdb is missing" = !missing(sdb))
 
   #Checking loi input
   if(!missing(loi)){
@@ -311,24 +315,26 @@ makeBuffer <- function(loi, buffer){
 
 
 
+
 #' Retrieving the matching indices of storms
 #'
 #' @noRd
+#' @param sdb ...
 #' @param filter_names character vector. Contains names input from the getStorms inputs
 #' @param filter_seasons numeric vector.  Contains seasons input from the getStorms inputs
-#' @param names character vector. All of the names of storms in the data base to filter
-#' @param seasons numeric 1d array. All of the seasons of storms in the data base to filter
+#' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
+#' and include cyclones only. Default value is set to TRUE.
 #'
 #' @return indices of storms in the data base, that match the filter inputs
-retrieveStorms <- function(filter_names, filter_seasons, names, seasons){
+retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
 
   if (!is.null(filter_names)) {
-    #we are interested in one or several storms given by their name and season
+    #We are interested in one or several storms given by their name and season
     indices <- c()
     for (n in 1:length(filter_names)) {
-      seasons.id <- which(seasons == filter_seasons[n])
+      seasons.id <- which(sdb$seasons == filter_seasons[n])
       storm.id <- NULL
-      storm.id <- which(names == filter_names[n])
+      storm.id <- which(sdb$names == filter_names[n])
       stopifnot("Storm not found, invalid name ?" = !is.null(storm.id))
 
       id <- seasons.id[match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))]]
@@ -338,19 +344,26 @@ retrieveStorms <- function(filter_names, filter_seasons, names, seasons){
   } else{
 
     if (length(filter_seasons) == 1) {
-      #we are interested in only one cyclonic season
-      indices <- which(seasons == filter_seasons[1])
+      #We are interested in only one cyclonic season
+      indices <- which(sdb$seasons == filter_seasons)
     } else{
-      #we are interested in successive cyclonic seasons
+      #We are interested in successive cyclonic seasons
       indices <- seq(
-        from = which(seasons == filter_seasons[1])[1],
-        to = max(which(seasons == filter_seasons[2])),
+        from = which(sdb$seasons == filter_seasons[1])[1],
+        to = max(which(sdb$seasons == filter_seasons[2])),
         by = 1)
     }
   }
 
   #Removing NOT_NAMED storms
-  indices <- indices[which(names[indices] != "NOT_NAMED")]
+  indices <- indices[which(sdb$names[indices] != "NOT_NAMED")]
+
+  #Removing TD if remove_TD == T
+
+  if(remove_TD){
+    i <- which(apply(array(sdb$sshs[,indices], dim = c(dim(sdb$sshs)[1], length(indices))),2,max, na.rm = T) >= 0)
+    indices <- indices[i]
+  }
 
   return(indices)
 
@@ -359,40 +372,43 @@ retrieveStorms <- function(filter_names, filter_seasons, names, seasons){
 
 
 
-
 #' Load data that match the indices from the database
 #'
 #' @noRd
-#' @param TC_data_base data base
-#' @param max_obs numeric. Number of maximum observation
-#' @param indices numeric vector, indices in the database of TC to extract data
-#' @param storm_names character vector, storm names previously loaded
-#' @param seasons numeric vector, seasons previously loaded
-#' @param sshs numeric vector, sshs previously loaded
+#' @param sdb_info ...
 #' @return A list of 14 slots
-loadData <- function(TC_data_base, max_obs, indices, storm_names, seasons, sshs){
+loadData <- function(sdb_info){
 
-  return(list(stormNames  = storm_names[indices],
-              seasons = seasons[indices],
-              numObservations = ncdf4::ncvar_get(TC_data_base, "numobs")[indices],
-              iso.times = array(ncdf4::ncvar_get(TC_data_base, "iso_time")[, indices],
-                                dim = c(max_obs,length(indices))),
-              longitude = array(ncdf4::ncvar_get(TC_data_base, "usa_lon")[, indices],
-                                dim = c(max_obs,length(indices))),
-              latitude = array(ncdf4::ncvar_get(TC_data_base, "usa_lat")[, indices],
-                               dim = c(max_obs,length(indices))),
-              msw = array(ncdf4::ncvar_get(TC_data_base, "usa_wind")[, indices],
-                          dim = c(max_obs,length(indices))),
-              rmw = array(ncdf4::ncvar_get(TC_data_base, "usa_rmw")[, indices],
-                          dim = c(max_obs,length(indices))),
-              roci = array(ncdf4::ncvar_get(TC_data_base, "usa_roci")[, indices],
-                           dim = c(max_obs,length(indices))),
-              pres = array(ncdf4::ncvar_get(TC_data_base, "usa_pres")[, indices],
-                           dim = c(max_obs,length(indices))),
-              poci = array(ncdf4::ncvar_get(TC_data_base, "usa_poci")[, indices],
-                           dim = c(max_obs,length(indices))),
-              sshs = array(sshs,
-                           dim = c(max_obs,length(indices)))))
+  filename =  sdb_info@name
+  TC_data_base <- ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
+  lon <- ncdf4::ncvar_get(TC_data_base, sdb_info@fields["lon"])
+  row <- dim(lon)[1]
+  len <- dim(lon)[2]
+
+  sdb <- list(names  = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["names"]),
+             seasons = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["seasons"]),
+             numobs = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["numobs"]),
+             isotimes = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["isoTime"]),
+                               dim = c(row,len)),
+             longitude = array(lon, dim = c(row,len)),
+             latitude = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["lat"]),
+                              dim = c(row,len)),
+             msw = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["msw"]),
+                         dim = c(row,len)),
+             rmw = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["rmw"]),
+                         dim = c(row,len)),
+             roci = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["roci"]),
+                          dim = c(row,len)),
+             pres = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["pressure"]),
+                          dim = c(row,len)),
+             poci = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["poci"]),
+                          dim = c(row,len)),
+             sshs = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["sshs"]),
+                          dim = c(row,len)))
+
+  ncdf4::nc_close(TC_data_base)
+
+  return(list(sdb = sdb, len = len))
 
 }
 
@@ -425,7 +441,7 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
                        TC_data, index, loi_sf_buffer, k){
 
   #Getting number of observations
-  numobs <- TC_data$numObservations[index]
+  numobs <- TC_data$numobs[index]
 
   #Getting lon/lat coordinates
   lon <- TC_data$longitude[1:numobs, index]
@@ -437,11 +453,11 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
   coords <- coords[valid_indices,]
 
   #Removing invalid iso_time
-  iso.time <- TC_data$iso.times[valid_indices, index]
-  list.iso.time <- as.numeric(stringr::str_sub(iso.time,12,13))
+  isotime <- TC_data$isotimes[valid_indices, index]
+  list.isotime <- as.numeric(stringr::str_sub(isotime,12,13))
   #Keep only 03H 06H 09H 12H 15H 18h 21H 00h iso times
-  ind.iso.time <- which(list.iso.time %% 3 == 0)
-  coords <- coords[ind.iso.time,]
+  ind.isotime <- which(list.isotime %% 3 == 0)
+  coords <- coords[ind.isotime,]
   row.names(coords) <- seq(1,dim(coords)[1])
 
   #Creating sf point coordinates to intersect with loi_sf_buffer
@@ -458,10 +474,10 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
     nb_storms <- nb_storms + 1
 
     storm <- Storm()
-    storm@name <- TC_data$stormNames[index]
+    storm@name <- TC_data$names[index]
     storm@season <- TC_data$seasons[index]
     storm@obs.all <- data.frame(
-      iso.time = iso.time,
+      iso.time = isotime,
       lon = lon[valid_indices],
       lat = lat[valid_indices],
       msw = zoo::na.approx(round(TC_data$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2),
@@ -476,8 +492,8 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
     lg <- which(storm@obs.all$lon < 0)
     storm@obs.all$lon[lg] <- storm@obs.all$lon[lg] + 360
 
-    #Removing invalid iso_time from obs.all
-    storm@obs.all <- storm@obs.all[ind.iso.time,]
+    #Removing invalid isotime from obs.all
+    storm@obs.all <- storm@obs.all[ind.isotime,]
     storm@numobs.all <- dim(storm@obs.all)[1]
     row.names(storm@obs.all) <- seq(1,storm@numobs.all)
 
@@ -504,11 +520,15 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 
 
 
+
+
+
 #' Initialize a Storms object
 #'
 #' This function returns a Storms object that
 #' gathers all the storms specified by the user
 #'
+#' @param sdb StormDatabase object. Specify which database to use
 #' @param loi Location of Interest. Must be either:
 #' \itemize{
 #' \item a SpatialPolygon (shapefile)
@@ -551,11 +571,11 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 #'
 #' @importFrom methods as
 #' @export
-getStorms <- function(loi, seasons = c(1980, 2022), names = NULL,
+getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
                       max_dist = 300, verbose = FALSE, remove_TD = TRUE){
 
 
-  checkInputsGs(loi, seasons, names, max_dist, verbose, remove_TD)
+  checkInputsGs(sdb, loi, seasons, names, max_dist, verbose, remove_TD)
 
   o <- order(seasons)
   seasons <- seasons[o]
@@ -576,42 +596,17 @@ getStorms <- function(loi, seasons = c(1980, 2022), names = NULL,
     cat("Done\nIdentifying Storms: ")
 
   #Open data_base
-  filename <- paste0("IBTrACS.ALL.v04r00.nc")
-  TC.data.base <- ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
+  args <- loadData(sdb)
+  TC.data.base <- args$sdb
+  dim <- args$len
 
 
-  #Retrieving the matching indices, handling names and seasons
-  storm.names <- ncdf4::ncvar_get(TC.data.base, "name")
-  cyclonic.seasons <- ncdf4::ncvar_get(TC.data.base, "season")
-  sshs <- ncdf4::ncvar_get(TC.data.base, "usa_sshs")
-  dim <- dim(sshs)[1]
+  #Retrieving the matching indices, handling names, seasons and remove TD
 
-  indices <- retrieveStorms(filter_names = names,
-                           filter_seasons = seasons,
-                           names = storm.names,
-                           seasons = cyclonic.seasons)
-
-  #Removing TD if remove_TD == T
-  sshs <- array(sshs[,indices], dim = c(dim,length(indices)))
-
-  if(remove_TD){
-    i <- which(apply(sshs,2,max, na.rm = T) >= 0)
-    indices <- indices[i]
-    sshs <- sshs[,i]
-  }
-
-
-  if (verbose)
-    cat("Done\nLoading data: ")
-
-  #Getting remaining data associated with indices
-  TC.data <- loadData(TC.data.base, dim, indices, storm.names, cyclonic.seasons, sshs)
-  ncdf4::nc_close(TC.data.base)
-
-
-  if(verbose)
-    cat("Done\n")
-
+  indices <- retrieveStorms(TC.data.base,
+                            filter_names = names,
+                            filter_seasons = seasons,
+                            remove_TD = remove_TD)
 
   if (verbose & length(indices) > 1) {
     cat("Gathering storms \n")
@@ -629,13 +624,12 @@ getStorms <- function(loi, seasons = c(1980, 2022), names = NULL,
     nb.storms <- 0
     k <- 2 #initializing line type
 
-    for (i in 1:length(indices)) {
-
+    for (i in indices) {
       sts.output <- writeStorm(storm_list = storm.list,
                                storm_names = storm.names,
                                storm_sshs = storm.sshs,
                                nb_storms = nb.storms,
-                               TC_data = TC.data,
+                               TC_data = TC.data.base,
                                index = i,
                                loi_sf_buffer = loi.sf.buffer,
                                k = k)

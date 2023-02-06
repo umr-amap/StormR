@@ -3,6 +3,7 @@
 
 test_that("Tests invalid inputs", {
 
+
   #Checking seasons input
   expect_error(getStorms(loi = "Vanuatu", seasons = "hui"))
   expect_error(getStorms(loi = "Vanuatu", seasons = 2015.6, names = "PAM"))
