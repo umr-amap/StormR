@@ -5,6 +5,7 @@
 \title{Initialize a Storms object}
 \usage{
 getStorms(
+  sdb = IBTRACS,
   loi,
   seasons = c(1980, 2022),
   names = NULL,
@@ -14,6 +15,8 @@ getStorms(
 )
 }
 \arguments{
+\item{sdb}{StormDatabase object. Specify which database to use}
+
 \item{loi}{Location of Interest. Must be either:
 \itemize{
 \item a SpatialPolygon (shapefile)
