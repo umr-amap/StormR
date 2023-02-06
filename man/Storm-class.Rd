@@ -18,8 +18,6 @@ Gather all the needed informations to model a single storm
 
 \item{\code{season}}{numeric. Cyclonic season in which the storm has occured}
 
-\item{\code{basin}}{character. Basin in which the storm has occured}
-
 \item{\code{sshs}}{numeric. Maximum category reached in the Saffir Simpson Hurricane Scale}
 
 \item{\code{numobs.all}}{numeric. Total number of observations available.}
@@ -27,7 +25,6 @@ Gather all the needed informations to model a single storm
 \item{\code{obs.all}}{data.frame. Contains all of the observations available.
 An observation is made up of several slots which are:
 \itemize{
-\item basin
 \item iso.time, Date and hours of observations (UTC)
 \item lon, Longitude coordinate (deg)
 \item lat, Latitude coordinate (deg)

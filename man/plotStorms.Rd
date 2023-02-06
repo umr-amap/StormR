@@ -9,7 +9,6 @@ plotStorms(
   names = NULL,
   category = NULL,
   map = NULL,
-  whole_basin = FALSE,
   labels = FALSE,
   by = 8,
   pos = 3,
@@ -35,10 +34,6 @@ reached category input}
 \item{map}{a shapefile or sf object. It will replace the default map if non NULL.
 Default value is set to NULL.}
 
-\item{whole_basin}{logical. Whether or not to plot the track onto the whole basin.
-Default value is set to FALSE. Otherwise, the plot focuses on the extent of
-spatial.loi.buffer of sts}
-
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
 \item{by}{numeric. Defines the frequency at which labels are plotted for the
@@ -57,13 +52,11 @@ Default value is set to TRUE.}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
-Ignored if whole_basin is not NULL}
+the plot extends according to the x bounding box of spatial.loi.buffer from sts input.}
 
 \item{ylim}{numeric vector. A set of latitude coordinates that controls the
 latitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
-Ignored if whole_basin is not NULL}
+the plot extends according to the x bounding box of spatial.loi.buffer from sts input.}
 
 \item{reset_setting}{logical. Whether the graphical parameter should be reset on exit. Default
 value is set to TRUE. It is usefull for the plotBehaviour function. We highly recommand not to change this
