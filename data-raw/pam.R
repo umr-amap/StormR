@@ -1,4 +1,4 @@
 ## code to prepare `pam` dataset goes here
 
-pam = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
+pam = getStorms(seasons = 2015, names = "PAM", loi = "Vanuatu")
 usethis::use_data(pam, overwrite = TRUE)

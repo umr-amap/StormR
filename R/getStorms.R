@@ -50,6 +50,25 @@ Storm <- methods::setClass(
   )
 )
 
+#Getter for Storm class
+setGeneric("getName", function(st) standardGeneric("getName"))
+setMethod("getName", signature("Storm"), function(st) st@name)
+
+setGeneric("getSeason", function(st) standardGeneric("getSeason"))
+setMethod("getSeason", signature("Storm"), function(st) st@season)
+
+setGeneric("getsshs", function(st) standardGeneric("getsshs"))
+setMethod("getsshs", signature("Storm"), function(st) st@sshs)
+
+setGeneric("getNbObs", function(st) standardGeneric("getNbObs"))
+setMethod("getNbObs", signature("Storm"), function(st) st@numobs.all)
+
+setGeneric("getObs", function(st) standardGeneric("getObs"))
+setMethod("getObs", signature("Storm"), function(st) st@obs.all)
+
+setGeneric("getInObs", function(st) standardGeneric("getInObs"))
+setMethod("getInObs", signature("Storm"), function(st) st@obs)
+
 
 
 
@@ -59,7 +78,7 @@ setOldClass("sf")
 #' Gather all the needed informations to model a set of storms
 #'
 #' @slot data A list of Storm objects
-#' @slot time.period numeric vector. (Range of the) cyclonic seasons of Storms available
+#' @slot seasons numeric vector. (Range of the) cyclonic seasons of Storms available
 #'  in `data`
 #' @slot names character vector. Names of Storms available in data
 #' @slot  sshs numeric vector. Maximum category reached in the Saffir Simpson Hurricane Scale
@@ -78,7 +97,7 @@ Storms <- methods::setClass(
   "Storms",
   slots = c(
     data = "list",
-    time.period = "numeric",
+    seasons = "numeric",
     names = "character",
     sshs = "numeric",
     nb.storms = "numeric",
@@ -99,9 +118,9 @@ setMethod("getStorm", signature("Storms"), function(sts, name) sts@data[[name]])
 setGeneric("getSeasons", function(sts, name = NULL) standardGeneric("getSeasons") )
 setMethod("getSeasons", signature("Storms"), function(sts, name = NULL){
   if(is.null(name)){
-    sts@time.period
+    sts@seasons
   }else{
-    sts@time.period[which(sts@names == name)]
+    sts@seasons[which(sts@names == name)]
   }
 })
 
@@ -130,8 +149,16 @@ setGeneric("getBufferSize", function(sts) standardGeneric("getBufferSize"))
 setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
 
 
+#Getters for Storms class to access information from Storm class provided in data
 
+setGeneric("getStormNbObs", function(sts, name) standardGeneric("getStormNbObs"))
+setMethod("getStormNbObs", signature("Storms"), function(sts, name) getNbObs(getStorm(sts,name)))
 
+setGeneric("getStormObs", function(sts, name) standardGeneric("getStormObs"))
+setMethod("getStormObs", signature("Storms"), function(sts, name) getObs(getStorm(sts,name)))
+
+setGeneric("getStormInObs", function(sts, name) standardGeneric("getStormInObs"))
+setMethod("getStormInObs", signature("Storms"), function(sts, name) getInObs(getStorm(sts,name)))
 
 
 
@@ -696,12 +723,11 @@ getStorms <- function(basin = "SP", seasons = c(1980, 2022), names = NULL, loi =
     if (verbose & length(indices) > 1)
       close(pb)
 
-    print(unlist(storm.names))
     stopifnot("No storms found. Please check compatibilities between inputs (basin and loi ?)" = !is.null(unlist(storm.names)))
 
     #Initializing Storms object
     sts <- Storms()
-    sts@time.period <- seasons
+    sts@seasons <- seasons
     sts@nb.storms <- nb.storms
     sts@buffer <- max_dist
     sts@names <- unlist(storm.names)

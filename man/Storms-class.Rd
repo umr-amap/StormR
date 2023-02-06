@@ -16,7 +16,7 @@ Gather all the needed informations to model a set of storms
 \describe{
 \item{\code{data}}{A list of Storm objects}
 
-\item{\code{time.period}}{numeric vector. (Range of the) cyclonic seasons of Storms available
+\item{\code{seasons}}{numeric vector. (Range of the) cyclonic seasons of Storms available
 in \code{data}}
 
 \item{\code{names}}{character vector. Names of Storms available in data}
