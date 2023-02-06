@@ -485,7 +485,7 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 #' This function returns a Storms object that
 #' gathers all the storms specified by the user
 #'
-#' @param sdb StormDatabase object. Specify which database to use
+#' @param sdb list. TC data base loaded from a stormDatabase object
 #' @param loi Location of Interest. Must be either:
 #' \itemize{
 #' \item a SpatialPolygon (shapefile)
@@ -552,14 +552,10 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
   if (verbose)
     cat("Done\nIdentifying Storms: ")
 
-  #Open data_base
-  TC.data.base <- loadData(sdb)
-
-
 
   #Retrieving the matching indices, handling names, seasons and remove TD
 
-  indices <- retrieveStorms(TC.data.base,
+  indices <- retrieveStorms(sdb,
                             filter_names = names,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
@@ -585,7 +581,7 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
                                storm_names = storm.names,
                                storm_sshs = storm.sshs,
                                nb_storms = nb.storms,
-                               TC_data = TC.data.base,
+                               TC_data = sdb,
                                index = i,
                                loi_sf_buffer = loi.sf.buffer,
                                k = k)

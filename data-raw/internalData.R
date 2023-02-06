@@ -2,7 +2,9 @@
 
 
 
-IBTRACS = initDatabase()
+IBTRACS_sdb = initDatabase()
+
+IBTRACS = loadData(IBTRACS_sdb)
 
 
 knt2ms <- 0.514
