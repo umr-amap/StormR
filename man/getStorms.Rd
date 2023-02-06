@@ -7,7 +7,7 @@
 getStorms(
   sdb = IBTRACS,
   loi,
-  seasons = c(1980, 2022),
+  seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   names = NULL,
   max_dist = 300,
   verbose = 3,
