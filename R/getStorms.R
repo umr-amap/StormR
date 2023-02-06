@@ -372,49 +372,6 @@ retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
 
 
 
-#' Load data that match the indices from the database
-#'
-#' @noRd
-#' @param sdb_info ...
-#' @return A list of 14 slots
-loadData <- function(sdb_info){
-
-  filename =  sdb_info@name
-  TC_data_base <- ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
-  lon <- ncdf4::ncvar_get(TC_data_base, sdb_info@fields["lon"])
-  row <- dim(lon)[1]
-  len <- dim(lon)[2]
-
-  sdb <- list(names  = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["names"]),
-             seasons = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["seasons"]),
-             numobs = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["numobs"]),
-             isotimes = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["isoTime"]),
-                               dim = c(row,len)),
-             longitude = array(lon, dim = c(row,len)),
-             latitude = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["lat"]),
-                              dim = c(row,len)),
-             msw = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["msw"]),
-                         dim = c(row,len)),
-             rmw = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["rmw"]),
-                         dim = c(row,len)),
-             roci = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["roci"]),
-                          dim = c(row,len)),
-             pres = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["pressure"]),
-                          dim = c(row,len)),
-             poci = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["poci"]),
-                          dim = c(row,len)),
-             sshs = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["sshs"]),
-                          dim = c(row,len)))
-
-  ncdf4::nc_close(TC_data_base)
-
-  return(list(sdb = sdb, len = len))
-
-}
-
-
-
-
 
 #' Write data to initialize a Storms object
 #'
@@ -596,9 +553,8 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
     cat("Done\nIdentifying Storms: ")
 
   #Open data_base
-  args <- loadData(sdb)
-  TC.data.base <- args$sdb
-  dim <- args$len
+  TC.data.base <- loadData(sdb)
+
 
 
   #Retrieving the matching indices, handling names, seasons and remove TD
