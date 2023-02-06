@@ -60,3 +60,42 @@ test_that("Tests invalid inputs", {
 
 
 })
+
+
+
+test_that("Storm class getters", {
+
+  expect_identical(getName(pam@data[["PAM"]]), pam@data[["PAM"]]@name)
+  expect_identical(getSeason(pam@data[["PAM"]]), pam@data[["PAM"]]@season)
+  expect_identical(getsshs(pam@data[["PAM"]]), pam@data[["PAM"]]@sshs)
+  expect_identical(getNbObs(pam@data[["PAM"]]), pam@data[["PAM"]]@numobs.all)
+  expect_identical(getObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs.all)
+  expect_identical(getInObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs)
+
+})
+
+
+test_that("Storms class getters", {
+
+  expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
+  expect_identical(getNames(sts_nc), sts_nc@names)
+  expect_identical(getSeasons(sts_nc), sts_nc@seasons)
+  expect_identical(getSeasons(sts_nc, "NIRAN"), sts_nc@seasons[which(sts_nc@names == "NIRAN")])
+  expect_identical(getSSHS(sts_nc), sts_nc@sshs)
+  expect_identical(getSSHS(sts_nc, "NIRAN"), sts_nc@sshs[which(sts_nc@names == "NIRAN")])
+  expect_identical(getBufferSize(sts_nc), sts_nc@buffer)
+  expect_identical(getLOI(sts_nc), sts_nc@spatial.loi)
+  expect_identical(getBuffer(sts_nc), sts_nc@spatial.loi.buffer)
+  expect_identical(getBufferSize(sts_nc), sts_nc@buffer)
+
+})
+
+test_that("Storms class getters for Storm class", {
+
+  expect_identical(getStormNbObs(sts_nc, "NIRAN"), getNbObs(getStorm(sts_nc, "NIRAN")))
+  expect_identical(getStormObs(sts_nc, "NIRAN"), getObs(getStorm(sts_nc, "NIRAN")))
+  expect_identical(getStormInObs(sts_nc, "NIRAN"), getInObs(getStorm(sts_nc, "NIRAN")))
+
+
+})
+
