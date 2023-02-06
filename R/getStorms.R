@@ -91,6 +91,50 @@ Storms <- methods::setClass(
 )
 
 
+#Getters for Storms class
+
+setGeneric("getStorm", function(sts, name) standardGeneric("getStorm") )
+setMethod("getStorm", signature("Storms"), function(sts, name) sts@data[[name]])
+
+setGeneric("getSeasons", function(sts, name = NULL) standardGeneric("getSeasons") )
+setMethod("getSeasons", signature("Storms"), function(sts, name = NULL){
+  if(is.null(name)){
+    sts@time.period
+  }else{
+    sts@time.period[which(sts@names == name)]
+  }
+})
+
+setGeneric("getNames", function(sts) standardGeneric("getNames"))
+setMethod("getNames", signature("Storms"), function(sts) sts@names)
+
+setGeneric("getSSHS", function(sts, name = NULL) standardGeneric("getSSHS"))
+setMethod("getSSHS", signature("Storms"), function(sts, name = NULL){
+  if(is.null(name)){
+    sts@sshs
+  }else{
+    sts@sshs[which(sts@names == name)]
+  }
+})
+
+setGeneric("getNbStorms", function(sts) standardGeneric("getNbStorms"))
+setMethod("getNbStorms", signature("Storms"), function(sts) sts@nb.storms)
+
+setGeneric("getLOI", function(sts) standardGeneric("getLOI"))
+setMethod("getLOI", signature("Storms"), function(sts) sts@spatial.loi)
+
+setGeneric("getBuffer", function(sts) standardGeneric("getBuffer"))
+setMethod("getBuffer", signature("Storms"), function(sts) sts@spatial.loi.buffer)
+
+setGeneric("getBufferSize", function(sts) standardGeneric("getBufferSize"))
+setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
+
+
+
+
+
+
+
 
 
 
@@ -304,6 +348,7 @@ retrieveStorms <- function(filter_names, filter_seasons, filter_basin, names, se
       indices <- c(indices, id)
     }
   } else{
+
     if (length(filter_seasons) == 1) {
       #we are interested in only one cyclonic season
       indices <- which(seasons == filter_seasons[1])
