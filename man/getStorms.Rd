@@ -5,18 +5,22 @@
 \title{Initialize a Storms object}
 \usage{
 getStorms(
-  basin = "SP",
+  loi,
   seasons = c(1980, 2022),
   names = NULL,
-  loi = NULL,
   max_dist = 300,
   verbose = FALSE,
   remove_TD = TRUE
 )
 }
 \arguments{
-\item{basin}{character. Name of basin where the storms should be extracted.
-Default value is set to "SP"}
+\item{loi}{Location of Interest. Must be either:
+\itemize{
+\item a SpatialPolygon (shapefile)
+\item a sf object
+\item a point of longitude/latitude coordinates provided in a numeric vector
+\item a character representing a country,
+}}
 
 \item{seasons}{numeric vector. Should be either one or a range of calendar
 years. For cyclones that formed in one year and dissipated in the following
@@ -27,17 +31,6 @@ listed in names input. Default value is set to c(1980, 2021)}
 \item{names}{character vector. Name(s) of storm(s). Default value is set to NULL,
 otherwise seasons and names must have the same length, and must match with
 a storm on the IBTrACS database}
-
-\item{loi}{Location of Interest. Should be either:
-\itemize{
-\item a SpatialPolygon (shapefile)
-\item a sf object
-\item a point of longitude/latitude coordinates provided in a numeric vector
-\item a character representing a country,
-\item a character representing the basin
-}
-Default value is set to NULL which will set the spatial.loi.buffer on the whole
-basin}
 
 \item{max_dist}{numeric. Indicates the buffer distance (in km) used to generate
 spatial.loi.buffer. Default value is set to 300km. This value also represents
@@ -65,6 +58,10 @@ pam <- getStorms(seasons = 2015, names = "PAM", loi = "Vanuatu")
 sts_nc <- getStorms(seasons = c(2003,2021), names = c("ERICA","NIRAN"), loi = "New Caledonia")
 
 #Focus on every storms that occured in the WP basin between 2010 and 2020
-sts_wp <- getStorms(basin = "WP", seasons = c(2010,2020), verbose = TRUE)
+poly <- cbind(c(100, 180, 180, 100, 100),c(0, 0, 60, 60, 0))
+wp <- sf::st_polygon(list(poly))
+wp <- sf::st_sfc(wp, crs = 4326)
+wp <- sf::st_as_sf(wp)
+sts_wp <- getStorms(loi = wp, seasons = c(2010,2020), verbose = TRUE)
 
 }

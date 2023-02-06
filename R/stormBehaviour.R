@@ -544,20 +544,18 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
 #' @param vx numeric. Velocity of the storm in the x direction (deg/h)
 #' @param vy numeric. Velociy of the storm in the y direction (deg/h)
-#' @param basin character. Basin
+#' @param northenH logical. Whether it is northen hemisphere or not
 #'
 #' @return numeric vector. Orientation of wind speed (rad) at each (x,y) position
-asymmetryV1 <- function(x, y, vx, vy, basin){
+asymmetryV1 <- function(x, y, vx, vy, northenH){
 
-  if(basin %in% c("SA", "SP", "SI")){
-    #Southern Hemisphere, t is counterclockwise
-    res <- atan2(vy,vx) - atan2(y,x) + pi
-
-  }else{
+  if(northenH){
     #Northern Hemisphere, t is clockwise
     res <- atan2(y,x) - atan2(vy,vx)  + pi
+  }else{
+    #Southern Hemisphere, t is counterclockwise
+    res <- atan2(vy,vx) - atan2(y,x) + pi
   }
-
   return(res)
 }
 
@@ -572,20 +570,18 @@ asymmetryV1 <- function(x, y, vx, vy, basin){
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
 #' @param vx numeric. Velocity of the storm in the x direction (deg/h)
 #' @param vy numeric. Velociy of the storm in the y direction (deg/h)
-#' @param basin character. Basin
+#' @param northenH logical. Whether it is northen hemisphere or not
 #'
 #' @return numeric vector. Orientation of wind speed (rad) at each (x,y) position
-asymmetryV2 <- function(x, y, vx, vy, basin){
+asymmetryV2 <- function(x, y, vx, vy, northenH){
 
-  if(basin %in% c("SA", "SP", "SI")){
-    #Southern Hemisphere, t is clockwise
-    res <- acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
-
-  }else{
+  if(northenH){
     #Northern Hemisphere, t is counterclockwise
     res <- acos((- y * vx + x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+  }else{
+    #Southern Hemisphere, t is clockwise
+    res <- acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
   }
-
   return(res)
 }
 
@@ -603,7 +599,6 @@ asymmetryV2 <- function(x, y, vx, vy, basin){
 #' each coordinate of the raster_template_model (or points if format is a data frame)
 #' @param method character. method input form stormBehaviour
 #' @param asymmetry character. asymmetry input from stormBehviour
-#' @param basin numeric. basin name to choose wind orientation
 #' @param x numeric array. Distance in degree from the eye of storm in the x direction
 #' @param y numeric array. Distance in degree from the eye of storm in the y direction
 #'
@@ -612,7 +607,7 @@ asymmetryV2 <- function(x, y, vx, vy, basin){
 #'     \item If format is a data frame, the wind speed values at each observation
 #'     \item Otherwise, SpatRaster that contains the wind speed profile at observations index of data
 #'  }
-computeWindProfile <- function(data, index, dist_m, method, asymmetry, basin, x, y){
+computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y){
 
 
   #Computing sustained wind according to the input model
@@ -635,14 +630,22 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, basin, x,
     )
   }
 
+
+  if(data$lat[index] > 0){
+    northenH = TRUE
+  }else{
+    northenH = FALSE
+  }
+
+
   #Adding asymmetry
   if (asymmetry == "V1") {
     #Boose version
-    angle <- asymmetryV1(x, y, data$vx.deg[index], data$vy.deg[index], basin)
+    angle <- asymmetryV1(x, y, data$vx.deg[index], data$vy.deg[index], northenH)
     wind <- wind - (1 - sin(angle))*(data$storm.speed[index]/3.6)/2
 
   } else if(asymmetry == "V2"){
-    angle <- asymmetryV2(x, y, data$vx.deg[index], data$vy.deg[index], basin)
+    angle <- asymmetryV2(x, y, data$vx.deg[index], data$vy.deg[index], northenH)
     wind <- wind + cos(angle)* data$storm.speed[index]
   }
 
@@ -660,16 +663,13 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, basin, x,
 #' @param stack list of SpatRaster. where to stack the layer
 #' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
-#' @param is_basin logical. Whether loi represents the whole basin or not
-#' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
 #'
 #' @return list of SpatRaster
-stackRaster <- function(stack, raster_template, raster_wind, is_basin, extent){
+stackRaster <- function(stack, raster_template, raster_wind){
+
 
   ras <- raster_template
-  if(is_basin)
-    ras <- terra::crop(ras, extent)
-
+  extent = terra::ext(ras)
   ras <- terra::merge(raster_wind, ras)
   ras <- terra::crop(ras, extent)
 
@@ -686,11 +686,9 @@ stackRaster <- function(stack, raster_template, raster_wind, is_basin, extent){
 #' @param stack list of SpatRaster. where to stack the layer
 #' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
-#' @param is_basin logical. Whether loi represents the whole basin or not
-#' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
 #'
 #' @return list of SpatRaster
-stackRasterPDI <- function(stack, raster_template, raster_wind, is_basin, extent){
+stackRasterPDI <- function(stack, raster_template, raster_wind){
 
   raster.cd <- raster_wind
   terra::values(raster.cd) <- rasterizeCd(terra::values(raster_wind))
@@ -701,7 +699,7 @@ stackRasterPDI <- function(stack, raster_template, raster_wind, is_basin, extent
   #Applying both rho and surface drag coefficient
   raster_wind <- raster_wind * rho * raster.cd
 
-  return(stackRaster(stack, raster_template, raster_wind, is_basin, extent))
+  return(stackRaster(stack, raster_template, raster_wind))
 
 }
 
@@ -715,11 +713,9 @@ stackRasterPDI <- function(stack, raster_template, raster_wind, is_basin, extent
 #' @param stack list of SpatRaster. where to stack the layer
 #' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
-#' @param is_basin logical. Whether loi represents the whole basin or not
-#' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
 #'
 #' @return list of SpatRaster
-stackRasterExposure <- function(stack, raster_template, raster_wind, is_basin, extent){
+stackRasterExposure <- function(stack, raster_template, raster_wind){
 
   for(c in 2:6){
     raster_c_model <- raster_wind
@@ -727,7 +723,7 @@ stackRasterExposure <- function(stack, raster_template, raster_wind, is_basin, e
     ind <- which(terra::values(raster_wind) >= sshs[c] &
                   terra::values(raster_wind) < sshs[c+1])
     raster_c_model[ind] <- 1
-    stack <- stackRaster(stack, raster_template, raster_c_model, is_basin, extent)
+    stack <- stackRaster(stack, raster_template, raster_c_model)
   }
 
   return(stack)
@@ -744,20 +740,18 @@ stackRasterExposure <- function(stack, raster_template, raster_wind, is_basin, e
 #' @param stack list of SpatRaster. where to stack the layer
 #' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
-#' @param is_basin logical. Whether loi represents the whole basin or not
-#' @param extent terra::extent. Extent to use, to crop the layer to the correct extent
 #'
 #' @return list of SpatRaster
-stackProduct <- function(product, stack, raster_template, raster_wind, is_basin, extent){
+stackProduct <- function(product, stack, raster_template, raster_wind){
 
   if (product == "MSW") {
-    stack <- stackRaster(stack, raster_template, raster_wind, is_basin, extent)
+    stack <- stackRaster(stack, raster_template, raster_wind)
 
   }else if (product == "PDI"){
-    stack <- stackRasterPDI(stack, raster_template, raster_wind, is_basin, extent)
+    stack <- stackRasterPDI(stack, raster_template, raster_wind)
 
   }else if (product == "Exposure"){
-    stack <- stackRasterExposure(stack, raster_template, raster_wind, is_basin, extent)
+    stack <- stackRasterExposure(stack, raster_template, raster_wind)
   }
 
   return(stack)
@@ -1054,78 +1048,6 @@ finalizeResult <- function(final_result, result, product, points, indices, st){
 
 
 
-onestep <- function(index, raster_template, buffer, data, method, asymmetry, format, product, basin, is_basin, extent){
-
-    #Making template to compute wind profiles
-    raster.template.model <- makeTemplateModel(raster_template, buffer, data, index)
-    raster.wind <- raster.template.model
-
-    #Computing coordinates to the eye of the storm for x and y axes
-    x <- (terra::crds(raster.wind, na.rm <- FALSE)[, 1] - data$lon[index])
-    y <- (terra::crds(raster.wind, na.rm <- FALSE)[, 2] - data$lat[index])
-
-    #Computing distances to the eye of the storm in m
-    dist.m <- terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
-                             y = cbind(data$lon[index], data$lat[index]),
-                             lonlat = T)
-
-    #Computing wind profile
-    terra::values(raster.wind) <- computeWindProfile(data, index, dist.m, method, asymmetry, basin, x, y)
-
-    if(product == "MSW"){
-      ras <- raster_template
-      if(is_basin)
-        ras <- terra::crop(ras, extent)
-
-      ras <- terra::merge(raster.wind, ras)
-      ras <- terra::crop(ras, extent)
-
-      return(ras)
-
-    }else if(product == "PDI"){
-      raster.cd <- raster.wind
-      terra::values(raster.cd) <- rasterizeCd(terra::values(raster.wind))
-
-      rho <- 0.001
-      #Raising to power 3
-      raster.wind <- raster.wind ** 3
-      #Applying both rho and surface drag coefficient
-      raster.wind <- raster.wind * rho * raster.cd
-
-      ras <- raster_template
-      if(is_basin)
-        ras <- terra::crop(ras, extent)
-
-      ras <- terra::merge(raster.wind, ras)
-      ras <- terra::crop(ras, extent)
-
-      return(ras)
-
-    }else if (product == "Exposure"){
-      stack <- c()
-      for(c in 2:6){
-        raster.c.model <- raster.wind
-        terra::values(raster.c.model) <- NA
-        ind <- which(terra::values(raster.wind) >= sshs[c] &
-                      terra::values(raster.wind) < sshs[c+1])
-        raster.c.model[ind] <- 1
-
-        ras <- raster_template
-        if(is_basin)
-          ras <- terra::crop(ras, extent)
-
-        ras <- terra::merge(raster.wind, ras)
-        ras <- terra::crop(ras, extent)
-        stack <- c(stack, ras)
-      }
-
-      return(stack)
-    }
-
-}
-
-
-
 #' Compute indicators of storm behaviour
 #'
 #' This function computes/rasterizes analytic products for each storm of a `Storms`
@@ -1245,12 +1167,6 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
       dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
     }
 
-
-    #Reduce extent of raster if loi represents the whole basin
-    if(sts@loi.basin)
-      ext <- terra::ext(min(dataTC$lon) - buffer, max(dataTC$lon) + buffer,
-                     min(dataTC$lat) - buffer, max(dataTC$lat) + buffer)
-
     nb.step <- dim(dataTC)[1] - 1
 
     if (verbose) {
@@ -1281,11 +1197,10 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
 
       #Computing wind profile
       terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method,
-                                                       asymmetry, sts@basin, x, y)
+                                                       asymmetry, x, y)
 
       #Stacking product
-      aux.stack <- stackProduct(product, aux.stack, raster.template,
-                                raster.wind, sts@loi.basin, ext)
+      aux.stack <- stackProduct(product, aux.stack, raster.template, raster.wind)
 
 
       if (verbose){
@@ -1422,7 +1337,7 @@ Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry
 
       #Computing wind profiles
       dist2p <- dist.m[,i]
-      vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, sts@basin, x, y)
+      vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y)
 
       #Computing product
       res <- computeProduct(product, vr, time_res, res)

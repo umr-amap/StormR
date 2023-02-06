@@ -26,10 +26,6 @@ for all storms available in data}
 
 \item{\code{nb.storms}}{numeric. Total number of storms available in data}
 
-\item{\code{basin}}{character. Basin in which the Storms have occured}
-
-\item{\code{loi.basin}}{logical. Whether the Location Of Interest represents the whole basin or not}
-
 \item{\code{spatial.loi}}{sf object. Represents the location of interest. Projection is EPSG:4326}
 
 \item{\code{buffer}}{numeric. Buffer used to extent spatial.loi (km)}

@@ -3,60 +3,47 @@
 
 test_that("Tests invalid inputs", {
 
+  #Checking seasons input
+  expect_error(getStorms(loi = "Vanuatu", seasons = "hui"))
+  expect_error(getStorms(loi = "Vanuatu", seasons = 2015.6, names = "PAM"))
+  expect_error(getStorms(loi = "Vanuatu", seasons = c(1850,2020)))
+  expect_error(getStorms(loi = "Vanuatu", seasons = c(2000,2030)))
+  expect_error(getStorms(loi = "Vanuatu", seasons =  c(2000,2005,2020)))
 
-  #Checking `basin`  validity
-  expect_error(getStorms(basin = "BA"))
-  expect_error(getStorms(basin = c("SA","SP")))
+  #Checking names input
+  expect_error(getStorms(loi = "Vanuatu", seasons = 2010, names = 1))
 
-  #Checking `seasons`  validity
-  expect_error(getStorms(seasons = "hui"))
-  expect_error(getStorms(seasons = 2015.6, names = "PAM"))
-  expect_error(getStorms(seasons = c(1850,2020)))
-  expect_error(getStorms(seasons = c(2000,2030)))
-  expect_error(getStorms(seasons =  c(2000,2005,2020)))
+  #Checking seasons and names matching
+  expect_error(getStorms(loi = "Fiji", seasons = c(2016,2015), names = "WINSTON"))
 
-  #Checking `names` validity
-  expect_error(getStorms(seasons = 2010, names = 1))
+  #Checking loi input
+  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM")), "loi is missing")
+  expect_error(getStorms(loi = "hui", seasons = c(2016,2015), names = c("WINSTON","PAM")))
 
-  #Checking `seasons` and `names` matching
-  expect_error(getStorms(seasons = c(2016,2015), names = "WINSTON"))
+  expect_error(getStorms(loi = 165, seasons = c(2016,2015), names = c("WINSTON","PAM")))
 
-  #Checking `loi` validity
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         loi = "hui"))
+  expect_error(getStorms(loi = c("hj","jk"), seasons = c(2016,2015), names = c("WINSTON","PAM")))
 
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         loi = 165))
+  expect_error(getStorms(loi = c(380, 100), seasons = c(2016,2015), names = c("WINSTON","PAM")))
 
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         loi = c("hj","jk")))
+  expect_error(getStorms(loi = "Nouvelle Caledonie", seasons = c(2016,2015), names = c("WINSTON","PAM")))
 
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         loi = c(380, 100)))
-
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         loi = "Nouvelle Caledonie"))
-
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         loi = c("Vanuatu", "Fiji")))
+  expect_error(getStorms(loi = c("Vanuatu", "Fiji"), seasons = c(2016,2015), names = c("WINSTON","PAM")))
 
 
 
-  #Checking `max_dist` validity
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         loi = c(165,-17), max_dist = "hui"))
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         loi = c(165,-17), max_dist = c(1,3)))
+  #Checking max_dist input
+  expect_error(getStorms(loi = c(165,-17), seasons = c(2016,2015), names = c("WINSTON","PAM"),
+                         max_dist = "hui"))
+  expect_error(getStorms(loi = c(165,-17), seasons = c(2016,2015), names = c("WINSTON","PAM"),
+                         max_dist = c(1,3)))
 
 
 
 
   #Checking access to data
-  expect_error(getStorms(seasons = 2015, names = "PM"),
-               "Storm not found")
-  expect_error(getStorms(seasons = 2017, names = "PAM"),
-                "Storm not found")
-
+  expect_error(getStorms(loi = "Vanuatu", seasons = 2015, names = "PM"), "Storm not found")
+  expect_error(getStorms(loi = "Vanuatu", seasons = 2017, names = "PAM"), "Storm not found")
 
 
 })
