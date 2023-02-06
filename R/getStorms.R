@@ -99,7 +99,7 @@ Storms <- methods::setClass(
 #' @noRd
 #' @param basin character
 #' @param seasons, numeric vector
-#' @param name character vector
+#' @param names character vector
 #' @param loi Either:
 #'   \itemize{
 #'     \item a SpatialPolygon (shapefile)
@@ -112,7 +112,7 @@ Storms <- methods::setClass(
 #' @param verbose logical
 #' @param remove_TD logical
 #' @return NULL
-checkInputsGs <- function(basin, seasons, name, loi, max_dist, verbose, remove_TD){
+checkInputsGs <- function(basin, seasons, names, loi, max_dist, verbose, remove_TD){
 
   #Checking basin input
   stopifnot("Invalid basin input" = basin %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL"))
@@ -123,10 +123,10 @@ checkInputsGs <- function(basin, seasons, name, loi, max_dist, verbose, remove_T
   stopifnot("lower bound of time range is not valid" = seasons > 1979)
   stopifnot("upper bound of time range is not valid" = seasons < 2023)
 
-  #Checking name input
-  if (!is.null(name)) {
-    stopifnot("name must be a vector of character" = identical(class(name), "character"))
-    stopifnot("name and seasons must be the same length" = length(seasons) == length(name))
+  #Checking names input
+  if (!is.null(names)) {
+    stopifnot("names must be a vector of character" = identical(class(names), "character"))
+    stopifnot("names and seasons must be the same length" = length(seasons) == length(names))
   } else{
     stopifnot(
       "Incompatible format for seasons (must be either length 1 or 2)" = length(seasons) == 1 ||
@@ -280,7 +280,7 @@ makeBuffer <- function(loi, buffer, is_basin){
 #' Retrieving the matching indices of storms
 #'
 #' @noRd
-#' @param filter_names character vector. Contains name input from the getStorms inputs
+#' @param filter_names character vector. Contains names input from the getStorms inputs
 #' @param filter_seasons numeric vector.  Contains seasons input from the getStorms inputs
 #' @param filter_basin character. Contains basin input from the getStorms inputs
 #' @param names character vector. All of the names of storms in the data base to filter
@@ -300,7 +300,7 @@ retrieveStorms <- function(filter_names, filter_seasons, filter_basin, names, se
       stopifnot("Storm not found, invalid name ?" = !is.null(storm.id))
 
       id <- seasons.id[match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))]]
-      stopifnot("Storm not found, seasons and name do not match" = !all(is.na(id)))
+      stopifnot("Storm not found, seasons and names do not match" = !all(is.na(id)))
       indices <- c(indices, id)
     }
   } else{
@@ -381,7 +381,7 @@ loadData <- function(TC_data_base, max_obs, indices, storm_names, seasons, basin
 #'
 #' @noRd
 #' @param storm_list list of Storm object. To further integrate in a Storms object
-#' @param storm_names list of storm name. To further integrate in a Storms object
+#' @param storm_names list of storm names. To further integrate in a Storms object
 #' @param storm_sshs list of storm sshs. To further integrate in a Storms object
 #' @param nb_storms numeric. number of storm to already integrate in a Storms object
 #' @param TC_data TC database
@@ -499,10 +499,10 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 #' @param seasons numeric vector. Should be either one or a range of calendar
 #' years. For cyclones that formed in one year and dissipated in the following
 #' year, the latter should be used. It could also be a vector of cyclonic season provided
-#' that it has the same length as name input and matches the season of each storm
-#' listed in name input. Default value is set to c(1980, 2021)
-#' @param name character vector. Name(s) of storm(s). Default value is set to NULL,
-#' otherwise seasons and name must have the same length, and must match with
+#' that it has the same length as names input and matches the season of each storm
+#' listed in names input. Default value is set to c(1980, 2021)
+#' @param names character vector. Name(s) of storm(s). Default value is set to NULL,
+#' otherwise seasons and names must have the same length, and must match with
 #' a storm on the IBTrACS database
 #' @param loi Location of Interest. Should be either:
 #' \itemize{
@@ -527,26 +527,26 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 #'
 #' @examples
 #' #Focus on a single storm
-#' pam <- getStorms(seasons = 2015, name = "PAM", loi = "Vanuatu")
+#' pam <- getStorms(seasons = 2015, names = "PAM", loi = "Vanuatu")
 #'
 #' #Focus on several storms over Vanuatu
-#' sts_nc <- getStorms(seasons = c(2003,2021), name = c("ERICA","NIRAN"), loi = "New Caledonia")
+#' sts_nc <- getStorms(seasons = c(2003,2021), names = c("ERICA","NIRAN"), loi = "New Caledonia")
 #'
 #' #Focus on every storms that occured in the WP basin between 2010 and 2020
 #' sts_wp <- getStorms(basin = "WP", seasons = c(2010,2020), verbose = TRUE)
 #'
 #' @importFrom methods as
 #' @export
-getStorms <- function(basin = "SP", seasons = c(1980, 2022), name = NULL, loi = NULL,
+getStorms <- function(basin = "SP", seasons = c(1980, 2022), names = NULL, loi = NULL,
                      max_dist = 300, verbose = FALSE, remove_TD = TRUE){
 
 
-  checkInputsGs(basin,seasons,name,loi,max_dist,verbose,remove_TD)
+  checkInputsGs(basin,seasons,names,loi,max_dist,verbose,remove_TD)
 
   o <- order(seasons)
   seasons <- seasons[o]
-  if (!is.null(name))
-    name <- name[o]
+  if (!is.null(names))
+    names <- names[o]
 
   if (verbose)
     cat("Making buffer: ")
@@ -567,14 +567,14 @@ getStorms <- function(basin = "SP", seasons = c(1980, 2022), name = NULL, loi = 
   TC.data.base <- ncdf4::nc_open(system.file("extdata", filename, package = "StormR"))
 
 
-  #Retrieving the matching indices, handling name, seasons and basin
+  #Retrieving the matching indices, handling names, seasons and basin
   storm.names <- ncdf4::ncvar_get(TC.data.base, "name")
   cyclonic.seasons <- ncdf4::ncvar_get(TC.data.base, "season")
   basins <- ncdf4::ncvar_get(TC.data.base, "basin")[1,]
   sshs <- ncdf4::ncvar_get(TC.data.base, "usa_sshs")
   dim <- dim(sshs)[1]
 
-  indices <- retrieveStorms(filter_names = name,
+  indices <- retrieveStorms(filter_names = names,
                            filter_seasons = seasons,
                            filter_basin = basin,
                            names = storm.names,
