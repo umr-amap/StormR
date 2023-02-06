@@ -188,7 +188,7 @@ library(StormR)
 ##############################################
 
 #Load the data for the tropical cyclone Pam which hit the Vanuatu in 2015
-st <- getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
+st <- getStorms(seasons = 2015, name = "PAM", loi = "Vanuatu")
 
 #Plot the tropical cyclone track and observations over or around the location of interest
 plotStorms(st, labels = T, legends = T)
@@ -218,7 +218,7 @@ writeRast(st_msw, path = paste0(tempdir(),"/"))
 ################################################
 
 #Load all tropical cyclones that have passed nearby New Caledonia between 2019 and 2021
-sts <- getStorms(time_period = c(2019, 2021), loi = "New Caledonia", verbose = T)
+sts <- getStorms(seasons = c(2019, 2021), loi = "New Caledonia", verbose = T)
 
 #Plot all tropical cyclone tracks and observations over or around the location of interest
 plotStorms(sts, labels = T, legends = T)
@@ -286,7 +286,7 @@ pol <- sf::st_sfc(sf::st_polygon(list(cbind(c(167,168,168,167,167),c(-16,-16,-13
 loi <- sf::st_sf(pol, crs = 4326)
 
 #Load the data for the tropical cyclone Harold which hit the Vanuatu in 2020
-harold <- getStorms(time_period = 2020, name= "HAROLD", loi = loi, verbose = T)
+harold <- getStorms(seasons = 2020, name= "HAROLD", loi = loi, verbose = T)
 
 #Compute wind profiles using Willoughby model with version 1 of asymmetry
 profWillV1 <- stormBehaviour(harold, format = "profiles", asymmetry = "V1", verbose = T)
