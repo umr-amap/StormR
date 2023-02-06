@@ -223,10 +223,12 @@ checkInputsGs <- function(sdb, loi, seasons, names, max_dist, verbose, remove_TD
   stopifnot("max_dist must > 0 " = max_dist > 0)
 
   #Checking verbose input
-  stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
+  stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
+  stopifnot("verbose must length 1" = length(verbose) == 1)
+  stopifnot("verbose must be either 0, 1, 2 or 3" = verbose %in% c(0, 1, 2, 3))
 
   #Checking remove_TD input
-  stopifnot("verbose must be logical" = identical(class(remove_TD), "logical"))
+  stopifnot("remove_TD must be logical" = identical(class(remove_TD), "logical"))
 
 }
 
@@ -516,8 +518,15 @@ fun <- function(index, sdb, loi.sf.buffer){
 #' @param max_dist numeric. Indicates the buffer distance (in km) used to generate
 #' spatial.loi.buffer. Default value is set to 300km. This value also represents
 #' the maximum distance from the track of the storm where computations can be performed
-#' @param verbose logical. Whether or not the function must be verbose and display
-#' a text progress bar. Default value is set to FALSE
+#' @param verbose numeric. Either 0, 1, 2 or 3. Whether or not the function must be verbose and display
+#' a text progress bar and informations about the process and/or outputs.
+#' \itemize{
+#' \item 0 Nothing will be displayed
+#' \item 1 Informations about the process are displayed
+#' \item 2 Outputs are also displayed
+#' \item 3 Additional helper guides to manipulate Storms objects are displayed
+#' }
+#' Default value is set to 3
 #' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
 #' and include cyclones only. Default value is set to TRUE.
 #'
@@ -536,14 +545,14 @@ fun <- function(index, sdb, loi.sf.buffer){
 #' wp <- sf::st_polygon(list(poly))
 #' wp <- sf::st_sfc(wp, crs = 4326)
 #' wp <- sf::st_as_sf(wp)
-#' sts_wp <- getStorms(loi = wp, seasons = c(2010,2020), verbose = TRUE)
+#' sts_wp <- getStorms(loi = wp, seasons = c(2010,2020))
 #'
 #' @importFrom methods as
 #' @export
 getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
-                      max_dist = 300, verbose = FALSE, remove_TD = TRUE){
+                      max_dist = 300, verbose = 3, remove_TD = TRUE){
 
-  start_time <- Sys.time()
+  # start_time <- Sys.time()
 
   checkInputsGs(sdb, loi, seasons, names, max_dist, verbose, remove_TD)
 
@@ -552,8 +561,14 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
   if (!is.null(names))
     names <- names[o]
 
-  if (verbose)
-    cat("Making buffer: ")
+  if (verbose > 0){
+    if(is.null(names) & length(seasons) == 2){
+      cat("Searching storms from",seasons[1],"to",seasons[2],"...\n")
+    }else if(is.null(names) & length(seasons) == 1){
+      cat("Searching for Storms for the ",seasons,"tropical season...\n")
+    }
+    cat("-> Making buffer: ")
+  }
 
   #Converting loi
   loi.sf <- convertLoi(loi)
@@ -561,8 +576,9 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
   #Handling buffer
   loi.sf.buffer <- makeBuffer(loi.sf, max_dist * km)
 
-  if (verbose)
-    cat("Done\nIdentifying Storms: ")
+  if (verbose){
+    cat("Done\n-> Identifying Storms: ")
+  }
 
 
   #Retrieving the matching indices, handling names, seasons and remove TD
@@ -579,8 +595,13 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
   #ind <- which(sf::st_intersects(pts, loi_sf_buffer, sparse = FALSE) == TRUE)
 
 
-  if (verbose & length(indices) > 1) {
-    cat("Done\nGathering storms \n")
+  if (verbose > 0 & length(indices) > 1) {
+    if(is.null(names) & length(seasons) == 2){
+      cat(length(indices),"potential candidates...\n")
+    }else{
+      cat("Done\n")
+    }
+    cat("-> Gathering storms \n")
     count <- 1 #initializing count for progression bar
     pb <- utils::txtProgressBar(min = count,
                                max = length(indices),
@@ -604,7 +625,6 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
                                index = i,
                                loi_sf_buffer = loi.sf.buffer,
                                k = k)
-
       if(!is.null(sts.output[[1]])){
         storm.list <- sts.output[[1]]
         storm.names <- sts.output[[2]]
@@ -613,7 +633,7 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
       }
 
 
-      if (verbose & length(indices) > 1){
+      if (verbose > 0 & length(indices) > 1){
         utils::setTxtProgressBar(pb, count)
         count <- count + 1
       }
@@ -621,7 +641,7 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
       k <- k + 1
     }
 
-    if (verbose & length(indices) > 1)
+    if (verbose > 0 & length(indices) > 1)
       close(pb)
 
     stopifnot("No storms found. Please check compatibilities between inputs" = !is.null(unlist(storm.names)))
@@ -637,9 +657,51 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
     sts@spatial.loi.buffer <- loi.sf.buffer
     sts@data <- storm.list
     names(sts@data) <- sts@names
+    names(sts@names) <- sts@names
+    names(sts@sshs) <- sts@names
 
-    end_time <- Sys.time()
-    print(end_time - start_time)
+    if(verbose > 0){
+      cat("-> DONE\n\n")
+      if(verbose > 1){
+        cat("SUMMARY:\n")
+        cat("(*) LOI: ")
+        if(identical(class(loi),"character")){
+          cat(loi,"\n")
+        }else if(identical(class(loi),"numeric")){
+          cat(loi, "lon-lat\n")
+        }else{
+          cat("sf object (use getLOI function for further informations")
+        }
+        cat("(*) Buffer size:", getBufferSize(sts),"km\n")
+        cat("(*) Remove Tropical Depressions (< 18 m/s in sshs):")
+        if(remove_TD){
+          cat(" yes\n")
+        }else{
+          cat(" no\n")
+        }
+        cat("(*) Number of Storms:", getNbStorms(sts),"\n")
+        cat("        Name - Tropical season - SSHS - Number of observation within buffer:\n")
+        for(n in sts@names){
+          cat("       ",n,"-", sts@data[[n]]@season, "-", sts@sshs[[n]], "-",length(getStormInObs(sts,n)),"\n")
+        }
+        cat("\n\n\n")
+      }
+      if(verbose > 2){
+        cat("SHORTCUTS:\n")
+        cat("    - Use getNames function to access all storms names\n")
+        cat("    - Use getSeasons function to access all or one particular season(s)\n")
+        cat("    - Use getLOI function to access LOI\n")
+        cat("    - Use getBufferSize function to access buffer size\n")
+        cat("    - Use getBuffer function to access buffer\n")
+        cat("    - Use getStorm function to access all informations about one particular storm\n")
+        cat("    - Use getStormNbobs function to access all number of all observations for one particular storm\n")
+        cat("    - Use getStormObs function to access all observations about of one particular storm\n")
+        cat("    - Use getStormInObs function to access observations labels within the buffer for one particular storm")
+        }
+    }
+
+    # end_time <- Sys.time()
+    # print(end_time - start_time)
 
     return(sts)
 
