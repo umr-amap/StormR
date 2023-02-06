@@ -104,8 +104,23 @@ Storms <- methods::setClass(
 
 #Getters for Storms class
 
-setGeneric("getStorm", function(sts, name) standardGeneric("getStorm") )
-setMethod("getStorm", signature("Storms"), function(sts, name) sts@data[[name]])
+setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getStorm") )
+setMethod("getStorm", signature("Storms"), function(sts, name, season = NULL){
+  if(!is.null(season)){
+    w = which(sts@names == name)
+    for(i in 1:length(w)){
+      if(getSeason(sts@data[[w[i]]]) == season){
+        j = w[i]
+        break
+      }
+    }
+    sts@data[[j]]
+  }else{
+    if(length(which(sts@names == name)) > 1)
+      stop(paste("More than 1 storm named",name, ".Please specify season\n"))
+    sts@data[[which(sts@names == name)]]
+  }
+})
 
 setGeneric("getSeasons", function(sts, name = NULL) standardGeneric("getSeasons") )
 setMethod("getSeasons", signature("Storms"), function(sts, name = NULL){
@@ -143,14 +158,14 @@ setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
 
 #Getters for Storms class to access information from Storm class provided in data
 
-setGeneric("getStormNbObs", function(sts, name) standardGeneric("getStormNbObs"))
-setMethod("getStormNbObs", signature("Storms"), function(sts, name) getNbObs(getStorm(sts,name)))
+setGeneric("getStormNbObs", function(sts, name, season = NULL) standardGeneric("getStormNbObs"))
+setMethod("getStormNbObs", signature("Storms"), function(sts, name, season = NULL) getNbObs(getStorm(sts, name, season)))
 
-setGeneric("getStormObs", function(sts, name) standardGeneric("getStormObs"))
-setMethod("getStormObs", signature("Storms"), function(sts, name) getObs(getStorm(sts,name)))
+setGeneric("getStormObs", function(sts, name, season = NULL) standardGeneric("getStormObs"))
+setMethod("getStormObs", signature("Storms"), function(sts, name, season = NULL) getObs(getStorm(sts, name, season)))
 
-setGeneric("getStormInObs", function(sts, name) standardGeneric("getStormInObs"))
-setMethod("getStormInObs", signature("Storms"), function(sts, name) getInObs(getStorm(sts,name)))
+setGeneric("getStormInObs", function(sts, name, season = NULL) standardGeneric("getStormInObs"))
+setMethod("getStormInObs", signature("Storms"), function(sts, name, season = NULL) getInObs(getStorm(sts, name, season)))
 
 
 
@@ -203,8 +218,8 @@ checkInputsGs <- function(sdb, loi, seasons, names, max_dist, verbose, remove_TD
   #Checking seasons input
   stopifnot("seasons must be numeric" = identical(class(seasons), "numeric"))
   stopifnot("seasons must be as integer" = all(round(seasons) == seasons))
-  stopifnot("lower bound of time range is not valid" = seasons > 1979)
-  stopifnot("upper bound of time range is not valid" = seasons < 2023)
+  stopifnot("lower bound of time range is not valid" = seasons >= 1980)
+  stopifnot("upper bound of time range is not valid" = seasons <= as.numeric(format(Sys.time(),"%Y")))
 
   #Checking names input
   if (!is.null(names)) {
@@ -382,6 +397,7 @@ retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
 #' @noRd
 #' @param storm_list list of Storm object. To further integrate in a Storms object
 #' @param storm_names list of storm names. To further integrate in a Storms object
+#' @param storm_names list of cyclonic seasons. To further integrate in a Storms object
 #' @param storm_sshs list of storm sshs. To further integrate in a Storms object
 #' @param nb_storms numeric. number of storm to already integrate in a Storms object
 #' @param TC_data TC database
@@ -396,7 +412,7 @@ retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
 #'     \item list of numeric
 #'     \item numeric
 #'   }
-writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
+writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_storms,
                        TC_data, index, loi_sf_buffer, k){
 
   #Getting number of observations
@@ -464,12 +480,13 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 
     return(list(append(storm_list, storm),
                 append(storm_names, storm@name),
+                append(storm_seasons, storm@season),
                 append(storm_sshs, storm@sshs),
                 nb_storms))
 
   }else{
 
-    return(list(NULL,NULL,NULL,NULL))
+    return(list(NULL,NULL,NULL,NULL,NULL))
 
   }
 
@@ -549,10 +566,12 @@ fun <- function(index, sdb, loi.sf.buffer){
 #'
 #' @importFrom methods as
 #' @export
-getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
+getStorms <- function(sdb = IBTRACS, loi,
+                      seasons = c(1980, as.numeric(format(Sys.time(),"%Y"))),
+                      names = NULL,
                       max_dist = 300, verbose = 3, remove_TD = TRUE){
 
-  # start_time <- Sys.time()
+  start_time <- Sys.time()
 
   checkInputsGs(sdb, loi, seasons, names, max_dist, verbose, remove_TD)
 
@@ -561,14 +580,8 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
   if (!is.null(names))
     names <- names[o]
 
-  if (verbose > 0){
-    if(is.null(names) & length(seasons) == 2){
-      cat("Searching storms from",seasons[1],"to",seasons[2],"...\n")
-    }else if(is.null(names) & length(seasons) == 1){
-      cat("Searching for Storms for the ",seasons,"tropical season...\n")
-    }
-    cat("-> Making buffer: ")
-  }
+  if (verbose > 0)
+    cat("=== getStorms processing ... ===\n\n-> Making buffer: ")
 
   #Converting loi
   loi.sf <- convertLoi(loi)
@@ -577,7 +590,19 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
   loi.sf.buffer <- makeBuffer(loi.sf, max_dist * km)
 
   if (verbose){
-    cat("Done\n-> Identifying Storms: ")
+    cat("Done\n")
+    if(is.null(names) & length(seasons) == 2){
+      cat("-> Searching storms from",seasons[1],"to",seasons[2],"...\n")
+    }else if(is.null(names) & length(seasons) == 1){
+      cat("-> Searching for Storms for the ",seasons,"tropical season...\n")
+    }else if(!is.null(names)){
+      if(length(names) == 1){
+        cat("-> Searching for", names,"storm ...\n")
+      }else{
+        cat("-> Searching for", names,"storms ...\n")
+      }
+    }
+    cat("   -> Identifying Storms: ")
   }
 
 
@@ -589,29 +614,27 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
                             remove_TD = remove_TD)
 
 
-  # ind <- lapply(X = indices, FUN = fun, sdb = sdb, loi.sf.buffer = loi.sf.buffer)
-  #print(ind)
-  #Intersect points coordinates with loi_sf_buffer
-  #ind <- which(sf::st_intersects(pts, loi_sf_buffer, sparse = FALSE) == TRUE)
 
-
-  if (verbose > 0 & length(indices) > 1) {
+  if (verbose > 0 & length(indices) >= 1) {
     if(is.null(names) & length(seasons) == 2){
       cat(length(indices),"potential candidates...\n")
     }else{
       cat("Done\n")
     }
-    cat("-> Gathering storms \n")
-    count <- 1 #initializing count for progression bar
-    pb <- utils::txtProgressBar(min = count,
-                               max = length(indices),
-                               style = 3)
+    cat("-> Gathering storm(s) ... \n")
+    if(length(indices) > 1){
+      count <- 1 #initializing count for progression bar
+      pb <- utils::txtProgressBar(min = count,
+                                  max = length(indices),
+                                  style = 3)
+    }
   }
 
   if(length(indices) > 0){
 
     storm.list <- list()
     storm.names <- list()
+    storm.seasons <- list()
     storm.sshs <- list()
     nb.storms <- 0
     k <- 2 #initializing line type
@@ -619,6 +642,7 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
     for (i in indices) {
       sts.output <- writeStorm(storm_list = storm.list,
                                storm_names = storm.names,
+                               storm_seasons = storm.seasons,
                                storm_sshs = storm.sshs,
                                nb_storms = nb.storms,
                                TC_data = sdb,
@@ -628,8 +652,9 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
       if(!is.null(sts.output[[1]])){
         storm.list <- sts.output[[1]]
         storm.names <- sts.output[[2]]
-        storm.sshs <- sts.output[[3]]
-        nb.storms <- sts.output[[4]]
+        storm.seasons <- sts.output[[3]]
+        storm.sshs <- sts.output[[4]]
+        nb.storms <- sts.output[[5]]
       }
 
 
@@ -648,7 +673,7 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
 
     #Initializing Storms object
     sts <- Storms()
-    sts@seasons <- seasons
+    sts@seasons <- unlist(storm.seasons)
     sts@nb.storms <- nb.storms
     sts@buffer <- max_dist
     sts@names <- unlist(storm.names)
@@ -659,9 +684,12 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
     names(sts@data) <- sts@names
     names(sts@names) <- sts@names
     names(sts@sshs) <- sts@names
+    names(sts@seasons) <- sts@names
+
+    end_time <- Sys.time()
 
     if(verbose > 0){
-      cat("-> DONE\n\n")
+      cat("\n=== DONE with run time",as.numeric(end_time - start_time),"sec ===\n\n")
       if(verbose > 1){
         cat("SUMMARY:\n")
         cat("(*) LOI: ")
@@ -681,10 +709,14 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
         }
         cat("(*) Number of Storms:", getNbStorms(sts),"\n")
         cat("        Name - Tropical season - SSHS - Number of observation within buffer:\n")
-        for(n in sts@names){
-          cat("       ",n,"-", sts@data[[n]]@season, "-", sts@sshs[[n]], "-",length(getStormInObs(sts,n)),"\n")
+        i = 1
+        for(i in 1:length(sts@names)){
+          n = sts@names[i]
+          s = sts@seasons[[i]]
+          sshs = sts@sshs[[i]]
+          cat("       ",n,"-", s, "-", sshs, "-",length(getStormInObs(sts, n, s)),"\n")
         }
-        cat("\n\n\n")
+        cat("\n")
       }
       if(verbose > 2){
         cat("SHORTCUTS:\n")
@@ -700,8 +732,7 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
         }
     }
 
-    # end_time <- Sys.time()
-    # print(end_time - start_time)
+
 
     return(sts)
 
