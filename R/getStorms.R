@@ -421,7 +421,7 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
   pts <- sf::st_as_sf(coords, coords = c("lon", "lat"))
   sf::st_crs(pts) <- wgs84
 
-
+  #Intersect points coordinates with loi_sf_buffer
   ind <- which(sf::st_intersects(pts, loi_sf_buffer, sparse <- FALSE) == TRUE)
 
 
@@ -477,6 +477,18 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 
 
 
+fun <- function(index, sdb, loi.sf.buffer){
+  #print(sdb$numobs[index])
+  lon = sdb$longitude[,index]
+  lat = sdb$latitude[,index]
+  coords <- data.frame(lon = lon, lat = lat)
+  coords <- coords[!is.na(coords$lon),]
+  #print(coords)
+  pts <- sf::st_as_sf(coords, coords = c("lon", "lat"))
+  sf::st_crs(pts) <- wgs84
+  return(any(sf::st_intersects(pts, loi.sf.buffer, sparse = FALSE)))
+}
+
 
 
 
@@ -531,6 +543,7 @@ writeStorm <- function(storm_list, storm_names, storm_sshs, nb_storms,
 getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
                       max_dist = 300, verbose = FALSE, remove_TD = TRUE){
 
+  start_time <- Sys.time()
 
   checkInputsGs(sdb, loi, seasons, names, max_dist, verbose, remove_TD)
 
@@ -544,7 +557,6 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
 
   #Converting loi
   loi.sf <- convertLoi(loi)
-
 
   #Handling buffer
   loi.sf.buffer <- makeBuffer(loi.sf, max_dist * km)
@@ -560,8 +572,15 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
 
+
+  # ind <- lapply(X = indices, FUN = fun, sdb = sdb, loi.sf.buffer = loi.sf.buffer)
+  #print(ind)
+  #Intersect points coordinates with loi_sf_buffer
+  #ind <- which(sf::st_intersects(pts, loi_sf_buffer, sparse = FALSE) == TRUE)
+
+
   if (verbose & length(indices) > 1) {
-    cat("Gathering storms \n")
+    cat("Done\nGathering storms \n")
     count <- 1 #initializing count for progression bar
     pb <- utils::txtProgressBar(min = count,
                                max = length(indices),
@@ -619,7 +638,15 @@ getStorms <- function(sdb = IBTRACS, loi, seasons = c(1980, 2022), names = NULL,
     sts@data <- storm.list
     names(sts@data) <- sts@names
 
+    end_time <- Sys.time()
+    print(end_time - start_time)
+
     return(sts)
+
+  }else{
+
+    stop("No storms found")
   }
+
 
 }

@@ -15,7 +15,7 @@ getStorms(
 )
 }
 \arguments{
-\item{sdb}{StormDatabase object. Specify which database to use}
+\item{sdb}{list. TC data base loaded from a stormDatabase object}
 
 \item{loi}{Location of Interest. Must be either:
 \itemize{
