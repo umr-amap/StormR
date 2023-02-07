@@ -61,7 +61,10 @@ initDatabase <- function(url = "https://www.ncei.noaa.gov/data/international-bes
 }
 
 
+count <- function(sid, SID){
 
+  return(length(which(SID == sid)))
+}
 
 
 #' Load data from StormDatabase object
@@ -110,21 +113,38 @@ loadData <- function(sdb_info, path){
   }else if (sdb_info@format == ".csv"){
 
     #Change here
-    TC_data_base <- read.csv(filename)
+    #TC_data_base <- read.csv(filename, header = T)
 
+    SID = TC_data_base$SID
+    print(length(SID))
+    SID = SID[2:length(SID)]
+    sid <- unique(SID)
+    len <- length(sid)
+    numobs <- lapply(list(sid), count, SID)
+    print(numobs)
+    row = max(unlist(numobs))
 
-    sdb <- data.frame(names = TC_data_base[,sdb_info@fields["names"]],
-                      seasons = TC_data_base[,sdb_info@fields["seasons"]],
-                      numobs = TC_data_base[,sdb_info@fields["numobs"]],
-                      isotimes = TC_data_base[,sdb_info@fields["isoTime"]],
-                      longitude = TC_data_base[,sdb_info@fields["lon"]],
-                      latitude = TC_data_base[,sdb_info@fields["lat"]],
-                      msw = TC_data_base[,sdb_info@fields["msw"]],
-                      rmw = TC_data_base[,sdb_info@fields["rmw"]],
-                      roci = TC_data_base[,sdb_info@fields["roci"]],
-                      poci = TC_data_base[,sdb_info@fields["poci"]],
-                      pres = TC_data_base[,sdb_info@fields["pressure"]],
-                      sshs = TC_data_base[,sdb_info@fields["sshs"]])
+    sdb <- list(names = TC_data_base[,sdb_info@fields["names"]],
+                seasons = TC_data_base[,sdb_info@fields["seasons"]],
+                numobs = numobs,
+                isotimes = array(TC_data_base[,sdb_info@fields["isoTime"]],
+                                 dim = c(row,len)),
+                longitude = array(TC_data_base[,sdb_info@fields["lon"]],
+                                  dim = c(row,len)),
+                latitude = array(TC_data_base[,sdb_info@fields["lat"]],
+                                 dim = c(row,len)),
+                msw = array(TC_data_base[,sdb_info@fields["msw"]],
+                            dim = c(row,len)),
+                rmw = array(TC_data_base[,sdb_info@fields["rmw"]],
+                            dim = c(row,len)),
+                roci = array(TC_data_base[,sdb_info@fields["roci"]],
+                             dim = c(row,len)),
+                poci = array(TC_data_base[,sdb_info@fields["poci"]],
+                             dim = c(row,len)),
+                pres = array(TC_data_base[,sdb_info@fields["pressure"]],
+                             dim = c(row,len)),
+                sshs = array(TC_data_base[,sdb_info@fields["sshs"]],
+                             dim = c(row,len)))
 
     return(sdb)
   }
@@ -132,19 +152,19 @@ loadData <- function(sdb_info, path){
 }
 
 
-fields = c("names" = "NAME",
-           "seasons" = "SEASON",
-           "isoTime" = "ISO_TIME",
-           "lon" = "USA_LON",
-           "lat" = "USA_LAT",
-           "msw" = "USA_WIND",
-           "rmw" = "USA_RMW",
-           "roci" = "USA_ROCI",
-           "pressure" = "USA_PRES",
-           "poci" = "USA_POCI",
-           "sshs" = "USA_SSHS",
-           "numobs" = "NUMBER")
+# fields <- c("names" = "NAME",
+#            "seasons" = "SEASON",
+#            "isoTime" = "ISO_TIME",
+#            "lon" = "USA_LON",
+#            "lat" = "USA_LAT",
+#            "msw" = "USA_WIND",
+#            "rmw" = "USA_RMW",
+#            "roci" = "USA_ROCI",
+#            "pressure" = "USA_PRES",
+#            "poci" = "USA_POCI",
+#            "sshs" = "USA_SSHS",
+#            "numobs" = "NUMBER")
 #
-# sdb_info = initDatabase(url = "none", name = "ibtracs.ALL.list.v04r00.csv", fields = fields, format = ".csv")
-# tc = loadData(sdb_info, "/home/baptiste/Desktop/Travail/StormR/data")
+# sdb_info <- initDatabase(url = "none", name = "ibtracs.ALL.list.v04r00.csv", fields = fields, format = ".csv")
+# tc <- loadData(sdb_info, "/home/baptiste/Desktop/Travail/StormR/data")
 
