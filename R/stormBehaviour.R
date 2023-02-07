@@ -134,7 +134,7 @@ checkInputsSb <- function(sts, product, method, asymmetry,
 
   #Checking product input
   stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Exposure"))
-  stopifnot("Only one product must be chosen" = length(product) == 1)
+
 
   #Checking method input
   stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
@@ -1109,8 +1109,11 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
                 space_res, time_res, verbose)
 
 
-  if(format == "profiles")
+  if(format == "profiles"){
     product <- "MSW"
+    if(product != "MSW")
+      warning("product input set to MSW")
+  }
 
   #Make raster template
   raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, space_res)
@@ -1118,8 +1121,10 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
   ext <- terra::ext(raster.template)
   #Buffer size in degree
   buffer <- terra::res(raster.template)[1] * sts@buffer / space_res
-  #Initializing final raster stack
-  final.stack <- c()
+  #Initializing final raster stacks
+  final.stack.msw <- c()
+  final.stack.pdi <- c()
+  final.stack.exp <- c()
 
 
   if(verbose)
@@ -1153,7 +1158,9 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
       pb <- utils::txtProgressBar(min = step, max = nb.step, style = 3)
     }
 
-    aux.stack <- c()
+    aux.stack.msw <- c()
+    aux.stack.pdi <- c()
+    aux.stack.exp <- c()
 
     for (j in 1:nb.step) {
 
@@ -1174,8 +1181,13 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
       terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method,
                                                        asymmetry, x, y)
 
-      #Stacking product
-      aux.stack <- stackProduct(product, aux.stack, raster.template, raster.wind)
+      #Stacking products
+      if("MSW" %in% product)
+        aux.stack.msw <- stackProduct("MSW", aux.stack.msw, raster.template, raster.wind)
+      if("PDI" %in% product)
+        aux.stack.pdi <- stackProduct("PDI", aux.stack.pdi, raster.template, raster.wind)
+      if("Exposure" %in% product)
+        aux.stack.exp <- stackProduct("Exposure", aux.stack.exp, raster.template, raster.wind)
 
 
       if (verbose){
@@ -1189,20 +1201,42 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
     if (verbose)
       close(pb)
 
-      #Rasterize final product
-      aux.stack <- terra::rast(aux.stack)
-      final.stack <- rasterizeProduct(product, format, final.stack, aux.stack,
-                                     time_res, st@name, ind)
+    #Rasterize final products
+    if("MSW" %in% product){
+      aux.stack.msw <- terra::rast(aux.stack.msw)
+      final.stack.msw <- rasterizeProduct("MSW", format, final.stack.msw, aux.stack.msw,
+                                      time_res, st@name, ind)
+    }
+    if("PDI" %in% product){
+      aux.stack.pdi <- terra::rast(aux.stack.pdi)
+      final.stack.pdi <- rasterizeProduct("PDI", format, final.stack.pdi, aux.stack.pdi,
+                                      time_res, st@name, ind)
+    }
+    if("Exposure" %in% product){
+      aux.stack.exp <- terra::rast(aux.stack.exp)
+      final.stack.exp <- rasterizeProduct("Exposure", format, final.stack.exp, aux.stack.exp,
+                                      time_res, st@name, ind)
+    }
 
     if(verbose)
       s <- s + 1
   }
 
+  if("MSW" %in% product){
+    final.stack.msw <- terra::rast(final.stack.msw)
+    final.stack.msw <- maskProduct(final.stack.msw, sts@spatial.loi.buffer, raster.template)
+  }
+  if("PDI" %in% product){
+    final.stack.pdi <- terra::rast(final.stack.pdi)
+    final.stack.pdi <- maskProduct(final.stack.pdi, sts@spatial.loi.buffer, raster.template)
+  }
+  if("Exposure" %in% product){
+    final.stack.exp <- terra::rast(final.stack.exp)
+    final.stack.exp <- maskProduct(final.stack.exp, sts@spatial.loi.buffer, raster.template)
+  }
 
-  final.stack <- terra::rast(final.stack)
-  final.stack <- maskProduct(final.stack, sts@spatial.loi.buffer, raster.template)
 
-  return(final.stack)
+  return(c(final.stack.msw, final.stack.pdi, final.stack.exp))
 }
 
 
