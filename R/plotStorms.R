@@ -297,6 +297,7 @@ plotStorms <- function(sts, names = NULL, category = NULL, labels = FALSE,
 
   #Handling categories
   if(!is.null(category) & is.null(names)){
+
     if(length(category) == 2){
       category <- category[order(category)]
       cat.inf <- category[1]
@@ -310,22 +311,35 @@ plotStorms <- function(sts, names = NULL, category = NULL, labels = FALSE,
     sts.aux <- unlist(sts@data)[ind]
 
   }else{
+
+    if(!is.null(category) & !is.null(names))
+      warning("category input ignored\n")
+
     sts.aux <- sts@data
   }
 
   #Plotting track(s) and labels
-  if (is.null(names)) {
+  if(is.null(names)) {
+
     lapply(sts.aux, plotTrack)
-    if (labels)
+
+    if(labels)
       lapply(sts.aux, plotLabels, by, pos)
 
   } else{
+
     for(n in names){
-      plotTrack(sts.aux[[n]])
-      if (labels)
-        plotLabels(sts.aux[[n]], by, pos)
+      s = getSeasons(sts, n)
+      for(i in 1:length(s)){
+        st = getStorm(sts, n, s[i])
+        plotTrack(st)
+        if(labels)
+          plotLabels(st, by, pos)
+      }
+
     }
   }
+
 
   #Adding legends
   if (legends) {
