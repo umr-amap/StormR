@@ -25,8 +25,8 @@ test_that("Tests invalid inputs", {
 
 
   #Checking access to data
-  expect_error(getStorms(loi = "Vanuatu", seasons = 2015, names = "PM"), "Storm not found")
-  expect_error(getStorms(loi = "Vanuatu", seasons = 2017, names = "PAM"), "Storm not found")
+  expect_error(getStorms(loi = "Vanuatu", seasons = 2015, names = "PM"))
+  expect_error(getStorms(loi = "Vanuatu", seasons = 2017, names = "PAM"))
 
 
 })

@@ -15,6 +15,8 @@ Choose the database to use within the package's functions
 
 \item{\code{name}}{character. Name of the file of the database stored locally}
 
+\item{\code{format}}{character. Either ".nc" or ".csv"}
+
 \item{\code{fields}}{...}
 }}
 

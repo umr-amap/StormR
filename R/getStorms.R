@@ -489,24 +489,6 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 }
 
 
-
-
-
-fun <- function(index, sdb, loi.sf.buffer){
-  #print(sdb$numobs[index])
-  lon = sdb$longitude[,index]
-  lat = sdb$latitude[,index]
-  coords <- data.frame(lon = lon, lat = lat)
-  coords <- coords[!is.na(coords$lon),]
-  #print(coords)
-  pts <- sf::st_as_sf(coords, coords = c("lon", "lat"))
-  sf::st_crs(pts) <- wgs84
-  return(any(sf::st_intersects(pts, loi.sf.buffer, sparse = FALSE)))
-}
-
-
-
-
 #' Initialize a Storms object
 #'
 #' This function returns a Storms object that
@@ -607,19 +589,6 @@ getStorms <- function(sdb = IBTRACS, loi,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
 
-  # sdb2 <- list(names = sdb$names[indices],
-  #             seasons = sdb$seasons[indices],
-  #             numobs = sdb$numobs[indices],
-  #             isotimes = sdb$isotimes[,indices],
-  #             longitude = sdb$longitude[,indices],
-  #             latitude = sdb$latitude[,indices],
-  #             msw = sdb$msw[,indices],
-  #             rmw = sdb$rmw[,indices],
-  #             roci = sdb$roci[,indices],
-  #             poci = sdb$poci[,indices],
-  #             pres = sdb$pres[,indices],
-  #             sshs = sdb$sshs[,indices])
-  print(object.size(sdb))
 
   if (verbose > 0 & length(indices) >= 1) {
     if(is.null(names) & length(seasons) == 2){
