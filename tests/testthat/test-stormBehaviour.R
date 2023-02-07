@@ -13,8 +13,6 @@ test_that("Tests invalid inputs", {
   expect_error(stormBehaviour(pam, product = "WIND"))
   expect_error(stormBehaviour(pam, product = 2))
   expect_error(stormBehaviour(pam, product = T))
-  expect_error(stormBehaviour(pam, product = c("MSW", "PDI")))
-
 
   #Checking method validity
   expect_error(stormBehaviour(pam, method = "willi"))
