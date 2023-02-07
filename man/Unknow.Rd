@@ -11,8 +11,7 @@ Unknow(
   method = "Willoughby",
   asymmetry = "V2",
   empirical_rmw = FALSE,
-  time_res = 1,
-  focus_loi = TRUE
+  time_res = 1
 )
 }
 \arguments{
@@ -52,11 +51,6 @@ from the observations. Default value is set to FALSE}
 \item{time_res}{numeric. Time discretization (hours) used to compute the
 analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 (30min), and 0.25 (15min). Default value is set to 1}
-
-\item{focus_loi}{logical. Whether or not the computations must only be
-overtaken within the spatial.loi.buffer from sts object. Default value
-is set to TRUE, otherwise, computations are extended over the whole track
-of the storms}
 }
 \value{
 Computed product for each points are returned

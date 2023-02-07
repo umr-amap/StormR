@@ -13,8 +13,7 @@ stormBehaviour(
   format = "analytic",
   space_res = 10,
   time_res = 1,
-  verbose = FALSE,
-  focus_loi = TRUE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -66,10 +65,6 @@ analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 
 \item{verbose}{logical. Whether or not the function must be verbose and
 displays a text progress bar while operating. Default value is set to FALSE}
-
-\item{focus_loi}{logical. Whether or not the computations are restricted to within
-the spatial.loi.buffer from sts object. Default value is set to TRUE. Otherwise,
-computations are extended over the whole track of the storms}
 }
 \value{
 Depending on format input:

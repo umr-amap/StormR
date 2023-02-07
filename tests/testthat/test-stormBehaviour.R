@@ -58,19 +58,16 @@ test_that("Tests invalid inputs", {
   expect_error(stormBehaviour(pam, empirical_rmw = 1))
   expect_error(stormBehaviour(pam, verbose = "TRUE"))
   expect_error(stormBehaviour(pam, verbose = 1))
-  expect_error(stormBehaviour(pam, focus_loi = "TRUE"))
-  expect_error(stormBehaviour(pam, focus_loi = 1))
+
 
 })
 
 
 test_that("get indices", {
 
-  expect_equal(getIndices(pam@data[["PAM"]], 2, "analytic", TRUE), seq(26,49))
-  expect_equal(getIndices(pam@data[["PAM"]], 20, "analytic", TRUE), seq(8,57))
-  expect_equal(getIndices(pam@data[["PAM"]], 30, "analytic", TRUE), seq(1,57))
-  expect_equal(getIndices(pam@data[["PAM"]], 2, "analytic", FALSE), seq(1,57))
-
+  expect_equal(getIndices(pam@data[["PAM"]], 2, "analytic"), seq(26,49))
+  expect_equal(getIndices(pam@data[["PAM"]], 20, "analytic"), seq(8,57))
+  expect_equal(getIndices(pam@data[["PAM"]], 30, "analytic"), seq(1,57))
 
 })
 
