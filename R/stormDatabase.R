@@ -112,15 +112,13 @@ loadData <- function(sdb_info, path){
     #Change here
     TC_data_base <- read.csv(filename)
 
-    nbstorm = unique(TC_data_base$)
 
     sdb <- data.frame(names = TC_data_base[,sdb_info@fields["names"]],
                       seasons = TC_data_base[,sdb_info@fields["seasons"]],
                       numobs = TC_data_base[,sdb_info@fields["numobs"]],
-                      names = TC_data_base[,sdb_info@fields["names"]],
                       isotimes = TC_data_base[,sdb_info@fields["isoTime"]],
-                      lon = TC_data_base[,sdb_info@fields["lon"]],
-                      lat = TC_data_base[,sdb_info@fields["lat"]],
+                      longitude = TC_data_base[,sdb_info@fields["lon"]],
+                      latitude = TC_data_base[,sdb_info@fields["lat"]],
                       msw = TC_data_base[,sdb_info@fields["msw"]],
                       rmw = TC_data_base[,sdb_info@fields["rmw"]],
                       roci = TC_data_base[,sdb_info@fields["roci"]],
@@ -146,7 +144,7 @@ fields = c("names" = "NAME",
            "poci" = "USA_POCI",
            "sshs" = "USA_SSHS",
            "numobs" = "NUMBER")
-
-sdb_info = initDatabase(url = "none", name = "ibtracs.ALL.list.v04r00.csv", fields = fields, format = ".csv")
-tc = loadData(sdb_info, "/home/baptiste/Desktop/Travail/StormR/data")
+#
+# sdb_info = initDatabase(url = "none", name = "ibtracs.ALL.list.v04r00.csv", fields = fields, format = ".csv")
+# tc = loadData(sdb_info, "/home/baptiste/Desktop/Travail/StormR/data")
 
