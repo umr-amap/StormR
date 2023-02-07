@@ -336,7 +336,21 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
                     vx.deg = rep(NA,len.data),
                     vy.deg = rep(NA,len.data),
                     msw = rep(NA,len.data),
-                    rmw = rep(NA,len.data))
+                    rmw = rep(NA,len.data),
+                    indices = rep(NA,len.data))
+
+  #Filling indices
+  ind = c()
+  for(i in indices[1:len.indices-1]){
+    lab = as.character(i)
+    for(j in 1:(dt-2)){
+      lab = c(lab, paste0(as.character(i),".",as.character(j)))
+    }
+    ind = c(ind, lab)
+  }
+  ind = c(ind, as.character(indices[len.indices]))
+
+  data$indices <- ind
 
   lon <- st@obs.all$lon[indices]
   lat <- st@obs.all$lat[indices]
@@ -853,7 +867,7 @@ rasterizeProduct <- function(product, format, final_stack, stack, time_res, name
 
   if (product == "MSW") {
     if(format == "profiles"){
-      names(stack) <- paste0(name, "_profile", indices[1:length(indices)-1])
+      names(stack) <- paste0(name, "_Profiles_", indices[1:length(indices)-1])
       final_stack <- c(final_stack, stack)
 
     }else{
@@ -1141,11 +1155,8 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
     dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Getting data associated with storm st
-    if(format == "profiles"){
-      dataTC <- getData(st, ind, asymmetry, empirical_rmw, method)
-    }else{
-      dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
-    }
+    dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
+
 
     nb.step <- dim(dataTC)[1] - 1
 
@@ -1205,17 +1216,17 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
     if("MSW" %in% product){
       aux.stack.msw <- terra::rast(aux.stack.msw)
       final.stack.msw <- rasterizeProduct("MSW", format, final.stack.msw, aux.stack.msw,
-                                      time_res, st@name, ind)
+                                      time_res, st@name, dataTC$indices)
     }
     if("PDI" %in% product){
       aux.stack.pdi <- terra::rast(aux.stack.pdi)
       final.stack.pdi <- rasterizeProduct("PDI", format, final.stack.pdi, aux.stack.pdi,
-                                      time_res, st@name, ind)
+                                      time_res, st@name, dataTC$indices)
     }
     if("Exposure" %in% product){
       aux.stack.exp <- terra::rast(aux.stack.exp)
       final.stack.exp <- rasterizeProduct("Exposure", format, final.stack.exp, aux.stack.exp,
-                                      time_res, st@name, ind)
+                                      time_res, st@name, dataTC$indices)
     }
 
     if(verbose)
