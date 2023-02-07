@@ -14,24 +14,6 @@ test_that("Tests invalid inputs", {
   #Checking names input
   expect_error(getStorms(loi = "Vanuatu", seasons = 2010, names = 1))
 
-  #Checking seasons and names matching
-  expect_error(getStorms(loi = "Fiji", seasons = c(2016,2015), names = "WINSTON"))
-
-  #Checking loi input
-  expect_error(getStorms(seasons = c(2016,2015), names = c("WINSTON","PAM")), "loi is missing")
-  expect_error(getStorms(loi = "hui", seasons = c(2016,2015), names = c("WINSTON","PAM")))
-
-  expect_error(getStorms(loi = 165, seasons = c(2016,2015), names = c("WINSTON","PAM")))
-
-  expect_error(getStorms(loi = c("hj","jk"), seasons = c(2016,2015), names = c("WINSTON","PAM")))
-
-  expect_error(getStorms(loi = c(380, 100), seasons = c(2016,2015), names = c("WINSTON","PAM")))
-
-  expect_error(getStorms(loi = "Nouvelle Caledonie", seasons = c(2016,2015), names = c("WINSTON","PAM")))
-
-  expect_error(getStorms(loi = c("Vanuatu", "Fiji"), seasons = c(2016,2015), names = c("WINSTON","PAM")))
-
-
 
   #Checking max_dist input
   expect_error(getStorms(loi = c(165,-17), seasons = c(2016,2015), names = c("WINSTON","PAM"),

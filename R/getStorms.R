@@ -224,7 +224,6 @@ checkInputsGs <- function(sdb, loi, seasons, names, max_dist, verbose, remove_TD
   #Checking names input
   if (!is.null(names)) {
     stopifnot("names must be a vector of character" = identical(class(names), "character"))
-    stopifnot("names and seasons must be the same length" = length(seasons) == length(names))
   } else{
     stopifnot(
       "Incompatible format for seasons (must be either length 1 or 2)" = length(seasons) == 1 ||
@@ -345,31 +344,28 @@ makeBuffer <- function(loi, buffer){
 #' @return indices of storms in the data base, that match the filter inputs
 retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
 
-  if (!is.null(filter_names)) {
-    #We are interested in one or several storms given by their name and season
-    indices <- c()
-    for (n in 1:length(filter_names)) {
-      seasons.id <- which(sdb$seasons == filter_seasons[n])
-      storm.id <- NULL
-      storm.id <- which(sdb$names == filter_names[n])
-      stopifnot("Storm not found, invalid name ?" = !is.null(storm.id))
-
-      id <- seasons.id[match(storm.id, seasons.id)[!is.na(match(storm.id, seasons.id))]]
-      stopifnot("Storm not found, seasons and names do not match" = !all(is.na(id)))
-      indices <- c(indices, id)
-    }
+  if (length(filter_seasons) == 1) {
+    #We are interested in only one cyclonic season
+    indices <- which(sdb$seasons == filter_seasons)
   } else{
+    #We are interested in successive cyclonic seasons
+    indices <- seq(from = which(sdb$seasons == filter_seasons[1])[1],
+                   to = max(which(sdb$seasons == filter_seasons[2])))
+  }
 
-    if (length(filter_seasons) == 1) {
-      #We are interested in only one cyclonic season
-      indices <- which(sdb$seasons == filter_seasons)
-    } else{
-      #We are interested in successive cyclonic seasons
-      indices <- seq(
-        from = which(sdb$seasons == filter_seasons[1])[1],
-        to = max(which(sdb$seasons == filter_seasons[2])),
-        by = 1)
+  if (!is.null(filter_names)) {
+    #We are interested in one or several storms given by their name (and season)
+    ind <- c()
+    for (n in 1:length(filter_names)) {
+      id <- NULL
+      id <- which(sdb$names == filter_names[n])
+      stopifnot("Storm not found, invalid name ?" = !is.null(id))
+      ind <- c(ind, id)
     }
+
+    indices = intersect(indices,id)
+    stopifnot("No storm(s) found "= !is.null(indices))
+
   }
 
   #Removing NOT_NAMED storms
@@ -575,10 +571,9 @@ getStorms <- function(sdb = IBTRACS, loi,
 
   checkInputsGs(sdb, loi, seasons, names, max_dist, verbose, remove_TD)
 
-  o <- order(seasons)
-  seasons <- seasons[o]
-  if (!is.null(names))
-    names <- names[o]
+  if(length(seasons) == 2)
+    seasons <- seasons[order(seasons)]
+
 
   if (verbose > 0)
     cat("=== getStorms processing ... ===\n\n-> Making buffer: ")
@@ -607,7 +602,6 @@ getStorms <- function(sdb = IBTRACS, loi,
 
 
   #Retrieving the matching indices, handling names, seasons and remove TD
-
   indices <- retrieveStorms(sdb,
                             filter_names = names,
                             filter_seasons = seasons,
@@ -738,7 +732,7 @@ getStorms <- function(sdb = IBTRACS, loi,
 
   }else{
 
-    stop("No storms found")
+    stop("No storms found. Please check inputs ...")
   }
 
 
