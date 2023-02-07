@@ -127,7 +127,6 @@ plotLabels <- function(st, by, pos) {
 #' @param sts Storms object
 #' @param names character vector
 #' @param category numeric vector
-#' @param map shapefile or sf object
 #' @param labels logical
 #' @param by numeric
 #' @param pos numeric
@@ -137,7 +136,7 @@ plotLabels <- function(st, by, pos) {
 #' @param ylim numeric vector
 #' @param reset_setting logical
 #' @return NULL
-checkInputsPs <- function(sts, names, category, map, labels, by,
+checkInputsPs <- function(sts, names, category, labels, by,
                           pos, legends, loi, xlim, ylim, reset_setting){
 
   #Checking sts input
@@ -154,12 +153,6 @@ checkInputsPs <- function(sts, names, category, map, labels, by,
     stopifnot("category must be numeric(s)" = identical(class(category), "numeric"))
     stopifnot("Invalid category input" = category %in% c(-1,-2,0,1,2,3,4,5))
   }
-
-  #Checking map input
-  if (!is.null(map))
-    stopifnot(
-      "map must be a SpatialPolygonsDataFrame or a sf object" = identical(class(map)[1], "SpatialPolygonsDataFrame") |
-        identical(class(map)[1], "sf"))
 
   #Checking xlim input
   if (!is.null(xlim)) {
@@ -214,8 +207,6 @@ checkInputsPs <- function(sts, names, category, map, labels, by,
 #' in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
 #' will consider every storm in sts. Otherwise it will consider only storms that
 #' reached category input
-#' @param map a shapefile or sf object. It will replace the default map if non NULL.
-#'  Default value is set to NULL.
 #' @param loi logical. Whether or not to plot spatial.loi.buffer on the map
 #' Default value is set to TRUE.
 #' @param labels logical. Whether or not to plot ISO Times and name labels
@@ -254,33 +245,20 @@ checkInputsPs <- function(sts, names, category, map, labels, by,
 #'
 #'
 #' @export
-plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, labels = FALSE,
+plotStorms <- function(sts, names = NULL, category = NULL, labels = FALSE,
                        by = 8, pos = 3, legends = TRUE, loi = TRUE, xlim = NULL,
                        ylim = NULL, reset_setting = TRUE){
 
 
-  checkInputsPs(sts, names, category, map, labels, by, pos, legends,
+  checkInputsPs(sts, names, category, labels, by, pos, legends,
                 loi, xlim, ylim, reset_setting)
 
 
-  if (!is.null(map)){
-    #Converting to sf object
-    if(!identical(class(map)[1], "sf"))
-      map <- sf::st_as_sf(map)
-  }
-
-
   #Handling spatial extent
-  if(is.null(map)){
-    ext <- terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
-                      sf::st_bbox(sts@spatial.loi.buffer)$xmax,
-                      sf::st_bbox(sts@spatial.loi.buffer)$ymin,
-                      sf::st_bbox(sts@spatial.loi.buffer)$ymax)
-  }else{
-    ext <- terra::ext(sf::st_bbox(map)$xmin, sf::st_bbox(map)$xmax,
-                      sf::st_bbox(map)$ymin, sf::st_bbox(map)$ymax)
-  }
-
+  ext <- terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
+                    sf::st_bbox(sts@spatial.loi.buffer)$xmax,
+                    sf::st_bbox(sts@spatial.loi.buffer)$ymin,
+                    sf::st_bbox(sts@spatial.loi.buffer)$ymax)
 
   if (!is.null(xlim)) {
     xlim <- xlim[order(xlim)]
@@ -297,39 +275,23 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, labels = 
 
 
   #Plotting base map
-  #grDevices::dev.new(width = 10, height = 9)
+  w = 5
+  h = w * 1.125
+  grDevices::dev.new(width = w, height = h)
   opar <- graphics::par(no.readonly = TRUE)
   graphics::par(mar = c(5, 4, 4, 6))
 
-  if(is.null(map)){
-    world <- rworldmap::getMap(resolution <- "high")
-    maps::map(
-      world,
-      fill = TRUE,
-      col = groundColor,
-      bg = oceanColor,
-      wrap = c(0, 360),
-      xlim = c(ext$xmin, ext$xmax),
-      ylim = c(ext$ymin, ext$ymax)
-    )
-    maps::map.axes(cex.axis = 1)
-
-  }else{
-    plot(map,
-         col = groundColor,
-         bg = oceanColor,
-         border = 1,
-         xlim = c(ext$xmin, ext$xmax),
-         ylim = c(ext$ymin, ext$ymax),
-         axes = T)
-  }
+  world <- rworldmap::getMap(resolution <- "high")
+  maps::map(world, fill = TRUE, col = groundColor, bg = oceanColor, wrap = c(0, 360),
+            xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax))
+  maps::map.axes(cex.axis = 1)
 
   #Plotting loi
   if (loi)
-    plot(sts@spatial.loi.buffer, lwd = 2, add = T)
+    plot(sts@spatial.loi.buffer, lwd = 1, border = "blue", add = T)
 
   if(as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT")
-    plot(sts@spatial.loi, lwd = 2, pch = 4, add = T)
+    plot(sts@spatial.loi, lwd = 2, col = "blue", pch = 4, add = T)
 
 
 
@@ -368,30 +330,36 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, labels = 
   #Adding legends
   if (legends) {
 
-    graphics::legend(
-      x = "topright",
-      inset = c(-0.7, 0),
-      xpd = TRUE,
-      legend = c(
-        expression(paste("Tropical Depression (below 17 m.s" ^ "-1",")")),
-        expression(paste("Tropical Storm (18 to 32 m.s" ^ "-1",")")),
-        expression(paste("Category 1 (33 to 42 m.s" ^ "-1",")")),
-        expression(paste("Category 2 (43 to 49 m.s" ^ "-1",")")),
-        expression(paste("Category 3 (50 to 58 m.s" ^ "-1",")")),
-        expression(paste("Category 4 (58 to 70 m.s" ^ "-1",")")),
-        expression(paste("Category 5 (70 m.s" ^ "-1","and higher)"))),
-      col = c(
-        "#00CCFF",
-        "#00CCCC",
-        "#FFFFB2",
-        "#FECC5C",
-        "#FD8D3C",
-        "#F03B20",
-        "#BD0026"
-      ),
-      pch = 19,
-      cex = 0.8
-    )
+    graphics::legend(x = "topright", inset = c(-0.7, 0), xpd = TRUE,
+                     legend = c(expression(paste("Tropical Depression (below 17 m.s" ^ "-1",")")),
+                                expression(paste("Tropical Storm (18 to 32 m.s" ^ "-1",")")),
+                                expression(paste("Category 1 (33 to 42 m.s" ^ "-1",")")),
+                                expression(paste("Category 2 (43 to 49 m.s" ^ "-1",")")),
+                                expression(paste("Category 3 (50 to 58 m.s" ^ "-1",")")),
+                                expression(paste("Category 4 (58 to 70 m.s" ^ "-1",")")),
+                                expression(paste("Category 5 (70 m.s" ^ "-1","and higher)"))),
+                     col = c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C",
+                             "#FD8D3C", "#F03B20", "#BD0026"),
+                     pch = 19,
+                     cex = 0.8)
+
+    if(as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT"){
+      graphics::legend(x = "right", inset = c(-0.355,0), xpd = TRUE,
+                       legend = c("LOI", "LOI buffer"),
+                       col = "blue",
+                       lty = c(0,1),
+                       lwd = c(2,1),
+                       pch = c(4,NA),
+                       cex = 0.8)
+    }else{
+      graphics::legend(x = "right", inset = c(-0.375,0), xpd = TRUE,
+                       legend = c("LOI buffer"),
+                       col = "blue",
+                       lty = 1,
+                       cex = 0.8)
+    }
+
+
   }
 
   if(reset_setting)
