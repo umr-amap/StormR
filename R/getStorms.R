@@ -607,7 +607,19 @@ getStorms <- function(sdb = IBTRACS, loi,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
 
-
+  # sdb2 <- list(names = sdb$names[indices],
+  #             seasons = sdb$seasons[indices],
+  #             numobs = sdb$numobs[indices],
+  #             isotimes = sdb$isotimes[,indices],
+  #             longitude = sdb$longitude[,indices],
+  #             latitude = sdb$latitude[,indices],
+  #             msw = sdb$msw[,indices],
+  #             rmw = sdb$rmw[,indices],
+  #             roci = sdb$roci[,indices],
+  #             poci = sdb$poci[,indices],
+  #             pres = sdb$pres[,indices],
+  #             sshs = sdb$sshs[,indices])
+  print(object.size(sdb))
 
   if (verbose > 0 & length(indices) >= 1) {
     if(is.null(names) & length(seasons) == 2){
@@ -726,14 +738,9 @@ getStorms <- function(sdb = IBTRACS, loi,
         }
     }
 
-
-
     return(sts)
 
   }else{
-
     stop("No storms found. Please check inputs ...")
   }
-
-
 }
