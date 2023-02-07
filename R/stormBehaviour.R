@@ -124,11 +124,10 @@ rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 #' @param space_res numeric
 #' @param time_res numeric
 #' @param verbose logical
-#' @param focus_loi logical
 #' @return NULL
 checkInputsSb <- function(sts, product, method, asymmetry,
                          empirical_rmw, format, space_res,
-                         time_res, verbose, focus_loi){
+                         time_res, verbose){
 
   #Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -165,10 +164,6 @@ checkInputsSb <- function(sts, product, method, asymmetry,
   #Checking verbose input
   stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
 
-  #Checking focus_loi input
-  stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
-
-
 }
 
 
@@ -185,10 +180,9 @@ checkInputsSb <- function(sts, product, method, asymmetry,
 #' @param asymmetry character
 #' @param empirical_rmw logical
 #' @param time_res numeric
-#' @param focus_loi logical
 #' @return NULL
 checkInputsUnknow <- function(sts, points, product, method, asymmetry,
-                          empirical_rmw, time_res, focus_loi){
+                          empirical_rmw, time_res){
 
   #Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -219,10 +213,6 @@ checkInputsUnknow <- function(sts, points, product, method, asymmetry,
   stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
   stopifnot("time_res must be length 1" = length(time_res) == 1)
   stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
-
-  #Checking focus_loi input
-  stopifnot("focus_loi must be logical" = identical(class(focus_loi), "logical"))
-
 
 }
 
@@ -282,32 +272,24 @@ makeTemplateRaster <- function(buffer, res){
 #' @param st Storm Object
 #' @param offset numeric. Offset to apply at the begining and at the end
 #' @param format character. format input from stormBehaviour
-#' @param focus_loi logical. logical input from stormBehaviour
 #'
 #' @return numeric vector gathering the indices of observation to use to perform
 #' the further computations
-getIndices <- function(st, offset, format, focus_loi){
+getIndices <- function(st, offset, format){
 
-  #Handling indices inside loi.buffer or not
-  if (focus_loi) {
-    #Use observations within the loi for the computations
-    ind <- seq(st@obs[1], st@obs[length(st@obs)], 1)
+  #Use observations within the loi for the computations
+  ind <- seq(st@obs[1], st@obs[length(st@obs)], 1)
 
-    if(format == "analytic"){
-      #Handling indices and offset (outside of loi at entry and exit)
-      for(o in 1:offset){
-        ind <- c(st@obs[1] - o, ind)
-        ind <- c(ind, st@obs[length(st@obs)] + o)
-      }
-
-      #Remove negative values and values beyond st@numobs.all
-      ind <- ind[ind > 0 & ind <= st@numobs.all]
-
+  if(format == "analytic"){
+    #Handling indices and offset (outside of loi at entry and exit)
+    for(o in 1:offset){
+      ind <- c(st@obs[1] - o, ind)
+      ind <- c(ind, st@obs[length(st@obs)] + o)
     }
 
-  } else{
-    #Use all observations available for the computations
-    ind <- seq(1, st@numobs.all, 1)
+    #Remove negative values and values beyond st@numobs.all
+    ind <- ind[ind > 0 & ind <= st@numobs.all]
+
   }
 
   return(ind)
@@ -992,22 +974,18 @@ computeProduct <- function(product, wind, time_res, result){
 #' @noRd
 #' @param final_stack SpatRaster stack. Where all final computed products
 #' are gathered
-#' @param focus_loi logical. focus_loi input from stormBehaviour
 #' @param loi sf object. loi used as template to rasterize the mask
 #' @param template SpatRaster. raster.template generated with makeTemplateRaster
 #' function, used as a template to rasterize the mask
 #'
 #' @return final_stack masked or not
-maskProduct <- function(final_stack, focus_loi, loi, template){
+maskProduct <- function(final_stack, loi, template){
 
-  if (focus_loi) {
-    #Masking the stack to fit loi
-    v <- terra::vect(loi)
-    m <- terra::rasterize(v, template)
-    return(terra::mask(final_stack, m))
-  }else{
-    return(final_stack)
-  }
+  #Masking the stack to fit loi
+  v <- terra::vect(loi)
+  m <- terra::rasterize(v, template)
+  return(terra::mask(final_stack, m))
+
 }
 
 
@@ -1095,9 +1073,6 @@ finalizeResult <- function(final_result, result, product, points, indices, st){
 #'   (30min), and 0.25 (15min). Default value is set to 1
 #' @param verbose logical. Whether or not the function must be verbose and
 #'   displays a text progress bar while operating. Default value is set to FALSE
-#' @param focus_loi logical. Whether or not the computations are restricted to within
-#' the spatial.loi.buffer from sts object. Default value is set to TRUE. Otherwise,
-#' computations are extended over the whole track of the storms
 #'
 #' @returns Depending on format input:
 #' \itemize{
@@ -1128,10 +1103,10 @@ finalizeResult <- function(final_result, result, product, points, indices, st){
 #' @export
 stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetry = "V2",
                           empirical_rmw = FALSE, format = "analytic", space_res = 10,
-                          time_res = 1, verbose = FALSE, focus_loi = TRUE){
+                          time_res = 1, verbose = FALSE){
 
   checkInputsSb(sts, product, method, asymmetry, empirical_rmw, format,
-                space_res, time_res, verbose, focus_loi)
+                space_res, time_res, verbose)
 
 
   if(format == "profiles")
@@ -1153,7 +1128,7 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
   for (st in sts@data) {
 
     #Handling indices inside loi.buffer or not
-    ind <- getIndices(st, 2, format, focus_loi)
+    ind <- getIndices(st, 2, format)
 
 
 
@@ -1225,8 +1200,7 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
 
 
   final.stack <- terra::rast(final.stack)
-  final.stack <- maskProduct(final.stack, focus_loi,
-                             sts@spatial.loi.buffer, raster.template)
+  final.stack <- maskProduct(final.stack, sts@spatial.loi.buffer, raster.template)
 
   return(final.stack)
 }
@@ -1268,10 +1242,6 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
 #' @param time_res numeric. Time discretization (hours) used to compute the
 #'   analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 #'   (30min), and 0.25 (15min). Default value is set to 1
-#' @param focus_loi logical. Whether or not the computations must only be
-#'   overtaken within the spatial.loi.buffer from sts object. Default value
-#'   is set to TRUE, otherwise, computations are extended over the whole track
-#'   of the storms
 #'
 #' @returns Computed product for each points are returned
 #'   through a named list. Each slot is named after the storm and has dimensions:
@@ -1294,9 +1264,9 @@ stormBehaviour <- function(sts, product = "MSW", method = "Willoughby", asymmetr
 #'
 #' @export
 Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry = "V2",
-                   empirical_rmw = FALSE, time_res = 1, focus_loi = TRUE){
+                   empirical_rmw = FALSE, time_res = 1){
 
-  checkInputsUnknow(sts, points, product, method, asymmetry, empirical_rmw, time_res, focus_loi)
+  checkInputsUnknow(sts, points, product, method, asymmetry, empirical_rmw, time_res)
 
 
 
@@ -1306,7 +1276,7 @@ Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry
   for (st in sts@data) {
 
     #Handling indices inside loi.buffer or not
-    ind <- getIndices(st, 2, "none", focus_loi)
+    ind <- getIndices(st, 2, "none")
 
     #Interpolated time step dt, default value dt <- 4 --> 1h
     dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
