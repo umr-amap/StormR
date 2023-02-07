@@ -147,4 +147,4 @@ loadData <- function(sdb_info, path){
 
 # sdb_info = initDatabase(url = "none", name = "ibtracs.ALL.list.v04r00.csv", fields = fields, format = ".csv")
 # tc = loadData(sdb_info, "/home/baptiste/Desktop/Travail/StormR/data")
-
+# IBTRACS = loadData(IBTRACS_sdb, "/home/baptiste/Desktop/Travail/StormR/data")

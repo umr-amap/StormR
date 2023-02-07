@@ -106,9 +106,9 @@ plotLabels <- function(st, by, pos) {
     graphics::text(
       lon,
       lat,
-      labels = paste(st@name,
-                     st@obs.all$iso.time[i],
-                     sep = "\n"),
+      labels = paste0(st@name,"\n",
+                     st@obs.all$iso.time[i],"\n",
+                     "(",i,")\n"),
       pos = pos,
       cex = cex
     )
