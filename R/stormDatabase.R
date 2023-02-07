@@ -72,9 +72,10 @@ initDatabase <- function(url = "https://www.ncei.noaa.gov/data/international-bes
 #' @return A list of 14 slots
 loadData <- function(sdb_info, path){
 
+  filename <- paste0(path,"/",sdb_info@name)
+
   if(sdb_info@format == ".nc"){
 
-    filename <- paste0(path,"/",sdb_info@name)
     #Change here
     TC_data_base <- ncdf4::nc_open(filename)
     lon <- ncdf4::ncvar_get(TC_data_base, sdb_info@fields["lon"])
@@ -106,44 +107,46 @@ loadData <- function(sdb_info, path){
 
     return(sdb)
 
-  }else if (format == ".csv"){
+  }else if (sdb_info@format == ".csv"){
 
-    filename <-  sdb_info@name
-    TC_data_base <- read.csv(system.file("extdata", filename, package = "StormR"))
-    lon <- ncdf4::ncvar_get(TC_data_base, sdb_info@fields["lon"])
-    row <- dim(lon)[1]
-    len <- dim(lon)[2]
+    #Change here
+    TC_data_base <- read.csv(filename)
 
-    sdb <- list(names  = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["names"]),
-                seasons = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["seasons"]),
-                numobs = ncdf4::ncvar_get(TC_data_base, sdb_info@fields["numobs"]),
-                isotimes = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["isoTime"]),
-                                 dim = c(row,len)),
-                longitude = array(lon, dim = c(row,len)),
-                latitude = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["lat"]),
-                                 dim = c(row,len)),
-                msw = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["msw"]),
-                            dim = c(row,len)),
-                rmw = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["rmw"]),
-                            dim = c(row,len)),
-                roci = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["roci"]),
-                             dim = c(row,len)),
-                pres = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["pressure"]),
-                             dim = c(row,len)),
-                poci = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["poci"]),
-                             dim = c(row,len)),
-                sshs = array(ncdf4::ncvar_get(TC_data_base, sdb_info@fields["sshs"]),
-                             dim = c(row,len)))
+    nbstorm = unique(TC_data_base$)
 
-    ncdf4::nc_close(TC_data_base)
+    sdb <- data.frame(names = TC_data_base[,sdb_info@fields["names"]],
+                      seasons = TC_data_base[,sdb_info@fields["seasons"]],
+                      numobs = TC_data_base[,sdb_info@fields["numobs"]],
+                      names = TC_data_base[,sdb_info@fields["names"]],
+                      isotimes = TC_data_base[,sdb_info@fields["isoTime"]],
+                      lon = TC_data_base[,sdb_info@fields["lon"]],
+                      lat = TC_data_base[,sdb_info@fields["lat"]],
+                      msw = TC_data_base[,sdb_info@fields["msw"]],
+                      rmw = TC_data_base[,sdb_info@fields["rmw"]],
+                      roci = TC_data_base[,sdb_info@fields["roci"]],
+                      poci = TC_data_base[,sdb_info@fields["poci"]],
+                      pres = TC_data_base[,sdb_info@fields["pressure"]],
+                      sshs = TC_data_base[,sdb_info@fields["sshs"]])
 
     return(sdb)
-
-
-
   }
 
 }
 
 
+fields = c("names" = "NAME",
+           "seasons" = "SEASON",
+           "isoTime" = "ISO_TIME",
+           "lon" = "USA_LON",
+           "lat" = "USA_LAT",
+           "msw" = "USA_WIND",
+           "rmw" = "USA_RMW",
+           "roci" = "USA_ROCI",
+           "pressure" = "USA_PRES",
+           "poci" = "USA_POCI",
+           "sshs" = "USA_SSHS",
+           "numobs" = "NUMBER")
+
+sdb_info = initDatabase(url = "none", name = "ibtracs.ALL.list.v04r00.csv", fields = fields, format = ".csv")
+tc = loadData(sdb_info, "/home/baptiste/Desktop/Travail/StormR/data")
 
