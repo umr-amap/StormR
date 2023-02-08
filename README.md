@@ -194,9 +194,9 @@ st <- getStorms(seasons = 2015, names = "PAM", loi = "Vanuatu")
 plotStorms(st, labels = T, legends = T)
 
 #Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry from REF?). The function returns a raster with a 10 km spatial resolution by default .
-st_msw <- stormBehaviour(st)
-st_pdi <- stormBehaviour(st, product = "PDI")
-st_exposure <- stormBehaviour(st, product = "Exposure", wind_threshold = c(40,50))
+st_msw <- stormBehaviour_sp(st)
+st_pdi <- stormBehaviour_sp(st, product = "PDI")
+st_exposure <- stormBehaviour_sp(st, product = "Exposure", wind_threshold = c(40,50))
 
 #Plot the MSW, PDI, and EXP rasters alongside with the track of the storm and the limit of the location of interest
 split.screen(c(1,3))
@@ -227,7 +227,7 @@ plotStorms(sts, labels = T, legends = T)
 plotStorms(sts, names = "NIRAN", labels = T)
 
 #Compute PDI rasters for all tropical cyclones with the default values
-sts_pdi <- stormBehaviour(sts, product = "PDI")
+sts_pdi <- stormBehaviour_sp(sts, product = "PDI")
 
 #Plot the PDI for the tropical cyclone Niran alongside with the its track
 plotBehaviour(sts, sts_pdi[["NIRAN_PDI"]], labels = T)
@@ -268,7 +268,7 @@ plotStorms(stsPt, category = c(4,5), labels = T)
 
 #Compute time series of wind speed at given location using coordinates provided in a data frame
 df <- data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
-wind_ts <- Unknow(sts, points = df)
+wind_ts <- stormBehaviour_pt(sts, points = df)
 
 plot(wind_ts$NIRAN[,2], type = "b", ylab = "maximum sustained wind speed (m/s)")
 
@@ -289,10 +289,10 @@ loi <- sf::st_sf(pol, crs = 4326)
 harold <- getStorms(seasons = 2020, names= "HAROLD", loi = loi)
 
 #Compute wind profiles using Willoughby model with version 1 of asymmetry
-profWillV1 <- stormBehaviour(harold, format = "profiles", asymmetry = "V1")
+profWillV1 <- stormBehaviour_sp(harold, format = "profiles", asymmetry = "V1")
 
 #Compute wind profiles using Holland model with version 2 of asymmetry
-profHollV2 <- stormBehaviour(harold, format = "profiles", method = "Holland")
+profHollV2 <- stormBehaviour_sp(harold, format = "profiles", method = "Holland")
 
 #Compare few profiles between the two above differents methods and asymmetries
 plotBehaviour(harold,profWillV1["HAROLD_profile40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))

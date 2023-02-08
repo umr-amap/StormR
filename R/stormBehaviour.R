@@ -112,7 +112,7 @@ rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 
 
 
-#' Check inputs for stormBehaviour function
+#' Check inputs for stormBehaviour_sp function
 #'
 #' @noRd
 #' @param sts Storms object
@@ -228,7 +228,7 @@ makeTemplateRaster <- function(buffer, res){
 #' @noRd
 #' @param st Storm Object
 #' @param offset numeric. Offset to apply at the begining and at the end
-#' @param format character. format input from stormBehaviour
+#' @param format character. format input from stormBehaviour_sp
 #'
 #' @return numeric vector gathering the indices of observation to use to perform
 #' the further computations
@@ -265,7 +265,7 @@ getIndices <- function(st, offset, format){
 #' velocity of storm to maximum sustained windspeed for the further computations
 #' @param empirical_rmw logical. Whether to use rmw from the data or to compute them
 #' according to getRmw function
-#' @param method character. method input from stormBehaviour
+#' @param method character. method input from stormBehaviour_sp
 #'
 #' @return a data.frame of dimension length(indices) : 10. Columns are
 #'  \itemize{
@@ -544,7 +544,7 @@ computeNoAsymmetry <- function(wind, x, y, vx, vy, vh, northenH){
 #' the computations
 #' @param dist_m numeric array. Distance in meter from the eye of the storm for
 #' each coordinate of the raster_template_model (or points if format is a data frame)
-#' @param method character. method input form stormBehaviour
+#' @param method character. method input form stormBehaviour_sp
 #' @param asymmetry character. asymmetry input from stormBehviour
 #' @param x numeric array. Distance in degree from the eye of storm in the x direction
 #' @param y numeric array. Distance in degree from the eye of storm in the y direction
@@ -676,7 +676,7 @@ stackRasterExposure <- function(stack, raster_template, raster_wind, threshold){
 #' Select the stack function to use depending on the product
 #'
 #' @noRd
-#' @param product character. Product input from stormBehaviour
+#' @param product character. Product input from stormBehaviour_sp
 #' @param stack list of SpatRaster. where to stack the layer
 #' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
@@ -709,7 +709,7 @@ stackProduct <- function(product, stack, raster_template, raster_wind, threshold
 #' @param stack SpatRaster stack. All the wind speed rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
-#' @param space_res character. space_res input from stormBehaviour
+#' @param space_res character. space_res input from stormBehaviour_sp
 #'
 #' @return list of SpatRaster
 rasterizeMSW <- function(final_stack, stack, space_res, name){
@@ -738,7 +738,7 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
-#' @param space_res character. space_res input from stormBehaviour
+#' @param space_res character. space_res input from stormBehaviour_sp
 #' @param product characher
 #' @param threshold numeric vector. Wind threshold
 #'
@@ -768,15 +768,15 @@ rasterizePDIExp <- function(final_stack, stack, time_res, space_res, name, produ
 #' Select the rasterizeProduct function to use depending on the product
 #'
 #' @noRd
-#' @param product character. Product input from stormBehaviour
-#' @param format format input from stormBehaviour
+#' @param product character. Product input from stormBehaviour_sp
+#' @param format format input from stormBehaviour_sp
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
 #' @param time_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param stack SpatRaster stack. All the Exposure rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
-#' @param space_res character. space_res input from stormBehaviour
+#' @param space_res character. space_res input from stormBehaviour_sp
 #' @param indices numeric vector. Indices of observations. Only used to give proper
 #' layer names if format == "profiles"
 #' @param threshold numeric vector. Wind threshold
@@ -904,20 +904,20 @@ maskProduct <- function(final_stack, loi, template){
 #'
 #' @examples
 #' #Compute MSW for PAM 2015 in Vanuatu using default settings
-#' msw_pam <- stormBehaviour(pam)
+#' msw_pam <- stormBehaviour_sp(pam)
 #'
 #' #Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
-#' pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland",
+#' pdi_nc <- stormBehaviour_sp(sts_nc, time_res = 0.5, method = "Holland",
 #'                         product = "PDI")
 #'
 #' #Compute Exposure (wind threshold: 40 to 50 m/s) for PAM 2015 in Vanuatu using default settings
-#' exp_pam <- stormBehaviour(pam, product = "Exposure", wind_threshold = c(40,50))
+#' exp_pam <- stormBehaviour_sp(pam, product = "Exposure", wind_threshold = c(40,50))
 #'
 #' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
-#' prof_nc <- stormBehaviour(sts_nc, format = "profiles")
+#' prof_nc <- stormBehaviour_sp(sts_nc, format = "profiles")
 #'
 #' @export
-stormBehaviour <- function(sts,
+stormBehaviour_sp <- function(sts,
                            product = "MSW",
                            wind_threshold = NULL,
                            method = "Willoughby",
@@ -962,7 +962,7 @@ stormBehaviour <- function(sts,
 
   if(verbose > 0){
     s <- 1 #Initializing count of storms
-    cat("=== stormBehaviour processing ... ===\n\n")
+    cat("=== stormBehaviour_sp processing ... ===\n\n")
 
     cat("Computation settings:\n")
     if(format == "analytic"){
@@ -1139,7 +1139,7 @@ stormBehaviour <- function(sts,
 
 
 
-#' Check inputs for Unknow function
+#' Check inputs for stormBehaviour_pt function
 #'
 #' @noRd
 #' @param sts Storms object
@@ -1256,7 +1256,7 @@ computeExposure <- function(wind, time_res, threshold){
 #' rasterizeProduct counterpart function for non raster data
 #'
 #' @noRd
-#' @param product character. Product input from Unknow
+#' @param product character. Product input from stormBehaviour_pt
 #' @param wind numeric vector. Wind speed values
 #' @param direction numeric vector. Wind direction
 #' @param time_res numeric. Time resolution, used for the numerical integration
@@ -1290,13 +1290,13 @@ computeProduct <- function(product, wind, direction, time_res, result, threshold
 
 
 
-#' Arrange result before the end of Unknow
+#' Arrange result before the end of stormBehaviour_pt
 #'
 #' @noRd
 #' @param final_result list of data.frame. Where to add the computed product
 #' @param result result output from computeProduct function
-#' @param product character. Product input from Unknow
-#' @param points points input from Unknow
+#' @param product character. Product input from stormBehaviour_pt
+#' @param points points input from stormBehaviour_pt
 #' @param isoT numeric vector. Iso Times of observations
 #' @param indices numeric vector. Indices of observations
 #' @param st Storm object.
@@ -1383,14 +1383,14 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'
 #' df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
 #' #Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings
-#' ts_nc <- Unknow(sts_nc, points = df)
+#' ts_nc <- stormBehaviour_pt(sts_nc, points = df)
 #' #Compute PDI for ERICA and NIRAN on points provided in df using default settings
-#' pdiPt_nc <- Unknow(sts_nc, points = df, product = "PDI)
+#' pdiPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "PDI)
 #' #Compute Exposure for ERICA and NIRAN on points provided in df using default settings
-#' expPt_nc <- Unknow(sts_nc, points = df, product = "Exposure", wind_threshold = c(20,30))
+#' expPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "Exposure", wind_threshold = c(20,30))
 #'
 #' @export
-Unknow <- function(sts,
+stormBehaviour_pt <- function(sts,
                    points,
                    product = "TS",
                    wind_threshold = NULL,
@@ -1410,7 +1410,7 @@ Unknow <- function(sts,
   #Initializing final result
   final.result <- list()
 
-  for (st in sts@data) {
+  for(st in sts@data) {
 
     #Handling indices inside loi.buffer or not
     ind <- getIndices(st, 2, "none")
