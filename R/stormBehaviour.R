@@ -1030,15 +1030,15 @@ maskProduct <- function(final_stack, loi, template){
 finalizeResult <- function(final_result, result, product, points, isoT, indices, st){
 
   if(product == "TS"){
-    df <- data.frame(result)
-    row.names(df) <- isoT
+    df <- data.frame(result, indices = indices, isoTimes = isoT)
   }else if(product == "PDI"){
-    df <- data.frame(result, row.names = "PDI")
+    df <- data.frame(result, indices = indices, isoTimes = isoT, row.names = "PDI")
   }else{
-    df <- data.frame(result ,row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
+    df <- data.frame(result, indices = indices, isoTimes = isoT, row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
   }
 
-  colnames(df) <- paste0("(",points$lon,",",points$lat,")")
+
+  colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"), "indices", "isoTimes")
 
 
   dfn <- list(df)
@@ -1365,7 +1365,8 @@ Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry
 
     }
 
-    final.result <- finalizeResult(final.result, res, product, points, dataTC$isoTimes, st)
+    final.result <- finalizeResult(final.result, res, product, points,
+                                   dataTC$isoTimes, dataTC$indices, st)
 
   }
 
