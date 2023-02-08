@@ -120,6 +120,7 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
   name <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
   product <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
 
+
   if (!(name %in% sts@names))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
@@ -150,29 +151,35 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
              reset_setting = FALSE)
 
   #Adding raster_product on map
-  if (product == "MSW" | stringr::str_detect(product,"profile")) {
+  if(product == "MSW"){
 
     col <- mswSSHSPalette
     range <- c(17, 80)
-    if(product == "MSW"){
-      leg <- expression(paste("MSW (m.s" ^ "-1",")"))
+    leg <- expression(paste("MSW (m.s" ^ "-1",")"))
 
-    }else{
-      leg <- expression(paste("radial wind speed (m.s" ^ "-1",")"))
-    }
-
-  } else if (product == "PDI") {
+  }else if(product == "PDI"){
 
     col <- pdiPalette
     range <- c(0, max(terra::values(raster_product), na.rm = T))
     leg <- expression(paste("PDI"))
 
-
-  } else if (stringr::str_detect(product,"Exposure")) {
+  }else if(product == "Exposure"){
 
     col <- exposurePalette
     range <- c(0, max(terra::values(raster_product), na.rm = T))
     leg <- expression(paste("Time spent (h)"))
+
+  }else if(product == "Profiles"){
+
+    col <- mswSSHSPalette
+    range <- c(17, 80)
+    leg <- expression(paste("radial wind speed (m.s" ^ "-1",")"))
+
+  }else if(product == "WindDirection"){
+
+    col <- exposurePalette
+    range <- c(0, 360)
+    leg <- expression(paste("wind direction (degree)"))
 
   }
 
@@ -191,10 +198,7 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
        range = range,
        legend = TRUE,
        plg = list(loc = "bottom",
-                  ext = c(xmin,
-                          xmax,
-                          y.leg,
-                          y.leg-0.05),
+                  ext = c(xmin, xmax, y.leg, y.leg-0.05),
                   cex = 0.7,
                   shrink = 0),
        add = T)
@@ -204,20 +208,40 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
   plotTrack(sts@data[[name]])
 
   #Adding labels
-  if(labels)
+  if(labels & product != "Profiles" & product != "WindDirection")
     plotLabels(sts@data[[name]],by,pos)
 
-  if(labels & stringr::str_detect(product,"profile")){
-    ind <- as.numeric(stringr::str_sub(product,8,nchar(product)))
-    graphics::text(
-      sts@data[[name]]@obs.all$lon[ind],
-      sts@data[[name]]@obs.all$lat[ind],
-      labels = paste(name,
-                     sts@data[[name]]@obs.all$iso.time[ind],
-                     sep = "\n"),
-      pos = pos,
-      cex = 0.6
-    )
+  if(labels & (product == "Profiles" | product == "WindDirection")){
+
+    ind <- as.numeric(strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][3])
+
+    if(round(ind) == ind){
+      #It is a real observation
+      graphics::text(sts@data[[name]]@obs.all$lon[ind],
+                     sts@data[[name]]@obs.all$lat[ind],
+                     labels = paste0(name,"\n", sts@data[[name]]@obs.all$iso.time[ind],
+                                     "\n(",ind,")"),
+                     pos = pos,
+                     cex = 0.6)
+    }else{
+      #It is an interpolated observation
+      indf <- floor(ind)
+      indc <- ceiling(ind)
+      pos2 <- switch(pos, "1" = 3, "2" = 4, "3" = 1, "4" = 2)
+      graphics::text(sts@data[[name]]@obs.all$lon[indf],
+                     sts@data[[name]]@obs.all$lat[indf],
+                     labels = paste0(name,"\n", sts@data[[name]]@obs.all$iso.time[indf],
+                                    "\n(",indf,")"),
+                     pos = pos,
+                     cex = 0.6)
+
+      graphics::text(sts@data[[name]]@obs.all$lon[indc],
+                     sts@data[[name]]@obs.all$lat[indc],
+                     labels = paste0(name,"\n", sts@data[[name]]@obs.all$iso.time[indc],
+                                     "\n(",indc,")"),
+                     pos = pos2,
+                     cex = 0.6)
+    }
   }
 
 }
