@@ -435,23 +435,35 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
 #' Version 1 of asymmetry (Boose et al. 2001)
 #'
 #' @noRd
+#' @param wind numeric vector. Wind values
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
 #' @param vx numeric. Velocity of the storm in the x direction (deg/h)
 #' @param vy numeric. Velociy of the storm in the y direction (deg/h)
+#' @param vh numeric. Velociy of the storm (m/s)
 #' @param northenH logical. Whether it is northen hemisphere or not
 #'
-#' @return numeric vector. Orientation of wind speed (rad) at each (x,y) position
-asymmetryV1 <- function(x, y, vx, vy, northenH){
+#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at each (x,y) position
+computeAsymmetryBoose01 <- function(wind, x, y, vx, vy, vh, northenH){
+
+  direction <- wind
 
   if(northenH){
     #Northern Hemisphere, t is clockwise
-    res <- atan2(y,x) - atan2(vy,vx)  + pi
+    angle <- atan2(y,x) - atan2(vy,vx)  + pi
+    direction <- angle - pi - 30*(pi/180)
   }else{
     #Southern Hemisphere, t is counterclockwise
-    res <- atan2(vy,vx) - atan2(y,x) + pi
+    angle <- atan2(vy,vx) - atan2(y,x) + pi
+    direction <- angle + pi + 30*(pi/180)
   }
-  return(res)
+
+  #Convert direction into degree
+  direction <- direction * (180/pi)
+
+  wind <- wind - (1 - sin(angle))*(vh/3.6)/2
+
+  return(list(wind = wind, direction = direction))
 }
 
 
@@ -461,23 +473,71 @@ asymmetryV1 <- function(x, y, vx, vy, northenH){
 #' Version 2 of asymmetry
 #'
 #' @noRd
+#' @param wind numeric vector. Wind values
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
 #' @param vx numeric. Velocity of the storm in the x direction (deg/h)
 #' @param vy numeric. Velociy of the storm in the y direction (deg/h)
+#' @param vh numeric. Velociy of the storm (m/s)
 #' @param northenH logical. Whether it is northen hemisphere or not
 #'
-#' @return numeric vector. Orientation of wind speed (rad) at each (x,y) position
-asymmetryV2 <- function(x, y, vx, vy, northenH){
+#' @return numeric vectors. Wind speed values (m/s) and wind directions (rad) at each (x,y) position
+computeAsymmetryClassic <- function(wind, x, y, vx, vy, vh, northenH){
+
+  direction <- wind
 
   if(northenH){
     #Northern Hemisphere, t is counterclockwise
-    res <- acos((- y * vx + x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+    angle <- acos((- y * vx + x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+    direction <- angle - pi - 30*(pi/180)
   }else{
     #Southern Hemisphere, t is clockwise
-    res <- acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+    angle <- acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+    direction <- angle + pi + 30*(pi/180)
   }
-  return(res)
+
+  #Convert direction into degree
+  direction <- direction * (180/pi)
+
+  wind <- wind + cos(angle) * vh
+
+  return(list(wind = wind, direction = direction))
+}
+
+
+
+
+
+#' Version without asymmetry
+#'
+#' @noRd
+#' @param wind numeric vector. Wind values
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
+#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
+#' @param vh numeric. Velociy of the storm (m/s)
+#' @param northenH logical. Whether it is northen hemisphere or not
+#'
+#' @return numeric vectors. Wind speed values (m/s) and wind directions (rad) at each (x,y) position
+computeNoAsymmetry <- function(wind, x, y, vx, vy, vh, northenH){
+
+  direction <- wind
+
+  if(northenH){
+    #Northern Hemisphere, t is counterclockwise
+    angle <- acos((- y * vx + x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+  }else{
+    #Southern Hemisphere, t is clockwise
+    angle <- acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+  }
+
+  direction <- angle
+
+  #Convert direction into degree
+  direction <- direction * (180/pi)
+
+  return(list(wind = wind, direction = direction))
 }
 
 
@@ -497,11 +557,7 @@ asymmetryV2 <- function(x, y, vx, vy, northenH){
 #' @param x numeric array. Distance in degree from the eye of storm in the x direction
 #' @param y numeric array. Distance in degree from the eye of storm in the y direction
 #'
-#' @return
-#'   \itemize{
-#'     \item If format is a data frame, the wind speed values at each observation
-#'     \item Otherwise, SpatRaster that contains the wind speed profile at observations index of data
-#'  }
+#' @return  numeric vectors. Wind speed values (m/s) and wind directions (rad)
 computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y){
 
 
@@ -532,19 +588,19 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y){
     northenH = FALSE
   }
 
+  direction <- wind
 
   #Adding asymmetry
-  if (asymmetry == "Boose01") {
+  if(asymmetry == "Boose01") {
     #Boose version
-    angle <- asymmetryV1(x, y, data$vx.deg[index], data$vy.deg[index], northenH)
-    wind <- wind - (1 - sin(angle))*(data$storm.speed[index]/3.6)/2
-
-  } else if(asymmetry == "Classic"){
-    angle <- asymmetryV2(x, y, data$vx.deg[index], data$vy.deg[index], northenH)
-    wind <- wind + cos(angle)* data$storm.speed[index]
+    output <- computeAsymmetryBoose01(wind, x, y, data$vx.deg[index], data$vy.deg[index], data$storm.speed[index], northenH)
+  }else if(asymmetry == "Classic"){
+    output <- computeAsymmetryClassic(wind, x, y, data$vx.deg[index], data$vy.deg[index], data$storm.speed[index], northenH)
+  }else if(asymmetry == "None"){
+    output = computeNoAsymmetry(wind, x, y, data$vx.deg[index], data$vy.deg[index], data$storm.speed[index], northenH)
   }
 
-  return(wind)
+  return(output)
 
 }
 
@@ -951,12 +1007,14 @@ stormBehaviour <- function(sts,
     aux.stack.msw <- c()
     aux.stack.pdi <- c()
     aux.stack.exp <- c()
+    aux.stack.direction <- c()
 
     for (j in 1:nb.step) {
 
       #Making template to compute wind profiles
       raster.template.model <- makeTemplateModel(raster.template, buffer, dataTC, j)
       raster.wind <- raster.template.model
+      raster.direction <- raster.template.model
 
       #Computing coordinates to the eye of the storm for x and y axes
       x <- (terra::crds(raster.wind, na.rm = FALSE)[, 1] - dataTC$lon[j])
@@ -968,8 +1026,16 @@ stormBehaviour <- function(sts,
                                 lonlat = T)
 
       #Computing wind profile
-      terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method,
-                                                       asymmetry, x, y)
+      output <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y)
+      terra::values(raster.wind) <- output$wind
+      terra::values(raster.direction) <- output$direction
+
+      #Stacking wind direction
+      if(format == "profiles"){
+        names(raster.direction) <- paste0(st@name,"_","WindDirection","_",dataTC$indices[j])
+        aux.stack.direction <- stackRaster(aux.stack.direction, raster.template, raster.direction)
+      }
+
 
       #Stacking products
       if("MSW" %in% product)
@@ -990,6 +1056,10 @@ stormBehaviour <- function(sts,
 
     if (verbose > 0)
       close(pb)
+
+    if(format == "profiles")
+      aux.stack.direction <- terra::rast(aux.stack.direction)
+
 
     #Rasterize final products
     if("MSW" %in% product){
@@ -1013,12 +1083,16 @@ stormBehaviour <- function(sts,
   }
 
   final.stack = c()
-  if("MSW" %in% product)
-    final.stack = c(final.stack, final.stack.msw)
+
+  if("MSW" %in% product){
+    final.stack <- c(final.stack, final.stack.msw)
+    if(format == "profiles")
+      final.stack <- c(final.stack, aux.stack.direction)
+  }
   if("PDI" %in% product)
-    final.stack = c(final.stack, final.stack.pdi)
+    final.stack <- c(final.stack, final.stack.pdi)
   if("Exposure" %in% product)
-    final.stack = c(final.stack, final.stack.exp)
+    final.stack <- c(final.stack, final.stack.exp)
 
 
   final.stack <- terra::rast(final.stack)
@@ -1177,6 +1251,7 @@ computeExposure <- function(wind, time_res, threshold){
 #' @noRd
 #' @param product character. Product input from Unknow
 #' @param wind numeric vector. Wind speed values
+#' @param direction numeric vector. Wind direction
 #' @param time_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param result numeric array. Similar as final_stack, i.e where to add the
@@ -1189,10 +1264,10 @@ computeExposure <- function(wind, time_res, threshold){
 #'   \item 1 : number of points. If product == "PDI"
 #'   \item 5 : number of points. If product == "Exposure"
 #' }
-computeProduct <- function(product, wind, time_res, result, threshold){
+computeProduct <- function(product, wind, direction, time_res, result, threshold){
 
   if(product == "TS"){
-    prod <- wind
+    prod <- cbind(wind, direction)
   }else if (product == "PDI") {
     prod <- computePDI(wind, time_res)
 
@@ -1225,7 +1300,12 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 
   if(product == "TS"){
     df <- data.frame(result, indices = indices, isoTimes = isoT)
-    colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"), "indices", "isoTimes")
+    c <- c()
+    for(i in 1:dim(points)[1]){
+      c <- c(c, paste0("(",points$lon[i],",",points$lat[i],")w"), paste0("(",points$lon[i],",",points$lat[i],")dir"))
+    }
+    c <- c(c, "indices", "isoTimes")
+    colnames(df) <- c
   }else if(product == "PDI"){
     df <- data.frame(result, row.names = "PDI")
     colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
@@ -1353,10 +1433,13 @@ Unknow <- function(sts,
 
       #Computing wind profiles
       dist2p <- dist.m[,i]
-      vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y)
+      output <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y)
+
+      vr <- output$wind
+      dir <- output$direction
 
       #Computing product
-      res <- computeProduct(product, vr, time_res, res, wind_threshold)
+      res <- computeProduct(product, vr, dir, time_res, res, wind_threshold)
 
     }
 
@@ -1370,9 +1453,32 @@ Unknow <- function(sts,
 }
 
 
-
-
-
-
+#
+# msw = 50
+# lat <- -19
+# lon <- 169
+# rmw <- 20
+# buff <- 2
+# rtm <- terra::rast(xmin = lon - buff,
+#                                     xmax = lon + buff,
+#                                     ymin = lat - buff,
+#                                     ymax = lat + buff,
+#                                     vals = NA,
+#                                     res = c(0.08,0.08))
+# #Computing coordinates to the eye of the storm for x and y axes
+# x <- (terra::crds(rtm, na.rm = FALSE)[, 1] - lon)
+# y <- (terra::crds(rtm, na.rm = FALSE)[, 2] - lat)
+#
+# #Computing distances to the eye of the storm in m
+# dist.m <- terra::distance(x = terra::crds(rtm, na.rm = FALSE)[, ],
+#                           y = cbind(lon, lat),
+#                           lonlat = T)
+#
+# terra::values(rtm) <- Willoughby(msw = msw, lat = lat, r = dist.m * 0.001, rmw = rmw)
+#
+# a <- rtm
+# terra::values(a) <- acos()
+#
+#
 
 
