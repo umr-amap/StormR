@@ -183,56 +183,6 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
 
 
 
-#' Check inputs for Unknow function
-#'
-#' @noRd
-#' @param sts Storms object
-#' @param points data.frame
-#' @param product character
-#' @param method character
-#' @param asymmetry character
-#' @param empirical_rmw logical
-#' @param time_res numeric
-#' @return NULL
-checkInputsUnknow <- function(sts, points, product, method, asymmetry,
-                          empirical_rmw, time_res){
-
-  #Checking sts input
-  stopifnot("no data found" = !missing(sts))
-
-  #Checking points input
-  stopifnot("no data found" = !missing(points))
-  stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
-  stopifnot("colnames of points must be lon, lat" = colnames(points) == c("lon","lat"))
-  stopifnot("Invalid points coordinates" = points$lon >= 0 & points$lon <= 360 &
-              points$lat >= -90 & points$lat <= 90)
-
-  #Checking product input
-  stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
-  stopifnot("Only one product must be chosen" = length(product) == 1)
-
-  #Checking method input
-  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
-  stopifnot("Only one method must be chosen" = length(method) == 1)
-
-  #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01", "Classic"))
-  stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
-
-  #Checking empirical_rmw input
-  stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
-
-  #Checking time_res input
-  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
-  stopifnot("time_res must be length 1" = length(time_res) == 1)
-  stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
-
-}
-
-
-
-
-
 #' Generate raster template for the computations
 #'
 #' @noRd
@@ -802,96 +752,6 @@ rasterizeProduct <- function(product, format, final_stack, stack, time_res, name
 
 
 
-#' rasterizePDI counterpart function for non raster data
-#'
-#' @noRd
-#' @param wind numeric vector. Wind speed values
-#' @param time_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
-#'
-#' @return numeric. PDI computed using the wind speed values in wind
-computePDI <- function(wind, time_res){
-  #Computing surface drag coefficient
-  cd <- rasterizeCd(wind)
-
-  rho <- 0.001
-  #Raising to power 3
-  pdi <- wind ** 3
-  #Applying both rho and surface drag coefficient
-  pdi <- wind * rho * cd
-  #Integrating over the whole track
-  pdi <- sum(pdi, na.rm <- T) * time_res
-
-  return(pdi)
-}
-
-
-
-
-
-#' rasterizeExposure counterpart function for non raster data
-#'
-#' @noRd
-#' @param wind numeric vector. Wind speed values
-#' @param time_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
-#'
-#' @return numeric vector of length 5 (for each category).
-#'  Exposure computed using the wind speed values in wind
-computeExposure <- function(wind, time_res){
-
-  exposure <- c()
-
-  for(c in 2:6){
-    ind <- which(wind >= sshs[c] & wind < sshs[c+1])
-    expo <- rep(0,length(wind))
-    expo[ind] <- 1
-    expo <- sum(expo, na.rm = T) * time_res
-    exposure  <- c(exposure, expo)
-  }
-
-  return(exposure)
-}
-
-
-
-
-
-#' rasterizeProduct counterpart function for non raster data
-#'
-#' @noRd
-#' @param product character. Product input from Unknow
-#' @param wind numeric vector. Wind speed values
-#' @param time_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
-#' @param result numeric array. Similar as final_stack, i.e where to add the
-#' computed product
-#'
-#' @return numeric array of dimension:
-#' \itemize{
-#'   \item number of observations: number of points. If product == "MSW"
-#'   \item 1 : number of points. If product == "PDI"
-#'   \item 5 : number of points. If product == "Exposure"
-#' }
-computeProduct <- function(product, wind, time_res, result){
-
-  if(product == "TS"){
-    prod <- wind
-  }else if (product == "PDI") {
-    prod <- computePDI(wind, time_res)
-
-  }else if (product == "Exposure") {
-    prod <- computeExposure(wind, time_res)
-
-  }
-
-  return(cbind(result, prod))
-}
-
-
-
-
-
 #' Whether or not to mask final computed products
 #'
 #' @noRd
@@ -912,41 +772,6 @@ maskProduct <- function(final_stack, loi, template){
 }
 
 
-
-
-
-#' Arrange result before the end of Unknow
-#'
-#' @noRd
-#' @param final_result list of data.frame. Where to add the computed product
-#' @param result result output from computeProduct function
-#' @param product character. Product input from Unknow
-#' @param points points input from Unknow
-#' @param isoT numeric vector. Iso Times of observations
-#' @param indices numeric vector. Indices of observations
-#' @param st Storm object.
-#'
-#' @return final_result
-finalizeResult <- function(final_result, result, product, points, isoT, indices, st){
-
-  if(product == "TS"){
-    df <- data.frame(result, indices = indices, isoTimes = isoT)
-  }else if(product == "PDI"){
-    df <- data.frame(result, indices = indices, isoTimes = isoT, row.names = "PDI")
-  }else{
-    df <- data.frame(result, indices = indices, isoTimes = isoT, row.names = c("Cat.1", "Cat.2", "Cat.3", "Cat.4", "Cat.5"))
-  }
-
-
-  colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"), "indices", "isoTimes")
-
-
-  dfn <- list(df)
-  names(dfn) <- st@name
-  final_result <- append(final_result, dfn)
-
-  return(final_result)
-}
 
 
 
@@ -1177,6 +1002,193 @@ stormBehaviour <- function(sts,
 
 
 
+#' Check inputs for Unknow function
+#'
+#' @noRd
+#' @param sts Storms object
+#' @param points data.frame
+#' @param product character
+#' @param wind_threshold numeric
+#' @param method character
+#' @param asymmetry character
+#' @param empirical_rmw logical
+#' @param time_res numeric
+#' @return NULL
+checkInputsUnknow <- function(sts, points, product, wind_threshold, method, asymmetry,
+                              empirical_rmw, time_res){
+
+  #Checking sts input
+  stopifnot("no data found" = !missing(sts))
+
+  #Checking points input
+  stopifnot("no data found" = !missing(points))
+  stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
+  stopifnot("colnames of points must be lon, lat" = colnames(points) == c("lon","lat"))
+  stopifnot("Invalid points coordinates" = points$lon >= 0 & points$lon <= 360 &
+              points$lat >= -90 & points$lat <= 90)
+
+  #Checking product input
+  stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
+  stopifnot("Only one product must be chosen" = length(product) == 1)
+
+  #Checking wind_threshold input
+  if("Exposure" %in% product){
+    if(is.null(wind_threshold)){
+      stop("wind_threshold is missing")
+    }else{
+      stopifnot("wind_threshold must be numeric" = identical(class(wind_threshold), "numeric"))
+      stopifnot("invalid value(s) for wind_threshold input (must be > 0)" = wind_threshold > 0)
+      stopifnot("wind_threshold must be length 1 or 2" = length(wind_threshold) == 2 | length(wind_threshold) == 1)
+    }
+  }
+
+  #Checking method input
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
+  stopifnot("Only one method must be chosen" = length(method) == 1)
+
+  #Checking asymmetry input
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01", "Classic"))
+  stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
+
+  #Checking empirical_rmw input
+  stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
+
+  #Checking time_res input
+  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
+  stopifnot("time_res must be length 1" = length(time_res) == 1)
+  stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
+
+}
+
+
+
+
+
+#' rasterizePDI counterpart function for non raster data
+#'
+#' @noRd
+#' @param wind numeric vector. Wind speed values
+#' @param time_res numeric. Time resolution, used for the numerical integration
+#' over the whole track
+#'
+#' @return numeric. PDI computed using the wind speed values in wind
+computePDI <- function(wind, time_res){
+
+  #Computing surface drag coefficient
+  cd <- rasterizeCd(wind)
+  rho <- 0.001
+  #Raising to power 3
+  pdi <- wind ** 3
+  #Applying both rho and surface drag coefficient
+  pdi <- wind * rho * cd
+  #Integrating over the whole track
+  pdi <- sum(pdi, na.rm <- T) * time_res
+
+  return(pdi)
+}
+
+
+
+
+
+#' rasterizeExposure counterpart function for non raster data
+#'
+#' @noRd
+#' @param wind numeric vector. Wind speed values
+#' @param time_res numeric. Time resolution, used for the numerical integration
+#' over the whole track
+#' @param threshold numeric vector. Wind threshold
+#'
+#' @return numeric vector of length 5 (for each category).
+#'  Exposure computed using the wind speed values in wind
+computeExposure <- function(wind, time_res, threshold){
+
+
+  ind <- which(wind >= threshold[1] & wind <= threshold[2])
+  expo <- rep(0,length(wind))
+  expo[ind] <- 1
+  expo <- sum(expo, na.rm = T) * time_res
+
+  return(expo)
+}
+
+
+
+
+
+#' rasterizeProduct counterpart function for non raster data
+#'
+#' @noRd
+#' @param product character. Product input from Unknow
+#' @param wind numeric vector. Wind speed values
+#' @param time_res numeric. Time resolution, used for the numerical integration
+#' over the whole track
+#' @param result numeric array. Similar as final_stack, i.e where to add the
+#' computed product
+#' @param threshold numeric vector. Wind threshold
+#'
+#' @return numeric array of dimension:
+#' \itemize{
+#'   \item number of observations: number of points. If product == "MSW"
+#'   \item 1 : number of points. If product == "PDI"
+#'   \item 5 : number of points. If product == "Exposure"
+#' }
+computeProduct <- function(product, wind, time_res, result, threshold){
+
+  if(product == "TS"){
+    prod <- wind
+  }else if (product == "PDI") {
+    prod <- computePDI(wind, time_res)
+
+  }else if (product == "Exposure") {
+    prod <- computeExposure(wind, time_res, threshold)
+
+  }
+
+  return(cbind(result, prod))
+}
+
+
+
+
+
+#' Arrange result before the end of Unknow
+#'
+#' @noRd
+#' @param final_result list of data.frame. Where to add the computed product
+#' @param result result output from computeProduct function
+#' @param product character. Product input from Unknow
+#' @param points points input from Unknow
+#' @param isoT numeric vector. Iso Times of observations
+#' @param indices numeric vector. Indices of observations
+#' @param st Storm object.
+#' @param threshold numeric vector. Wind threshold
+#'
+#' @return final_result
+finalizeResult <- function(final_result, result, product, points, isoT, indices, st, threshold){
+
+  if(product == "TS"){
+    df <- data.frame(result, indices = indices, isoTimes = isoT)
+    colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"), "indices", "isoTimes")
+  }else if(product == "PDI"){
+    df <- data.frame(result, row.names = "PDI")
+    colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
+  }else{
+    df <- data.frame(result, row.names = paste(threshold[1],"to",threshold[2],"m/s"))
+    colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
+  }
+
+  dfn <- list(df)
+  names(dfn) <- st@name
+  final_result <- append(final_result, dfn)
+
+  return(final_result)
+}
+
+
+
+
+
 #' Compute product on given points coordinates for given storms
 #'
 #' This function computes products for each storm of a `Storms` object
@@ -1193,6 +1205,7 @@ stormBehaviour <- function(sts,
 #'     \item "Exposure", hours spent for each and all categories together
 #'   }
 #'   Default value is set to "MSW"
+#' @param wind_threshold numeric vector. Wind threshold
 #' @param method character. Cyclonic model used to compute product, that is either
 #'   \itemize{
 #'     \item "Willoughby"
@@ -1231,15 +1244,25 @@ stormBehaviour <- function(sts,
 #' #Compute PDI for ERICA and NIRAN on points provided in df using default settings
 #' pdiPt_nc <- Unknow(sts_nc, points = df, product = "PDI)
 #' #Compute Exposure for ERICA and NIRAN on points provided in df using default settings
-#' expPt_nc <- Unknow(sts_nc, points = df, product = "Exposure")
+#' expPt_nc <- Unknow(sts_nc, points = df, product = "Exposure", wind_threshold = c(20,30))
 #'
 #' @export
-Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry = "Classic",
-                   empirical_rmw = FALSE, time_res = 1){
+Unknow <- function(sts,
+                   points,
+                   product = "TS",
+                   wind_threshold = NULL,
+                   method = "Willoughby",
+                   asymmetry = "Classic",
+                   empirical_rmw = FALSE,
+                   time_res = 1){
 
-  checkInputsUnknow(sts, points, product, method, asymmetry, empirical_rmw, time_res)
+  checkInputsUnknow(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, time_res)
 
-
+  if("Exposure" %in% product){
+    if(length(wind_threshold) == 1){
+      wind_threshold = c(0,wind_threshold)
+    }
+  }
 
   #Initializing final result
   final.result <- list()
@@ -1277,12 +1300,13 @@ Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry
       vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y)
 
       #Computing product
-      res <- computeProduct(product, vr, time_res, res)
+      res <- computeProduct(product, vr, time_res, res, wind_threshold)
 
     }
 
     final.result <- finalizeResult(final.result, res, product, points,
-                                   dataTC$isoTimes, dataTC$indices, st)
+                                   dataTC$isoTimes, dataTC$indices, st,
+                                   wind_threshold)
 
   }
 

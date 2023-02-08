@@ -8,6 +8,7 @@ Unknow(
   sts,
   points,
   product = "TS",
+  wind_threshold = NULL,
   method = "Willoughby",
   asymmetry = "Classic",
   empirical_rmw = FALSE,
@@ -27,6 +28,8 @@ names "lon" and "lat".}
 \item "Exposure", hours spent for each and all categories together
 }
 Default value is set to "MSW"}
+
+\item{wind_threshold}{numeric vector. Wind threshold}
 
 \item{method}{character. Cyclonic model used to compute product, that is either
 \itemize{
