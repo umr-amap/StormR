@@ -337,20 +337,29 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
                     vy.deg = rep(NA,len.data),
                     msw = rep(NA,len.data),
                     rmw = rep(NA,len.data),
-                    indices = rep(NA,len.data))
+                    indices = rep(NA,len.data),
+                    isoTimes = rep(NA,len.data))
 
-  #Filling indices
+  #Filling indices and isoTimes
   ind = c()
+  isoT = c()
+  timeRes = 1/((dt-1)/3) * 60
+
   for(i in indices[1:len.indices-1]){
     lab = as.character(i)
+    t = st@obs.all$iso.time[i]
     for(j in 1:(dt-2)){
       lab = c(lab, paste0(as.character(i),".",as.character(j)))
+      t = c(t, as.character(as.POSIXct(st@obs.all$iso.time[i]) + j * 60 * timeRes ))
     }
     ind = c(ind, lab)
+    isoT = c(isoT, t)
   }
   ind = c(ind, as.character(indices[len.indices]))
+  isoT = c(isoT, st@obs.all$iso.time[indices[len.indices]])
 
   data$indices <- ind
+  data$isoTimes <- isoT
 
   lon <- st@obs.all$lon[indices]
   lat <- st@obs.all$lat[indices]
@@ -1013,15 +1022,16 @@ maskProduct <- function(final_stack, loi, template){
 #' @param result result output from computeProduct function
 #' @param product character. Product input from Unknow
 #' @param points points input from Unknow
+#' @param isoT numeric vector. Iso Times of observations
 #' @param indices numeric vector. Indices of observations
 #' @param st Storm object.
 #'
 #' @return final_result
-finalizeResult <- function(final_result, result, product, points, indices, st){
+finalizeResult <- function(final_result, result, product, points, isoT, indices, st){
 
   if(product == "TS"){
     df <- data.frame(result)
-    row.names(df) <- st@obs.all$iso.time[indices]
+    row.names(df) <- isoT
   }else if(product == "PDI"){
     df <- data.frame(result, row.names = "PDI")
   }else{
@@ -1327,12 +1337,8 @@ Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry
     dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Getting data associated with storm st
-    if(product == "TS"){
-      dataTC <- getData(st, ind, asymmetry, empirical_rmw, method)
-    }else{
-      #Interpolate data iif product == "PDI" or "Exposure"
-      dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
-    }
+    dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
+
 
     #Computing distances from the eye of storm for every observations x, and
     #every points y
@@ -1359,7 +1365,7 @@ Unknow <- function(sts, points, product = "TS", method = "Willoughby", asymmetry
 
     }
 
-    final.result <- finalizeResult(final.result, res, product, points, ind, st)
+    final.result <- finalizeResult(final.result, res, product, points, dataTC$isoTimes, st)
 
   }
 
