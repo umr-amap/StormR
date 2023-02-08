@@ -14,7 +14,7 @@ stormBehaviour(
   format = "analytic",
   space_res = 10,
   time_res = 1,
-  verbose = FALSE
+  verbose = 2
 )
 }
 \arguments{
@@ -64,8 +64,15 @@ Default value is set to 10km}
 analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 (30min), and 0.25 (15min). Default value is set to 1}
 
-\item{verbose}{logical. Whether or not the function must be verbose and
-displays a text progress bar while operating. Default value is set to FALSE}
+\item{verbose}{numeric. Either 0, 1, 2 or 3. Whether or not the function must be verbose and display
+informations about the process and/or outputs and notes.
+\itemize{
+\item 0 Nothing is displayed
+\item 1 Informations about the process are displayed
+\item 2 Outputs are also displayed
+\item 3 Additional notes are displayed
+}
+Default value is set to 2}
 }
 \value{
 Depending on format input:
@@ -91,12 +98,12 @@ msw_pam <- stormBehaviour(pam)
 
 #Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
 pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland",
-                        product = "PDI", verbose = TRUE)
+                        product = "PDI")
 
 #Compute Exposure (wind threshold: 40 to 50 m/s) for PAM 2015 in Vanuatu using default settings
 exp_pam <- stormBehaviour(pam, product = "Exposure", wind_threshold = c(40,50))
 
 #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
-prof_nc <- stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
+prof_nc <- stormBehaviour(sts_nc, format = "profiles")
 
 }
