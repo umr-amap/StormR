@@ -12,7 +12,7 @@ stormBehaviour(
   asymmetry = "Classic",
   empirical_rmw = FALSE,
   format = "analytic",
-  space_res = 10,
+  space_res = "2.5min",
   time_res = 1,
   verbose = 2
 )
@@ -27,6 +27,8 @@ stormBehaviour(
 \item "Exposure", hours spent for each and all categories together
 }
 Default value is set to "MSW"}
+
+\item{wind_threshold}{numeric vector. ...}
 
 \item{method}{character. Cyclonic model used to compute product, that is either
 \itemize{
@@ -57,8 +59,8 @@ ignored and set to "MSW" and 2D wind speed structures for each observation
 are returned.
 }}
 
-\item{space_res}{numeric. Space resolution (in km) for the raster(s) to compute.
-Default value is set to 10km}
+\item{space_res}{character. Space resolution for the raster(s) to compute.
+Either 30sec, 2.5min, 5min or 10min. Default value is set to 30sec}
 
 \item{time_res}{numeric. Period of time (hours) used to compute the
 analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
