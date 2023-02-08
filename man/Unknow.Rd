@@ -9,7 +9,7 @@ Unknow(
   points,
   product = "TS",
   method = "Willoughby",
-  asymmetry = "V2",
+  asymmetry = "Classic",
   empirical_rmw = FALSE,
   time_res = 1
 )
@@ -39,8 +39,8 @@ Default value is set to "Willoughby"}
 the computations, that is either
 \itemize{
 \item "None", no asymmetry
-\item "V1", first version
-\item "V2, second version
+\item "Boose01", first version
+\item "Classic, second version
 }
 Default value is set to "None".}
 

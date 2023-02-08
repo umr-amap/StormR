@@ -7,8 +7,9 @@
 stormBehaviour(
   sts,
   product = "MSW",
+  wind_threshold = NULL,
   method = "Willoughby",
-  asymmetry = "V2",
+  asymmetry = "Classic",
   empirical_rmw = FALSE,
   format = "analytic",
   space_res = 10,
@@ -38,8 +39,8 @@ Default value is set to "Willoughby"}
 the computations, that is either
 \itemize{
 \item "None", no asymmetry
-\item "V1", first version
-\item "V2, second version
+\item "Boose01", first version
+\item "Classic, second version
 }
 Default value is set to "None".}
 
@@ -92,8 +93,8 @@ msw_pam <- stormBehaviour(pam)
 pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland",
                         product = "PDI", verbose = TRUE)
 
-#Compute Exposure for PAM 2015 in Vanuatu using default settings
-exp_pam <- stormBehaviour(pam, product = "Exposure")
+#Compute Exposure (wind threshold: 40 to 50 m/s) for PAM 2015 in Vanuatu using default settings
+exp_pam <- stormBehaviour(pam, product = "Exposure", wind_threshold = c(40,50))
 
 #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
 prof_nc <- stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
