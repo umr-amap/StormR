@@ -709,14 +709,17 @@ stackProduct <- function(product, stack, raster_template, raster_wind, threshold
 #' @param stack SpatRaster stack. All the wind speed rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
+#' @param space_res character. space_res input from stormBehaviour
 #'
 #' @return list of SpatRaster
-rasterizeMSW <- function(final_stack, stack, name){
+rasterizeMSW <- function(final_stack, stack, space_res, name){
+
+  nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
   msw <- max(stack, na.rm = T)
   #Applying focal function twice to smooth results
-  msw <- terra::focal(msw, w = matrix(1, 3, 3), max, na.rm = T, pad = T)
-  msw <- terra::focal(msw, w = matrix(1, 3, 3), mean, na.rm = T, pad = T)
+  msw <- terra::focal(msw, w = matrix(1, nbg, nbg), max, na.rm = T, pad = T)
+  msw <- terra::focal(msw, w = matrix(1, nbg, nbg), mean, na.rm = T, pad = T)
   names(msw) <- paste0(name, "_MSW")
 
   return(c(final_stack, msw))
@@ -735,16 +738,20 @@ rasterizeMSW <- function(final_stack, stack, name){
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
+#' @param space_res character. space_res input from stormBehaviour
 #' @param product characher
 #' @param threshold numeric vector. Wind threshold
 #'
+#'
 #' @return list of SpatRaster
-rasterizePDIExp <- function(final_stack, stack, time_res, name, product, threshold){
+rasterizePDIExp <- function(final_stack, stack, time_res, space_res, name, product, threshold){
+
+  nbg = switch(space_res,"30sec" = 9, "2.5" = 7, "5min" = 5, "10min" = 3)
 
   #Integrating over the whole track
   prod <- sum(stack, na.rm = T) * time_res
   #Applying focal function to smooth results
-  prod <- terra::focal(prod, w = matrix(1, 3, 3), sum, na.rm = T, pad = T)
+  prod <- terra::focal(prod, w = matrix(1, nbg, nbg), sum, na.rm = T, pad = T)
   if(product == "Exposure"){
     names(prod) <- paste0(name,"_",product,"_",threshold[1],"-",threshold[2])
   }else{
@@ -767,12 +774,13 @@ rasterizePDIExp <- function(final_stack, stack, time_res, name, product, thresho
 #' @param stack SpatRaster stack. All the Exposure rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
+#' @param space_res character. space_res input from stormBehaviour
 #' @param indices numeric vector. Indices of observations. Only used to give proper
 #' layer names if format == "profiles"
 #' @param threshold numeric vector. Wind threshold
 #'
 #' @return list of SpatRaster
-rasterizeProduct <- function(product, format, final_stack, stack, time_res, name, indices, threshold){
+rasterizeProduct <- function(product, format, final_stack, stack, time_res, space_res, name, indices, threshold){
 
   if (product == "MSW") {
     if(format == "profiles"){
@@ -781,16 +789,16 @@ rasterizeProduct <- function(product, format, final_stack, stack, time_res, name
 
     }else{
       #Computing MSW analytic raster
-      final_stack <- rasterizeMSW(final_stack, stack, name)
+      final_stack <- rasterizeMSW(final_stack, stack, space_res, name)
     }
 
   } else if (product == "PDI") {
     #Computing PDI analytic raster
-    final_stack <- rasterizePDIExp(final_stack, stack, time_res, name, "PDI", NULL)
+    final_stack <- rasterizePDIExp(final_stack, stack, time_res, space_res, name, "PDI", NULL)
 
   } else if (product == "Exposure") {
     #Computing Exposure analytic raster
-    final_stack <- rasterizePDIExp(final_stack, stack, time_res, name, "Exposure", threshold)
+    final_stack <- rasterizePDIExp(final_stack, stack, time_res, sapce_res, name,"Exposure", threshold)
 
   }
 
@@ -1062,17 +1070,17 @@ stormBehaviour <- function(sts,
     if("MSW" %in% product){
       aux.stack.msw <- terra::rast(aux.stack.msw)
       final.stack.msw <- rasterizeProduct("MSW", format, final.stack.msw, aux.stack.msw,
-                                      time_res, st@name, dataTC$indices, NULL)
+                                      time_res, space_res, st@name, dataTC$indices, NULL)
     }
     if("PDI" %in% product){
       aux.stack.pdi <- terra::rast(aux.stack.pdi)
       final.stack.pdi <- rasterizeProduct("PDI", format, final.stack.pdi, aux.stack.pdi,
-                                      time_res, st@name, dataTC$indices, NULL)
+                                      time_res, space_res, st@name, dataTC$indices, NULL)
     }
     if("Exposure" %in% product){
       aux.stack.exp <- terra::rast(aux.stack.exp)
       final.stack.exp <- rasterizeProduct("Exposure", format, final.stack.exp, aux.stack.exp,
-                                      time_res, st@name, dataTC$indices, wind_threshold)
+                                      time_res, space_res, st@name, dataTC$indices, wind_threshold)
     }
 
     if(verbose > 0)
