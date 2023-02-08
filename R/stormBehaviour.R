@@ -889,8 +889,28 @@ stormBehaviour <- function(sts,
   final.stack.exp <- c()
 
 
-  if(verbose)
+  if(verbose){
     s <- 1 #Initializing count of storms
+    cat("=== stormBehaviour processing ... ===\n\n")
+
+    cat("Computation settings:\n")
+    if(format == "analytic"){
+      cat("   (*) Output format: analytical rasters (Integration in space and/or time)\n")
+    }else{
+      cat("   (*) Output format: 2D WindSpeed structures at each observation (real and interpolated)\n")
+    }
+    cat("   (*) Method used:", method ,"\n")
+    if(format == "analytic")
+      cat("   (*) Product(s) to compute:", product ,"\n")
+    cat("   (*) Asymmetry used:", asymmetry ,"\n")
+    if(empirical_rmw){
+      cat("   (*) rmw computed according to empirical formula (See Details section)")
+    }
+
+    cat("\nStorm(s):\n")
+    cat("   (",sts@nb.storms,") ",getNames(sts),"\n\n")
+
+  }
 
   for (st in sts@data) {
 
@@ -910,10 +930,7 @@ stormBehaviour <- function(sts,
 
     if (verbose) {
       step <- 1
-      cat("Computing", format, product, "rasters using", method,
-          "model (time_res:", time_res, "h, space_ras:", space_res,
-          "km, asymmetry:", asymmetry, ", empirical_rmw:", empirical_rmw,
-          ") for", st@name, "(", s, "/", sts@nb.storms, ")\n")
+      cat(st@name," (", s, "/", sts@nb.storms, ")\n")
       pb <- utils::txtProgressBar(min = step, max = nb.step, style = 3)
     }
 
@@ -993,7 +1010,8 @@ stormBehaviour <- function(sts,
   final.stack <- terra::rast(final.stack)
   final.stack <- maskProduct(final.stack, sts@spatial.loi.buffer, raster.template)
 
-
+  if(verbose)
+    cat("\n=== DONE ===\n")
 
   return(final.stack)
 }
