@@ -124,7 +124,7 @@ rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 #' @param format character
 #' @param space_res numeric
 #' @param time_res numeric
-#' @param verbose logical
+#' @param verbose numeric
 #' @return NULL
 checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
                          empirical_rmw, format, space_res,
@@ -175,7 +175,9 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
 
   #Checking verbose input
-  stopifnot("verbose must be logical" = identical(class(verbose), "logical"))
+  stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
+  stopifnot("verbose must length 1" = length(verbose) == 1)
+  stopifnot("verbose must be either 0, 1, 2 or 3" = verbose %in% c(0, 1, 2, 3))
 
 }
 
@@ -790,6 +792,7 @@ maskProduct <- function(final_stack, loi, template){
 #'     \item "Exposure", hours spent for each and all categories together
 #'   }
 #'   Default value is set to "MSW"
+#' @param wind_threshold numeric vector. ...
 #' @param method character. Cyclonic model used to compute product, that is either
 #'   \itemize{
 #'   \item "Willoughby"
@@ -820,9 +823,15 @@ maskProduct <- function(final_stack, loi, template){
 #' @param time_res numeric. Period of time (hours) used to compute the
 #'   analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 #'   (30min), and 0.25 (15min). Default value is set to 1
-#' @param verbose logical. Whether or not the function must be verbose and
-#'   displays a text progress bar while operating. Default value is set to FALSE
-#'
+#' @param verbose numeric. Either 0, 1, 2 or 3. Whether or not the function must be verbose and display
+#' informations about the process and/or outputs and notes.
+#' \itemize{
+#' \item 0 Nothing is displayed
+#' \item 1 Informations about the process are displayed
+#' \item 2 Outputs are also displayed
+#' \item 3 Additional notes are displayed
+#' }
+#' Default value is set to 2
 #' @returns Depending on format input:
 #' \itemize{
 #'   \item  If "analytic", analytic rasters (integration in space and time over the track)
@@ -841,13 +850,13 @@ maskProduct <- function(final_stack, loi, template){
 #'
 #' #Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
 #' pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland",
-#'                         product = "PDI", verbose = TRUE)
+#'                         product = "PDI")
 #'
 #' #Compute Exposure (wind threshold: 40 to 50 m/s) for PAM 2015 in Vanuatu using default settings
 #' exp_pam <- stormBehaviour(pam, product = "Exposure", wind_threshold = c(40,50))
 #'
 #' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
-#' prof_nc <- stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
+#' prof_nc <- stormBehaviour(sts_nc, format = "profiles")
 #'
 #' @export
 stormBehaviour <- function(sts,
@@ -859,7 +868,9 @@ stormBehaviour <- function(sts,
                            format = "analytic",
                            space_res = 10,
                            time_res = 1,
-                           verbose = FALSE){
+                           verbose = 2){
+
+  start_time <- Sys.time()
 
   checkInputsSb(sts, product, wind_threshold, method, asymmetry,
                 empirical_rmw, format, space_res, time_res, verbose)
@@ -889,26 +900,29 @@ stormBehaviour <- function(sts,
   final.stack.exp <- c()
 
 
-  if(verbose){
+  if(verbose > 0){
     s <- 1 #Initializing count of storms
     cat("=== stormBehaviour processing ... ===\n\n")
 
     cat("Computation settings:\n")
     if(format == "analytic"){
-      cat("   (*) Output format: analytical rasters (Integration in space and/or time)\n")
+      cat("  (*) Output format: analytical rasters (Integration in space and/or time)\n")
+      t <- switch(as.numeric(time_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15)
+      cat("  (*) Time interpolation: Every",t,"min\n")
     }else{
-      cat("   (*) Output format: 2D WindSpeed structures at each observation (real and interpolated)\n")
+      cat("  (*) Output format: 2D WindSpeed structures at each observation (real and interpolated)\n")
     }
-    cat("   (*) Method used:", method ,"\n")
+    cat("  (*) Space resolution:",space_res,"km\n")
+    cat("  (*) Method used:", method ,"\n")
     if(format == "analytic")
-      cat("   (*) Product(s) to compute:", product ,"\n")
-    cat("   (*) Asymmetry used:", asymmetry ,"\n")
+      cat("  (*) Product(s) to compute:", product ,"\n")
+    cat("  (*) Asymmetry used:", asymmetry ,"\n")
     if(empirical_rmw){
-      cat("   (*) rmw computed according to empirical formula (See Details section)")
+      cat("  (*) rmw computed according to empirical formula (See Details section)")
     }
 
     cat("\nStorm(s):\n")
-    cat("   (",sts@nb.storms,") ",getNames(sts),"\n\n")
+    cat("  (",sts@nb.storms,") ",getNames(sts),"\n\n")
 
   }
 
@@ -928,7 +942,7 @@ stormBehaviour <- function(sts,
 
     nb.step <- dim(dataTC)[1] - 1
 
-    if (verbose) {
+    if (verbose > 0) {
       step <- 1
       cat(st@name," (", s, "/", sts@nb.storms, ")\n")
       pb <- utils::txtProgressBar(min = step, max = nb.step, style = 3)
@@ -966,7 +980,7 @@ stormBehaviour <- function(sts,
         aux.stack.exp <- stackProduct("Exposure", aux.stack.exp, raster.template, raster.wind, wind_threshold)
 
 
-      if (verbose){
+      if (verbose > 0){
         utils::setTxtProgressBar(pb, step)
         step <- step + 1
       }
@@ -974,7 +988,7 @@ stormBehaviour <- function(sts,
     }
 
 
-    if (verbose)
+    if (verbose > 0)
       close(pb)
 
     #Rasterize final products
@@ -994,7 +1008,7 @@ stormBehaviour <- function(sts,
                                       time_res, st@name, dataTC$indices, wind_threshold)
     }
 
-    if(verbose)
+    if(verbose > 0)
       s <- s + 1
   }
 
@@ -1010,8 +1024,32 @@ stormBehaviour <- function(sts,
   final.stack <- terra::rast(final.stack)
   final.stack <- maskProduct(final.stack, sts@spatial.loi.buffer, raster.template)
 
-  if(verbose)
-    cat("\n=== DONE ===\n")
+  end_time <- Sys.time()
+
+  if(verbose > 0){
+    cat("\n=== DONE with run time",as.numeric(round(end_time - start_time, 3)),"sec ===\n\n")
+
+    if(verbose > 1){
+      cat("Output:\n")
+      cat("SpatRaster stack with",terra::nlyr(final.stack),"layers:\n")
+      cat("index - names of layer\n")
+      n = names(final.stack)
+      names(n) = seq(1,terra::nlyr(final.stack))
+      for(i in 1:length(n))
+        cat(" ",names(n[i]),"   ",n[i],"\n")
+      cat("\n")
+    }
+
+    if(verbose > 2){
+      cat("\nAdditional notes:\n")
+      cat("  (*) You can access each layer using:\n")
+      cat("       1 - terra::subset function (See terra documentation)\n")
+      cat("       2 - the accessor syntax output[[\"nameOfLayer\"]].\n")
+      cat("       3 - the accessor syntax output[[index]].\n")
+      cat("  (*) If any layers share the same name (e.g: same storm name), please use method 1 or 2.")
+    }
+
+  }
 
   return(final.stack)
 }

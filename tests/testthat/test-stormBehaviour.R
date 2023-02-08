@@ -54,8 +54,6 @@ test_that("Tests invalid inputs", {
   #Checking logical inputs validity
   expect_error(stormBehaviour(pam, empirical_rmw = "TRUE"))
   expect_error(stormBehaviour(pam, empirical_rmw = 1))
-  expect_error(stormBehaviour(pam, verbose = "TRUE"))
-  expect_error(stormBehaviour(pam, verbose = 1))
 
 
 })
