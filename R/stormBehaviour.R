@@ -981,21 +981,21 @@ stormBehaviour <- function(sts,
       s <- s + 1
   }
 
-  if("MSW" %in% product){
-    final.stack.msw <- terra::rast(final.stack.msw)
-    final.stack.msw <- maskProduct(final.stack.msw, sts@spatial.loi.buffer, raster.template)
-  }
-  if("PDI" %in% product){
-    final.stack.pdi <- terra::rast(final.stack.pdi)
-    final.stack.pdi <- maskProduct(final.stack.pdi, sts@spatial.loi.buffer, raster.template)
-  }
-  if("Exposure" %in% product){
-    final.stack.exp <- terra::rast(final.stack.exp)
-    final.stack.exp <- maskProduct(final.stack.exp, sts@spatial.loi.buffer, raster.template)
-  }
+  final.stack = c()
+  if("MSW" %in% product)
+    final.stack = c(final.stack, final.stack.msw)
+  if("PDI" %in% product)
+    final.stack = c(final.stack, final.stack.pdi)
+  if("Exposure" %in% product)
+    final.stack = c(final.stack, final.stack.exp)
 
 
-  return(terra::rast(c(final.stack.msw, final.stack.pdi, final.stack.exp)))
+  final.stack <- terra::rast(final.stack)
+  final.stack <- maskProduct(final.stack, sts@spatial.loi.buffer, raster.template)
+
+
+
+  return(final.stack)
 }
 
 
