@@ -1200,6 +1200,24 @@ checkInputsUnknow <- function(sts, points, product, wind_threshold, method, asym
 
 
 
+smooth_exposure <- function(x, offset){
+
+  x_s <- x
+  x_o <- c(rep(NA, offset), x ,rep(NA, offset))
+  for(i in (offset + 1):(length(x) + offset)){
+    c <- c()
+    for(j in (i - offset):(i + offset))
+      c <- c(c, x_o[j])
+
+    print(c)
+    print(max(c, na.rm = T))
+    x_s[i - offset] <- max(c, na.rm = T)
+  }
+
+  return(x_s)
+}
+
+
 
 #' rasterizePDI counterpart function for non raster data
 #'
@@ -1391,13 +1409,13 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'
 #' @export
 stormBehaviour_pt <- function(sts,
-                   points,
-                   product = "TS",
-                   wind_threshold = NULL,
-                   method = "Willoughby",
-                   asymmetry = "Classic",
-                   empirical_rmw = FALSE,
-                   time_res = 1){
+                              points,
+                              product = "TS",
+                              wind_threshold = NULL,
+                              method = "Willoughby",
+                              asymmetry = "Classic",
+                              empirical_rmw = FALSE,
+                              time_res = 1){
 
   checkInputsUnknow(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, time_res)
 
@@ -1487,5 +1505,4 @@ stormBehaviour_pt <- function(sts,
 # terra::values(a) <- acos()
 #
 #
-
 
