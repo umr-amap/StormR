@@ -746,15 +746,17 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #' @return list of SpatRaster
 rasterizePDIExp <- function(final_stack, stack, time_res, space_res, name, product, threshold){
 
-  nbg = switch(space_res,"30sec" = 9, "2.5" = 7, "5min" = 5, "10min" = 3)
+  nbg = switch(space_res,"30sec" = 9, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
   #Integrating over the whole track
   prod <- sum(stack, na.rm = T) * time_res
-  #Applying focal function to smooth results
-  prod <- terra::focal(prod, w = matrix(1, nbg, nbg), sum, na.rm = T, pad = T)
   if(product == "Exposure"){
+    #Applying focal function to smooth results
+    prod <- terra::focal(prod, w = matrix(1, nbg, nbg), max, na.rm = T, pad = T)
     names(prod) <- paste0(name,"_",product,"_",threshold[1],"-",threshold[2])
   }else{
+    #Applying focal function to smooth results
+    prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = T, pad = T)
     names(prod) <- paste0(name,"_",product)
   }
 
@@ -798,7 +800,7 @@ rasterizeProduct <- function(product, format, final_stack, stack, time_res, spac
 
   } else if (product == "Exposure") {
     #Computing Exposure analytic raster
-    final_stack <- rasterizePDIExp(final_stack, stack, time_res, sapce_res, name,"Exposure", threshold)
+    final_stack <- rasterizePDIExp(final_stack, stack, time_res, space_res, name,"Exposure", threshold)
 
   }
 
