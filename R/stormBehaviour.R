@@ -122,7 +122,7 @@ rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 #' @param asymmetry character
 #' @param empirical_rmw logical
 #' @param format character
-#' @param space_res numeric
+#' @param space_res character
 #' @param time_res numeric
 #' @param verbose numeric
 #' @return NULL
@@ -165,9 +165,9 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   stopifnot("format should be length 1" = length(format) == 1)
 
   #Checking space_res input
-  stopifnot("space_res must be numeric" = identical(class(space_res), "numeric"))
+  stopifnot("space_res must be character" = identical(class(space_res), "character"))
   stopifnot("space_res must be length 1" = length(space_res) == 1)
-  stopifnot("space_res must be positif" = space_res > 0)
+  stopifnot("invalid space_res: must be either 30s, 2.5min, 5min or 10min" = space_res %in% c("30sec", "2.5min", "5min", "10min"))
 
   #Checking time_res input
   stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
@@ -189,36 +189,28 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
 #'
 #' @noRd
 #' @param buffer sf object. LOI + buffer extention
-#' @param res numeric. Space resolution (km) for the template
+#' @param res numeric. Space resolution min for the template
 #'
 #' @return a SpatRaster
 makeTemplateRaster <- function(buffer, res){
 
-  #Derivating the raster template
+  #Deriving the raster template
   ext <- terra::ext(sf::st_bbox(buffer)$xmin,
                     sf::st_bbox(buffer)$xmax,
                     sf::st_bbox(buffer)$ymin,
                     sf::st_bbox(buffer)$ymax)
 
-  ras <- terra::rast(
+
+
+  template <- terra::rast(
     xmin = ext$xmin,
     xmax = ext$xmax,
     ymin = ext$ymin,
     ymax = ext$ymax,
-    vals = NA
+    resolution = res,
+    vals = NA,
   )
-  #Projection in Mercator
-  ras <- terra::project(ras, "EPSG:3857")
-  #Resampling in new resolution in Mercator
-  template <- ras
-  terra::res(template) <- c(res * 1000, res * 1000)
-  template <- terra::resample(ras, template)
-  #Reprojection in lon/lat
-  template <- terra::project(template, "EPSG:4326")
-
-  #Handling time line crossing
-  if(terra::ext(template)$xmin < 0)
-    template <- terra::rast(resolution = terra::res(template), extent = ext)
+  terra::origin(template) <- c(0,0)
 
   return(template)
 
@@ -420,9 +412,9 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
                          xmax = data$lon[index] + buffer,
                          ymin = data$lat[index] - buffer,
                          ymax = data$lat[index] + buffer,
-                         res = terra::res(raster_template),
+                         resolution = terra::res(raster_template),
                          vals = NA)
-  terra::origin(template) <- terra::origin(raster_template)
+  terra::origin(template) <- c(0,0)
 
   return(template)
 
@@ -874,8 +866,8 @@ maskProduct <- function(final_stack, loi, template){
 #'   ignored and set to "MSW" and 2D wind speed structures for each observation
 #'   are returned.
 #'   }
-#' @param space_res numeric. Space resolution (in km) for the raster(s) to compute.
-#' Default value is set to 10km
+#' @param space_res character. Space resolution for the raster(s) to compute.
+#'  Either 30sec, 2.5min, 5min or 10min. Default value is set to 30sec
 #' @param time_res numeric. Period of time (hours) used to compute the
 #'   analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 #'   (30min), and 0.25 (15min). Default value is set to 1
@@ -922,14 +914,14 @@ stormBehaviour <- function(sts,
                            asymmetry = "Classic",
                            empirical_rmw = FALSE,
                            format = "analytic",
-                           space_res = 10,
+                           space_res = "2.5min",
                            time_res = 1,
                            verbose = 2){
 
   start_time <- Sys.time()
 
   checkInputsSb(sts, product, wind_threshold, method, asymmetry,
-                empirical_rmw, format, space_res, time_res, verbose)
+                empirical_rmw, format, space_res , time_res, verbose)
 
 
   if(format == "profiles"){
@@ -944,12 +936,14 @@ stormBehaviour <- function(sts,
     }
   }
 
+
   #Make raster template
-  raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, space_res)
+  raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, resolutions[space_res])
   #Getting new extent
   ext <- terra::ext(raster.template)
   #Buffer size in degree
-  buffer <- terra::res(raster.template)[1] * sts@buffer / space_res
+  #buffer <- terra::res(raster.template)[1] * sts@buffer / space #NO MORE OK
+  buffer <- 2.5
   #Initializing final raster stacks
   final.stack.msw <- c()
   final.stack.pdi <- c()
@@ -968,7 +962,7 @@ stormBehaviour <- function(sts,
     }else{
       cat("  (*) Output format: 2D WindSpeed structures at each observation (real and interpolated)\n")
     }
-    cat("  (*) Space resolution:",space_res,"km\n")
+    cat("  (*) Space resolution:",names(resolutions[space_res]),"\n")
     cat("  (*) Method used:", method ,"\n")
     if(format == "analytic")
       cat("  (*) Product(s) to compute:", product ,"\n")
@@ -1009,6 +1003,8 @@ stormBehaviour <- function(sts,
     aux.stack.exp <- c()
     aux.stack.direction <- c()
 
+
+
     for (j in 1:nb.step) {
 
       #Making template to compute wind profiles
@@ -1029,6 +1025,7 @@ stormBehaviour <- function(sts,
       output <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y)
       terra::values(raster.wind) <- output$wind
       terra::values(raster.direction) <- output$direction
+
 
       #Stacking wind direction
       if(format == "profiles"){
