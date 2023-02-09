@@ -21,6 +21,7 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 
   #Checking raster_product
   stopifnot("no data to plot" = !missing(raster_product))
+  stopifnot("Raster stack are not allowed. Please subset your desired layer" = terra::nlyr(raster_product) == 1)
 
   #Checking xlim input
   if (!is.null(xlim)) {
