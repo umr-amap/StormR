@@ -65,32 +65,35 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 
 #'Plot rasterized information storm behaviour
 #'
-#'This function plots a rasterize product (Maximum Sustained Wind, Power
-#'Dissipation Index, Category Exposure, 2D wind speed structure at a given
-#'observation ...) associated with a storm contained in a Storms object
+#'This function plots a rasterize product (maximum sustained wind, power
+#'dissipation index, category exposure, or 2D wind speed structure and Wind direction at a given
+#'observation) associated with a storm contained in a Storms object
 #'alongside with its track
 #'
 #'@param sts Storms object
 #'@param raster_product Spatraster object. Name of the layer must be
-#'  "stormName_product" where product is either MSW, PDI, or Exposure(1,2,3,4,5,All).
-#'  It can also be "stormName_profileInd" where Ind stand for the observations if raster_product
-#'  is a 2D wind speed structure
+#'  "stormName_product" where product is either "MSW", "PDI", "Exposure_min-max",
+#'  "Profiles_index", "WindDirection_index" where "min" and "max" represent the
+#'   threshold used to compute Exposure raster and index stands for the index of observation.
+#'@param color_palette character vector. Represents the color palette used for the plot.
+#'  Default value is set to NULL, which will automatically choose a color palette
+#'  provided by this package and depending on the product
 #'@param xlim numeric vector. A set of longitude coordinates that controls the
 #'  longitude extent of the plot. Default value is set to NULL which will let
-#'  the plot extends according to the x bounding box of spatial.loi.buffer
+#'  the plot extends according to the x bounding box of the spatial LOI buffer
+#'  provided in sts
 #'@param ylim numeric vector. A set of latitude coordinates that controls the
 #'  latitude extent of the plot. Default value is set to NULL which will let
-#'  the plot extends according to the y bounding box of spatial.loi.buffer
+#'  the plot extends according to the y bounding box of the spatial LOI buffer
+#'  provided in sts
 #'@param labels logical. Whether or not to plot ISO Times and name labels
 #'@param by numeric. Defines the frequency at which labels are plotted for the
 #' 3-hourly records. Default value is set to 8 which represents a 24h time interval
 #' between each labeled observations. Ignored if labels == FALSE
 #'@param pos numeric. Must be between 1 and 4. Correspond to the position of
 #'  labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
-#'  Default value is set to 3
-#'@param color_palette character vector. Represents the color palette used for the plot.
-#'  Default value is set to NULL, which will automatically choose a color palette
-#'  depending on the product of raster_product
+#'  Default value is set to 3. Ignored if labels == FALSE
+#'
 #'@returns NULL
 #'
 #' @examples
@@ -112,8 +115,14 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #' plotBehaviour(sts_nc, erica_profile78, labels = TRUE)
 #'
 #'@export
-plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels = FALSE,
-                         by = 8, pos = 3, color_palette = NULL){
+plotBehaviour <- function(sts,
+                          raster_product,
+                          color_palette = NULL,
+                          xlim = NULL,
+                          ylim = NULL,
+                          labels = FALSE,
+                          by = 8,
+                          pos = 3){
 
 
   checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos, color_palette)
@@ -199,7 +208,7 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
        range = range,
        legend = TRUE,
        plg = list(loc = "bottom",
-                  ext = c(xmin, xmax, y.leg, y.leg-0.05),
+                  ext = c(xmin, xmax, y.leg, y.leg - size.map* 0.05),
                   cex = 0.7,
                   shrink = 0),
        add = T)
