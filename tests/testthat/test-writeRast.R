@@ -3,8 +3,8 @@
 
 test_that("Tests invalid inputs", {
 
-  sts = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
-  msw = stormBehaviour(sts)
+
+  msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff", package = "StormR"))
 
   #Checking rast validity
   expect_error(writeRast())

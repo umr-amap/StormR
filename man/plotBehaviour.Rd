@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotBehaviour.R
 \name{plotBehaviour}
 \alias{plotBehaviour}
-\title{Plot rasterize informations below the associated track of a storm}
+\title{Plot rasterized information storm behaviour}
 \usage{
 plotBehaviour(
   sts,
@@ -11,7 +11,8 @@ plotBehaviour(
   ylim = NULL,
   labels = FALSE,
   by = 8,
-  pos = 3
+  pos = 3,
+  color_palette = NULL
 )
 }
 \arguments{
@@ -32,12 +33,17 @@ the plot extends according to the y bounding box of spatial.loi.buffer}
 
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
-\item{by}{numeric. Increment of the sequence for the labels to plot. Default
-value is set to 8 which represents a 24h time interval}
+\item{by}{numeric. Defines the frequency at which labels are plotted for the
+3-hourly records. Default value is set to 8 which represents a 24h time interval
+between each labeled observations. Ignored if labels == FALSE}
 
 \item{pos}{numeric. Must be between 1 and 4. Correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 Default value is set to 3}
+
+\item{color_palette}{character vector. Represents the color palette used for the plot.
+Default value is set to NULL, which will automatically choose a color palette
+depending on the product of raster_product}
 }
 \description{
 This function plots a rasterize product (Maximum Sustained Wind, Power
@@ -47,20 +53,33 @@ alongside with its track
 }
 \examples{
 #Plot MSW analytic raster for PAM 2015 in Vanuatu
+<<<<<<< HEAD
 pam_msw = terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
 plotBehaviour(pam, pam_msw)
 
 #Plot PDI analytic raster for ERICA 2003 in New Caledonia
 erica_pdi = terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
+=======
+pam_msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
+plotBehaviour(pam, pam_msw)
+
+#Plot PDI analytic raster for ERICA 2003 in New Caledonia
+erica_pdi <- terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
+>>>>>>> upgrade
 plotBehaviour(sts_nc, erica_pdi)
 
 #Plot PDI analytic raster for NIRAN 2021 in New Caledonia
-niran_pdi = terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
+niran_pdi <- terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
                                     package = "StormR"))
 plotBehaviour(sts_nc, niran_pdi)
 
 #Plot 2D wind speed structure for ERICA 2003 at observation 93
+<<<<<<< HEAD
 erica_profile93 = terra::rast(system.file("extdata", "ERICA_profile93.tiff", package = "StormR"))
 plotBehaviour(sts_nc, erica_profile93, labels = TRUE)
+=======
+erica_profile78 <- terra::rast(system.file("extdata", "ERICA_profile78.tiff", package = "StormR"))
+plotBehaviour(sts_nc, erica_profile78, labels = TRUE)
+>>>>>>> upgrade
 
 }

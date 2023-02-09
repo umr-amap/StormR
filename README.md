@@ -22,7 +22,7 @@ devtools::install_github("umr-amap/StormR")
 ```
 
 
-## Data source 
+## Data source
 StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). It let this package get every informations needed to plot, compute and analyze tropical cyclones. This data base provides observations every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations are derived from various agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
 
 * NA : North Atlantic
@@ -126,14 +126,14 @@ Insert comments about the differences here? <br />
 
 
 ## Products
-StormR let the user compute several products. They can either be computed on 
+StormR let the user compute several products. They can either be computed on
 specific longitude/latitute coordinates or rasterized over the location of interest.
 The following describes the products available: <br />
 
 
 * Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed $(m.s^{-1})$
-  at distance $r$ of the eye of the storm according to 
-  
+  at distance $r$ of the eye of the storm according to
+
 $$
 \max(v_r(t) | t \in [0,T])
 $$
@@ -146,8 +146,8 @@ $$
 \int_T \rho C_d v_r^3 dt
 $$
 
-  $T$ stands for the whole lifecycle of the storm, $\rho$ represents the air density fixed here at      $10^{-3}$ $kg.m^{-3}$ ? Finally, $C_d$ models the drag coefficient of the storm. Although there exist       various methods and formula to compute this parameter that are widely debatable, we chose here the     following parametrization derived in [Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022)](     https://doi.org/10.1038/s41586-022-05326-4): 
-  
+  $T$ stands for the whole lifecycle of the storm, $\rho$ represents the air density fixed here at      $10^{-3}$ $kg.m^{-3}$ ? Finally, $C_d$ models the drag coefficient of the storm. Although there exist       various methods and formula to compute this parameter that are widely debatable, we chose here the     following parametrization derived in [Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022)](     https://doi.org/10.1038/s41586-022-05326-4):
+
 $$
 \left\{
 \begin{aligned}
@@ -157,11 +157,11 @@ C_d &= \left(0.55 + 2.97\frac{v_r}{31.5} - 1.49\left(\frac{v_r}{31.5}\right)^2\r
 \right.
 $$
 
-* Exposure: It provides the time exposure (in hours) for a given category $C$ (in the Saffir Simpson     Hurricane Scale), where radial wind speed $v_r^C$ spans in $C_r := [\min(v_r^c | c = C):\max(v_r^c | c = C)]$ , and at distance $r$ of the eye of the storm, according to 
+* Exposure: It provides the time exposure (in hours) for a given category $C$ (in the Saffir Simpson     Hurricane Scale), where radial wind speed $v_r^C$ spans in $C_r := [\min(v_r^c | c = C):\max(v_r^c | c = C)]$ , and at distance $r$ of the eye of the storm, according to
 
 $$
 \int_T c(v_r) dt
-$$ 
+$$
 
 $$
 \left\{
@@ -183,174 +183,131 @@ These are basic examples which show how to solve some common problems
 ``` r
 library(StormR)
 
-######################
-#Focus on a single TC#
-######################
+##############################################
+#Single tropical cyclone over a given country#
+##############################################
 
-#Load TC
-st = getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
+#Load the data for the tropical cyclone Pam which hit the Vanuatu in 2015
+st <- getStorms(time_period = 2015, name = "PAM", loi = "Vanuatu")
 
-#Plot TC over the location of interest with legend activated
+#Plot the tropical cyclone track and observations over or around the location of interest
 plotStorms(st, labels = T, legends = T)
 
-#Compute Maximum Sustained Wind raster according to Willoughby et al. 2006 analytic model adding version 2 formula of asymmetry 
-st_msw = stormBehaviour(st, asymmetry = "V2", verbose = T)
+#Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry from REF?). The function returns a raster with a 10 km spatial resolution by default .
+st_msw <- stormBehaviour(st, verbose = T)
+st_pdi <- stormBehaviour(st, product = "PDI", verbose = T)
+st_exposure <- stormBehaviour(st, product = "Exposure", verbose = T)
 
-#Plot the above raster alongside with the track of the storm
+#Plot the MSW, PDI, and EXP rasters alongside with the track of the storm and the limit of the location of interest
+split.screen(c(1,3))
+screen(1)
 plotBehaviour(st, st_msw, labels = T)
+screen(2)
+plotBehaviour(st, st_pdi, labels = T)
+screen(3)
+plotBehaviour(st, st_exposure[["PAM_Exposure3"]], labels = T)
 
-#Write sts_msw raster in a temporary directory
+
+#Export the MSW raster in a given directory (here a temporary directory)
 writeRast(st_msw, path = paste0(tempdir(),"/"))
 
 
 
-######################
-#Focus on several TCs#
-######################
+################################################
+#Several tropical cyclones over a given country#
+################################################
 
-#Load TC
-sts = getStorms(time_period = c(2003, 2021), name = c("ERICA", "NIRAN"), loi = "New Caledonia")
+#Load all tropical cyclones that have passed nearby New Caledonia between 2019 and 2021
+sts <- getStorms(time_period = c(2019, 2021), loi = "New Caledonia", verbose = T)
 
-#Plot TCs over the location of interest
+#Plot all tropical cyclone tracks and observations over or around the location of interest
 plotStorms(sts, labels = T, legends = T)
 
-#Plot NIRAN over the location of interest
+#Plot only the track and observations for only one of the tropical cyclones (here Niran)
 plotStorms(sts, names = "NIRAN", labels = T)
 
-#Compute Power Dissipation index raster according to Willoughby et al. 2006 analytic model
-sts_pdi = stormBehaviour(sts, product = "PDI" , verbose = T)
+#Compute PDI rasters for all tropical cyclones with the default values
+sts_pdi <- stormBehaviour(sts, product = "PDI" , verbose = T)
 
-#Plot the PDI for ERICA alongside with the its track 
-plotBehaviour(sts, sts_pdi[["ERICA_PDI"]], labels = T)
-
-
-
-#Compute time series of wind speed on coordinates contained in df according to Willoughby et al. 2006 analytic model, adding version 2 formula of asymmetry 
-df = data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
-wind_ts = stormBehaviour(sts, format = df, verbose = T)
+#Plot the PDI for the tropical cyclone Niran alongside with the its track
+plotBehaviour(sts, sts_pdi[["NIRAN_PDI"]], labels = T)
 
 
 
+##################################################################
+#Tropical cyclones around a spatial polygon (created or imported)#
+##################################################################
+
+#Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2021
+stsEEZnc <- getStorms(loi = eezNC, verbose = T)
+
+#Plot category 3 tropical cyclones (Saffir-Simpson hurricane wind scale, SSHWS)
+plotStorms(stsEEZnc, category = 3)
 
 
-#############################
-#Focus on a point coordinate#
-#############################
+#################################################
+#Tropical cyclones around a given point location#
+#################################################
 
-pt = c(188.17,-13.92)
-#Get all TCs that pass through a cirlce buffer of 300km around point pt
-stsPt = getStorms(loi = pt, verbose = T)
+#Set point location coordinates, lat/long, in decimal degrees (WGS84)
+pt <- c(188.17,-13.92)
+#Get all tropical cyclones that had passed near the point (by default <= 300 km away)
+stsPt <- getStorms(loi = pt, verbose = T)
 
-#Check tracks
+#Plot all tropical cyclone tracks and observations around the point of interest
 plotStorms(stsPt)
 
-#Plot category 5 TCs
-plotStorms(stsPt, category = 4, labels = T)
-
-#Compute MSW and PDI for TC VAL 1991
-val = getStorms(time_period = 1992, name = "VAL", loi = pt, verbose = T)
-val_msw = stormBehaviour(val, verbose = T, empirical_rmw = T)
-val_pdi = stormBehaviour(val, verbose = T,empirical_rmw = T, product = "PDI")
-
-#Plot result
-plotBehaviour(val, val_msw, labels = T)
-plotBehaviour(val, val_pdi, labels = T)
+#Plot only category 4 or 5 tropical cyclones (Saffir-Simpson hurricane wind scale, SSHWS)
+plotStorms(stsPt, category = c(4,5), labels = T)
 
 
- 
+################################
+#Time series at given locations#
+################################
+
+
+#Compute time series of wind speed at given location using coordinates provided in a data frame
+df <- data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
+wind_ts <- Unknow(sts, points = df)
+
+plot(wind_ts$NIRAN[,2], type = "b", ylab = "maximum sustained wind speed (m/s)")
+
+
 
 
 ##########################
-#Eastern Pacific Analyzis#
+#Tropical cyclone profile#
 ##########################
 
-#Get all TCs over Tropical Depression in the Eastern Pacific between 1980 and 2021
-stsEP = getStorms(basin = "EP", verbose = T)
+#ADD AN EXAMPLE WHERE WE CAN COMPARE THE PROFILES GENERATED BY THE DIFFERENT MODELS AND ASYMMETRY (i.e. one cyclone with the six profiles) AT A GIVEN TIME OF OBSERVATION YOU CAN USE WHAT YOU DID FOR HAROLD FOR INSTANCE
 
-#Plot TCs over category 5
-plotStorms(stsEP, category = 5)
+#Make a location of interest around Espiritu Santo in Vanuatu
+pol <- sf::st_sfc(sf::st_polygon(list(cbind(c(167,168,168,167,167),c(-16,-16,-13,-13,-16)))))
+loi <- sf::st_sf(pol, crs = 4326)
 
-#Plot TCs between category 1 and 3
-plotStorms(stsEP, category = c(1,3))
+#Load the data for the tropical cyclone Harold which hit the Vanuatu in 2020
+harold <- getStorms(time_period = 2020, name= "HAROLD", loi = loi, verbose = T)
 
-#Plot TC IGNACIO 1979 focus on lon/lat 250-270/10-20 with labels every 12h on the right side of observations and add graticules at each degree
-plotStorms(stsEP, names = "IGNACIO", category = c(1,3), labels = T, by = 4, pos = 4,
-xlim = c(250,270), ylim = c(10,20), grtc = 8)
+#Compute wind profiles using Willoughby model with version 1 of asymmetry
+profWillV1 <- stormBehaviour(harold, format = "profiles", asymmetry = "V1", verbose = T)
 
+#Compute wind profiles using Holland model with version 2 of asymmetry
+profHollV2 <- stormBehaviour(harold, format = "profiles", method = "Holland", verbose = T)
 
-#Make loi
-pol1 = sf::st_sfc(sf::st_polygon(list(cbind(c(220,250,250,220,220),c(10,10,30,30,10)))))
-loi1 = sf::st_sf(pol1, crs = 4326)
+#Compare few profiles between the two above differents methods and asymmetries
+plotBehaviour(harold,profWillV1["HAROLD_profile40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profHollV2["HAROLD_profile40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
-#Get data for TC KENNETH 2017 within loi1 
-kenneth = getStorms(basin = "EP", time_period = 2017, name = "KENNETH", loi = loi1, max_dist = 10, verbose = T)
+plotBehaviour(harold,profWillV1["HAROLD_profile41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profHollV2["HAROLD_profile41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
-#Note: max_dist is set here to 10km, which means further computations will be performed within a 10km buffer on both sides of the track
+plotBehaviour(harold,profWillV1["HAROLD_profile42"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profHollV2["HAROLD_profile42"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
-#Check track of KENNETH 2017
-plotStorms(kenneth)
-
-#Compute MSW according to Holland80 model without asymmetry
-kenneth_msw = stormBehaviour(kenneth, method = "Holland80", time_res = 0.5, verbose = T)
-
-
-#Note: time_res set here to 30min to increase accuracy
-
-#Plot results
-plotBehaviour(kenneth, kenneth_msw, labels = T, xlim = c(225,235), ylim = c(16,22))
+plotBehaviour(harold,profWillV1["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profHollV2["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
 
-
-#########################################################
-#Harold Exposure and profiles on Northen part of Vanuatu#
-#########################################################
-
-#Make loi
-pol2 = sf::st_sfc(sf::st_polygon(list(cbind(c(167,168,168,167,167),c(-16,-16,-13,-13,-16)))))
-loi2 = sf::st_sf(pol2, crs = 4326)
-
-#Get TC HAROLD 2020 data
-harold = getStorms(time_period = 2020, name= "HAROLD", loi = loi2, verbose = T)
-
-#Check track 
-plotStorms(harold)
-
-#Compute Exposure
-expo = stormBehaviour(harold, product = "Exposure", asymmetry = "V1", verbose = T)
-
-#Plot exposure to category 5
-plotBehaviour(harold, expo[["HAROLD_Exposure5"]], labels = T, xlim = c(167,169), ylim = c(-16.5, -15))
-
-#Plot exposure to category 4 and higher
-plotBehaviour(harold, expo[["HAROLD_Exposure4"]], labels = T, xlim = c(165,170), ylim = c(-16.5, -15))
-
-
-#Compute exposure on Luganville
-luganville = data.frame(lon = 167.17, lat = -15.54)
-expo_lv = stormBehaviour(harold, format = luganville, product = "Exposure", asymmetry = "V1", verbose = T)
-
-
-#Compute wind profiles
-pf = stormBehaviour(harold, format = "profiles", asymmetry = "V1", verbose = T)
-
-#Plot profiles on Espiritu Santo
-plotBehaviour(harold,pf["HAROLD_profile40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
-plotBehaviour(harold,pf["HAROLD_profile41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
-plotBehaviour(harold,pf["HAROLD_profile42"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
-plotBehaviour(harold,pf["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
-
-
->>>>>>> Fix several bugs + add examples README
-
-##############
-#Get all TCs #
-##############
-
-#Get all TCs over Tropical Depression around the world between 1980 and 2021
-sts = getStorms(basin = "ALL", verbose = T)
-
-#Plot TCs over category 5
-plotStorms(sts, category = 5)
 
 
 ```
@@ -358,10 +315,10 @@ plotStorms(sts, category = 5)
 ## References
 
  * Willoughby, H. & Darling, Richard & Rahn, M.. (2006). Parametric Representation of the Primary     Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review - MON WEATHER REV. 134. 1102-1120. 10.1175/MWR3106.1.  <br />
- 
- * Holland, Greg. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Mon. Weather Rev.. 108. 1212-1218. 10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2. 
- 
- * Boose, Emery & Chamberlin, Kristen & Foster, David. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs - ECOL MONOGR. 71. 27-48. 10.2307/3100043. 
+
+ * Holland, Greg. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Mon. Weather Rev.. 108. 1212-1218. 10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2.
+
+ * Boose, Emery & Chamberlin, Kristen & Foster, David. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs - ECOL MONOGR. 71. 27-48. 10.2307/3100043.
 
 * Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022)
 
@@ -369,5 +326,3 @@ plotStorms(sts, category = 5)
 
 If you have any question or suggestion or if you want to report a bug, please do it via the GitHub issues.
 Thanks for that, this would greatly help us to improve this package.
-
-
