@@ -8,13 +8,11 @@
 
 ## Overview
 
-StormR is a package developped to analyze past storms and tropical cyclones that occured in the whole
-world beyond 1980. It let the user gather all its interested storms in a single object and then use it
-to either plot tracks on a map, or compute/rasterize regimes of wind speed, 2D structures of radial wind and various other products.
+StormR is a package developed to analyze past storms and tropical cyclones that occurred anywhere in the world after 1980. It allows users to compute cyclone characteristics (e.g., maximum sustained wind speed, exposure period), gather storms of interest in a single object, rasterize available data, and plot maps of cyclone tracks and charateristics.
 
 ## Installation
 
-You can install the development version of StormR like so:
+You can install the development version of StormR as follows:
 
 ``` r
 #install.packages("devtools")
@@ -23,8 +21,7 @@ devtools::install_github("umr-amap/StormR")
 
 
 ## Data source
-StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). It let this package get every informations needed to plot, compute and analyze tropical cyclones. This data base provides observations every 3 hours of storms and tropical cyclones on the whole world that occured from 1841 to present days (although observations of most recent storms are not available yet). Observations are derived from various agencies, nevertheless, this package only supplies observations extracted from the USA agency as it is the one that comes up with the most prolific and reliable data. The following lists all the basin names:
-
+StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This package extracts the information needed to plot, compute and analyze tropical cyclones from this database. The IBTrACS database provides records of storms and tropical cyclones around the world every 3 hours since 1841 (note that data for the most recent storms may not be available yet and that not all storms of the earlier years are captured). Recods in the database are derived from various agencies in the USA and uses the following names and abbrevaitions for the world's ocean basins:
 * NA : North Atlantic
 * SA : South Atlantic
 * EP : Eastern North Pacific
@@ -32,14 +29,14 @@ StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' that comes from the [Interna
 * SP : South Pacific
 * SI : South Indian
 * NI : North Indian
-* ALL: the above 7 basins all together
+* ALL: the above 7 basins combined
 
-Default value for the basin is set to SP as the developpement team is located/interested in this particular region, and this basin has been used to test this package but it is up to the user to select his basin of interest.
-For the sake of data reliability, StormR focuses only on storms and tropical cyclones that occured beyond 1980. A research for older storms will result in an error. [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for a deeper insight on the documentation of this 'IBTrACS.ALL.v04r00.nc' file.
+in the StormR package, the default value for the basin is set to SP, as the developpement team is located/interested in this particular region and because this basin has been used to test the package. However, the user can select a different basin.
+For the purpose of data reliability and accuracy, StormR only faciltates access to storms and tropical cyclones after 1980. Data for older storms is spatially less accurate and may therefore produce errors: you can [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for more details on data limitations of the IBTrACS database.
 
 ## Models
 
-Two cyclonic models are available within this package in order to compute radial wind speed:
+StormR allows computing radial wind speed using two cyclonic models:
 
 $\textbf{Willoughby et al. 2006}$ <br />
 Insert comments about the model here <br />
@@ -301,8 +298,6 @@ plotBehaviour(harold,profHollV2["HAROLD_profile40"], labels = T, xlim = c(166,16
 plotBehaviour(harold,profWillV1["HAROLD_profile41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 plotBehaviour(harold,profHollV2["HAROLD_profile41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
-plotBehaviour(harold,profWillV1["HAROLD_profile42"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
-plotBehaviour(harold,profHollV2["HAROLD_profile42"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
 plotBehaviour(harold,profWillV1["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 plotBehaviour(harold,profHollV2["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
