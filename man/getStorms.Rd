@@ -39,15 +39,9 @@ a storm on the IBTrACS database}
 Default value is set to NULL which will set the spatial.loi.buffer on the whole
 basin}
 
-<<<<<<< HEAD
-\item{max_dist}{numeric. Indicates the buffer used to generate spatial.loi.buffer (km).
-Default value is set to 300. This value also represents the maximum distance from the track
-of the storm where computations should be performed afterwards.}
-=======
 \item{max_dist}{numeric. Indicates the buffer distance (in km) used to generate
 spatial.loi.buffer. Default value is set to 300km. This value also represents
 the maximum distance from the track of the storm where computations can be performed}
->>>>>>> upgrade
 
 \item{verbose}{logical. Whether or not the function must be verbose and display
 a text progress bar. Default value is set to FALSE}

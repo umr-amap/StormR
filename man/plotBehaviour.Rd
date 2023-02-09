@@ -53,19 +53,11 @@ alongside with its track
 }
 \examples{
 #Plot MSW analytic raster for PAM 2015 in Vanuatu
-<<<<<<< HEAD
-pam_msw = terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
-plotBehaviour(pam, pam_msw)
-
-#Plot PDI analytic raster for ERICA 2003 in New Caledonia
-erica_pdi = terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
-=======
 pam_msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
 plotBehaviour(pam, pam_msw)
 
 #Plot PDI analytic raster for ERICA 2003 in New Caledonia
 erica_pdi <- terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
->>>>>>> upgrade
 plotBehaviour(sts_nc, erica_pdi)
 
 #Plot PDI analytic raster for NIRAN 2021 in New Caledonia
@@ -74,12 +66,7 @@ niran_pdi <- terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
 plotBehaviour(sts_nc, niran_pdi)
 
 #Plot 2D wind speed structure for ERICA 2003 at observation 93
-<<<<<<< HEAD
-erica_profile93 = terra::rast(system.file("extdata", "ERICA_profile93.tiff", package = "StormR"))
-plotBehaviour(sts_nc, erica_profile93, labels = TRUE)
-=======
 erica_profile78 <- terra::rast(system.file("extdata", "ERICA_profile78.tiff", package = "StormR"))
 plotBehaviour(sts_nc, erica_profile78, labels = TRUE)
->>>>>>> upgrade
 
 }
