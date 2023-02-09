@@ -81,17 +81,6 @@ computed as follow: stormName_product
 2D wind speed structures for each observation are returned within a raster
 stack. Each layer is named after the storm and the index of observation
 computed as follow: stormName_profileIndex
-<<<<<<< HEAD
-\item If \code{data.frame}, computed product for each coordinates are returned
-through a name numeric vector of dimension
-\itemize{
-\item (number of observations:number of point coordinates), if product == "MSW".
-Correspond in fact of time series of wind speed along every observations
-\item (1:number of point coordinates), if product == "PDI"
-\item (6:number of point coordinates), if product == "Exposure"
-}
-=======
->>>>>>> upgrade
 }
 }
 \description{
