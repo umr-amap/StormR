@@ -23,17 +23,17 @@ netcdf
 }
 \examples{
 #Save MSW raster in Geotiff file for PAM (2015) over Vanuatu
-pam_msw = terra::rast(system.file("extdata", "PAM_MSW.tiff",
+pam_msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff",
                                   package = "StormR"))
 writeRast(pam_msw, path = paste0(tempdir(),"/"))
 
 #Save PDI rasters in Geotiff files for ERICA (2003) and NIRAN (2015)
 #over New Caledonia
-erica_pdi = terra::rast(system.file("extdata", "ERICA_PDI.tiff",
+erica_pdi <- terra::rast(system.file("extdata", "ERICA_PDI.tiff",
                                     package = "StormR"))
-niran_pdi = terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
+niran_pdi <- terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
                                     package = "StormR"))
-pdi_nc = c(erica_pdi,niran_pdi)
+pdi_nc <- c(erica_pdi,niran_pdi)
 writeRast(pdi_nc, path = paste0(tempdir(),"/"))
 
 }

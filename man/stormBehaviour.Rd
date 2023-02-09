@@ -2,13 +2,13 @@
 % Please edit documentation in R/stormBehaviour.R
 \name{stormBehaviour}
 \alias{stormBehaviour}
-\title{Compute regimes of wind speed and other products for given storms}
+\title{Compute indicators of storm behaviour}
 \usage{
 stormBehaviour(
   sts,
   product = "MSW",
   method = "Willoughby",
-  asymmetry = "None",
+  asymmetry = "V2",
   empirical_rmw = FALSE,
   format = "analytic",
   space_res = 10,
@@ -31,7 +31,7 @@ Default value is set to "MSW"}
 \item{method}{character. Cyclonic model used to compute product, that is either
 \itemize{
 \item "Willoughby"
-\item "Holland80"
+\item "Holland"
 }
 Default value is set to "Willoughby"}
 
@@ -48,34 +48,28 @@ Default value is set to "None".}
 empirically, according to getRmw function or using the Radius of Maximum Wind
 from the observations. Default value is set to FALSE}
 
-\item{format}{either a character among "analytic" and "profiles", or a
-data.frame which contains longitude/latitude coordinates within column
-names "lon" and "lat". Represents the format results the function
-should compute.
+\item{format}{either a character among "analytic" and "profiles":
 \itemize{
 \item  If "analytic", analytic rasters (integration in space and
 time over the track) are returned.
 \item  If "profiles", product input is
 ignored and set to "MSW" and 2D wind speed structures for each observation
 are returned.
-\item If \code{data.frame}, computed product for each coordinates are
-returned (time series if product == "MSW")
 }}
 
-\item{space_res}{numeric. Space resolution (km) for the raster(s) to compute.
-Default value is set to 10}
+\item{space_res}{numeric. Space resolution (in km) for the raster(s) to compute.
+Default value is set to 10km}
 
-\item{time_res}{numeric. Time discretization (hours) used to compute the
+\item{time_res}{numeric. Period of time (hours) used to compute the
 analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
 (30min), and 0.25 (15min). Default value is set to 1}
 
 \item{verbose}{logical. Whether or not the function must be verbose and
-display a text progress bar. Default value is set to FALSE}
+displays a text progress bar while operating. Default value is set to FALSE}
 
-\item{focus_loi}{logical. Whether or not the computations must only be
-overtaken within the spatial.loi.buffer from sts object. Default value
-is set to TRUE, otherwise, computations are extended over the whole track
-of the storms}
+\item{focus_loi}{logical. Whether or not the computations are restricted to within
+the spatial.loi.buffer from sts object. Default value is set to TRUE. Otherwise,
+computations are extended over the whole track of the storms}
 }
 \value{
 Depending on format input:
@@ -87,6 +81,7 @@ computed as follow: stormName_product
 2D wind speed structures for each observation are returned within a raster
 stack. Each layer is named after the storm and the index of observation
 computed as follow: stormName_profileIndex
+<<<<<<< HEAD
 \item If \code{data.frame}, computed product for each coordinates are returned
 through a name numeric vector of dimension
 \itemize{
@@ -95,31 +90,28 @@ Correspond in fact of time series of wind speed along every observations
 \item (1:number of point coordinates), if product == "PDI"
 \item (6:number of point coordinates), if product == "Exposure"
 }
+=======
+>>>>>>> upgrade
 }
 }
 \description{
-This function computes/rasterizes analytic products for each storm of a \code{Storms} object
-among Maximum Sustained Wind, Power Dissipation Index and Category exposure.
+This function computes/rasterizes analytic products for each storm of a \code{Storms}
+object, including Maximum Sustained Wind, Power Dissipation Index and Category exposure.
 It can also rasterize the 2D wind speed structures or produce time series of wind speed
 for every observations
 }
 \examples{
-#Compute analytic MSW for PAM 2015 in Vanuatu using Willougbhy model with
-#version 2 of asymmetry
-msw_pam = stormBehaviour(pam, asymmetry = "V2", verbose = TRUE)
+#Compute MSW for PAM 2015 in Vanuatu using default settings
+msw_pam <- stormBehaviour(pam)
 
-#Compute analytic PDI for ERICA and NIRAN in New Caledonia using Holland
-# model without asymmetry
-pdi_nc = stormBehaviour(sts_nc, time_res = 0.5, method = "Holland80",
+#Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
+pdi_nc <- stormBehaviour(sts_nc, time_res = 0.5, method = "Holland",
                         product = "PDI", verbose = TRUE)
 
-#Compute profiles wind speed for ERICA and NIRAN in New Caledonia using
-#Willoughby model without asymmetry
-prof_nc = stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
+#Compute Exposure for PAM 2015 in Vanuatu using default settings
+exp_pam <- stormBehaviour(pam, product = "Exposure")
 
-#Compute time series of wind speed for ERICA and NIRAN in New Caledonia using
-#Willoughby model without asymmetry
-df = data.frame(lon = c(166.5, 163), lat = c(-22, -19))
-ts_nc = stormBehaviour(sts_nc, format = df)
+#Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
+prof_nc <- stormBehaviour(sts_nc, format = "profiles", verbose = TRUE)
 
 }

@@ -38,4 +38,9 @@ test_that("Tests invalid inputs", {
   expect_error(plotBehaviour(pam, msw, pos = 5))
   expect_error(plotBehaviour(pam, msw, pos = c(1,2)))
 
+  #Checking color_palette validity
+  expect_error(plotBehaviour(pam, msw, color_palette = T))
+  expect_error(plotBehaviour(pam, msw, color_palette = c(1,2,3)))
+
+
 })
