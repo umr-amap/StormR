@@ -286,24 +286,12 @@ convertLoi <- function(loi){
 
   } else if (identical(class(loi), c("character"))){
 
-    if(loi %in% c("SP", "SI", "SA", "NI", "WP", "EP", "NA", "ALL")){
-      ext <- terra::ext(Basins[loi,1], Basins[loi,2],
-                        Basins[loi,3], Basins[loi,4])
+    map <- rworldmap::getMap(resolution <- "high")
+    id.country <- which(map@data$ADMIN == loi)
+    stopifnot("invalid entry for loi" = length(id.country) > 0)
+    loi.sf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
+    sf::st_crs(loi.sf) = wgs84
 
-      poly <- cbind(c(ext$xmin, ext$xmax, ext$xmax, ext$xmin, ext$xmin),
-                    c(ext$ymin, ext$ymin, ext$ymax, ext$ymax, ext$ymin))
-      loi.sf <- sf::st_polygon(list(poly))
-      loi.sf <- sf::st_sfc(loi.sf, crs = wgs84)
-      loi.sf <- sf::st_as_sf(loi.sf)
-
-    }else{
-
-      map <- rworldmap::getMap(resolution <- "high")
-      id.country <- which(map@data$ADMIN == loi)
-      stopifnot("invalid entry for loi" = length(id.country) > 0)
-      loi.sf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
-      sf::st_crs(loi.sf) = wgs84
-    }
   }
   #Handling time line for Fiji
   loi.sf <- sf::st_shift_longitude(loi.sf)
