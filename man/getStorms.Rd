@@ -10,47 +10,44 @@ getStorms(
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   names = NULL,
   max_dist = 300,
-  verbose = 3,
-  remove_TD = TRUE
+  remove_TD = TRUE,
+  verbose = 2
 )
 }
 \arguments{
-\item{sdb}{list. TC data base loaded from a stormDatabase object}
+\item{sdb}{Storms data base returned by loadData function. Default value is set to
+IBTRACS which is a data base provided by this package and based on the IBTrACS.All.v04r00.nc file}
 
 \item{loi}{Location of Interest. Must be either:
 \itemize{
 \item a SpatialPolygon (shapefile)
 \item a sf object
 \item a point of longitude/latitude coordinates provided in a numeric vector
-\item a character representing a country,
+\item a character representing a country (See Details section)
 }}
 
 \item{seasons}{numeric vector. Should be either one or a range of calendar
 years. For cyclones that formed in one year and dissipated in the following
-year, the latter should be used. It could also be a vector of cyclonic season provided
-that it has the same length as names input and matches the season of each storm
-listed in names input. Default value is set to c(1980, 2021)}
+year, the latter should be used}
 
-\item{names}{character vector. Name(s) of storm(s). Default value is set to NULL,
-otherwise seasons and names must have the same length, and must match with
-a storm on the IBTrACS database}
+\item{names}{character vector. Names of storms. Default value is set to NULL.}
 
 \item{max_dist}{numeric. Indicates the buffer distance (in km) used to generate
 spatial.loi.buffer. Default value is set to 300km. This value also represents
 the maximum distance from the track of the storm where computations can be performed}
 
-\item{verbose}{numeric. Either 0, 1, 2 or 3. Whether or not the function must be verbose and display
-a text progress bar and informations about the process and/or outputs.
-\itemize{
-\item 0 Nothing will be displayed
-\item 1 Informations about the process are displayed
-\item 2 Outputs are also displayed
-\item 3 Additional helper guides to manipulate Storms objects are displayed
-}
-Default value is set to 3}
-
 \item{remove_TD}{logical. Whether or not to remove tropical depressions (< 18 m/s)
 and include cyclones only. Default value is set to TRUE.}
+
+\item{verbose}{numeric. Either 0, 1, 2 or 3. Whether or not the function must
+be verbose and display informations about the process, outputs, and additional notes
+\itemize{
+\item 0 Nothing is displayed
+\item 1 Informations about the process are displayed
+\item 2 Outputs are also displayed
+\item 3 Additional notes to manipulate Storms objects are also displayed
+}
+Default value is set to 2}
 }
 \value{
 a Storms object that gathers all storms that match the criteria given
@@ -62,10 +59,10 @@ gathers all the storms specified by the user
 }
 \examples{
 #Focus on a single storm
-pam <- getStorms(seasons = 2015, names = "PAM", loi = "Vanuatu")
+pam <- getStorms(loi = "Vanuatu", names = "PAM")
 
-#Focus on several storms over Vanuatu
-sts_nc <- getStorms(seasons = c(2003,2021), names = c("ERICA","NIRAN"), loi = "New Caledonia")
+#Focus on several storms over New Caledonia
+sts_nc <- getStorms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 
 #Focus on every storms that occured in the WP basin between 2010 and 2020
 poly <- cbind(c(100, 180, 180, 100, 100),c(0, 0, 60, 60, 0))
