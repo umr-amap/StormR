@@ -354,10 +354,14 @@ retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
     indices = intersect(indices,ind)
     stopifnot("No storm(s) found "= !is.null(indices))
 
+
+
   }
 
   #Removing NOT_NAMED storms
   indices <- indices[which(sdb$names[indices] != "NOT_NAMED")]
+
+  cat("\n\n",indices,"\n\n")
 
   #Removing TD if remove_TD == T
 
@@ -579,6 +583,12 @@ getStorms <- function(sdb = IBTRACS,
                             filter_names = names,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
+
+  # print(indices)
+  # cat("\n\n")
+  # cat(sdb$lon[indices],"\n")
+  # cat(sdb$lat[indices],"\n")
+  # cat("\n\n")
 
   if (verbose > 0 & length(indices) >= 1) {
     if(is.null(names) & length(seasons) == 2){

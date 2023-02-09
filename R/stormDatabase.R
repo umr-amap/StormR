@@ -15,7 +15,7 @@ StormDataBase <- methods::setClass(
   "StormDatabase",
   slots = c(
     url = "character",
-    name = "character",
+    filename = "character",
     format = "character",
     fields = "character"
   )
@@ -27,16 +27,17 @@ StormDataBase <- methods::setClass(
 #' Title
 #'
 #' @param url ...
-#' @param name ...
-#' @param name ...
+#' @param filename ...
+#' @param format ...
 #' @param fields ...
 #'
 #' @return ...
 #' @export
 initDatabase <- function(url = "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.ALL.v04r00.nc",
-                         name = "IBTrACS.ALL.v04r00.nc",
+                         filename = "/home/baptiste/Desktop/Travail/StormR/data/IBTrACS.ALL.v04r00.nc",
                          format = ".nc",
-                         fields = c("names" = "name",
+                         fields = c("sid" = "sid",
+                                    "names" = "name",
                                     "seasons" = "season",
                                     "isoTime" = "iso_time",
                                     "lon" = "usa_lon",
@@ -52,11 +53,23 @@ initDatabase <- function(url = "https://www.ncei.noaa.gov/data/international-bes
 
   sdb <- StormDataBase()
   sdb@url <- url
-  sdb@name <- name
+  sdb@filename <- filename
   sdb@format <- format
   sdb@fields <- fields
 
   return(sdb)
+
+}
+
+
+
+getDataCSV <- function(indices, sdb_fields, type = "numeric"){
+
+  if(type == "numeric"){
+    return(as.numeric(sdb_fields[indices[1]:indices[2]]))
+  }else{
+    return(sdb_fields[indices[1]:indices[2]])
+  }
 
 }
 
@@ -71,16 +84,22 @@ count <- function(sid, SID){
 #'
 #' @noRd
 #' @param sdb_info ...
-#' @param path ...
-#' @return A list of 14 slots
-loadData <- function(sdb_info, path){
+#' @param verbose...
+#' @return
+loadData <- function(sdb_info, verbose = T){
 
-  filename <- paste0(path,"/",sdb_info@name)
+  if(verbose)
+    cat("=== Loading data  ===\nOpen database... ")
+
 
   if(sdb_info@format == ".nc"){
 
     #Change here
-    TC_data_base <- ncdf4::nc_open(filename)
+    TC_data_base <- ncdf4::nc_open(sdb_info@filename)
+
+    if(verbose)
+      cat(sdb_info@filename,"opened\nCollecting data ...\n")
+
     lon <- ncdf4::ncvar_get(TC_data_base, sdb_info@fields["lon"])
     row <- dim(lon)[1]
     len <- dim(lon)[2]
@@ -108,43 +127,67 @@ loadData <- function(sdb_info, path){
 
     ncdf4::nc_close(TC_data_base)
 
+    if(verbose)
+      cat("=== DONE ===\n")
+
     return(sdb)
 
   }else if (sdb_info@format == ".csv"){
 
     #Change here
-    #TC_data_base <- read.csv(filename, header = T)
+    TC_data_base <- utils::read.csv(sdb_info@filename, header = T)
 
-    SID = TC_data_base$SID
-    print(length(SID))
-    SID = SID[2:length(SID)]
+    if(verbose)
+      cat(sdb_info@filename,"opened\nCollecting data ...\n")
+
+    #Handle length of data base
+    r <- 2
+    SID <- TC_data_base[,sdb_info@fields["sid"]]
+    lenTot<- length(SID)
+    SID <- SID[r:lenTot]
     sid <- unique(SID)
-    len <- length(sid)
-    numobs <- lapply(list(sid), count, SID)
-    print(numobs)
-    row = max(unlist(numobs))
 
-    sdb <- list(names = TC_data_base[,sdb_info@fields["names"]],
-                seasons = TC_data_base[,sdb_info@fields["seasons"]],
+
+    #Computing number of observations using SID slot
+    numobs <- unlist(lapply(X = as.list(sid), FUN =  count, SID =  SID))
+
+    #Get names and seasons
+    names <- TC_data_base[r:lenTot,sdb_info@fields["names"]]
+    seasons <- TC_data_base[r:lenTot,sdb_info@fields["seasons"]]
+
+    indices <- list(c(1,numobs[1]))
+    index <- numobs[1]
+    n <- names[1]
+    s <- seasons[1]
+    for(i in 2:(length(numobs)-1)){
+      indices <- append(indices, list(c(index + 1, index + numobs[i])))
+      n <- c(n,names[index + 1])
+      s <- c(s,seasons[index + 1])
+      index <- c(index + numobs[i])
+    }
+    n <- c(n,names[index + 1])
+    s <- as.numeric(c(s,seasons[index + 1]))
+    indices <- append(indices, list(c(index + 1, index + 1 + numobs[length(numobs)])))
+
+    len <- lenTot - (r-1)
+    row <- length(max(numobs, na.rm = T))
+
+    #Collecting data
+    sdb <- list(names = n,
+                seasons = s,
                 numobs = numobs,
-                isotimes = array(TC_data_base[,sdb_info@fields["isoTime"]],
-                                 dim = c(row,len)),
-                longitude = array(TC_data_base[,sdb_info@fields["lon"]],
-                                  dim = c(row,len)),
-                latitude = array(TC_data_base[,sdb_info@fields["lat"]],
-                                 dim = c(row,len)),
-                msw = array(TC_data_base[,sdb_info@fields["msw"]],
-                            dim = c(row,len)),
-                rmw = array(TC_data_base[,sdb_info@fields["rmw"]],
-                            dim = c(row,len)),
-                roci = array(TC_data_base[,sdb_info@fields["roci"]],
-                             dim = c(row,len)),
-                poci = array(TC_data_base[,sdb_info@fields["poci"]],
-                             dim = c(row,len)),
-                pres = array(TC_data_base[,sdb_info@fields["pressure"]],
-                             dim = c(row,len)),
-                sshs = array(TC_data_base[,sdb_info@fields["sshs"]],
-                             dim = c(row,len)))
+                isotimes = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["isoTime"]], type = "character"), dim = c(row, len)),
+                longitude = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["lon"]]), dim = c(row, len)),
+                latitude = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["lat"]]), dim = c(row, len)),
+                msw = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["msw"]]), dim = c(row, len)),
+                rmw = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["rmw"]]), dim = c(row, len)),
+                roci = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["roci"]]), dim = c(row, len)),
+                poci = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["poci"]]), dim = c(row, len)),
+                pres = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["pressure"]]), dim = c(row, len)),
+                sshs = array(lapply(X = indices, FUN = getDataCSV, sdb_fields = TC_data_base[r:lenTot,sdb_info@fields["sshs"]]), dim = c(row, len)))
+
+    if(verbose)
+      cat("=== DONE ===\n")
 
     return(sdb)
   }
@@ -152,19 +195,22 @@ loadData <- function(sdb_info, path){
 }
 
 
-# fields <- c("names" = "NAME",
-#            "seasons" = "SEASON",
-#            "isoTime" = "ISO_TIME",
-#            "lon" = "USA_LON",
-#            "lat" = "USA_LAT",
-#            "msw" = "USA_WIND",
-#            "rmw" = "USA_RMW",
-#            "roci" = "USA_ROCI",
-#            "pressure" = "USA_PRES",
-#            "poci" = "USA_POCI",
-#            "sshs" = "USA_SSHS",
-#            "numobs" = "NUMBER")
+# fields <- c("sid" = "SID",
+#             "names" = "NAME",
+#             "seasons" = "SEASON",
+#             "isoTime" = "ISO_TIME",
+#             "lon" = "USA_LON",
+#             "lat" = "USA_LAT",
+#             "msw" = "USA_WIND",
+#             "rmw" = "USA_RMW",
+#             "roci" = "USA_ROCI",
+#             "pressure" = "USA_PRES",
+#             "poci" = "USA_POCI",
+#             "sshs" = "USA_SSHS",
+#             "numobs" = "NUMBER")
 #
-# sdb_info <- initDatabase(url = "none", name = "ibtracs.ALL.list.v04r00.csv", fields = fields, format = ".csv")
-# tc <- loadData(sdb_info, "/home/baptiste/Desktop/Travail/StormR/data")
+# sdb_info <- initDatabase(url = "none", filename = "/home/baptiste/Desktop/Travail/StormR/data/ibtracs.SP.list.v04r00.csv", fields = fields, format = ".csv")
+#
+# tc <- loadData(sdb_info)
+
 
