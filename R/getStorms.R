@@ -361,8 +361,6 @@ retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
   #Removing NOT_NAMED storms
   indices <- indices[which(sdb$names[indices] != "NOT_NAMED")]
 
-  cat("\n\n",indices,"\n\n")
-
   #Removing TD if remove_TD == T
 
   if(remove_TD){
@@ -647,15 +645,16 @@ getStorms <- function(sdb = IBTRACS,
     stopifnot("No storms found. Please check compatibilities between inputs" = !is.null(unlist(storm.names)))
 
     #Initializing Storms object
-    sts <- Storms()
-    sts@seasons <- unlist(storm.seasons)
-    sts@nb.storms <- nb.storms
-    sts@buffer <- max_dist
-    sts@names <- unlist(storm.names)
-    sts@sshs <- unlist(storm.sshs)
-    sts@spatial.loi <- loi.sf
-    sts@spatial.loi.buffer <- loi.sf.buffer
-    sts@data <- storm.list
+    sts <- new(Class = "Storms",
+               nb.storms = nb.storms,
+               names = unlist(storm.names),
+               seasons = unlist(storm.seasons),
+               sshs = unlist(storm.sshs),
+               data = storm.list,
+               buffer = max_dist,
+               spatial.loi = loi.sf,
+               spatial.loi.buffer = loi.sf)
+
     names(sts@data) <- sts@names
     names(sts@names) <- sts@names
     names(sts@sshs) <- sts@names
