@@ -323,9 +323,9 @@ makeBuffer <- function(loi, buffer){
 #' Retrieving the matching indices of storms
 #'
 #' @noRd
-#' @param sdb ...
-#' @param filter_names character vector. Contains names input from the getStorms inputs
-#' @param filter_seasons numeric vector.  Contains seasons input from the getStorms inputs
+#' @param sdb Storms data base returned by loadData function
+#' @param filter_names character vector. Contains names input from the getStorms
+#' @param filter_seasons numeric vector.  Contains seasons input from the getStorms
 #' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
 #' and include cyclones only. Default value is set to TRUE.
 #'
@@ -351,7 +351,7 @@ retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
       ind <- c(ind, id)
     }
 
-    indices = intersect(indices,id)
+    indices = intersect(indices,ind)
     stopifnot("No storm(s) found "= !is.null(indices))
 
   }
@@ -376,25 +376,25 @@ retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
 
 #' Write data to initialize a Storms object
 #'
-#' Whether or not to add storm at n° index in TC_data in the upcomoing Storm object
+#' Whether or not to add a storm (with id index in TC_data) in the upcoming Storms object
 #'
 #' @noRd
 #' @param storm_list list of Storm object. To further integrate in a Storms object
 #' @param storm_names list of storm names. To further integrate in a Storms object
-#' @param storm_names list of cyclonic seasons. To further integrate in a Storms object
+#' @param storm_seasons list of cyclonic seasons. To further integrate in a Storms object
 #' @param storm_sshs list of storm sshs. To further integrate in a Storms object
-#' @param nb_storms numeric. number of storm to already integrate in a Storms object
-#' @param TC_data TC database
+#' @param nb_storms numeric. number of storm to further integrate in a Storms object
+#' @param TC_data Storm data base database returned by loadData function
 #' @param index numeric, index of the storm in the TC_data
 #' @param loi_sf_buffer sf object. Location of interest extended with buffer
 #' @param k numeric. linetype
 #'
-#' @return a list with 3 slots:
+#' @return a list with 4 slots:
 #'   \itemize{
 #'     \item list of storm objects
-#'     \item list of character
-#'     \item list of numeric
-#'     \item numeric
+#'     \item list of character (names of storms)
+#'     \item list of numeric (seasons of storms)
+#'     \item numeric vector (number of storms)
 #'   }
 writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_storms,
                        TC_data, index, loi_sf_buffer, k){
@@ -477,51 +477,51 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 }
 
 
+
+
+
 #' Initialize a Storms object
 #'
 #' This function returns a Storms object that
 #' gathers all the storms specified by the user
 #'
-#' @param sdb list. TC data base loaded from a stormDatabase object
+#' @param sdb Storms data base returned by loadData function. Default value is set to
+#' IBTRACS which is a data base provided by this package and based on the IBTrACS.All.v04r00.nc file
 #' @param loi Location of Interest. Must be either:
 #' \itemize{
 #' \item a SpatialPolygon (shapefile)
 #' \item a sf object
 #' \item a point of longitude/latitude coordinates provided in a numeric vector
-#' \item a character representing a country,
+#' \item a character representing a country (See Details section)
 #' }
 #' @param seasons numeric vector. Should be either one or a range of calendar
 #' years. For cyclones that formed in one year and dissipated in the following
-#' year, the latter should be used. It could also be a vector of cyclonic season provided
-#' that it has the same length as names input and matches the season of each storm
-#' listed in names input. Default value is set to c(1980, 2021)
-#' @param names character vector. Name(s) of storm(s). Default value is set to NULL,
-#' otherwise seasons and names must have the same length, and must match with
-#' a storm on the IBTrACS database
+#' year, the latter should be used
+#' @param names character vector. Names of storms. Default value is set to NULL.
 #' @param max_dist numeric. Indicates the buffer distance (in km) used to generate
 #' spatial.loi.buffer. Default value is set to 300km. This value also represents
 #' the maximum distance from the track of the storm where computations can be performed
-#' @param verbose numeric. Either 0, 1, 2 or 3. Whether or not the function must be verbose and display
-#' a text progress bar and informations about the process and/or outputs.
-#' \itemize{
-#' \item 0 Nothing will be displayed
-#' \item 1 Informations about the process are displayed
-#' \item 2 Outputs are also displayed
-#' \item 3 Additional helper guides to manipulate Storms objects are displayed
-#' }
-#' Default value is set to 3
 #' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
 #' and include cyclones only. Default value is set to TRUE.
+#' @param verbose numeric. Either 0, 1, 2 or 3. Whether or not the function must
+#' be verbose and display informations about the process, outputs, and additional notes
+#' \itemize{
+#' \item 0 Nothing is displayed
+#' \item 1 Informations about the process are displayed
+#' \item 2 Outputs are also displayed
+#' \item 3 Additional notes to manipulate Storms objects are also displayed
+#' }
+#' Default value is set to 2
 #'
 #' @returns a Storms object that gathers all storms that match the criteria given
 #' in the inputs
 #'
 #' @examples
 #' #Focus on a single storm
-#' pam <- getStorms(seasons = 2015, names = "PAM", loi = "Vanuatu")
+#' pam <- getStorms(loi = "Vanuatu", names = "PAM")
 #'
-#' #Focus on several storms over Vanuatu
-#' sts_nc <- getStorms(seasons = c(2003,2021), names = c("ERICA","NIRAN"), loi = "New Caledonia")
+#' #Focus on several storms over New Caledonia
+#' sts_nc <- getStorms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #'
 #' #Focus on every storms that occured in the WP basin between 2010 and 2020
 #' poly <- cbind(c(100, 180, 180, 100, 100),c(0, 0, 60, 60, 0))
@@ -532,10 +532,13 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #'
 #' @importFrom methods as
 #' @export
-getStorms <- function(sdb = IBTRACS, loi,
+getStorms <- function(sdb = IBTRACS,
+                      loi,
                       seasons = c(1980, as.numeric(format(Sys.time(),"%Y"))),
                       names = NULL,
-                      max_dist = 300, verbose = 3, remove_TD = TRUE){
+                      max_dist = 300,
+                      remove_TD = TRUE,
+                      verbose = 2){
 
   start_time <- Sys.time()
 
@@ -576,7 +579,6 @@ getStorms <- function(sdb = IBTRACS, loi,
                             filter_names = names,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
-
 
   if (verbose > 0 & length(indices) >= 1) {
     if(is.null(names) & length(seasons) == 2){
