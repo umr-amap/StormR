@@ -13,10 +13,14 @@ Choose the database to use within the package's functions
 \describe{
 \item{\code{url}}{character. Relative path to download the database}
 
-\item{\code{name}}{character. Name of the file of the database stored locally}
+\item{\code{filename}}{character. Name of the file of the database stored locally}
 
 \item{\code{format}}{character. Either ".nc" or ".csv"}
 
 \item{\code{fields}}{...}
+
+\item{\code{sdb}}{...}
+
+\item{\code{loaded}}{...}
 }}
 

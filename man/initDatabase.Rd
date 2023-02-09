@@ -7,17 +7,19 @@
 initDatabase(
   url =
     "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.ALL.v04r00.nc",
-  name = "IBTrACS.ALL.v04r00.nc",
+  filename = "/home/baptiste/Desktop/Travail/StormR/data/IBTrACS.ALL.v04r00.nc",
   format = ".nc",
-  fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
-    lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", roci = "usa_roci", pressure =
-    "usa_pres", poci = "usa_poci", sshs = "usa_sshs", numobs = "numobs")
+  fields = c(sid = "sid", names = "name", seasons = "season", isoTime = "iso_time", lon =
+    "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", roci = "usa_roci",
+    pressure = "usa_pres", poci = "usa_poci", sshs = "usa_sshs", numobs = "numobs")
 )
 }
 \arguments{
 \item{url}{...}
 
-\item{name}{...}
+\item{filename}{...}
+
+\item{format}{...}
 
 \item{fields}{...}
 }
