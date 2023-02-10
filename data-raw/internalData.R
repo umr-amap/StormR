@@ -2,6 +2,10 @@
 
 
 
+IBTRACS_sdb = initDatabase()
+IBTRACS = loadData(IBTRACS_sdb, "/home/baptiste/Desktop/Travail/StormR/data")
+
+
 knt2ms <- 0.514
 km <- 1000
 wgs84 <- 4326
@@ -36,4 +40,4 @@ pdiPalette <- rev(viridis::inferno(50))
 
 exposurePalette <- rev(viridis::viridis(50))
 
-usethis::use_data(knt2ms, km, wgs84, oceanColor, groundColor, Basins, sshs, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette, internal = TRUE, overwrite = T)
+usethis::use_data(IBTRACS_sdb, IBTRACS, knt2ms, km, wgs84, oceanColor, groundColor, Basins, sshs, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette, internal = TRUE, overwrite = T)

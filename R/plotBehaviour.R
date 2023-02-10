@@ -147,8 +147,7 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
   y.leg = ymin - size.map * 0.09
 
   #Plotting track
-  plotStorms(sts = sts, names = name,
-             xlim = c(xmin, xmax), ylim = c(ymin, ymax),
+  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
              reset_setting = FALSE)
 
   #Adding raster_product on map
@@ -203,7 +202,7 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
 
 
   #Adding track again (to emphazise)
-  plotTrack(sts@data[[name]], FALSE)
+  plotTrack(sts@data[[name]])
 
   #Adding labels
   if(labels)
