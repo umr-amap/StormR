@@ -444,11 +444,11 @@ computeAsymmetryBoose01 <- function(wind, x, y, vx, vy, vh, northenH){
   if(northenH){
     #Northern Hemisphere, t is clockwise
     angle <- atan2(y,x) - atan2(vy,vx)  + pi
-    direction <- angle - pi - 30*(pi/180)
+    direction <- acos(y/ sqrt(x**2 + y**2)) - pi/2 - 30*(pi/180)
   }else{
     #Southern Hemisphere, t is counterclockwise
     angle <- atan2(vy,vx) - atan2(y,x) + pi
-    direction <- angle + pi + 30*(pi/180)
+    direction <- acos(y/ sqrt(x**2 + y**2)) + pi/2 + 30*(pi/180)
   }
 
   #Convert direction into degree
@@ -477,20 +477,20 @@ computeAsymmetryBoose01 <- function(wind, x, y, vx, vy, vh, northenH){
 #' @return numeric vectors. Wind speed values (m/s) and wind directions (rad) at each (x,y) position
 computeAsymmetryClassic <- function(wind, x, y, vx, vy, vh, northenH){
 
-  direction <- wind
 
   if(northenH){
     #Northern Hemisphere, t is counterclockwise
     angle <- acos((- y * vx + x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
-    direction <- angle - pi - 30*(pi/180)
   }else{
     #Southern Hemisphere, t is clockwise
     angle <- acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
-    direction <- angle + pi + 30*(pi/180)
   }
 
-  #Convert direction into degree
-  direction <- direction * (180/pi)
+
+
+  direction <- computeAzimuth_vec(x,y) + 90 - 30
+  direction[direction < 0 ] <- direction[direction < 0] + 360
+  direction[direction > 360 ] <- direction[direction > 360] - 360
 
   wind <- wind + cos(angle) * vh
 
@@ -498,6 +498,22 @@ computeAsymmetryClassic <- function(wind, x, y, vx, vy, vh, northenH){
 }
 
 
+
+computeAzimuth <- function(x, y){
+
+  if(y >= 0){
+    d <- atan2(y, x) - pi/2
+  }else{
+    d <- atan2(y,x) + 2*pi - pi/2
+  }
+
+  if(d < 0){
+    d <- d + 2*pi
+  }
+
+  return(d*(180/pi))
+}
+computeAzimuth_vec <- Vectorize(computeAzimuth,vectorize.args = c("x","y"))
 
 
 
@@ -1026,6 +1042,7 @@ stormBehaviour_sp <- function(sts,
       #Computing coordinates to the eye of the storm for x and y axes
       x <- (terra::crds(raster.wind, na.rm = FALSE)[, 1] - dataTC$lon[j])
       y <- (terra::crds(raster.wind, na.rm = FALSE)[, 2] - dataTC$lat[j])
+
 
       #Computing distances to the eye of the storm in m
       dist.m <- terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
