@@ -8,7 +8,6 @@ plotStorms(
   sts,
   names = NULL,
   category = NULL,
-  map = NULL,
   labels = FALSE,
   by = 8,
   pos = 3,
@@ -30,9 +29,6 @@ are included in a Storms object, you can use "sts@names"}
 in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
 will consider every storm in sts. Otherwise it will consider only storms that
 reached category input}
-
-\item{map}{a shapefile or sf object. It will replace the default map if non NULL.
-Default value is set to NULL.}
 
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 

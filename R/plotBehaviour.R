@@ -98,22 +98,16 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'@returns NULL
 #'
 #' @examples
-#' #Plot MSW analytic raster for PAM 2015 in Vanuatu
-#' pam_msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
+#' #Plot MSW analytic raster for Pam (2015) in Vanuatu
+#' pam <- getStorms(loi = "Vanuatu", names = "PAM")
+#' pam_msw <- stormBehaviour_sp(pam)
 #' plotBehaviour(pam, pam_msw)
 #'
-#' #Plot PDI analytic raster for ERICA 2003 in New Caledonia
-#' erica_pdi <- terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
-#' plotBehaviour(sts_nc, erica_pdi)
+#' #Plot a 2D windspeed structure  for Pam (2015) in Vanuatu
+#' pam <- getStorms(loi = "Vanuatu", names = "PAM")
+#' pam_prof <- stormBehaviour_sp(pam, format = "profiles", verbose = 3)
+#' plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
 #'
-#' #Plot PDI analytic raster for NIRAN 2021 in New Caledonia
-#' niran_pdi <- terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
-#'                                     package = "StormR"))
-#' plotBehaviour(sts_nc, niran_pdi)
-#'
-#' #Plot 2D wind speed structure for ERICA 2003 at observation 93
-#' erica_profile78 <- terra::rast(system.file("extdata", "ERICA_profile78.tiff", package = "StormR"))
-#' plotBehaviour(sts_nc, erica_profile78, labels = TRUE)
 #'
 #'@export
 plotBehaviour <- function(sts,
