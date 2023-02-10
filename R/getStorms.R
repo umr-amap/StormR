@@ -654,7 +654,7 @@ getStorms <- function(sdb = IBTRACS,
                data = storm.list,
                buffer = max_dist,
                spatial.loi = loi.sf,
-               spatial.loi.buffer = loi.sf)
+               spatial.loi.buffer = loi.sf.buffer)
 
     names(sts@data) <- sts@names
     names(sts@names) <- sts@names

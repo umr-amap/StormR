@@ -7,29 +7,35 @@
 plotBehaviour(
   sts,
   raster_product,
+  color_palette = NULL,
   xlim = NULL,
   ylim = NULL,
   labels = FALSE,
   by = 8,
-  pos = 3,
-  color_palette = NULL
+  pos = 3
 )
 }
 \arguments{
 \item{sts}{Storms object}
 
 \item{raster_product}{Spatraster object. Name of the layer must be
-"stormName_product" where product is either MSW, PDI, or Exposure(1,2,3,4,5,All).
-It can also be "stormName_profileInd" where Ind stand for the observations if raster_product
-is a 2D wind speed structure}
+"stormName_product" where product is either "MSW", "PDI", "Exposure_min-max",
+"Profiles_index", "WindDirection_index" where "min" and "max" represent the
+threshold used to compute Exposure raster and index stands for the index of observation.}
+
+\item{color_palette}{character vector. Represents the color palette used for the plot.
+Default value is set to NULL, which will automatically choose a color palette
+provided by this package and depending on the product}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer}
+the plot extends according to the x bounding box of the spatial LOI buffer
+provided in sts}
 
 \item{ylim}{numeric vector. A set of latitude coordinates that controls the
 latitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the y bounding box of spatial.loi.buffer}
+the plot extends according to the y bounding box of the spatial LOI buffer
+provided in sts}
 
 \item{labels}{logical. Whether or not to plot ISO Times and name labels}
 
@@ -39,34 +45,24 @@ between each labeled observations. Ignored if labels == FALSE}
 
 \item{pos}{numeric. Must be between 1 and 4. Correspond to the position of
 labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
-Default value is set to 3}
-
-\item{color_palette}{character vector. Represents the color palette used for the plot.
-Default value is set to NULL, which will automatically choose a color palette
-depending on the product of raster_product}
+Default value is set to 3. Ignored if labels == FALSE}
 }
 \description{
-This function plots a rasterize product (Maximum Sustained Wind, Power
-Dissipation Index, Category Exposure, 2D wind speed structure at a given
-observation ...) associated with a storm contained in a Storms object
+This function plots a rasterize product (maximum sustained wind, power
+dissipation index, category exposure, or 2D wind speed structure and Wind direction at a given
+observation) associated with a storm contained in a Storms object
 alongside with its track
 }
 \examples{
-#Plot MSW analytic raster for PAM 2015 in Vanuatu
-pam_msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff",package = "StormR"))
+#Plot MSW analytic raster for Pam (2015) in Vanuatu
+pam <- getStorms(loi = "Vanuatu", names = "PAM")
+pam_msw <- stormBehaviour_sp(pam)
 plotBehaviour(pam, pam_msw)
 
-#Plot PDI analytic raster for ERICA 2003 in New Caledonia
-erica_pdi <- terra::rast(system.file("extdata", "ERICA_PDI.tiff",package = "StormR"))
-plotBehaviour(sts_nc, erica_pdi)
+#Plot a 2D windspeed structure  for Pam (2015) in Vanuatu
+pam <- getStorms(loi = "Vanuatu", names = "PAM")
+pam_prof <- stormBehaviour_sp(pam, format = "profiles", verbose = 3)
+plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
 
-#Plot PDI analytic raster for NIRAN 2021 in New Caledonia
-niran_pdi <- terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
-                                    package = "StormR"))
-plotBehaviour(sts_nc, niran_pdi)
-
-#Plot 2D wind speed structure for ERICA 2003 at observation 93
-erica_profile78 <- terra::rast(system.file("extdata", "ERICA_profile78.tiff", package = "StormR"))
-plotBehaviour(sts_nc, erica_profile78, labels = TRUE)
 
 }
