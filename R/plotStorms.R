@@ -51,19 +51,11 @@ getColors <- function(msw) {
 #'
 #' @noRd
 #' @param st Storm object
-#' @param whole_basin logical. Whether or not to plot the track onto the whole basin.
-#' Default value is set to `FALSE`. Otherwise, the plot focuses on the extent of
-#' `spatial.loi.buffer` of the Storms object in which st belongs
 #'
 #' @return NULL
-plotTrack <- function(st, whole_basin) {
+plotTrack <- function(st) {
 
-  if (whole_basin) {
-    cex <- 0.6
-  } else{
-    cex <- 1
-  }
-
+  cex <- 1
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
@@ -137,7 +129,6 @@ plotLabels <- function(st, by, pos) {
 #' @param names character vector
 #' @param category numeric vector
 #' @param map shapefile or sf object
-#' @param whole_basin logical
 #' @param labels logical
 #' @param by numeric
 #' @param pos numeric
@@ -147,7 +138,7 @@ plotLabels <- function(st, by, pos) {
 #' @param ylim numeric vector
 #' @param reset_setting logical
 #' @return NULL
-checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
+checkInputsPs <- function(sts, names, category, map, labels, by,
                           pos, legends, loi, xlim, ylim, reset_setting){
 
   #Checking sts input
@@ -188,7 +179,6 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
   }
 
   #Checking logical inputs
-  stopifnot("whole_basin must be logical" = identical(class(whole_basin), "logical"))
   stopifnot("legends must be logical" = identical(class(legends), "logical"))
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
@@ -227,9 +217,6 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
 #' reached category input
 #' @param map a shapefile or sf object. It will replace the default map if non NULL.
 #'  Default value is set to NULL.
-#' @param whole_basin logical. Whether or not to plot the track onto the whole basin.
-#' Default value is set to FALSE. Otherwise, the plot focuses on the extent of
-#' spatial.loi.buffer of sts
 #' @param loi logical. Whether or not to plot spatial.loi.buffer on the map
 #' Default value is set to TRUE.
 #' @param labels logical. Whether or not to plot ISO Times and name labels
@@ -244,11 +231,9 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
 #' longitude extent of the plot. Default value is set to NULL which will let
 #' the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
-#' Ignored if whole_basin is not NULL
 #' @param ylim numeric vector. A set of latitude coordinates that controls the
 #' latitude extent of the plot. Default value is set to NULL which will let
 #' the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
-#' Ignored if whole_basin is not NULL
 #' @param reset_setting logical. Whether the graphical parameter should be reset on exit. Default
 #' value is set to TRUE. It is usefull for the plotBehaviour function. We highly recommand not to change this
 #' input.
@@ -270,13 +255,13 @@ checkInputsPs <- function(sts, names, category, map, whole_basin, labels, by,
 #'
 #'
 #' @export
-plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_basin = FALSE,
-                       labels = FALSE, by = 8, pos = 3, legends = TRUE, loi = TRUE,
-                       xlim = NULL, ylim = NULL, reset_setting = TRUE){
+plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, labels = FALSE,
+                       by = 8, pos = 3, legends = TRUE, loi = TRUE, xlim = NULL,
+                       ylim = NULL, reset_setting = TRUE){
 
 
-  checkInputsPs(sts, names, category, map, whole_basin,
-              labels, by, pos, legends, loi, xlim, ylim, reset_setting)
+  checkInputsPs(sts, names, category, map, labels, by, pos, legends,
+                loi, xlim, ylim, reset_setting)
 
 
   if (!is.null(map)){
@@ -287,42 +272,30 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_bas
 
 
   #Handling spatial extent
-  if (whole_basin) {
-    ext <- terra::ext(Basins[sts@basin,1], Basins[sts@basin,2],
-                     Basins[sts@basin,3], Basins[sts@basin,4])
-
-    if (!is.null(xlim))
-      warning("xlim ignored")
-
-    if (!is.null(ylim))
-      warning("ylim ignored")
-
-  } else{
-
-    if(is.null(map)){
-      ext <- terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
-                       sf::st_bbox(sts@spatial.loi.buffer)$xmax,
-                       sf::st_bbox(sts@spatial.loi.buffer)$ymin,
-                       sf::st_bbox(sts@spatial.loi.buffer)$ymax)
-    }else{
-      ext <- terra::ext(sf::st_bbox(map)$xmin, sf::st_bbox(map)$xmax,
-                       sf::st_bbox(map)$ymin, sf::st_bbox(map)$ymax)
-    }
-
-
-    if (!is.null(xlim)) {
-      xlim <- xlim[order(xlim)]
-      ext$xmin <- xlim[1]
-      ext$xmax <- xlim[2]
-    }
-
-    if (!is.null(ylim)) {
-      ylim <- ylim[order(ylim)]
-      ext$ymin <- ylim[1]
-      ext$ymax <- ylim[2]
-    }
-
+  if(is.null(map)){
+    ext <- terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
+                      sf::st_bbox(sts@spatial.loi.buffer)$xmax,
+                      sf::st_bbox(sts@spatial.loi.buffer)$ymin,
+                      sf::st_bbox(sts@spatial.loi.buffer)$ymax)
+  }else{
+    ext <- terra::ext(sf::st_bbox(map)$xmin, sf::st_bbox(map)$xmax,
+                      sf::st_bbox(map)$ymin, sf::st_bbox(map)$ymax)
   }
+
+
+  if (!is.null(xlim)) {
+    xlim <- xlim[order(xlim)]
+    ext$xmin <- xlim[1]
+    ext$xmax <- xlim[2]
+  }
+
+  if (!is.null(ylim)) {
+    ylim <- ylim[order(ylim)]
+    ext$ymin <- ylim[1]
+    ext$ymax <- ylim[2]
+  }
+
+
 
   #Plotting base map
   #grDevices::dev.new(width = 10, height = 9)
@@ -381,13 +354,13 @@ plotStorms <- function(sts, names = NULL, category = NULL, map = NULL, whole_bas
 
   #Plotting track(s) and labels
   if (is.null(names)) {
-    lapply(sts.aux, plotTrack, whole_basin)
+    lapply(sts.aux, plotTrack)
     if (labels)
       lapply(sts.aux, plotLabels, by, pos)
 
   } else{
     for(n in names){
-      plotTrack(sts.aux[[n]], whole_basin)
+      plotTrack(sts.aux[[n]])
       if (labels)
         plotLabels(sts.aux[[n]], by, pos)
     }

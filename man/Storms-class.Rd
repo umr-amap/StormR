@@ -16,7 +16,7 @@ Gather all the needed informations to model a set of storms
 \describe{
 \item{\code{data}}{A list of Storm objects}
 
-\item{\code{time.period}}{numeric vector. (Range of the) cyclonic seasons of Storms available
+\item{\code{seasons}}{numeric vector. (Range of the) cyclonic seasons of Storms available
 in \code{data}}
 
 \item{\code{names}}{character vector. Names of Storms available in data}
@@ -25,10 +25,6 @@ in \code{data}}
 for all storms available in data}
 
 \item{\code{nb.storms}}{numeric. Total number of storms available in data}
-
-\item{\code{basin}}{character. Basin in which the Storms have occured}
-
-\item{\code{loi.basin}}{logical. Whether the Location Of Interest represents the whole basin or not}
 
 \item{\code{spatial.loi}}{sf object. Represents the location of interest. Projection is EPSG:4326}
 
