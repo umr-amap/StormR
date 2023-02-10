@@ -22,6 +22,7 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 
   #Checking raster_product
   stopifnot("no data to plot" = !missing(raster_product))
+  stopifnot("Raster stack are not allowed. Please subset your desired layer" = terra::nlyr(raster_product) == 1)
 
   #Checking xlim input
   if (!is.null(xlim)) {
@@ -65,32 +66,35 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 
 #'Plot rasterized information storm behaviour
 #'
-#'This function plots a rasterize product (Maximum Sustained Wind, Power
-#'Dissipation Index, Category Exposure, 2D wind speed structure at a given
-#'observation ...) associated with a storm contained in a Storms object
+#'This function plots a rasterize product (maximum sustained wind, power
+#'dissipation index, category exposure, or 2D wind speed structure and Wind direction at a given
+#'observation) associated with a storm contained in a Storms object
 #'alongside with its track
 #'
 #'@param sts Storms object
 #'@param raster_product Spatraster object. Name of the layer must be
-#'  "stormName_product" where product is either MSW, PDI, or Exposure(1,2,3,4,5,All).
-#'  It can also be "stormName_profileInd" where Ind stand for the observations if raster_product
-#'  is a 2D wind speed structure
+#'  "stormName_product" where product is either "MSW", "PDI", "Exposure_min-max",
+#'  "Profiles_index", "WindDirection_index" where "min" and "max" represent the
+#'   threshold used to compute Exposure raster and index stands for the index of observation.
+#'@param color_palette character vector. Represents the color palette used for the plot.
+#'  Default value is set to NULL, which will automatically choose a color palette
+#'  provided by this package and depending on the product
 #'@param xlim numeric vector. A set of longitude coordinates that controls the
 #'  longitude extent of the plot. Default value is set to NULL which will let
-#'  the plot extends according to the x bounding box of spatial.loi.buffer
+#'  the plot extends according to the x bounding box of the spatial LOI buffer
+#'  provided in sts
 #'@param ylim numeric vector. A set of latitude coordinates that controls the
 #'  latitude extent of the plot. Default value is set to NULL which will let
-#'  the plot extends according to the y bounding box of spatial.loi.buffer
+#'  the plot extends according to the y bounding box of the spatial LOI buffer
+#'  provided in sts
 #'@param labels logical. Whether or not to plot ISO Times and name labels
 #'@param by numeric. Defines the frequency at which labels are plotted for the
 #' 3-hourly records. Default value is set to 8 which represents a 24h time interval
 #' between each labeled observations. Ignored if labels == FALSE
 #'@param pos numeric. Must be between 1 and 4. Correspond to the position of
 #'  labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
-#'  Default value is set to 3
-#'@param color_palette character vector. Represents the color palette used for the plot.
-#'  Default value is set to NULL, which will automatically choose a color palette
-#'  depending on the product of raster_product
+#'  Default value is set to 3. Ignored if labels == FALSE
+#'
 #'@returns NULL
 #'
 #' @examples
@@ -112,14 +116,21 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #' plotBehaviour(sts_nc, erica_profile78, labels = TRUE)
 #'
 #'@export
-plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels = FALSE,
-                         by = 8, pos = 3, color_palette = NULL){
+plotBehaviour <- function(sts,
+                          raster_product,
+                          color_palette = NULL,
+                          xlim = NULL,
+                          ylim = NULL,
+                          labels = FALSE,
+                          by = 8,
+                          pos = 3){
 
 
   checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos, color_palette)
 
   name <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
   product <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
+
 
   if (!(name %in% sts@names))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
@@ -151,29 +162,35 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
              reset_setting = FALSE)
 
   #Adding raster_product on map
-  if (product == "MSW" | stringr::str_detect(product,"profile")) {
+  if(product == "MSW"){
 
     col <- mswSSHSPalette
     range <- c(17, 80)
-    if(product == "MSW"){
-      leg <- expression(paste("MSW (m.s" ^ "-1",")"))
+    leg <- expression(paste("MSW (m.s" ^ "-1",")"))
 
-    }else{
-      leg <- expression(paste("radial wind speed (m.s" ^ "-1",")"))
-    }
-
-  } else if (product == "PDI") {
+  }else if(product == "PDI"){
 
     col <- pdiPalette
     range <- c(0, max(terra::values(raster_product), na.rm = T))
     leg <- expression(paste("PDI"))
 
-
-  } else if (stringr::str_detect(product,"Exposure")) {
+  }else if(product == "Exposure"){
 
     col <- exposurePalette
     range <- c(0, max(terra::values(raster_product), na.rm = T))
     leg <- expression(paste("Time spent (h)"))
+
+  }else if(product == "Profiles"){
+
+    col <- mswSSHSPalette
+    range <- c(17, 80)
+    leg <- expression(paste("radial wind speed (m.s" ^ "-1",")"))
+
+  }else if(product == "WindDirection"){
+
+    col <- exposurePalette
+    range <- c(0, 360)
+    leg <- expression(paste("wind direction (degree)"))
 
   }
 
@@ -192,10 +209,7 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
        range = range,
        legend = TRUE,
        plg = list(loc = "bottom",
-                  ext = c(xmin,
-                          xmax,
-                          y.leg,
-                          y.leg-0.05),
+                  ext = c(xmin, xmax, y.leg, y.leg - size.map* 0.05),
                   cex = 0.7,
                   shrink = 0),
        add = T)
@@ -205,20 +219,40 @@ plotBehaviour <- function(sts, raster_product, xlim = NULL, ylim = NULL, labels 
   plotTrack(sts@data[[name]])
 
   #Adding labels
-  if(labels)
+  if(labels & product != "Profiles" & product != "WindDirection")
     plotLabels(sts@data[[name]],by,pos)
 
-  if(labels & stringr::str_detect(product,"profile")){
-    ind <- as.numeric(stringr::str_sub(product,8,nchar(product)))
-    graphics::text(
-      sts@data[[name]]@obs.all$lon[ind],
-      sts@data[[name]]@obs.all$lat[ind],
-      labels = paste(name,
-                     sts@data[[name]]@obs.all$iso.time[ind],
-                     sep = "\n"),
-      pos = pos,
-      cex = 0.6
-    )
+  if(labels & (product == "Profiles" | product == "WindDirection")){
+
+    ind <- as.numeric(strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][3])
+
+    if(round(ind) == ind){
+      #It is a real observation
+      graphics::text(sts@data[[name]]@obs.all$lon[ind],
+                     sts@data[[name]]@obs.all$lat[ind],
+                     labels = paste0(name,"\n", sts@data[[name]]@obs.all$iso.time[ind],
+                                     "\n(",ind,")"),
+                     pos = pos,
+                     cex = 0.6)
+    }else{
+      #It is an interpolated observation
+      indf <- floor(ind)
+      indc <- ceiling(ind)
+      pos2 <- switch(pos, "1" = 3, "2" = 4, "3" = 1, "4" = 2)
+      graphics::text(sts@data[[name]]@obs.all$lon[indf],
+                     sts@data[[name]]@obs.all$lat[indf],
+                     labels = paste0(name,"\n", sts@data[[name]]@obs.all$iso.time[indf],
+                                    "\n(",indf,")"),
+                     pos = pos,
+                     cex = 0.6)
+
+      graphics::text(sts@data[[name]]@obs.all$lon[indc],
+                     sts@data[[name]]@obs.all$lat[indc],
+                     labels = paste0(name,"\n", sts@data[[name]]@obs.all$iso.time[indc],
+                                     "\n(",indc,")"),
+                     pos = pos2,
+                     cex = 0.6)
+    }
   }
 
 }
