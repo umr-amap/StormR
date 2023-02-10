@@ -227,5 +227,3 @@ setMethod("collectData",
 # sdb_info_nc <- initDatabase(filename = "/home/baptiste/Desktop/Travail/StormR/data/IBTrACS.SP.v04r00.nc")
 # tc <- collectData(sdb_info)
 # tc_nc <- collectData(sdb_info_nc)
-
-
