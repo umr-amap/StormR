@@ -22,6 +22,9 @@
     <loc>/reference/Storm-class.html</loc>
   </url>
   <url>
+    <loc>/reference/StormDatabase-class.html</loc>
+  </url>
+  <url>
     <loc>/reference/Storms-class.html</loc>
   </url>
   <url>
@@ -35,6 +38,9 @@
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/initDatabase.html</loc>
   </url>
   <url>
     <loc>/reference/pam.html</loc>

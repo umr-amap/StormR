@@ -56,7 +56,6 @@ extracted from the Storms object .</p>
 <span>  names <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  category <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  map <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  whole_basin <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  labels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  by <span class="op">=</span> <span class="fl">8</span>,</span>
 <span>  pos <span class="op">=</span> <span class="fl">3</span>,</span>
@@ -92,12 +91,6 @@ reached category input</p></dd>
 Default value is set to NULL.</p></dd>
 
 
-<dt>whole_basin</dt>
-<dd><p>logical. Whether or not to plot the track onto the whole basin.
-Default value is set to FALSE. Otherwise, the plot focuses on the extent of
-spatial.loi.buffer of sts</p></dd>
-
-
 <dt>labels</dt>
 <dd><p>logical. Whether or not to plot ISO Times and name labels</p></dd>
 
@@ -127,15 +120,13 @@ Default value is set to TRUE.</p></dd>
 <dt>xlim</dt>
 <dd><p>numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
-Ignored if whole_basin is not NULL</p></dd>
+the plot extends according to the x bounding box of spatial.loi.buffer from sts input.</p></dd>
 
 
 <dt>ylim</dt>
 <dd><p>numeric vector. A set of latitude coordinates that controls the
 latitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
-Ignored if whole_basin is not NULL</p></dd>
+the plot extends according to the x bounding box of spatial.loi.buffer from sts input.</p></dd>
 
 
 <dt>reset_setting</dt>

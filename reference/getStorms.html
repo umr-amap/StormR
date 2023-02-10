@@ -50,45 +50,39 @@ gathers all the storms specified by the user</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getStorms</span><span class="op">(</span></span>
-<span>  basin <span class="op">=</span> <span class="st">"SP"</span>,</span>
-<span>  time_period <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1980</span>, <span class="fl">2022</span><span class="op">)</span>,</span>
-<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  loi <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sdb <span class="op">=</span> <span class="va">IBTRACS</span>,</span>
+<span>  <span class="va">loi</span>,</span>
+<span>  seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1980</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%Y"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  names <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_dist <span class="op">=</span> <span class="fl">300</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  remove_TD <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  remove_TD <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>basin</dt>
-<dd><p>character. Name of basin where the storms should be extracted.
-Default value is set to "SP"</p></dd>
-
-
-<dt>time_period</dt>
-<dd><p>numeric vector. Should be either one or a range of calendar
-years. For cyclones that formed in one year and dissipated in the following
-year, the latter should be used. It could also be a vector of cyclonic season provided
-that it has the same length as name input and matches the season of each storm
-listed in name input. Default value is set to c(1980, 2021)</p></dd>
-
-
-<dt>name</dt>
-<dd><p>character vector. Name(s) of storm(s). Default value is set to NULL,
-otherwise time_period and name must have the same length, and must match with
-a storm on the IBTrACS database</p></dd>
+    <dl><dt>sdb</dt>
+<dd><p>Storms data base returned by loadData function. Default value is set to
+IBTRACS which is a data base provided by this package and based on the IBTrACS.All.v04r00.nc file</p></dd>
 
 
 <dt>loi</dt>
-<dd><p>Location of Interest. Should be either:</p><ul><li><p>a SpatialPolygon (shapefile)</p></li>
+<dd><p>Location of Interest. Must be either:</p><ul><li><p>a SpatialPolygon (shapefile)</p></li>
 <li><p>a sf object</p></li>
 <li><p>a point of longitude/latitude coordinates provided in a numeric vector</p></li>
-<li><p>a character representing a country,</p></li>
-<li><p>a character representing the basin</p></li>
-</ul><p>Default value is set to NULL which will set the spatial.loi.buffer on the whole
-basin</p></dd>
+<li><p>a character representing a country (See Details section)</p></li>
+</ul></dd>
+
+
+<dt>seasons</dt>
+<dd><p>numeric vector. Should be either one or a range of calendar
+years. For cyclones that formed in one year and dissipated in the following
+year, the latter should be used</p></dd>
+
+
+<dt>names</dt>
+<dd><p>character vector. Names of storms. Default value is set to NULL.</p></dd>
 
 
 <dt>max_dist</dt>
@@ -97,14 +91,18 @@ spatial.loi.buffer. Default value is set to 300km. This value also represents
 the maximum distance from the track of the storm where computations can be performed</p></dd>
 
 
-<dt>verbose</dt>
-<dd><p>logical. Whether or not the function must be verbose and display
-a text progress bar. Default value is set to FALSE</p></dd>
-
-
 <dt>remove_TD</dt>
 <dd><p>logical. Whether or not to remove tropical depressions (&lt; 18 m/s)
 and include cyclones only. Default value is set to TRUE.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>numeric. Either 0, 1, 2 or 3. Whether or not the function must
+be verbose and display informations about the process, outputs, and additional notes</p><ul><li><p>0 Nothing is displayed</p></li>
+<li><p>1 Informations about the process are displayed</p></li>
+<li><p>2 Outputs are also displayed</p></li>
+<li><p>3 Additional notes to manipulate Storms objects are also displayed</p></li>
+</ul><p>Default value is set to 2</p></dd>
 
 </dl></div>
     <div id="value">
@@ -118,72 +116,341 @@ in the inputs</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#Focus on a single storm</span></span></span>
-<span class="r-in"><span><span class="va">pam</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>time_period <span class="op">=</span> <span class="fl">2015</span>, name <span class="op">=</span> <span class="st">"PAM"</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "PAM"</span>
+<span class="r-in"><span><span class="va">pam</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === getStorms processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Making buffer: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Searching for PAM storm ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -&gt; Identifying Storms: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Gathering storm(s) ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 2.936694 sec ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SUMMARY:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) LOI: Vanuatu </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Buffer size: 300 km</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs): yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Number of Storms: 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - SSHS - Number of observation within buffer:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PAM - 2015 - 5 - 20 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Focus on several storms over Vanuatu</span></span></span>
-<span class="r-in"><span><span class="va">sts_nc</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>time_period <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2003</span>,<span class="fl">2021</span><span class="op">)</span>, name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ERICA"</span>,<span class="st">"NIRAN"</span><span class="op">)</span>, loi <span class="op">=</span> <span class="st">"New Caledonia"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ERICA" "NIRAN"</span>
+<span class="r-in"><span><span class="co">#Focus on several storms over New Caledonia</span></span></span>
+<span class="r-in"><span><span class="va">sts_nc</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"New Caledonia"</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ERICA"</span>,<span class="st">"NIRAN"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === getStorms processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Making buffer: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Searching for ERICA NIRAN storms ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -&gt; Identifying Storms: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Gathering storm(s) ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 0.6734941 sec ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SUMMARY:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) LOI: New Caledonia </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Buffer size: 300 km</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs): yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Number of Storms: 2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - SSHS - Number of observation within buffer:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ERICA - 2003 - 4 - 19 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NIRAN - 2021 - 5 - 10 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Focus on every storms that occured in the WP basin between 2010 and 2020</span></span></span>
-<span class="r-in"><span><span class="va">sts_wp</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>basin <span class="op">=</span> <span class="st">"WP"</span>, time_period <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>,<span class="fl">2020</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Making buffer: Done</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Identifying Storms: Done</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Loading data: Done</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Gathering storms </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |==                                                                    |   4%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |==========                                                            |  14%  |                                                                              |==========                                                            |  15%  |                                                                              |===========                                                           |  15%  |                                                                              |===========                                                           |  16%  |                                                                              |============                                                          |  17%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |==============                                                        |  21%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  22%  |                                                                              |================                                                      |  23%  |                                                                              |=================                                                     |  24%  |                                                                              |=================                                                     |  25%  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |===================                                                   |  28%  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  29%  |                                                                              |=====================                                                 |  30%  |                                                                              |======================                                                |  31%  |                                                                              |======================                                                |  32%  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |========================                                              |  34%  |                                                                              |========================                                              |  35%  |                                                                              |=========================                                             |  35%  |                                                                              |=========================                                             |  36%  |                                                                              |==========================                                            |  37%  |                                                                              |==========================                                            |  38%  |                                                                              |===========================                                           |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  39%  |                                                                              |============================                                          |  40%  |                                                                              |============================                                          |  41%  |                                                                              |=============================                                         |  41%  |                                                                              |=============================                                         |  42%  |                                                                              |==============================                                        |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |===============================                                       |  44%  |                                                                              |===============================                                       |  45%  |                                                                              |================================                                      |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |=================================                                     |  48%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================                                  |  51%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |=====================================                                 |  54%  |                                                                              |======================================                                |  54%  |                                                                              |======================================                                |  55%  |                                                                              |=======================================                               |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  57%  |                                                                              |========================================                              |  58%  |                                                                              |=========================================                             |  58%  |                                                                              |=========================================                             |  59%  |                                                                              |==========================================                            |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |==========================================                            |  61%  |                                                                              |===========================================                           |  61%  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  63%  |                                                                              |=============================================                         |  64%  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |=================================================                     |  71%  |                                                                              |==================================================                    |  71%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%  |                                                                              |=====================================================                 |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  77%  |                                                                              |======================================================                |  78%  |                                                                              |=======================================================               |  78%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  79%  |                                                                              |========================================================              |  80%  |                                                                              |=========================================================             |  81%  |                                                                              |=========================================================             |  82%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |===========================================================           |  84%  |                                                                              |===========================================================           |  85%  |                                                                              |============================================================          |  85%  |                                                                              |============================================================          |  86%  |                                                                              |=============================================================         |  87%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |===============================================================       |  91%  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |====================================================================  |  98%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================| 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "NIDA"         "OMAIS"        "CONSON"       "CHANTHU"      "DIANMU"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [6] "MINDULLE"     "LIONROCK"     "KOMPASU"      "NAMTHEUN"     "MALOU"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [11] "MERANTI"      "FANAPI"       "MALAKAS"      "MEGI"         "CHABA"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "JAL"          "OMEKA"        "AERE"         "SONGDA"       "HAIMA"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [21] "MEARI"        "MA-ON"        "NOCK-TEN"     "MUIFA"        "MERBOK"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] "NANMADOL"     "TALAS"        "NORU"         "KULAP"        "ROKE"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "SONCA"        "NESAT"        "HAITANG"      "NALGAE"       "WASHI"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [36] "PAKHAR"       "SANVU"        "MAWAR"        "GUCHOL"       "TALIM"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] "DOKSURI"      "KHANUN"       "VICENTE"      "SAOLA"        "DAMREY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "HAIKUI"       "KIROGI"       "KAI-TAK"      "TEMBIN"       "BOLAVEN"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] "SANBA"        "JELAWAT"      "EWINIAR"      "GAEMI"        "MALIKSI"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [56] "PRAPIROON"    "MARIA"        "SON-TINH"     "BOPHA"        "WUKONG"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "SONAMU"       "YAGI"         "LEEPI"        "BEBINCA"      "RUMBIA"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [66] "SOULIK"       "CIMARON"      "JEBI"         "MANGKHUT"     "UTOR"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] "TRAMI"        "KONG-REY"     "TORAJI"       "MAN-YI"       "USAGI"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "PABUK"        "WUTIP"        "FITOW"        "SEPAT"        "DANAS"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] "NARI"         "WIPHA"        "FRANCISCO"    "LEKIMA"       "KROSA"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [86] "HAIYAN"       "LEHAR"        "KAJIKI"       "FAXAI"        "PEIPAH"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "TAPAH"        "HAGIBIS"      "NEOGURI"      "RAMMASUN"     "MATMO"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [96] "HALONG"       "NAKRI"        "FENGSHEN"     "KALMAEGI"     "FUNG-WONG"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] "KAMMURI"      "PHANFONE"     "VONGFONG"     "NURI"         "SINLAKU"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [106] "HAGUPIT"      "JANGMI"       "MEKKHALA"     "HIGOS"        "BAVI"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [111] "MAYSAK"       "HAISHEN"      "NOUL"         "DOLPHIN"      "KUJIRA"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [116] "CHAN-HOM"     "LINFA"        "NANGKA"       "SOUDELOR"     "MOLAVE"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [121] "GONI"         "ATSANI"       "ETAU"         "VAMCO"        "KROVANH"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] "DUJUAN"       "MUJIGAE"      "CHOI-WAN"     "KOPPU"        "CHAMPI"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [131] "IN-FA"        "MELOR"        "NEPARTAK"     "LUPIT"        "MIRINAE"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [136] "NIDA"         "OMAIS"        "CONSON"       "CHANTHU"      "DIANMU"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [141] "MINDULLE"     "LIONROCK"     "KOMPASU"      "NAMTHEUN"     "MERANTI"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [146] "MALAKAS"      "MEGI"         "CHABA"        "AERE"         "SARIKA"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] "HAIMA"        "MEARI"        "MA-ON"        "TOKAGE"       "NOCK-TEN"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [156] "MUIFA"        "MERBOK"       "NANMADOL"     "TALAS"        "NORU"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [161] "KULAP"        "SONCA"        "ROKE"         "NESAT"        "HAITANG"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [166] "NALGAE"       "BANYAN"       "HATO"         "PAKHAR"       "SANVU"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [171] "MAWAR"        "TALIM"        "DOKSURI"      "KHANUN"       "LAN"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [176] "SAOLA"        "DAMREY"       "HAIKUI"       "KIROGI"       "KAI-TAK"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [181] "TEMBIN"       "BOLAVEN"      "SANBA"        "JELAWAT"      "EWINIAR"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [186] "MALIKSI"      "GAEMI"        "PRAPIROON"    "MARIA"        "SON-TINH"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [191] "AMPIL"        "WUKONG"       "JONGDARI"     "SHANSHAN"     "YAGI"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [196] "BEBINCA"      "LEEPI"        "RUMBIA"       "SOULIK"       "CIMARON"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] "JEBI"         "MANGKHUT"     "BARIJAT"      "TRAMI"        "KONG-REY"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [206] "YUTU"         "USAGI"        "MAN-YI"       "PABUK"        "WUTIP"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [211] "MUN"          "DANAS"        "NARI"         "WIPHA"        "FRANCISCO"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [216] "LEKIMA"       "KROSA"        "BAILU"        "PODUL"        "KAJIKI"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [221] "LINGLING"     "PEIPAH"       "TAPAH"        "MITAG"        "HAGIBIS"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] "NEOGURI"      "BUALOI"       "BULBUL:MATMO" "HALONG"       "NAKRI"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [231] "FENGSHEN"     "KALMAEGI"     "FUNG-WONG"    "KAMMURI"      "PHANFONE"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [236] "VONGFONG"     "NURI"         "SINLAKU"      "HAGUPIT"      "JANGMI"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [241] "MEKKHALA"     "HIGOS"        "BAVI"         "MAYSAK"       "HAISHEN"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [246] "NOUL"         "DOLPHIN"      "KUJIRA"       "CHAN-HOM"     "LINFA"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [251] "NANGKA"       "SAUDEL"       "MOLAVE"       "GONI"         "ATSANI"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [256] "ETAU"         "VAMCO"       </span>
+<span class="r-in"><span><span class="va">poly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">180</span>, <span class="fl">180</span>, <span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">60</span>, <span class="fl">60</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wp</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">poly</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wp</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">wp</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wp</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">wp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sts_wp</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>loi <span class="op">=</span> <span class="va">wp</span>, seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>,<span class="fl">2020</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === getStorms processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Making buffer: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Searching storms from 2010 to 2020 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -&gt; Identifying Storms: 916 potential candidates...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Gathering storm(s) ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |=========                                                             |  14%  |                                                                              |==========                                                            |  14%  |                                                                              |==========                                                            |  15%  |                                                                              |===========                                                           |  15%  |                                                                              |===========                                                           |  16%  |                                                                              |============                                                          |  17%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |==============                                                        |  21%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  22%  |                                                                              |================                                                      |  23%  |                                                                              |=================                                                     |  24%  |                                                                              |=================                                                     |  25%  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |===================                                                   |  28%  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  29%  |                                                                              |=====================                                                 |  30%  |                                                                              |=====================                                                 |  31%  |                                                                              |======================                                                |  31%  |                                                                              |======================                                                |  32%  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |=======================                                               |  34%  |                                                                              |========================                                              |  34%  |                                                                              |========================                                              |  35%  |                                                                              |=========================                                             |  35%  |                                                                              |=========================                                             |  36%  |                                                                              |==========================                                            |  37%  |                                                                              |==========================                                            |  38%  |                                                                              |===========================                                           |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  39%  |                                                                              |============================                                          |  40%  |                                                                              |============================                                          |  41%  |                                                                              |=============================                                         |  41%  |                                                                              |=============================                                         |  42%  |                                                                              |==============================                                        |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |===============================                                       |  44%  |                                                                              |===============================                                       |  45%  |                                                                              |================================                                      |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |=================================                                     |  48%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%  |                                                                              |===================================                                   |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |===================================                                   |  51%  |                                                                              |====================================                                  |  51%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |=====================================                                 |  54%  |                                                                              |======================================                                |  54%  |                                                                              |======================================                                |  55%  |                                                                              |=======================================                               |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  57%  |                                                                              |========================================                              |  58%  |                                                                              |=========================================                             |  58%  |                                                                              |=========================================                             |  59%  |                                                                              |==========================================                            |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |==========================================                            |  61%  |                                                                              |===========================================                           |  61%  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  63%  |                                                                              |=============================================                         |  64%  |                                                                              |=============================================                         |  65%  |                                                                              |==============================================                        |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |=================================================                     |  71%  |                                                                              |==================================================                    |  71%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |===================================================                   |  74%  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%  |                                                                              |=====================================================                 |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  77%  |                                                                              |======================================================                |  78%  |                                                                              |=======================================================               |  78%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  79%  |                                                                              |========================================================              |  80%  |                                                                              |========================================================              |  81%  |                                                                              |=========================================================             |  81%  |                                                                              |=========================================================             |  82%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |===========================================================           |  84%  |                                                                              |===========================================================           |  85%  |                                                                              |============================================================          |  85%  |                                                                              |============================================================          |  86%  |                                                                              |=============================================================         |  86%  |                                                                              |=============================================================         |  87%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |===============================================================       |  91%  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |=================================================================     |  94%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |====================================================================  |  98%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================|  99%  |                                                                              |======================================================================| 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 10.0056 sec ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SUMMARY:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) LOI: sf object (use getLOI function for further informations(*) Buffer size: 300 km</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs): yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Number of Storms: 271 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - SSHS - Number of observation within buffer:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NIDA - 2009 - 5 - 99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         OMAIS - 2010 - 0 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CONSON - 2010 - 1 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CHANTHU - 2010 - 1 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DIANMU - 2010 - 0 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MINDULLE - 2010 - 1 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LIONROCK - 2010 - 0 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KOMPASU - 2010 - 3 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NAMTHEUN - 2010 - 0 - 23 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MALOU - 2010 - 0 - 67 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MERANTI - 2010 - 1 - 45 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FANAPI - 2010 - 3 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MALAKAS - 2010 - 2 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MEGI - 2010 - 5 - 103 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CHABA - 2010 - 4 - 83 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         GIRI - 2010 - 4 - 3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         JAL - 2010 - 0 - 14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         OMEKA - 2010 - 0 - 37 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AERE - 2011 - 0 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SONGDA - 2011 - 5 - 77 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAIMA - 2011 - 0 - 77 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MEARI - 2011 - 0 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MA-ON - 2011 - 4 - 93 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NOCK-TEN - 2011 - 1 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MUIFA - 2011 - 5 - 107 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MERBOK - 2011 - 1 - 55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NANMADOL - 2011 - 5 - 67 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TALAS - 2011 - 0 - 91 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NORU - 2011 - 0 - 43 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KULAP - 2011 - 0 - 37 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ROKE - 2011 - 4 - 95 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SONCA - 2011 - 2 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NESAT - 2011 - 4 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAITANG - 2011 - 0 - 27 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NALGAE - 2011 - 4 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         WASHI - 2011 - 0 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PAKHAR - 2012 - 0 - 41 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SANVU - 2012 - 1 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MAWAR - 2012 - 3 - 51 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         GUCHOL - 2012 - 4 - 81 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TALIM - 2012 - 0 - 31 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DOKSURI - 2012 - 0 - 37 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KHANUN - 2012 - 0 - 45 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         VICENTE - 2012 - 4 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SAOLA - 2012 - 2 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DAMREY - 2012 - 1 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAIKUI - 2012 - 1 - 67 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KIROGI - 2012 - 0 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KAI-TAK - 2012 - 1 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TEMBIN - 2012 - 4 - 97 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BOLAVEN - 2012 - 4 - 85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SANBA - 2012 - 5 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         JELAWAT - 2012 - 5 - 99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         EWINIAR - 2012 - 0 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         GAEMI - 2012 - 0 - 55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MALIKSI - 2012 - 0 - 43 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PRAPIROON - 2012 - 3 - 103 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MARIA - 2012 - 0 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SON-TINH - 2012 - 3 - 51 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BOPHA - 2012 - 5 - 103 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         WUKONG - 2012 - 0 - 41 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SONAMU - 2013 - 0 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         YAGI - 2013 - 0 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LEEPI - 2013 - 0 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BEBINCA - 2013 - 0 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         RUMBIA - 2013 - 1 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SOULIK - 2013 - 4 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CIMARON - 2013 - 0 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         JEBI - 2013 - 0 - 33 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MANGKHUT - 2013 - 0 - 27 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         UTOR - 2013 - 4 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         UNALA - 2013 - 0 - 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PEWA - 2013 - 1 - 62 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TRAMI - 2013 - 1 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KONG-REY - 2013 - 0 - 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TORAJI - 2013 - 0 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MAN-YI - 2013 - 0 - 37 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         USAGI - 2013 - 4 - 58 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PABUK - 2013 - 2 - 51 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         WUTIP - 2013 - 3 - 41 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FITOW - 2013 - 2 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SEPAT - 2013 - 0 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DANAS - 2013 - 4 - 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PHAILIN - 2013 - 5 - 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NARI - 2013 - 3 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         WIPHA - 2013 - 4 - 55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FRANCISCO - 2013 - 5 - 85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LEKIMA - 2013 - 5 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KROSA - 2013 - 3 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAIYAN - 2013 - 5 - 73 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LEHAR - 2013 - 1 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KAJIKI - 2014 - 0 - 23 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FAXAI - 2014 - 1 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PEIPAH - 2014 - 0 - 21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TAPAH - 2014 - 1 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAGIBIS - 2014 - 0 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NEOGURI - 2014 - 5 - 69 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         RAMMASUN - 2014 - 5 - 85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MATMO - 2014 - 2 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         GENEVIEVE - 2014 - 5 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HALONG - 2014 - 5 - 111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NAKRI - 2014 - 0 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FENGSHEN - 2014 - 1 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KALMAEGI - 2014 - 1 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FUNG-WONG - 2014 - 0 - 51 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KAMMURI - 2014 - 0 - 45 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PHANFONE - 2014 - 4 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         VONGFONG - 2014 - 5 - 97 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NURI - 2014 - 5 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SINLAKU - 2014 - 0 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAGUPIT - 2014 - 5 - 99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         JANGMI - 2014 - 0 - 37 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MEKKHALA - 2015 - 1 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HIGOS - 2015 - 4 - 43 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BAVI - 2015 - 0 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MAYSAK - 2015 - 5 - 85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAISHEN - 2015 - 0 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NOUL - 2015 - 5 - 77 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DOLPHIN - 2015 - 5 - 111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KUJIRA - 2015 - 0 - 37 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CHAN-HOM - 2015 - 4 - 103 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LINFA - 2015 - 1 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NANGKA - 2015 - 4 - 121 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HALOLA - 2015 - 2 - 116 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         IUNE - 2015 - 0 - 2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SOUDELOR - 2015 - 5 - 83 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MOLAVE - 2015 - 0 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         GONI - 2015 - 4 - 99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ATSANI - 2015 - 5 - 89 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KILO - 2015 - 4 - 97 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LOKE - 2015 - 1 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ETAU - 2015 - 0 - 33 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         VAMCO - 2015 - 0 - 17 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KROVANH - 2015 - 3 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DUJUAN - 2015 - 4 - 73 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MUJIGAE - 2015 - 4 - 43 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CHOI-WAN - 2015 - 1 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KOPPU - 2015 - 4 - 65 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CHAMPI - 2015 - 4 - 97 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         IN-FA - 2015 - 4 - 79 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MELOR - 2015 - 4 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NEPARTAK - 2016 - 5 - 55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LUPIT - 2016 - 0 - 13 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MIRINAE - 2016 - 1 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NIDA - 2016 - 1 - 33 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         OMAIS - 2016 - 1 - 41 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CONSON - 2016 - 0 - 55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CHANTHU - 2016 - 0 - 41 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DIANMU - 2016 - 0 - 21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MINDULLE - 2016 - 1 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LIONROCK - 2016 - 4 - 111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KOMPASU - 2016 - 0 - 21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NAMTHEUN - 2016 - 3 - 45 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MERANTI - 2016 - 5 - 55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MALAKAS - 2016 - 4 - 73 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MEGI - 2016 - 4 - 51 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CHABA - 2016 - 5 - 78 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SONGDA - 2016 - 4 - 75 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AERE - 2016 - 0 - 77 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SARIKA - 2016 - 4 - 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAIMA - 2016 - 5 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MEARI - 2016 - 2 - 45 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MA-ON - 2016 - 0 - 25 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TOKAGE - 2016 - 1 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NOCK-TEN - 2016 - 5 - 65 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MUIFA - 2017 - 0 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MERBOK - 2017 - 0 - 25 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NANMADOL - 2017 - 1 - 31 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TALAS - 2017 - 0 - 21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NORU - 2017 - 4 - 149 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KULAP - 2017 - 0 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SONCA - 2017 - 0 - 45 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ROKE - 2017 - 0 - 17 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NESAT - 2017 - 2 - 41 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAITANG - 2017 - 0 - 27 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NALGAE - 2017 - 0 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BANYAN - 2017 - 3 - 55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HATO - 2017 - 3 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PAKHAR - 2017 - 0 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SANVU - 2017 - 2 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MAWAR - 2017 - 0 - 23 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TALIM - 2017 - 4 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DOKSURI - 2017 - 2 - 43 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KHANUN - 2017 - 2 - 33 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LAN - 2017 - 4 - 65 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SAOLA - 2017 - 1 - 83 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DAMREY - 2017 - 2 - 31 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAIKUI - 2017 - 0 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KIROGI - 2017 - 0 - 23 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KAI-TAK - 2017 - 0 - 85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TEMBIN - 2017 - 2 - 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BOLAVEN - 2018 - 0 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SANBA - 2018 - 0 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         JELAWAT - 2018 - 4 - 83 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         EWINIAR - 2018 - 0 - 51 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MALIKSI - 2018 - 0 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         GAEMI - 2018 - 0 - 27 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PRAPIROON - 2018 - 1 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MARIA - 2018 - 5 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SON-TINH - 2018 - 0 - 87 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AMPIL - 2018 - 0 - 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         WUKONG - 2018 - 1 - 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         JONGDARI - 2018 - 2 - 99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HECTOR - 2018 - 4 - 30 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SHANSHAN - 2018 - 2 - 67 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         YAGI - 2018 - 0 - 67 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BEBINCA - 2018 - 0 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LEEPI - 2018 - 1 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         RUMBIA - 2018 - 0 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SOULIK - 2018 - 3 - 85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CIMARON - 2018 - 4 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         JEBI - 2018 - 5 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MANGKHUT - 2018 - 5 - 87 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BARIJAT - 2018 - 0 - 43 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TRAMI - 2018 - 5 - 87 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KONG-REY - 2018 - 5 - 77 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         YUTU - 2018 - 5 - 109 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         USAGI - 2018 - 2 - 157 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MAN-YI - 2018 - 2 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PABUK - 2018 - 0 - 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         WUTIP - 2019 - 5 - 85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MUN - 2019 - 0 - 27 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DANAS - 2019 - 0 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NARI - 2019 - 0 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ERICK - 2019 - 4 - 6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         WIPHA - 2019 - 0 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FRANCISCO - 2019 - 1 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LEKIMA - 2019 - 4 - 67 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KROSA - 2019 - 3 - 99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BAILU - 2019 - 0 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PODUL - 2019 - 0 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FAXAI - 2019 - 4 - 93 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KAJIKI - 2019 - 0 - 27 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LINGLING - 2019 - 4 - 67 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PEIPAH - 2019 - 0 - 41 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         TAPAH - 2019 - 1 - 51 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MITAG - 2019 - 2 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAGIBIS - 2019 - 5 - 73 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NEOGURI - 2019 - 2 - 57 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BUALOI - 2019 - 5 - 67 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BULBUL:MATMO - 2019 - 3 - 44 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HALONG - 2019 - 5 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NAKRI - 2019 - 1 - 51 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FENGSHEN - 2019 - 4 - 71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KALMAEGI - 2019 - 2 - 89 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         FUNG-WONG - 2019 - 1 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KAMMURI - 2019 - 4 - 85 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PHANFONE - 2019 - 3 - 79 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         VONGFONG - 2020 - 3 - 73 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NURI - 2020 - 0 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DOUGLAS - 2020 - 4 - 2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SINLAKU - 2020 - 0 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAGUPIT - 2020 - 1 - 47 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         JANGMI - 2020 - 0 - 25 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MEKKHALA - 2020 - 1 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HIGOS - 2020 - 0 - 27 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BAVI - 2020 - 3 - 53 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MAYSAK - 2020 - 4 - 69 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         HAISHEN - 2020 - 4 - 61 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NOUL - 2020 - 0 - 39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DOLPHIN - 2020 - 0 - 41 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         KUJIRA - 2020 - 1 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CHAN-HOM - 2020 - 1 - 81 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LINFA - 2020 - 0 - 23 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NANGKA - 2020 - 0 - 29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SAUDEL - 2020 - 1 - 79 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MOLAVE - 2020 - 3 - 59 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         GONI - 2020 - 5 - 97 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ATSANI - 2020 - 0 - 55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ETAU - 2020 - 0 - 35 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         VAMCO - 2020 - 4 - 63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
