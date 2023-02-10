@@ -28,9 +28,6 @@
     <loc>/reference/Storms-class.html</loc>
   </url>
   <url>
-    <loc>/reference/Unknow.html</loc>
-  </url>
-  <url>
     <loc>/reference/eezNC.html</loc>
   </url>
   <url>
@@ -52,7 +49,10 @@
     <loc>/reference/plotStorms.html</loc>
   </url>
   <url>
-    <loc>/reference/stormBehaviour.html</loc>
+    <loc>/reference/stormBehaviour_pt.html</loc>
+  </url>
+  <url>
+    <loc>/reference/stormBehaviour_sp.html</loc>
   </url>
   <url>
     <loc>/reference/sts_nc.html</loc>
