@@ -441,13 +441,17 @@ computeAsymmetryBoose01 <- function(wind, x, y, vx, vy, vh, northenH){
 
   if(northenH){
     #Northern Hemisphere, t is clockwise
-    angle <- atan2(y,x) - atan2(vy,vx)  + pi
+    #angle <- atan2(y,x) - atan2(vy,vx)  + pi
+    angle <- atan2(y,x) - atan2(vy,vx) + 2*pi
   }else{
     #Southern Hemisphere, t is counterclockwise
-    angle <- atan2(vy,vx) - atan2(y,x) + pi
+    angle <- atan2(y,x) - atan2(vy,vx) + 2*pi
   }
 
-  wind <- wind - (1 - sin(angle))*(vh/3.6)/2
+  angle[angle < 0] = angle[angle < 0] + 2*pi
+  angle[angle > 2*pi] = angle[angle > 2*pi] - 2*pi
+
+  wind <- wind - (1 - sin(angle))*(vh*3.6)/2
 
   return(wind)
 }
@@ -518,12 +522,38 @@ computeDirection <- function(x, y, northenH){
 computeDirection_vec <- Vectorize(computeDirection,vectorize.args = c("x","y"))
 #
 # {
-# angle <- terra::rast(xmin = 166, xmax = 172, ymin = -18, ymax = -12, resolution = 0.02, vals = NA)
-# x <- terra::crds(angle, na.rm = FALSE)[, 1] - 169
-# y <- terra::crds(angle, na.rm = FALSE)[, 2] - -15
-# ad <- angle
-# terra::values(ad) <- computeDirection_vec(x,y, FALSE)
-# plot(ad)
+# xmin <- 166
+# xmax <- 172
+# ymin <- -18
+# ymax <- -12
+# lon <- 169
+# lat <- -15
+# angle <- terra::rast(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, resolution = 0.02, vals = NA)
+# vx <-  0.25
+# vy <-  -0.25
+# x <- terra::crds(angle, na.rm = FALSE)[, 1] - lon
+# y <- terra::crds(angle, na.rm = FALSE)[, 2] - lat
+# dist.m <- terra::distance(x = terra::crds(angle, na.rm = FALSE)[, ],
+#                           y = cbind(lon, lat), lonlat = T)
+# wind <- angle
+# as <- wind
+#
+# terra::values(wind) <- Willoughby(msw = 70, lat = lat ,r = dist.m * 0.001, rmw = 20)
+# #terra::values(angle) <-  acos((y * vx - x * vy) / (sqrt(vx**2 + vy**2) * sqrt(x**2 + y**2)))
+#
+# #BOOSE
+# #terra::values(angle) <- atan2(vy,vx) - atan2(y,x) + 2*pi
+# terra::values(angle) <- atan2(y,x) - atan2(vy,vx) + 2*pi
+# terra::values(angle)[terra::values(angle) < 0] = terra::values(angle)[terra::values(angle) < 0] + 2*pi
+# terra::values(angle)[terra::values(angle) > 2*pi] = terra::values(angle)[terra::values(angle) > 2*pi] - 2*pi
+# terra::values(angle) <- terra::values(angle)*180/pi
+# plot(angle)
+# lines(c(lon,lon+vx), c(lat,lat+vy))
+#
+# terra::values(as) <- computeAsymmetryBoose01(terra::values(wind),x,y,vx,vy,5,TRUE)
+# plot(wind)
+# plot(as)
+# lines(c(lon,lon+vx), c(lat,lat+vy))
 # }
 
 
