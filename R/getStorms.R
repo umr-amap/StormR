@@ -402,12 +402,10 @@ retrieveStorms <- function(sdb, filter_names, filter_seasons, remove_TD){
 writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_storms,
                        TC_data, index, loi_sf_buffer, k){
 
-  #Getting number of observations
-  numobs <- TC_data$numobs[index]
 
   #Getting lon/lat coordinates
-  lon <- TC_data$longitude[1:numobs, index]
-  lat <- TC_data$latitude[1:numobs, index]
+  lon <- TC_data$longitude[, index]
+  lat <- TC_data$latitude[, index]
   coords <- data.frame(lon = lon, lat = lat)
 
   #Keep only non NA data (that are either the first or last observations)
