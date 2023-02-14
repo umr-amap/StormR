@@ -9,7 +9,7 @@ stormBehaviour_sp(
   product = "MSW",
   wind_threshold = NULL,
   method = "Willoughby",
-  asymmetry = "Classic",
+  asymmetry = "Boose01",
   empirical_rmw = FALSE,
   format = "analytic",
   space_res = "2.5min",
@@ -42,7 +42,6 @@ the computations, that is either
 \itemize{
 \item "None", no asymmetry
 \item "Boose01", first version
-\item "Classic, second version
 }
 Default value is set to "None".}
 
