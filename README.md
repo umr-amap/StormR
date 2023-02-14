@@ -103,10 +103,6 @@ $\textbf{Version 1 (Boose et al. 2001 version)}$ <br />
 Insert comments here  <br />
 $v_{r_{as}} = v_r - S(1-\sin(\alpha))\frac{v_h}{2}$
 
-$\textbf{Version 2}$ <br />
-Insert comments here  <br />
-$v_{r_{as}} = v_{r_{|v_h}} + v_h\cos(\theta)$
-
 where <br />
 $v_{r_{as}} \quad$ New radial wind speed with asymmetry $(m.s^{-1})$ <br />
 $v_r \quad$ Former radial wind speed without asymmetry $(m.s^{-1})$ <br />
@@ -116,10 +112,7 @@ have been computed substracting $v_h$ to $msw$ i.e $v_{max} = msw-v_h$ in the in
 $S$ Asymmetry coefficient (usually set to 1) <br />
 $\alpha \quad$ Angle between the storm direction and the point where $v_{r_{as}}$ is computed.
 Clockwise in Nothern hemisphere, counterclokwise in Southern hemisphere. <br />
-$\theta \quad$ Angle between the storm direction and the direction of radial wind speed at the point where $v_{r_{as}} \quad$ is computed <br />
 
-
-Insert comments about the differences here? <br />
 
 
 ## Products
@@ -284,10 +277,10 @@ loi <- sf::st_sf(pol, crs = 4326)
 #Load the data for the tropical cyclone Harold which hit the Vanuatu in 2020
 harold <- getStorms(seasons = 2020, names= "HAROLD", loi = loi)
 
-#Compute wind profiles using Willoughby model with version 1 of asymmetry
-profWillV1 <- stormBehaviour_sp(harold, format = "profiles", asymmetry = "V1")
+#Compute wind profiles using Willoughby model with asymmetry
+profWillV1 <- stormBehaviour_sp(harold, format = "profiles")
 
-#Compute wind profiles using Holland model with version 2 of asymmetry
+#Compute wind profiles using Holland model with asymmetry
 profHollV2 <- stormBehaviour_sp(harold, format = "profiles", method = "Holland")
 
 #Compare few profiles between the two above differents methods and asymmetries

@@ -155,7 +155,7 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01", "Classic"))
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Checking empirical_rmw input
@@ -262,8 +262,6 @@ getIndices <- function(st, offset, format){
 #' @noRd
 #' @param st Storm object
 #' @param indices numeric vector extracted from getIndices
-#' @param asymmetry character. Which version of asymmetry. If "Classic", it substract
-#' velocity of storm to maximum sustained windspeed for the further computations
 #' @param empirical_rmw logical. Whether to use rmw from the data or to compute them
 #' according to getRmw function
 #' @param method character. method input from stormBehaviour_sp
@@ -281,7 +279,7 @@ getIndices <- function(st, offset, format){
 #'    \item vx.deg: numeric. Velocity of the speed in the x direction (deg/h)
 #'    \item vy.deg: numeric Velocity of the speed in the y direction (deg/h)
 #'  }
-getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method){
+getDataInterpolate <- function(st, indices, dt, empirical_rmw, method){
 
 
   len.indices <- length(indices)
@@ -319,6 +317,7 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
   data$indices <- ind
   data$isoTimes <- isoT
 
+
   lon <- st@obs.all$lon[indices]
   lat <- st@obs.all$lat[indices]
 
@@ -337,17 +336,15 @@ getDataInterpolate <- function(st, indices, dt, asymmetry, empirical_rmw, method
     vy.deg[i] <- (lat[i + 1] - lat[i]) / 3
   }
 
-  if(asymmetry == "Classic"){
-    data$msw[indices.obs] <- st@obs.all$msw[indices] - storm.speed
-  }else{
-    data$msw[indices.obs] <- st@obs.all$msw[indices]
-  }
+
+  data$msw[indices.obs] <- st@obs.all$msw[indices]
+
 
   if(empirical_rmw){
     data$rmw[indices.obs] <- getRmw(data$msw[indices.obs], lat)
   }else{
     if(all(is.na(st@obs.all$rmw[indices]))){
-      warning("Missing rmw data to perform model. Consider setting empirical_rmw to TRUE")
+      warning("Missing rmw data to perform model. empirical_rmw set to TRUE")
       data$rmw[indices.obs] <- getRmw(data$msw[indices.obs], lat)
     }else{
       data$rmw[indices.obs] <- st@obs.all$rmw[indices]
@@ -483,22 +480,6 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 
     wind <- wind - (1 - sin(angle)) * vh/2
 
-  }else{
-    # azimuth <- -(atan2(y, x) - pi/2)
-    #
-    #
-    # azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
-    #
-    # if(northenH){
-    #   direction <- azimuth  + pi/2 + 30*pi/180
-    # }else{
-    #   direction <- azimuth  - pi/2 - 30*pi/180
-    # }
-    #
-    # direction[direction < 0] = direction[direction < 0] + 2*pi
-    # direction[direction > 2*pi] = direction[direction > 2*pi] - 2*pi
-    #
-    # wind <- wind + cos(direction) * vh
   }
 
   return(wind)
@@ -888,7 +869,6 @@ maskProduct <- function(final_stack, loi, template){
 #'   \itemize{
 #'   \item "None", no asymmetry
 #'   \item "Boose01", first version
-#'   \item "Classic, second version
 #'   }
 #'  Default value is set to "None".
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
@@ -947,7 +927,7 @@ stormBehaviour_sp <- function(sts,
                            product = "MSW",
                            wind_threshold = NULL,
                            method = "Willoughby",
-                           asymmetry = "Classic",
+                           asymmetry = "Boose01",
                            empirical_rmw = FALSE,
                            format = "analytic",
                            space_res = "2.5min",
@@ -1023,7 +1003,7 @@ stormBehaviour_sp <- function(sts,
     dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Getting data associated with storm st
-    dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
+    dataTC <- getDataInterpolate(st, ind, dt, empirical_rmw, method)
 
 
     nb.step <- dim(dataTC)[1] - 1
@@ -1211,7 +1191,7 @@ checkInputsUnknow <- function(sts, points, product, wind_threshold, method, asym
   stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01", "Classic"))
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Checking empirical_rmw input
@@ -1405,7 +1385,6 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'   \itemize{
 #'     \item "None", no asymmetry
 #'     \item "Boose01", first version
-#'     \item "Classic, second version
 #'   }
 #'  Default value is set to "None".
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
@@ -1440,7 +1419,7 @@ stormBehaviour_pt <- function(sts,
                               product = "TS",
                               wind_threshold = NULL,
                               method = "Willoughby",
-                              asymmetry = "Classic",
+                              asymmetry = "Boose01",
                               empirical_rmw = FALSE,
                               time_res = 1){
 
@@ -1464,7 +1443,7 @@ stormBehaviour_pt <- function(sts,
     dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Getting data associated with storm st
-    dataTC <- getDataInterpolate(st, ind, dt, asymmetry, empirical_rmw, method)
+    dataTC <- getDataInterpolate(st, ind, dt, empirical_rmw, method)
 
 
     #Computing distances from the eye of storm for every observations x, and
