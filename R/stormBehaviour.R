@@ -464,9 +464,9 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
     azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
 
     if(northenH){
-      direction <- azimuth  - pi - 30*pi/180
+      direction <- azimuth  + pi/2 + 30*pi/180
     }else{
-      direction <- azimuth  + pi + 30*pi/180
+      direction <- azimuth  - pi/2 - 30*pi/180
     }
 
     direction[direction < 0] = direction[direction < 0] + 2*pi
@@ -511,64 +511,63 @@ computeDirection <- function(x, y, northenH){
 
 
 
-{
-northenH = FALSE
-xmin <- 166
-xmax <- 172
-ymin <- -18
-ymax <- -12
-lon <- 169
-lat <- -15
-angle <- terra::rast(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, resolution = 0.02, vals = NA)
-vx <-  0.25
-vy <-  -0.25
-x <- terra::crds(angle, na.rm = FALSE)[, 1] - lon
-y <- terra::crds(angle, na.rm = FALSE)[, 2] - lat
-dist.m <- terra::distance(x = terra::crds(angle, na.rm = FALSE)[, ],
-                           y = cbind(lon, lat), lonlat = T)
-wind <- angle
-as <- wind
-
-terra::values(wind) <- Willoughby(msw = 70, lat = lat ,r = dist.m * 0.001, rmw = 20)
-
-
-##BOOSE
-#terra::values(angle) <- atan2(vy,vx) - atan2(y,x) + 2*pi
-#terra::values(angle) <- atan2(y,x) - atan2(vy,vx) + 2*pi
-#terra::values(angle)[terra::values(angle) < 0] = terra::values(angle)[terra::values(angle) < 0] + 2*pi
-#terra::values(angle)[terra::values(angle) > 2*pi] = terra::values(angle)[terra::values(angle) > 2*pi] - 2*pi
-#terra::values(angle) <- terra::values(angle)*180/pi
-#plot(angle)
-#lines(c(lon,lon+vx), c(lat,lat+vy))
-#terra::values(as) <- computeAsymmetry("Boose01",terra::values(wind),x,y,vx,vy,5,FALSE)
-
-#V2
-azimuth <- -(atan2(y, x) - pi/2)
-azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
-
-if(northenH){
-  terra::values(angle) <- azimuth - pi
-}else{
-  terra::values(angle) <- azimuth + pi
-}
-
-terra::values(angle)[terra::values(angle) < 0] = terra::values(angle)[terra::values(angle) < 0] + 2*pi
-terra::values(angle)[terra::values(angle) > 2*pi] = terra::values(angle)[terra::values(angle) > 2*pi] - 2*pi
-terra::values(angle) <- terra::values(angle)*180/pi
-plot(angle)
-lines(c(lon,lon+vx), c(lat,lat+vy))
-
-dir <- angle
-terra::values(dir) <- cos(terra::values(angle))
-plot(dir)
-lines(c(lon,lon+vx), c(lat,lat+vy))
-terra::values(as) <- computeAsymmetry("Classic",terra::values(wind),x,y,vx,vy,5,northenH)
-
-
-plot(wind)
-plot(as)
-lines(c(lon,lon+vx), c(lat,lat+vy))
-}
+# {
+# northenH = TRUE
+# xmin <- 166
+# xmax <- 172
+# ymin <- 12
+# ymax <- 18
+# lon <- 169
+# lat <- 15
+# angle <- terra::rast(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, resolution = 0.02, vals = NA)
+# vx <-  0.25
+# vy <-  -0.25
+# x <- terra::crds(angle, na.rm = FALSE)[, 1] - lon
+# y <- terra::crds(angle, na.rm = FALSE)[, 2] - lat
+# dist.m <- terra::distance(x = terra::crds(angle, na.rm = FALSE)[, ],
+#                            y = cbind(lon, lat), lonlat = T)
+# wind <- angle
+# as <- wind
+#
+# terra::values(wind) <- Willoughby(msw = 70, lat = lat ,r = dist.m * 0.001, rmw = 20)
+#
+#
+# ##BOOSE
+# #terra::values(angle) <- atan2(vy,vx) - atan2(y,x) + 2*pi
+# #terra::values(angle) <- atan2(y,x) - atan2(vy,vx) + 2*pi
+# #terra::values(angle)[terra::values(angle) < 0] = terra::values(angle)[terra::values(angle) < 0] + 2*pi
+# #terra::values(angle)[terra::values(angle) > 2*pi] = terra::values(angle)[terra::values(angle) > 2*pi] - 2*pi
+# #terra::values(angle) <- terra::values(angle)*180/pi
+# #plot(angle)
+# #lines(c(lon,lon+vx), c(lat,lat+vy))
+# #terra::values(as) <- computeAsymmetry("Boose01",terra::values(wind),x,y,vx,vy,5,FALSE)
+#
+# #V2
+# azimuth <- -(atan2(y, x) - pi/2)
+# azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
+#
+# if(northenH){
+#   terra::values(angle) <- azimuth - pi/2
+# }else{
+#   terra::values(angle) <- azimuth - pi/2
+# }
+#
+# terra::values(angle)[terra::values(angle) < 0] = terra::values(angle)[terra::values(angle) < 0] + 2*pi
+# terra::values(angle)[terra::values(angle) > 2*pi] = terra::values(angle)[terra::values(angle) > 2*pi] - 2*pi
+# terra::values(angle) <- terra::values(angle)*180/pi
+# terra::plot(angle)
+# lines(c(lon,lon+vx), c(lat,lat+vy))
+#
+# dir <- angle
+# terra::values(dir) <- cos(terra::values(angle))
+# terra::plot(dir)
+# lines(c(lon,lon+vx), c(lat,lat+vy))
+#
+# terra::values(as) <- computeAsymmetry("Classic",terra::values(wind),x,y,vx,vy,5,northenH)
+# terra::plot(wind)
+# terra::plot(as)
+# lines(c(lon,lon+vx), c(lat,lat+vy))
+# }
 
 
 
