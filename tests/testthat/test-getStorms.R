@@ -3,33 +3,223 @@
 
 test_that("Tests invalid inputs", {
 
+  #Checking sdb input
+  expect_error(checkInputsGs(loi = NULL,
+                             seasons = c(1980, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  #Checking loi input
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             seasons = c(1980, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = c("Vanuatu", "New Caledonia"),
+                             seasons = c(1980, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = 169,
+                             seasons = c(1980, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = c(169,170,-15,-14),
+                             seasons = c(1980, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = c(169,170,-15,-14),
+                             seasons = c(1980, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = c(169,-100),
+                             seasons = c(1980, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = c(-180,-15),
+                             seasons = c(1980, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
 
   #Checking seasons input
-  expect_error(getStorms(loi = "Vanuatu", seasons = "hui"))
-  expect_error(getStorms(loi = "Vanuatu", seasons = 2015.6, names = "PAM"))
-  expect_error(getStorms(loi = "Vanuatu", seasons = c(1850,2020)))
-  expect_error(getStorms(loi = "Vanuatu", seasons = c(2000,2030)))
-  expect_error(getStorms(loi = "Vanuatu", seasons =  c(2000,2005,2020)))
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1960, 2022),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2024),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = 2015.7,
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = TRUE,
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = "2015",
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
 
   #Checking names input
-  expect_error(getStorms(loi = "Vanuatu", seasons = 2010, names = 1))
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = TRUE,
+                             names = 123,
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = TRUE,
+                             names = TRUE,
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2000, 2020),
+                             names = NULL,
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = TRUE))
 
 
   #Checking max_dist input
-  expect_error(getStorms(loi = c(165,-17), seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         max_dist = "hui"))
-  expect_error(getStorms(loi = c(165,-17), seasons = c(2016,2015), names = c("WINSTON","PAM"),
-                         max_dist = c(1,3)))
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = "hui",
+                             verbose = 2,
+                             remove_TD = TRUE))
 
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = c(1,3),
+                             verbose = 2,
+                             remove_TD = TRUE))
 
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = -10,
+                             verbose = 2,
+                             remove_TD = TRUE))
 
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = TRUE,
+                             verbose = 2,
+                             remove_TD = TRUE))
 
-  #Checking access to data
-  expect_error(getStorms(loi = "Vanuatu", seasons = 2015, names = "PM"))
-  expect_error(getStorms(loi = "Vanuatu", seasons = 2017, names = "PAM"))
+  #Checking verbose input
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = -1,
+                             remove_TD = TRUE))
 
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = c(1, 3),
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = "hui",
+                             remove_TD = TRUE))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = TRUE,
+                             remove_TD = TRUE))
+
+  #Checking remove_TC input
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = 1))
+
+  expect_error(checkInputsGs(sdb = IBTRACS,
+                             loi = "Vanuatu",
+                             seasons = c(1980, 2020),
+                             names = "PAM",
+                             max_dist = 300,
+                             verbose = 2,
+                             remove_TD = "hui"))
 
 })
+
+
 
 
 
@@ -43,6 +233,9 @@ test_that("Storm class getters", {
   expect_identical(getInObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs)
 
 })
+
+
+
 
 
 test_that("Storms class getters", {
@@ -60,12 +253,65 @@ test_that("Storms class getters", {
 
 })
 
+
+
+
+
 test_that("Storms class getters for Storm class", {
 
   expect_identical(getStormNbObs(sts_nc, "NIRAN"), getNbObs(getStorm(sts_nc, "NIRAN")))
   expect_identical(getStormObs(sts_nc, "NIRAN"), getObs(getStorm(sts_nc, "NIRAN")))
   expect_identical(getStormInObs(sts_nc, "NIRAN"), getInObs(getStorm(sts_nc, "NIRAN")))
 
+})
+
+
+
+
+
+test_that("Test convert loi function", {
+
+  expect_identical(convertLoi("Vanuatu"), pam@spatial.loi)
 
 })
 
+
+
+
+
+test_that("Test makeBuffer function", {
+
+  expect_identical(makeBuffer(pam@spatial.loi, 300 * km), pam@spatial.loi.buffer)
+
+})
+
+
+
+
+
+test_that("Test retrieveStorms function", {
+
+  expect_identical(retrieveStorms(IBTRACS, "PAM", c(1980,2022), TRUE), as.integer(c(11098, 12841)))
+
+})
+
+
+
+
+
+test_that("Test writeStorm function", {
+
+  expect_identical(writeStorm(list(), list(), list(), list(), 0, IBTRACS, 12841, getBuffer(pam), 3),
+                   list(list(getStorm(pam,"PAM")),list("PAM"), list(as.integer(2015)), list(as.integer(5)), 1))
+
+})
+
+
+
+
+
+test_that("Test getStorms function", {
+
+  expect_identical(getStorms(loi = "Vanuatu", names = "PAM"), pam)
+
+})

@@ -581,11 +581,6 @@ getStorms <- function(sdb = IBTRACS,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
 
-  # print(indices)
-  # cat("\n\n")
-  # cat(sdb$lon[indices],"\n")
-  # cat(sdb$lat[indices],"\n")
-  # cat("\n\n")
 
   if (verbose > 0 & length(indices) >= 1) {
     if(is.null(names) & length(seasons) == 2){
