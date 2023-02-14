@@ -436,9 +436,9 @@ computeDirection <- function(x, y, northenH){
   azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
 
   if(northenH){
-    direction <- azimuth *180/pi - 90 - 30
+    direction <- azimuth *180/pi - 90 - 25
   }else{
-    direction <- azimuth *180/pi + 90 + 30
+    direction <- azimuth *180/pi + 90 + 25
   }
 
   direction[direction < 0] = direction[direction < 0] + 360
@@ -492,7 +492,7 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 # {
 # vx <-  0.25
 # vy <-  0.25
-# northenH = TRUE
+# northenH = FALSE
 # xm <- c(166,172)
 # lon <- 169
 # if(northenH){
@@ -532,14 +532,26 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 # dir <- angle
 # terra::values(dir) <- sin(terra::values(angle))
 # #terra::plot(dir)
-# terra::values(dir) <- terra::values(wind) - 10 * (1 - sin(terra::values(angle)))* 0.5
-# terra::plot(dir, main = "expected")
+# #terra::values(dir) <- terra::values(wind) - 10 * (1 - sin(terra::values(angle)))* 0.5
+# #terra::plot(dir, main = "expected")
 #
 #
 # terra::values(as) <- computeAsymmetry("Boose01",terra::values(wind), x, y, vx, vy, 10, northenH)
 # #terra::plot(wind)
-# terra::plot(as, main = "actual")
-# lines(c(lon,lon+vx), c(lat,lat+vy))
+# #terra::plot(as, main = "actual")
+# #lines(c(lon,lon+vx), c(lat,lat+vy))
+#
+# #DIRECTION
+# azimuth <- -(atan2(y, x) - pi/2)
+# azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
+# azimuthD <- angle
+# terra::values(azimuthD) <- azimuth * 180/pi
+# terra::plot(azimuthD)
+#
+#
+# direction <- angle
+# terra::values(direction) <- computeDirection(x, y, northenH)
+# terra::plot(direction)
 # }
 
 
