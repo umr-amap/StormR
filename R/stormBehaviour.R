@@ -425,63 +425,6 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
 
 
 
-#' Compute asymmetry
-#'
-#' @noRd
-#' @param asymmetry character. Asymmetry input form stormBehaviour
-#' @param wind numeric vector. Wind values
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
-#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
-#' @param vh numeric. Velociy of the storm (m/s)
-#' @param northenH logical. Whether it is northen hemisphere or not
-#'
-#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at each (x,y) position
-computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
-
-  if(asymmetry == "None"){
-    wind <- wind
-  }else if(asymmetry == "Boose01"){
-
-    if(northenH){
-      #Northern Hemisphere, t is clockwise
-      angle <- atan2(y,x) - atan2(vy,vx) + 2*pi
-    }else{
-      #Southern Hemisphere, t is counterclockwise
-      angle <- atan2(y,x) - atan2(vy,vx) + 2*pi
-    }
-
-    angle[angle < 0] = angle[angle < 0] + 2*pi
-    angle[angle > 2*pi] = angle[angle > 2*pi] - 2*pi
-
-
-      wind <- wind - (1 - sin(angle))*(vh)/2
-  }else{
-    azimuth <- -(atan2(y, x) - pi/2)
-
-
-    azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
-
-    if(northenH){
-      direction <- azimuth  + pi/2 + 30*pi/180
-    }else{
-      direction <- azimuth  - pi/2 - 30*pi/180
-    }
-
-    direction[direction < 0] = direction[direction < 0] + 2*pi
-    direction[direction > 2*pi] = direction[direction > 2*pi] - 2*pi
-
-    wind <- wind + cos(direction) * vh
-  }
-
-  return(wind)
-}
-
-
-
-
-
 #' Compute wind direction
 #' @noRd
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
@@ -511,61 +454,110 @@ computeDirection <- function(x, y, northenH){
 
 
 
+#' Compute asymmetry
+#'
+#' @noRd
+#' @param asymmetry character. Asymmetry input form stormBehaviour
+#' @param wind numeric vector. Wind values
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
+#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
+#' @param vh numeric. Velociy of the storm (m/s)
+#' @param northenH logical. Whether it is northen hemisphere or not
+#'
+#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at each (x,y) position
+computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
+
+  if(asymmetry == "None"){
+    wind <- wind
+  }else if(asymmetry == "Boose01"){
+
+    if(northenH){
+      #Northern Hemisphere, t is clockwise
+      angle <- atan2(vy,vx) - atan2(y,x)
+    }else{
+      #Southern Hemisphere, t is counterclockwise
+      angle <- atan2(y,x) - atan2(vy,vx)
+    }
+
+    wind <- wind - (1 - sin(angle)) * vh/2
+
+  }else{
+    # azimuth <- -(atan2(y, x) - pi/2)
+    #
+    #
+    # azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
+    #
+    # if(northenH){
+    #   direction <- azimuth  + pi/2 + 30*pi/180
+    # }else{
+    #   direction <- azimuth  - pi/2 - 30*pi/180
+    # }
+    #
+    # direction[direction < 0] = direction[direction < 0] + 2*pi
+    # direction[direction > 2*pi] = direction[direction > 2*pi] - 2*pi
+    #
+    # wind <- wind + cos(direction) * vh
+  }
+
+  return(wind)
+}
+
+
+
+
+
 # {
-# northenH = TRUE
-# xmin <- 166
-# xmax <- 172
-# ymin <- 12
-# ymax <- 18
-# lon <- 169
-# lat <- 15
-# angle <- terra::rast(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, resolution = 0.02, vals = NA)
 # vx <-  0.25
-# vy <-  -0.25
+# vy <-  0.25
+# northenH = TRUE
+# xm <- c(166,172)
+# lon <- 169
+# if(northenH){
+#   ym <- c(12,18)
+#   lat <- 15
+# }else{
+#   ym <- c(-18,-12)
+#   lat <- -15
+# }
+#
+# angle <- terra::rast(xmin = xm[1], xmax = xm[2], ymin = ym[1], ymax = ym[2], resolution = 0.02, vals = NA)
+#
 # x <- terra::crds(angle, na.rm = FALSE)[, 1] - lon
 # y <- terra::crds(angle, na.rm = FALSE)[, 2] - lat
 # dist.m <- terra::distance(x = terra::crds(angle, na.rm = FALSE)[, ],
 #                            y = cbind(lon, lat), lonlat = T)
 # wind <- angle
 # as <- wind
-#
+# angleD <- angle
 # terra::values(wind) <- Willoughby(msw = 70, lat = lat ,r = dist.m * 0.001, rmw = 20)
 #
 #
+#
+#
 # ##BOOSE
-# #terra::values(angle) <- atan2(vy,vx) - atan2(y,x) + 2*pi
-# #terra::values(angle) <- atan2(y,x) - atan2(vy,vx) + 2*pi
-# #terra::values(angle)[terra::values(angle) < 0] = terra::values(angle)[terra::values(angle) < 0] + 2*pi
-# #terra::values(angle)[terra::values(angle) > 2*pi] = terra::values(angle)[terra::values(angle) > 2*pi] - 2*pi
-# #terra::values(angle) <- terra::values(angle)*180/pi
-# #plot(angle)
-# #lines(c(lon,lon+vx), c(lat,lat+vy))
-# #terra::values(as) <- computeAsymmetry("Boose01",terra::values(wind),x,y,vx,vy,5,FALSE)
-#
-# #V2
-# azimuth <- -(atan2(y, x) - pi/2)
-# azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
-#
 # if(northenH){
-#   terra::values(angle) <- azimuth - pi/2
+#   terra::values(angle) <- atan2(vy,vx) - atan2(y,x)
 # }else{
-#   terra::values(angle) <- azimuth - pi/2
+#   terra::values(angle) <- atan2(y,x) - atan2(vy,vx)
 # }
-#
 # terra::values(angle)[terra::values(angle) < 0] = terra::values(angle)[terra::values(angle) < 0] + 2*pi
 # terra::values(angle)[terra::values(angle) > 2*pi] = terra::values(angle)[terra::values(angle) > 2*pi] - 2*pi
-# terra::values(angle) <- terra::values(angle)*180/pi
-# terra::plot(angle)
-# lines(c(lon,lon+vx), c(lat,lat+vy))
+# terra::values(angleD) <- terra::values(angle)*180/pi
+# #terra::plot(angleD)
+# #lines(c(lon,lon+vx), c(lat,lat+vy))
 #
 # dir <- angle
-# terra::values(dir) <- cos(terra::values(angle))
-# terra::plot(dir)
-# lines(c(lon,lon+vx), c(lat,lat+vy))
+# terra::values(dir) <- sin(terra::values(angle))
+# #terra::plot(dir)
+# terra::values(dir) <- terra::values(wind) - 10 * (1 - sin(terra::values(angle)))* 0.5
+# terra::plot(dir, main = "expected")
 #
-# terra::values(as) <- computeAsymmetry("Classic",terra::values(wind),x,y,vx,vy,5,northenH)
-# terra::plot(wind)
-# terra::plot(as)
+#
+# terra::values(as) <- computeAsymmetry("Boose01",terra::values(wind), x, y, vx, vy, 10, northenH)
+# #terra::plot(wind)
+# terra::plot(as, main = "actual")
 # lines(c(lon,lon+vx), c(lat,lat+vy))
 # }
 
