@@ -936,15 +936,15 @@ maskProduct <- function(final_stack, loi, template){
 #'
 #' @export
 stormBehaviour_sp <- function(sts,
-                           product = "MSW",
-                           wind_threshold = NULL,
-                           method = "Willoughby",
-                           asymmetry = "Boose01",
-                           empirical_rmw = FALSE,
-                           format = "analytic",
-                           space_res = "2.5min",
-                           time_res = 1,
-                           verbose = 2){
+                              product = "MSW",
+                              wind_threshold = NULL,
+                              method = "Willoughby",
+                              asymmetry = "Boose01",
+                              empirical_rmw = FALSE,
+                              format = "analytic",
+                              space_res = "2.5min",
+                              time_res = 1,
+                              verbose = 2){
 
   start_time <- Sys.time()
 
@@ -1170,7 +1170,7 @@ stormBehaviour_sp <- function(sts,
 #' @param empirical_rmw logical
 #' @param time_res numeric
 #' @return NULL
-checkInputsUnknow <- function(sts, points, product, wind_threshold, method, asymmetry,
+checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymmetry,
                               empirical_rmw, time_res){
 
   #Checking sts input
@@ -1435,7 +1435,7 @@ stormBehaviour_pt <- function(sts,
                               empirical_rmw = FALSE,
                               time_res = 1){
 
-  checkInputsUnknow(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, time_res)
+  checkInputsSbPt(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, time_res)
 
   if("Exposure" %in% product){
     if(length(wind_threshold) == 1){

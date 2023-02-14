@@ -6,66 +6,330 @@
 test_that("Tests invalid inputs", {
 
 
-  #Checking `sts` validity
-  expect_error(stormBehaviour_sp())
 
-  #Checking product validity
-  expect_error(stormBehaviour_sp(pam, product = "WIND"))
-  expect_error(stormBehaviour_sp(pam, product = 2))
-  expect_error(stormBehaviour_sp(pam, product = T))
+  #Checking sts input
+  expect_error(checkInputsSb(product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(40, 50),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
 
-  #Checking method validity
-  expect_error(stormBehaviour_sp(pam, method = "willi"))
-  expect_error(stormBehaviour_sp(pam, method = 2))
-  expect_error(stormBehaviour_sp(pam, method = T))
-  expect_error(stormBehaviour_sp(pam, method = c("Willoughby", "Holland")))
+  #Checking product input
+  expect_error(checkInputsSb(sts = pam,
+                             product = 1,
+                             wind_threshold = c(40, 50),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = "TS",
+                             wind_threshold = c(40, 50),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  #Check wind_threshold input
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  #Checking method input
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(40, 50),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = 1,
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = TRUE,
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = c("Willougbhy", "Holland"),
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  #Checking asymmetry input
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = 1,
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = TRUE,
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = c("Boose01", "None"),
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  #Checking empirical_rmw inputs
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = "TRUE",
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = 1,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
 
 
-  #Checking asymmetry validity
-  expect_error(stormBehaviour_sp(pam, asymmetry = "V3"))
-  expect_error(stormBehaviour_sp(pam, asymmetry = 2))
-  expect_error(stormBehaviour_sp(pam, asymmetry = T))
-  expect_error(stormBehaviour_sp(pam, asymmetry = c("V1", "V2")))
+  #Checking format input
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "2Dstruct",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = TRUE,
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = 2,
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = TRUE,
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = c("profiles","analytic"),
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  #Checking space_res input
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = 2.5,
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = TRUE,
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = c("30sec", "2.5min", "5min", "10min"),
+                             time_res = 1,
+                             verbose = 2))
 
 
-  #Checking format validity
-  m <- cbind(c(160,162),c(160,162))
-  expect_error(stormBehaviour_sp(pam, format = "2Dstruct"))
-  expect_error(stormBehaviour_sp(pam, format = T))
-  expect_error(stormBehaviour_sp(pam, format = 2))
-  expect_error(stormBehaviour_sp(pam, format = c("profiles","analytic")))
-  expect_error(stormBehaviour_sp(pam, format = m))
+  #Checking time_res input
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = TRUE,
+                             verbose = 2))
 
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 2.3,
+                             verbose = 2))
 
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = c(0.25, 0.5),
+                             verbose = 2))
 
-  #Checking space_res validity
-  expect_error(stormBehaviour_sp(pam, space_res  = "TRUE"))
-  expect_error(stormBehaviour_sp(pam, space_res  = T))
-  expect_error(stormBehaviour_sp(pam, space_res  = c(2,3)))
+  #Checking verbose input
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = -1))
 
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = TRUE))
 
-  #Checking time_res validity
-  expect_error(stormBehaviour_sp(pam, time_res  = "TRUE"))
-  expect_error(stormBehaviour_sp(pam, time_res  = T))
-  expect_error(stormBehaviour_sp(pam, time_res  = 2.3))
-  expect_error(stormBehaviour_sp(pam, time_res  = c(2,3)))
-
-
-  #Checking logical inputs validity
-  expect_error(stormBehaviour_sp(pam, empirical_rmw = "TRUE"))
-  expect_error(stormBehaviour_sp(pam, empirical_rmw = 1))
-
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = c(1, 3)))
 
 })
 
 
-test_that("get indices", {
+
+
+
+test_that("Test  getIndices function", {
 
   expect_equal(getIndices(pam@data[["PAM"]], 2, "analytic"), seq(26,49))
   expect_equal(getIndices(pam@data[["PAM"]], 20, "analytic"), seq(8,57))
   expect_equal(getIndices(pam@data[["PAM"]], 30, "analytic"), seq(1,57))
 
 })
+
+
+
+
+
 
 
 
