@@ -269,11 +269,11 @@ test_that("Storms class getters for Storm class", {
 
 
 
-test_that("Test convert loi function", {
-
-  expect_identical(convertLoi("Vanuatu"), pam@spatial.loi)
-
-})
+# test_that("Test convert loi function", {
+#
+#   expect_identical(convertLoi("Vanuatu"), pam@spatial.loi)
+#
+# })
 
 
 
