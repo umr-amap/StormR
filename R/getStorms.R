@@ -287,7 +287,7 @@ convertLoi <- function(loi){
 
   } else if (identical(class(loi), c("character"))){
 
-    map <- rworldmap::getMap(resolution <- "high")
+    map <- rworldmap::getMap(resolution = "high")
     id.country <- which(map@data$ADMIN == loi)
     stopifnot("invalid entry for loi" = length(id.country) > 0)
     loi.sf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
