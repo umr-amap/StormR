@@ -12,7 +12,7 @@
 #'
 #' @returns Radius of Maximum Wind (km)
 getRmw <- function(msw, lat) {
-  return (46.4 * exp(-0.0155 * msw + 0.0169 * abs(lat)))
+  return(round(46.4 * exp(-0.0155 * msw + 0.0169 * abs(lat))))
 }
 
 
@@ -44,7 +44,7 @@ Willoughby_profile <- function(r, rmw, msw, lat){
     vr <- msw * abs((r / rmw) ^ nn)
   }
 
-  return(vr)
+  return(round(vr,3))
 }
 
 #Vectorize version of the above model
@@ -75,7 +75,7 @@ Holland_profile <- function(r, rmw, msw, pc, poci, lat){
 
   vr <- sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
 
-  return(vr)
+  return(round(vr,3))
 
 }
 
@@ -95,15 +95,19 @@ Holland <- Vectorize(Holland_profile, vectorize.args = "r")
 compute_Cd <- function(vr){
 
   if(is.na(vr)){
-    return(NA)
+    res <- NA
+
   }else if(vr <= 18){
-    return(0)
+    res <- 0
+
   }else if(vr > 18 & vr <= 31.5){
-    return((0.8 + 0.06 * vr) * 0.001)
+    res <- (0.8 + 0.06 * vr) * 0.001
 
   }else if(vr > 31.5){
-    return((0.55 + 2.97 * vr/31.5 - 1.49 * (vr/ 31.5) ** 2) * 0.001)
+    res <- (0.55 + 2.97 * vr/31.5 - 1.49 * (vr/ 31.5) ** 2) * 0.001
   }
+
+  return(round(res, 3))
 }
 
 #Vectorize version of the above function
@@ -482,7 +486,7 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 
   }
 
-  return(wind)
+  return(round(wind,3))
 }
 
 
@@ -781,6 +785,8 @@ rasterizePDIExp <- function(final_stack, stack, time_res, space_res, name, produ
 
   return(c(final_stack, prod))
 }
+
+
 
 
 
@@ -1171,7 +1177,7 @@ stormBehaviour_sp <- function(sts,
 #' @param time_res numeric
 #' @return NULL
 checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymmetry,
-                              empirical_rmw, time_res){
+                            empirical_rmw, time_res){
 
   #Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -1238,6 +1244,8 @@ smooth_exposure <- function(x, offset){
 
 
 
+
+
 #' rasterizePDI counterpart function for non raster data
 #'
 #' @noRd
@@ -1258,7 +1266,7 @@ computePDI <- function(wind, time_res){
   #Integrating over the whole track
   pdi <- sum(pdi, na.rm <- T) * time_res
 
-  return(pdi)
+  return(round(pdi,3))
 }
 
 
@@ -1276,7 +1284,6 @@ computePDI <- function(wind, time_res){
 #' @return numeric vector of length 5 (for each category).
 #'  Exposure computed using the wind speed values in wind
 computeExposure <- function(wind, time_res, threshold){
-
 
   ind <- which(wind >= threshold[1] & wind <= threshold[2])
   expo <- rep(0,length(wind))
