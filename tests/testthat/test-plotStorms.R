@@ -1,50 +1,398 @@
 
 
 
-test_that("Tests invalid inputs", {
+
+test_that("Test checkInputsPs", {
 
   #Checking sts input
-  expect_error(plotStorms())
+  expect_error(checkInputsPs(names = NULL,
+                             category = NULL,
+                             labels = TRUE,
+                             by = 8,
+                             pos = 3,
+                             legends = TRUE,
+                             loi = TRUE,
+                             xlim = NULL,
+                             ylim = NULL,
+                             reset_setting = TRUE))
 
   #Checking names input
-  expect_error(plotStorms(sts_wp, names = 2))
-  expect_error(plotStorms(sts_wp, names = "JULIA"))
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = 2,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = "JULIA",
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
 
   #Checking category input
-  expect_error(plotStorms(sts_wp, category = c(1,6)))
-  expect_error(plotStorms(sts_wp, category = c(-10,5)))
-  expect_error(plotStorms(sts_wp, category = 2.5))
-  expect_error(plotStorms(sts_wp, category = "1"))
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = c(1, 6),
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = c(-10, 5),
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = 2.5,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = "1",
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = TRUE,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
 
   #Checking xlim/ylim input
-  expect_error(plotStorms(sts_wp, xlim = "132"))
-  expect_error(plotStorms(sts_wp, xlim = 160))
-  expect_error(plotStorms(sts_wp, xlim = c(400,500)))
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = "132",
+                ylim = NULL,
+                reset_setting = TRUE))
 
-  expect_error(plotStorms(sts_wp, ylim = "-50"))
-  expect_error(plotStorms(sts_wp, ylim = 60))
-  expect_error(plotStorms(sts_wp, ylim = c(-100,100)))
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = 160,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = c(400, 500),
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = "-50",
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = 60,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = c(-100, 100),
+                reset_setting = TRUE))
 
   #Checking logical inputs
-  expect_error(plotStorms(sts_wp, legends = "TRUE"))
-  expect_error(plotStorms(sts_wp, legends = 1))
-  expect_error(plotStorms(sts_wp, loi = "TRUE"))
-  expect_error(plotStorms(sts_wp, loi = 1))
-  expect_error(plotStorms(sts_wp, labels = "TRUE"))
-  expect_error(plotStorms(sts_wp, labels = 1))
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = "TRUE",
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = 1,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = "TRUE",
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = 1,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = "TRUE",
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = 1,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = "TRUE"))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = 1))
 
   #Checking by input
-  expect_error(plotStorms(sts_wp, by = T))
-  expect_error(plotStorms(sts_wp, by = "hu"))
-  expect_error(plotStorms(sts_wp, by = 5.6))
-  expect_error(plotStorms(sts_wp, by = c(1,2)))
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = TRUE,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = "hui",
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 5.6,
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = c(1, 2),
+                pos = 3,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
 
   #Checking pos input
-  expect_error(plotStorms(sts_wp, pos = T))
-  expect_error(plotStorms(sts_wp, pos = "hu"))
-  expect_error(plotStorms(sts_wp, pos = 5.6))
-  expect_error(plotStorms(sts_wp, pos = -2))
-  expect_error(plotStorms(sts_wp, pos = 5))
-  expect_error(plotStorms(sts_wp, pos = c(1,2)))
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = TRUE,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = "hui",
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 5.6,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = -2,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = 5,
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
+
+  expect_error(checkInputsPs(sts = sts_nc,
+                names = NULL,
+                category = NULL,
+                labels = TRUE,
+                by = 8,
+                pos = c(1, 2),
+                legends = TRUE,
+                loi = TRUE,
+                xlim = NULL,
+                ylim = NULL,
+                reset_setting = TRUE))
 
 })
