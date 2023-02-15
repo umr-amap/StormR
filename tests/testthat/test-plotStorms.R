@@ -2,6 +2,30 @@
 
 
 
+test_that("Test getColors function", {
+
+  expect_equal(getColors(NA), NA)
+  expect_equal(getColors(10), "#00CCFF")
+  expect_equal(getColors(18), "#00CCCC")
+  expect_equal(getColors(25), "#00CCCC")
+  expect_equal(getColors(33), "#FFFFB2")
+  expect_equal(getColors(36), "#FFFFB2")
+  expect_equal(getColors(42), "#FECC5C")
+  expect_equal(getColors(46), "#FECC5C")
+  expect_equal(getColors(49), "#FD8D3C")
+  expect_equal(getColors(53), "#FD8D3C")
+  expect_equal(getColors(58), "#F03B20")
+  expect_equal(getColors(65), "#F03B20")
+  expect_equal(getColors(70), "#BD0026")
+  expect_equal(getColors(100),"#BD0026")
+
+
+})
+
+
+
+
+
 test_that("Test checkInputsPs", {
 
   #Checking sts input
