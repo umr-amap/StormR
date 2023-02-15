@@ -37,3 +37,13 @@
 #' @format ## `eezNC`
 #' a sf object
 "eezNC"
+
+
+#' South Pacific storms database
+#'
+#' Database extracted from the IBTrACS.SP.v04r00.nc file.
+#' It provides all the tropical cyclones that occured in the SP Basin from the 1867 to nowadays
+#'
+#' @format ## `IBTRACS_SP`
+#' a StormsDataset object
+"IBTRACS_SP"
