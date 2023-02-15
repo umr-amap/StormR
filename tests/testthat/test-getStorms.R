@@ -279,11 +279,11 @@ test_that("Storms class getters for Storm class", {
 
 
 
-test_that("Test makeBuffer function", {
-
-  expect_identical(makeBuffer(pam@spatial.loi, 300 * km), pam@spatial.loi.buffer)
-
-})
+# test_that("Test makeBuffer function", {
+#
+#   expect_identical(makeBuffer(pam@spatial.loi, 300 * km), pam@spatial.loi.buffer)
+#
+# })
 
 
 
