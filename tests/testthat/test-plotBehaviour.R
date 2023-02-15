@@ -1,46 +1,212 @@
 
 
 
-test_that("Tests invalid inputs", {
 
-  msw = terra::rast(system.file("extdata", "PAM_MSW.tiff", package = "StormR"))
+test_that("Tests checkInputsPb function", {
 
-  #Checking `sts` validity
-  expect_error(plotBehaviour())
+  msw <- stormBehaviour_sp(pam, verbose = 0)
 
-  #Checking raster_product validity
-  expect_error(plotBehaviour(pam))
+  #Checking sts input
+  expect_error(checkInputsPb(raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
 
-  #Checking xlim/ylim validity
-  expect_error(plotBehaviour(pam, msw, xlim = "132"))
-  expect_error(plotBehaviour(pam, msw, xlim = 160))
-  expect_error(plotBehaviour(pam, msw, xlim = c(400,500)))
+  #Checking raster_product input
+  expect_error(checkInputsPb(sts = pam,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
 
-  expect_error(plotBehaviour(pam, msw, ylim = "-50"))
-  expect_error(plotBehaviour(pam, msw, ylim = 60))
-  expect_error(plotBehaviour(pam, msw, ylim = c(-100,100)))
+  #Checking color_palette input
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = TRUE,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
 
-  #Checking labels validity
-  expect_error(plotBehaviour(pam, msw, labels = "TRUE"))
-  expect_error(plotBehaviour(pam, msw, labels = 1))
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = c(1, 2, 3),
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
 
-  #Checking by validity
-  expect_error(plotBehaviour(pam, msw, by = T))
-  expect_error(plotBehaviour(pam, msw, by = "hu"))
-  expect_error(plotBehaviour(pam, msw, by = 5.6))
-  expect_error(plotBehaviour(pam, msw, by = c(1,2)))
+  #Checking xlim/ylim input
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = "132",
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
 
-  #Checking pos validity
-  expect_error(plotBehaviour(pam, msw, pos = T))
-  expect_error(plotBehaviour(pam, msw, pos = "hu"))
-  expect_error(plotBehaviour(pam, msw, pos = 5.6))
-  expect_error(plotBehaviour(pam, msw, pos = -2))
-  expect_error(plotBehaviour(pam, msw, pos = 5))
-  expect_error(plotBehaviour(pam, msw, pos = c(1,2)))
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = 160,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
 
-  #Checking color_palette validity
-  expect_error(plotBehaviour(pam, msw, color_palette = T))
-  expect_error(plotBehaviour(pam, msw, color_palette = c(1,2,3)))
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = c(400, 500),
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
 
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = "-50",
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = 60,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = c(-100, 100),
+                             labels = FALSE,
+                             by = 8,
+                             pos = 3))
+
+  #Checking labels input
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = "TRUE",
+                             by = 8,
+                             pos = 3))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = 1,
+                             by = 8,
+                             pos = 3))
+
+  #Checking by input
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = TRUE,
+                             pos = 3))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = "hui",
+                             pos = 3))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 5.6,
+                             pos = 3))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = c(1, 2),
+                             pos = 3))
+
+  #Checking pos input
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = TRUE))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = "hui"))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 5.6))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = -2))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = 5))
+
+  expect_error(checkInputsPb(sts = pam,
+                             raster_product = msw,
+                             color_palette = NULL,
+                             xlim = NULL,
+                             ylim = NULL,
+                             labels = FALSE,
+                             by = 8,
+                             pos = c(1, 2)))
 
 })
