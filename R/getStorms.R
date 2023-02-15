@@ -576,7 +576,7 @@ getStorms <- function(sdb = IBTRACS,
 
 
   #Retrieving the matching indices, handling names, seasons and remove TD
-  indices <- retrieveStorms(sdb,
+  indices <- retrieveStorms(sdb@sdb,
                             filter_names = names,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
@@ -612,7 +612,7 @@ getStorms <- function(sdb = IBTRACS,
                                storm_seasons = storm.seasons,
                                storm_sshs = storm.sshs,
                                nb_storms = nb.storms,
-                               TC_data = sdb,
+                               TC_data = sdb@sdb,
                                index = i,
                                loi_sf_buffer = loi.sf.buffer,
                                k = k)

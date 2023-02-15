@@ -291,7 +291,7 @@ test_that("Test makeBuffer function", {
 
 test_that("Test retrieveStorms function", {
 
-  expect_identical(retrieveStorms(IBTRACS, "PAM", c(1980,2022), TRUE), as.integer(c(11098, 12841)))
+  expect_identical(retrieveStorms(IBTRACS@sdb, "PAM", c(1980,2022), TRUE), as.integer(c(11098, 12841)))
 
 })
 
@@ -301,7 +301,7 @@ test_that("Test retrieveStorms function", {
 
 test_that("Test writeStorm function", {
 
-  expect_identical(writeStorm(list(), list(), list(), list(), 0, IBTRACS, 12841, getBuffer(pam), 3),
+  expect_identical(writeStorm(list(), list(), list(), list(), 0, IBTRACS@sdb, 12841, getBuffer(pam), 3),
                    list(list(getStorm(pam,"PAM")),list("PAM"), list(as.integer(2015)), list(as.integer(5)), 1))
 
 })

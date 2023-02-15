@@ -2,8 +2,8 @@
 
 
 
-IBTRACS_sdb = initDatabase()
-IBTRACS = loadData(IBTRACS_sdb, "/home/baptiste/Desktop/Travail/StormR/data")
+IBTRACS <- initDatabase()
+IBTRACS <- collectData(IBTRACS)
 
 
 resolutions = c("30sec" = 0.00833333, "2.5min" = 0.04166667, "5min" = 0.08333333, "10min" = 0.1666667)
@@ -41,4 +41,4 @@ pdiPalette <- rev(viridis::inferno(50))
 
 exposurePalette <- rev(viridis::viridis(50))
 
-usethis::use_data(IBTRACS_sdb, IBTRACS, resolutions, knt2ms, km, wgs84, oceanColor, groundColor, Basins, sshs, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette, internal = TRUE, overwrite = T)
+usethis::use_data(IBTRACS, resolutions, knt2ms, km, wgs84, oceanColor, groundColor, Basins, sshs, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette, internal = TRUE, overwrite = T)
