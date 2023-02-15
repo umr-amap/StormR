@@ -2,8 +2,8 @@
 
 
 
-IBTRACS <- initDatabase()
-IBTRACS <- collectData(IBTRACS)
+IBTRACS_SP <- initDatabase()
+IBTRACS_SP <- collectData(IBTRACS_SP)
 
 
 #Data for routines
@@ -44,7 +44,7 @@ df_getDataInterpolate <-getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, FAL
 
 
 
-usethis::use_data(IBTRACS,
+usethis::use_data(IBTRACS_SP,
                   resolutions, knt2ms, km, wgs84, Basins, sshs,
                   oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
                   df_getDataInterpolate,
