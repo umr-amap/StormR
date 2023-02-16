@@ -12,14 +12,14 @@ test_that("Tests invalid inputs", {
                              remove_TD = TRUE))
 
   #Checking loi input
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              seasons = c(1980, 2022),
                              names = "PAM",
                              max_dist = 300,
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = c("Vanuatu", "New Caledonia"),
                              seasons = c(1980, 2022),
                              names = "PAM",
@@ -27,7 +27,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = 169,
                              seasons = c(1980, 2022),
                              names = "PAM",
@@ -35,7 +35,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = c(169,170,-15,-14),
                              seasons = c(1980, 2022),
                              names = "PAM",
@@ -43,7 +43,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = c(169,170,-15,-14),
                              seasons = c(1980, 2022),
                              names = "PAM",
@@ -51,7 +51,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = c(169,-100),
                              seasons = c(1980, 2022),
                              names = "PAM",
@@ -59,7 +59,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = c(-180,-15),
                              seasons = c(1980, 2022),
                              names = "PAM",
@@ -68,7 +68,7 @@ test_that("Tests invalid inputs", {
                              remove_TD = TRUE))
 
   #Checking seasons input
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1960, 2022),
                              names = "PAM",
@@ -76,7 +76,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2024),
                              names = "PAM",
@@ -84,7 +84,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = 2015.7,
                              names = "PAM",
@@ -92,7 +92,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = TRUE,
                              names = "PAM",
@@ -100,7 +100,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = "2015",
                              names = "PAM",
@@ -109,7 +109,7 @@ test_that("Tests invalid inputs", {
                              remove_TD = TRUE))
 
   #Checking names input
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = TRUE,
                              names = 123,
@@ -117,7 +117,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = TRUE,
                              names = TRUE,
@@ -125,7 +125,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2000, 2020),
                              names = NULL,
@@ -135,7 +135,7 @@ test_that("Tests invalid inputs", {
 
 
   #Checking max_dist input
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -143,7 +143,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -151,7 +151,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -159,7 +159,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -168,7 +168,7 @@ test_that("Tests invalid inputs", {
                              remove_TD = TRUE))
 
   #Checking verbose input
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -176,7 +176,7 @@ test_that("Tests invalid inputs", {
                              verbose = -1,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -184,7 +184,7 @@ test_that("Tests invalid inputs", {
                              verbose = c(1, 3),
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -192,7 +192,7 @@ test_that("Tests invalid inputs", {
                              verbose = "hui",
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -201,7 +201,7 @@ test_that("Tests invalid inputs", {
                              remove_TD = TRUE))
 
   #Checking remove_TC input
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -209,7 +209,7 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = 1))
 
-  expect_error(checkInputsGs(sdb = IBTRACS,
+  expect_error(checkInputsGs(sds = IBTRACS_SP,
                              loi = "Vanuatu",
                              seasons = c(1980, 2020),
                              names = "PAM",
@@ -291,7 +291,7 @@ test_that("Storms class getters for Storm class", {
 
 test_that("Test retrieveStorms function", {
 
-  expect_identical(retrieveStorms(IBTRACS@sdb, "PAM", c(1980,2022), TRUE), as.integer(c(11098, 12841)))
+  expect_identical(retrieveStorms(IBTRACS_SP@database, "PAM", c(1980,2022), TRUE), as.integer(c(986, 1170)))
 
 })
 
@@ -301,7 +301,7 @@ test_that("Test retrieveStorms function", {
 
 test_that("Test writeStorm function", {
 
-  expect_identical(writeStorm(list(), list(), list(), list(), 0, IBTRACS@sdb, 12841, getBuffer(pam), 3),
+  expect_identical(writeStorm(list(), list(), list(), list(), 0, IBTRACS_SP@database, 1170, getBuffer(pam), 3),
                    list(list(getStorm(pam,"PAM")),list("PAM"), list(as.integer(2015)), list(as.integer(5)), 1))
 
 })

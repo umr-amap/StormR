@@ -5,9 +5,9 @@
 \title{Initialize a Storms object}
 \usage{
 getStorms(
-  sdb = IBTRACS,
+  sds = IBTRACS_SP,
   loi,
-  seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
+  seasons = c(1980, max(sds@database$seasons, na.rm = T)),
   names = NULL,
   max_dist = 300,
   remove_TD = TRUE,
@@ -15,8 +15,9 @@ getStorms(
 )
 }
 \arguments{
-\item{sdb}{Storms data base returned by loadData function. Default value is set to
-IBTRACS which is a data base provided by this package and based on the IBTrACS.All.v04r00.nc file}
+\item{sds}{StormsDataset object. Default value is set to IBTRACS_SP which is
+a database provided by this package and based on the IBTrACS.SP.v04r00.nc file.
+The database must be previously loaded (See Details)}
 
 \item{loi}{Location of Interest. Must be either:
 \itemize{
@@ -64,11 +65,11 @@ pam <- getStorms(loi = "Vanuatu", names = "PAM")
 #Focus on several storms over New Caledonia
 sts_nc <- getStorms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 
-#Focus on every storms that occured in the WP basin between 2010 and 2020
-poly <- cbind(c(100, 180, 180, 100, 100),c(0, 0, 60, 60, 0))
-wp <- sf::st_polygon(list(poly))
-wp <- sf::st_sfc(wp, crs = 4326)
-wp <- sf::st_as_sf(wp)
-sts_wp <- getStorms(loi = wp, seasons = c(2010,2020))
+#Focus on every storms that occured in the SP basin between 2010 and 2020
+poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
+sp <- sf::st_polygon(list(poly))
+sp <- sf::st_sfc(sp, crs = 4326)
+sp <- sf::st_as_sf(sp)
+sts_sp <- getStorms(loi = sp, seasons = c(2010,2020))
 
 }
