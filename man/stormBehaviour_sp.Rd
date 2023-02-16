@@ -7,7 +7,7 @@
 stormBehaviour_sp(
   sts,
   product = "MSW",
-  wind_threshold = NULL,
+  wind_threshold = c(18, 33, 42, 49, 58, 70),
   method = "Willoughby",
   asymmetry = "Boose01",
   empirical_rmw = FALSE,
@@ -102,7 +102,7 @@ pdi_nc <- stormBehaviour_sp(sts_nc, time_res = 0.5, method = "Holland",
                         product = "PDI")
 
 #Compute Exposure (wind threshold: 40 to 50 m/s) for PAM 2015 in Vanuatu using default settings
-exp_pam <- stormBehaviour_sp(pam, product = "Exposure", wind_threshold = c(40,50))
+exp_pam <- stormBehaviour_sp(pam, product = "Exposure")
 
 #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
 prof_nc <- stormBehaviour_sp(sts_nc, format = "profiles")
