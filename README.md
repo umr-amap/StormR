@@ -186,7 +186,7 @@ plotStorms(st, labels = T, legends = T)
 #Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry from REF?). The function returns a raster with a 10 km spatial resolution by default .
 st_msw <- stormBehaviour_sp(st)
 st_pdi <- stormBehaviour_sp(st, product = "PDI")
-st_exposure <- stormBehaviour_sp(st, product = "Exposure", wind_threshold = c(40,50))
+st_exposure <- stormBehaviour_sp(st, product = "Exposure")
 
 #Plot the MSW, PDI, and EXP rasters alongside with the track of the storm and the limit of the location of interest
 split.screen(c(1,3))
