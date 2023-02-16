@@ -62,7 +62,7 @@ test_that("Test checkInputsSb function", {
 
   #Checking sts input
   expect_error(checkInputsSb(product = c("MSW", "PDI", "Exposure"),
-                             wind_threshold = c(40, 50),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -74,7 +74,7 @@ test_that("Test checkInputsSb function", {
   #Checking product input
   expect_error(checkInputsSb(sts = pam,
                              product = 1,
-                             wind_threshold = c(40, 50),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -85,7 +85,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = "TS",
-                             wind_threshold = c(40, 50),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -97,6 +97,18 @@ test_that("Test checkInputsSb function", {
   #Check wind_threshold input
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c("18",  "33",  "42",  "49",  "58",  "70"),
+                             method = "Willougbhy",
+                             asymmetry = "Boose01",
+                             empirical_rmw = FALSE,
+                             format = "analytic",
+                             space_res = "2.5min",
+                             time_res = 1,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(-3, -45),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -108,6 +120,7 @@ test_that("Test checkInputsSb function", {
   #Checking method input
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -118,6 +131,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = 1,
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -128,6 +142,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = TRUE,
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -138,6 +153,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = c("Willougbhy", "Holland"),
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -149,6 +165,7 @@ test_that("Test checkInputsSb function", {
   #Checking asymmetry input
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "boose01",
                              empirical_rmw = FALSE,
@@ -159,6 +176,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = 1,
                              empirical_rmw = FALSE,
@@ -169,6 +187,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = TRUE,
                              empirical_rmw = FALSE,
@@ -179,6 +198,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = c("Boose01", "None"),
                              empirical_rmw = FALSE,
@@ -190,6 +210,7 @@ test_that("Test checkInputsSb function", {
   #Checking empirical_rmw inputs
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = "TRUE",
@@ -200,6 +221,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = 1,
@@ -211,6 +233,7 @@ test_that("Test checkInputsSb function", {
   #Checking time_res input
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -221,6 +244,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -231,6 +255,7 @@ test_that("Test checkInputsSb function", {
 
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
@@ -331,7 +356,7 @@ test_that("Test checkInputsSbPt function", {
   #Checking sts input
   expect_error(checkInputsSbPt(points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -341,7 +366,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = 1,
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -350,7 +375,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "MSW",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -359,7 +384,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = c("TS", "PDI", "Exposure"),
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -369,7 +394,16 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "Exposure",
-                               wind_threshold = NULL,
+                               wind_threshold = c("18",  "33",  "42",  "49",  "58",  "70"),
+                               method = "Willougbhy",
+                               asymmetry = "Boose01",
+                               empirical_rmw = FALSE,
+                               time_res = 1))
+
+  expect_error(checkInputsSbPt(sts = pam,
+                               points = data.frame(lon = 169, lat = -19),
+                               product = "Exposure",
+                               wind_threshold = c(-3, -45),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -379,7 +413,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -388,7 +422,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = 1,
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -397,7 +431,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = TRUE,
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -406,7 +440,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -415,7 +449,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = c("Willougbhy", "Holland"),
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -425,7 +459,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "boose01",
                                empirical_rmw = FALSE,
@@ -434,7 +468,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = 1,
                                empirical_rmw = FALSE,
@@ -443,7 +477,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = TRUE,
                                empirical_rmw = FALSE,
@@ -452,7 +486,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = c("Boose01", "None"),
                                empirical_rmw = FALSE,
@@ -462,7 +496,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = "TRUE",
@@ -471,7 +505,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = 1,
@@ -481,7 +515,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -490,7 +524,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -499,7 +533,7 @@ test_that("Test checkInputsSbPt function", {
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
-                               wind_threshold = NULL,
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
                                asymmetry = "Boose01",
                                empirical_rmw = FALSE,
@@ -526,10 +560,10 @@ test_that("Test computePDI function", {
 
 test_that("Test computeExposure function", {
 
-  expect_equal(computeExposure(seq(0,80,1), 1, c(30,50)), 21)
-  expect_equal(computeExposure(seq(0,80,0.5), 0.5, c(30,50)), 20.5)
-  expect_equal(computeExposure(seq(0,80,0.75), 0.75, c(30,50)), 20.25)
-  expect_equal(computeExposure(seq(0,80,0.25), 0.25, c(30,50)), 20.25)
+  expect_equal(computeExposure(seq(0,80,1), 1, c(30,50)), c(51, 31))
+  expect_equal(computeExposure(seq(0,80,0.5), 0.5, c(30,50)), c(50.5, 30.5))
+  expect_equal(computeExposure(seq(0,80,0.75), 0.75, c(30,50)), c(50.25, 30))
+  expect_equal(computeExposure(seq(0,80,0.25), 0.25, c(30,50)), c(50.25, 30.25))
 
 })
 

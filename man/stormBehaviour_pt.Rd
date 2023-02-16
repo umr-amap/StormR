@@ -8,7 +8,7 @@ stormBehaviour_pt(
   sts,
   points,
   product = "TS",
-  wind_threshold = NULL,
+  wind_threshold = c(18, 33, 42, 49, 58, 70),
   method = "Willoughby",
   asymmetry = "Boose01",
   empirical_rmw = FALSE,

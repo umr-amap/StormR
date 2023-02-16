@@ -143,12 +143,8 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
 
   #Checking wind_threshold input
   if("Exposure" %in% product){
-    if(is.null(wind_threshold)){
-      stop("wind_threshold is missing")
-    }else{
       stopifnot("wind_threshold must be numeric" = identical(class(wind_threshold), "numeric"))
       stopifnot("invalid value(s) for wind_threshold input (must be > 0)" = wind_threshold > 0)
-    }
   }
 
 
@@ -785,7 +781,7 @@ rasterizeProduct <- function(product, format, final_stack, stack, time_res, spac
 
   } else if (product == "PDI") {
     #Computing PDI analytic raster
-    final_stack <- rasterizePDIExp(final_stack, stack, time_res, space_res, name, "PDI", NULL)
+    final_stack <- rasterizePDI(final_stack, stack, time_res, space_res, name, "PDI", NULL)
 
   } else if (product == "Exposure") {
     #Computing Exposure analytic raster
@@ -1153,12 +1149,8 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
 
   #Checking wind_threshold input
   if("Exposure" %in% product){
-    if(is.null(wind_threshold)){
-      stop("wind_threshold is missing")
-    }else{
-      stopifnot("wind_threshold must be numeric" = identical(class(wind_threshold), "numeric"))
-      stopifnot("invalid value(s) for wind_threshold input (must be > 0)" = wind_threshold > 0)
-    }
+    stopifnot("wind_threshold must be numeric" = identical(class(wind_threshold), "numeric"))
+    stopifnot("invalid value(s) for wind_threshold input (must be > 0)" = wind_threshold > 0)
   }
 
   #Checking method input
