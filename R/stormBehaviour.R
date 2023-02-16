@@ -1222,12 +1222,15 @@ computePDI <- function(wind, time_res){
 #'  Exposure computed using the wind speed values in wind
 computeExposure <- function(wind, time_res, threshold){
 
-  ind <- which(wind >= threshold[1] & wind <= threshold[2])
-  expo <- rep(0,length(wind))
-  expo[ind] <- 1
-  expo <- sum(expo, na.rm = T) * time_res
+  exposure = c()
+  for(t in threshold){
+    ind <- which(wind >= t)
+    expo <- rep(0,length(wind))
+    expo[ind] <- 1
+    exposure <- c(exposure, sum(expo, na.rm = T) * time_res)
+}
 
-  return(expo)
+  return(exposure)
 }
 
 
@@ -1298,7 +1301,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
     df <- data.frame(result, row.names = "PDI")
     colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
   }else{
-    df <- data.frame(result, row.names = paste(threshold[1],"to",threshold[2],"m/s"))
+    df <- data.frame(result, row.names = paste("Min threshold:",threshold,"m/s"))
     colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
   }
 
