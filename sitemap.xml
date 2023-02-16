@@ -19,13 +19,16 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/IBTRACS_SP.html</loc>
+  </url>
+  <url>
     <loc>/reference/Storm-class.html</loc>
   </url>
   <url>
-    <loc>/reference/StormDatabase-class.html</loc>
+    <loc>/reference/Storms-class.html</loc>
   </url>
   <url>
-    <loc>/reference/Storms-class.html</loc>
+    <loc>/reference/StormsDataset-class.html</loc>
   </url>
   <url>
     <loc>/reference/eezNC.html</loc>
