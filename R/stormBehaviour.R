@@ -148,7 +148,6 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
     }else{
       stopifnot("wind_threshold must be numeric" = identical(class(wind_threshold), "numeric"))
       stopifnot("invalid value(s) for wind_threshold input (must be > 0)" = wind_threshold > 0)
-      stopifnot("wind_threshold must be length 1 or 2" = length(wind_threshold) == 2 | length(wind_threshold) == 1)
     }
   }
 
@@ -493,75 +492,6 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 
 
 
-# {
-# vx <-  0.25
-# vy <-  0.25
-# northenH = FALSE
-# xm <- c(166,172)
-# lon <- 169
-# if(northenH){
-#   ym <- c(12,18)
-#   lat <- 15
-# }else{
-#   ym <- c(-18,-12)
-#   lat <- -15
-# }
-#
-# angle <- terra::rast(xmin = xm[1], xmax = xm[2], ymin = ym[1], ymax = ym[2], resolution = 0.02, vals = NA)
-#
-# x <- terra::crds(angle, na.rm = FALSE)[, 1] - lon
-# y <- terra::crds(angle, na.rm = FALSE)[, 2] - lat
-# dist.m <- terra::distance(x = terra::crds(angle, na.rm = FALSE)[, ],
-#                            y = cbind(lon, lat), lonlat = T)
-# wind <- angle
-# as <- wind
-# angleD <- angle
-# terra::values(wind) <- Willoughby(msw = 70, lat = lat ,r = dist.m * 0.001, rmw = 20)
-#
-#
-#
-#
-# ##BOOSE
-# if(northenH){
-#   terra::values(angle) <- atan2(vy,vx) - atan2(y,x)
-# }else{
-#   terra::values(angle) <- atan2(y,x) - atan2(vy,vx)
-# }
-# terra::values(angle)[terra::values(angle) < 0] = terra::values(angle)[terra::values(angle) < 0] + 2*pi
-# terra::values(angle)[terra::values(angle) > 2*pi] = terra::values(angle)[terra::values(angle) > 2*pi] - 2*pi
-# terra::values(angleD) <- terra::values(angle)*180/pi
-# #terra::plot(angleD)
-# #lines(c(lon,lon+vx), c(lat,lat+vy))
-#
-# dir <- angle
-# terra::values(dir) <- sin(terra::values(angle))
-# #terra::plot(dir)
-# #terra::values(dir) <- terra::values(wind) - 10 * (1 - sin(terra::values(angle)))* 0.5
-# #terra::plot(dir, main = "expected")
-#
-#
-# terra::values(as) <- computeAsymmetry("Boose01",terra::values(wind), x, y, vx, vy, 10, northenH)
-# #terra::plot(wind)
-# #terra::plot(as, main = "actual")
-# #lines(c(lon,lon+vx), c(lat,lat+vy))
-#
-# #DIRECTION
-# azimuth <- -(atan2(y, x) - pi/2)
-# azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
-# azimuthD <- angle
-# terra::values(azimuthD) <- azimuth * 180/pi
-# terra::plot(azimuthD)
-#
-#
-# direction <- angle
-# terra::values(direction) <- computeDirection(x, y, northenH)
-# terra::plot(direction)
-# }
-
-
-
-
-
 #' Compute wind profile according to the selected method and asymmetry
 #'
 #' @noRd
@@ -683,11 +613,13 @@ stackRasterPDI <- function(stack, raster_template, raster_wind){
 #' @return list of SpatRaster
 stackRasterExposure <- function(stack, raster_template, raster_wind, threshold){
 
-  raster_c_model <- raster_wind
-  terra::values(raster_c_model) <- NA
-  ind <- which(terra::values(raster_wind) >= threshold[1] & terra::values(raster_wind) <= threshold[2])
-  raster_c_model[ind] <- 1
-  stack <- stackRaster(stack, raster_template, raster_c_model)
+  for(t in threshold){
+    raster_c_model <- raster_wind
+    terra::values(raster_c_model) <- NA
+    ind <- which(terra::values(raster_wind) >= t)
+    raster_c_model[ind] <- 1
+    stack <- stackRaster(stack, raster_template, raster_c_model)
+  }
 
   return(stack)
 }
@@ -767,25 +699,57 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #'
 #'
 #' @return list of SpatRaster
-rasterizePDIExp <- function(final_stack, stack, time_res, space_res, name, product, threshold){
+rasterizePDI <- function(final_stack, stack, time_res, space_res, name, product, threshold){
 
-  nbg = switch(space_res,"30sec" = 9, "2.5min" = 7, "5min" = 5, "10min" = 3)
+  nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
   #Integrating over the whole track
   prod <- sum(stack, na.rm = T) * time_res
-  if(product == "Exposure"){
-    #Applying focal function to smooth results
-    prod <- terra::focal(prod, w = matrix(1, nbg, nbg), max, na.rm = T, pad = T)
-    names(prod) <- paste0(name,"_",product,"_",threshold[1],"-",threshold[2])
-  }else{
-    #Applying focal function to smooth results
-    prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = T, pad = T)
-    names(prod) <- paste0(name,"_",product)
-  }
+  #Applying focal function to smooth results
+  prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = T, pad = T)
+  names(prod) <- paste0(name,"_",product)
+
 
   return(c(final_stack, prod))
 }
 
+
+
+
+
+#' Compute PDI raster
+#'
+#' @noRd
+#' @param final_stack list of SpatRaster. Where to add the computed MSW raster
+#' @param time_res numeric. Time resolution, used for the numerical integration
+#' over the whole track
+#' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
+#' @param name character. Name of the storm. Used to give the correct layer name
+#' in final_stack
+#' @param space_res character. space_res input from stormBehaviour_sp
+#' @param product characher
+#' @param threshold numeric vector. Wind threshold
+#'
+#'
+#' @return list of SpatRaster
+rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product, threshold){
+
+  nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
+
+
+  for(l in 1:length(threshold)){
+    ind <- seq(l,terra::nlyr(stack),length(threshold))
+    #Integrating over the whole track
+    prod <- sum(terra::subset(stack, ind), na.rm = T) * time_res
+    #Applying focal function to smooth results
+    prod <- terra::focal(prod, w = matrix(1, nbg, nbg), max, na.rm = T, na.rm = T)
+    names(prod) <- paste0(name,"_",product,"_",threshold[l])
+    final_stack <- c(final_stack, prod)
+  }
+
+
+  return(final_stack)
+}
 
 
 
@@ -825,7 +789,7 @@ rasterizeProduct <- function(product, format, final_stack, stack, time_res, spac
 
   } else if (product == "Exposure") {
     #Computing Exposure analytic raster
-    final_stack <- rasterizePDIExp(final_stack, stack, time_res, space_res, name,"Exposure", threshold)
+    final_stack <- rasterizeExp(final_stack, stack, time_res, space_res, name,"Exposure", threshold)
 
   }
 
@@ -935,7 +899,7 @@ maskProduct <- function(final_stack, loi, template){
 #'                         product = "PDI")
 #'
 #' #Compute Exposure (wind threshold: 40 to 50 m/s) for PAM 2015 in Vanuatu using default settings
-#' exp_pam <- stormBehaviour_sp(pam, product = "Exposure", wind_threshold = c(40,50))
+#' exp_pam <- stormBehaviour_sp(pam, product = "Exposure")
 #'
 #' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
 #' prof_nc <- stormBehaviour_sp(sts_nc, format = "profiles")
@@ -943,7 +907,7 @@ maskProduct <- function(final_stack, loi, template){
 #' @export
 stormBehaviour_sp <- function(sts,
                               product = "MSW",
-                              wind_threshold = NULL,
+                              wind_threshold = c(18, 33, 42, 49, 58, 70),
                               method = "Willoughby",
                               asymmetry = "Boose01",
                               empirical_rmw = FALSE,
@@ -962,12 +926,6 @@ stormBehaviour_sp <- function(sts,
     product <- "MSW"
     if(product != "MSW")
       warning("product input set to MSW")
-  }
-
-  if("Exposure" %in% product){
-    if(length(wind_threshold) == 1){
-      wind_threshold = c(0,wind_threshold)
-    }
   }
 
 
@@ -1200,7 +1158,6 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
     }else{
       stopifnot("wind_threshold must be numeric" = identical(class(wind_threshold), "numeric"))
       stopifnot("invalid value(s) for wind_threshold input (must be > 0)" = wind_threshold > 0)
-      stopifnot("wind_threshold must be length 1 or 2" = length(wind_threshold) == 2 | length(wind_threshold) == 1)
     }
   }
 
@@ -1220,26 +1177,6 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   stopifnot("time_res must be length 1" = length(time_res) == 1)
   stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
 
-}
-
-
-
-
-smooth_exposure <- function(x, offset){
-
-  x_s <- x
-  x_o <- c(rep(NA, offset), x ,rep(NA, offset))
-  for(i in (offset + 1):(length(x) + offset)){
-    c <- c()
-    for(j in (i - offset):(i + offset))
-      c <- c(c, x_o[j])
-
-    print(c)
-    print(max(c, na.rm = T))
-    x_s[i - offset] <- max(c, na.rm = T)
-  }
-
-  return(x_s)
 }
 
 
@@ -1436,19 +1373,13 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 stormBehaviour_pt <- function(sts,
                               points,
                               product = "TS",
-                              wind_threshold = NULL,
+                              wind_threshold = c(18, 33, 42, 49, 58, 70),
                               method = "Willoughby",
                               asymmetry = "Boose01",
                               empirical_rmw = FALSE,
                               time_res = 1){
 
   checkInputsSbPt(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, time_res)
-
-  if("Exposure" %in% product){
-    if(length(wind_threshold) == 1){
-      wind_threshold = c(0,wind_threshold)
-    }
-  }
 
   #Initializing final result
   final.result <- list()

@@ -196,6 +196,7 @@ plotBehaviour <- function(sts,
 
   plot(raster_product,
        col = col,
+       type = "continuous",
        xlim = c(xmin, xmax),
        ylim = c(ymin, ymax),
        alpha = 0.7,
