@@ -910,20 +910,13 @@ stormBehaviour_sp <- function(sts,
     cat("=== stormBehaviour_sp processing ... ===\n\n")
 
     cat("Computation settings:\n")
-    if(product == "Profiles"){
-      cat("  (*) Output format: analytical rasters (Integration in space and/or time)\n")
-      t <- switch(as.numeric(time_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15)
-      cat("  (*) Time interpolation: Every",t,"min\n")
-    }else{
-      cat("  (*) Output format: 2D WindSpeed structures at each observation (real and interpolated)\n")
-    }
+    cat("  (*) Time interpolation: Every", switch(as.numeric(time_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
     cat("  (*) Space resolution:",names(resolutions[space_res]),"\n")
     cat("  (*) Method used:", method ,"\n")
-    if(product == "Profiles")
-      cat("  (*) Product(s) to compute:", product ,"\n")
+    cat("  (*) Product(s) to compute:", product ,"\n")
     cat("  (*) Asymmetry used:", asymmetry ,"\n")
     if(empirical_rmw){
-      cat("  (*) rmw computed according to empirical formula (See Details section)")
+      cat("  (*) rmw computed according to the empirical formula (See Details section)")
     }
 
     cat("\nStorm(s):\n")
@@ -1058,7 +1051,7 @@ stormBehaviour_sp <- function(sts,
     if(verbose > 1){
       cat("Output:\n")
       cat("SpatRaster stack with",terra::nlyr(final.stack),"layers:\n")
-      cat("index - names of layer\n")
+      cat("index - name of layers\n")
       n = names(final.stack)
       names(n) = seq(1,terra::nlyr(final.stack))
       for(i in 1:length(n))
