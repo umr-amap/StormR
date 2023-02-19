@@ -858,7 +858,7 @@ maskProduct <- function(final_stack, loi, template){
 #' }
 #' Default value is set to 2
 #' @returns ...
-#'  }
+#'
 #'
 #'
 #' @examples
@@ -1321,7 +1321,6 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'    }
 #'
 #' @examples
-#'
 #' df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
 #' #Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings
 #' ts_nc <- stormBehaviour_pt(sts_nc, points = df)

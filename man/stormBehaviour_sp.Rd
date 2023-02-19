@@ -70,7 +70,6 @@ Default value is set to 2}
 \value{
 ...
 }
-}
 \description{
 This function computes/rasterizes analytic products for each storm of a \code{Storms}
 object, including Maximum Sustained Wind, Power Dissipation Index, Category exposure and
