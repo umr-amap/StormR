@@ -46,9 +46,15 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   stopifnot("No 'lat' selection in fields" = "lat" %in% names(fields))
   stopifnot("No 'msw' selection in fields" = "msw" %in% names(fields))
   stopifnot("No 'sshs' selection in fields" = "sshs" %in% names(fields))
-  stopifnot("No 'rmw' selection in fields" = "rmw" %in% names(fields))
-  stopifnot("No 'pressure' selection in fields" = "pressure" %in% names(fields))
-  stopifnot("No 'poci' selection in fields" = "poci" %in% names(fields))
+  #Optional fields
+  if(!("rmw" %in% names(fields)))
+    warning("No 'rmw' selection in fields, use empirical_rmw = TRUE for the forthcoming computations")
+
+  if(!("pressure" %in% names(fields)))
+    warning("No 'pressure' selection in fields, Cannot use Holland method for the forthcoming computations")
+
+  if(!("poci" %in% names(fields)))
+    warning("No 'poci' selection in fields,  Cannot use Holland method for the forthcoming computations")
 
 
   #Checking basin input
@@ -123,15 +129,17 @@ initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc
                                 dim = c(row,len)),
                msw = array(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind],
                            dim = c(row,len)),
-               rmw = array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind],
-                           dim = c(row,len)),
-               pres = array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind],
-                            dim = c(row,len)),
-               poci = array(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind],
-                            dim = c(row,len)),
                sshs = array(ncdf4::ncvar_get(dataBase, fields["sshs"])[,ind],
                             dim = c(row,len)))
 
+  if("rmw" %in% names(fields))
+    data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind], dim = c(row,len))
+
+  if("pressure" %in% names(fields))
+    data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind], dim = c(row,len))
+
+  if("poci" %in% names(fields))
+    data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind], dim = c(row,len))
   ncdf4::nc_close(dataBase)
 
 
