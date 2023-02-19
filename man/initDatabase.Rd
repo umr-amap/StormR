@@ -6,10 +6,11 @@
 \usage{
 initDatabase(
   filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
-  fields = c(sid = "sid", basin = "basin", names = "name", seasons = "season", isoTime =
-    "iso_time", lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", roci
-    = "usa_roci", pressure = "usa_pres", poci = "usa_poci", sshs = "usa_sshs"),
-  basin = "SP"
+  fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time",
+    lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure =
+    "usa_pres", poci = "usa_poci", sshs = "usa_sshs"),
+  basin = "SP",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ See Details}
 
 \item{basin}{character. Basin name to filter the database within its boundaries. If NULL, no filter is performed and the
 whole database will be collected when calling collectData method.}
+
+\item{verbose}{logical.}
 }
 \value{
 An object of class StormsDataset

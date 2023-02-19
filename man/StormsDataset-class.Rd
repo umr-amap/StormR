@@ -20,7 +20,5 @@ See Details}
 whole database will be collected when calling collectData method.}
 
 \item{\code{database}}{list of 12 slots (See Details)}
-
-\item{\code{loaded}}{logical. Whether or not the database have already been loaded. If TRUE, it cannot be loaded anymore}
 }}
 
