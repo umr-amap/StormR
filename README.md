@@ -278,21 +278,21 @@ loi <- sf::st_sf(pol, crs = 4326)
 harold <- getStorms(seasons = 2020, names= "HAROLD", loi = loi)
 
 #Compute wind profiles using Willoughby model with asymmetry
-profWillV1 <- stormBehaviour_sp(harold, format = "profiles")
+profWillV1 <- stormBehaviour_sp(harold, product = "Profiles")
 
 #Compute wind profiles using Holland model with asymmetry
-profHollV2 <- stormBehaviour_sp(harold, format = "profiles", method = "Holland")
+profHollV2 <- stormBehaviour_sp(harold, product = "Profiles", method = "Holland")
 
 #Compare few profiles between the two above differents methods and asymmetries
-plotBehaviour(harold,profWillV1["HAROLD_profile40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
-plotBehaviour(harold,profHollV2["HAROLD_profile40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profWillV1["HAROLD_Profiles_40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profHollV2["HAROLD_Profiles_40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
-plotBehaviour(harold,profWillV1["HAROLD_profile41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
-plotBehaviour(harold,profHollV2["HAROLD_profile41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profWillV1["HAROLD_Profiles_41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profHollV2["HAROLD_Profiles_41"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
 
-plotBehaviour(harold,profWillV1["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
-plotBehaviour(harold,profHollV2["HAROLD_profile43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profWillV1["HAROLD_Profiles_43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
+plotBehaviour(harold,profHollV2["HAROLD_Profiles_43"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
 
 
 

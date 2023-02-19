@@ -66,7 +66,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -78,7 +77,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -89,7 +87,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -101,7 +98,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -112,7 +108,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -124,7 +119,6 @@ test_that("Test checkInputsSb function", {
                              method = "willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -135,7 +129,6 @@ test_that("Test checkInputsSb function", {
                              method = 1,
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -146,7 +139,6 @@ test_that("Test checkInputsSb function", {
                              method = TRUE,
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -157,7 +149,6 @@ test_that("Test checkInputsSb function", {
                              method = c("Willougbhy", "Holland"),
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -169,7 +160,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -180,7 +170,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = 1,
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -191,7 +180,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = TRUE,
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -202,7 +190,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = c("Boose01", "None"),
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -214,7 +201,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = "TRUE",
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -225,7 +211,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = 1,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 1,
                              verbose = 2))
@@ -237,7 +222,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = TRUE,
                              verbose = 2))
@@ -248,7 +232,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = 2.3,
                              verbose = 2))
@@ -259,7 +242,6 @@ test_that("Test checkInputsSb function", {
                              method = "Willougbhy",
                              asymmetry = "Boose01",
                              empirical_rmw = FALSE,
-                             format = "analytic",
                              space_res = "2.5min",
                              time_res = c(0.25, 0.5),
                              verbose = 2))
@@ -272,9 +254,9 @@ test_that("Test checkInputsSb function", {
 
 test_that("Test getIndices function", {
 
-  expect_equal(getIndices(pam@data[["PAM"]], 2, "analytic"), seq(26,49))
-  expect_equal(getIndices(pam@data[["PAM"]], 20, "analytic"), seq(8,57))
-  expect_equal(getIndices(pam@data[["PAM"]], 30, "analytic"), seq(1,57))
+  expect_equal(getIndices(pam@data[["PAM"]], 2, "Profiles"), seq(26,49))
+  expect_equal(getIndices(pam@data[["PAM"]], 20, "Profiles"), seq(8,57))
+  expect_equal(getIndices(pam@data[["PAM"]], 30, "Profiles"), seq(1,57))
 
 })
 
