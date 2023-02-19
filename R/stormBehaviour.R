@@ -500,9 +500,10 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 #' @param asymmetry character. asymmetry input from stormBehviour
 #' @param x numeric array. Distance in degree from the eye of storm in the x direction
 #' @param y numeric array. Distance in degree from the eye of storm in the y direction
+#' @param buffer numeric. Buffer size (in degree) for the storm
 #'
 #' @return  numeric vectors. Wind speed values (m/s) and wind directions (rad)
-computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y){
+computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, buffer){
 
 
   #Computing sustained wind according to the input model
@@ -539,6 +540,11 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y){
   wind <- computeAsymmetry(asymmetry, wind, x, y,
                            data$vx.deg[index], data$vy.deg[index],
                            data$storm.speed[index], northenH)
+
+  #Remove cells outside of buffer
+  dist <- sqrt(x*x + y*y)
+  direction[dist > buffer] <- NA
+  wind[dist > buffer] <- NA
 
 
   return(list(wind = wind, direction = direction))
@@ -1011,7 +1017,7 @@ stormBehaviour_sp <- function(sts,
                                 lonlat = T)
 
       #Computing wind profile
-      output <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y)
+      output <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y, buffer)
       terra::values(raster.wind) <- output$wind
       terra::values(raster.direction) <- output$direction
 
