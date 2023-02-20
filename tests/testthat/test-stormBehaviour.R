@@ -276,25 +276,25 @@ test_that("Test getDataInterpolate function", {
 
 test_that("Test computeDirection function", {
 
-  expect_equal(computeDirection(1, 1, TRUE), 290)
-  expect_equal(computeDirection(1, -1, TRUE), 20)
-  expect_equal(computeDirection(-1, -1, TRUE), 110)
-  expect_equal(computeDirection(-1, 1, TRUE), 200)
+  expect_equal(computeDirection(1, 1, 1,TRUE), 275)
+  expect_equal(computeDirection(1, -1, 1,TRUE), 5)
+  expect_equal(computeDirection(-1, -1, 1,TRUE), 95)
+  expect_equal(computeDirection(-1, 1, 1, TRUE), 185)
 
-  expect_equal(computeDirection(0, 1, TRUE), 245)
-  expect_equal(computeDirection(1, 0, TRUE), 335)
-  expect_equal(computeDirection(0, -1, TRUE), 65)
-  expect_equal(computeDirection(-1, 0, TRUE), 155)
+  expect_equal(computeDirection(0, 1, 1, TRUE), 230)
+  expect_equal(computeDirection(1, 0, 1, TRUE), 320)
+  expect_equal(computeDirection(0, -1, 1, TRUE), 50)
+  expect_equal(computeDirection(-1, 0, 1, TRUE), 140)
 
-  expect_equal(computeDirection(1, 1, FALSE), 160)
-  expect_equal(computeDirection(1, -1, FALSE), 250)
-  expect_equal(computeDirection(-1, -1, FALSE), 340)
-  expect_equal(computeDirection(-1, 1, FALSE), 70)
+  expect_equal(computeDirection(1, 1, 1, FALSE), 175)
+  expect_equal(computeDirection(1, -1, 1, FALSE), 265)
+  expect_equal(computeDirection(-1, -1, 1, FALSE), 355)
+  expect_equal(computeDirection(-1, 1, 1, FALSE), 85)
 
-  expect_equal(computeDirection(0, 1, FALSE), 115)
-  expect_equal(computeDirection(1, 0, FALSE), 205)
-  expect_equal(computeDirection(0, -1, FALSE), 295)
-  expect_equal(computeDirection(-1, 0, FALSE), 25)
+  expect_equal(computeDirection(0, 1, 1, FALSE), 130)
+  expect_equal(computeDirection(1, 0, 1, FALSE), 220)
+  expect_equal(computeDirection(0, -1, 1, FALSE), 310)
+  expect_equal(computeDirection(-1, 0, 1, FALSE), 40)
 
 })
 
@@ -529,10 +529,10 @@ test_that("Test checkInputsSbPt function", {
 
 test_that("Test computePDI function", {
 
-  expect_equal(computePDI(seq(0,80), 1), 1.002)
-  expect_equal(computePDI(seq(0,80,0.75), 0.75), 0.752)
-  expect_equal(computePDI(seq(0,80,0.5), 0.5), 0.502)
-  expect_equal(computePDI(seq(0,80,0.25), 0.25), 0.252)
+  expect_equal(computePDI(seq(0,80), 1), 0.002)
+  expect_equal(computePDI(seq(0,80,0.75), 0.75), 0.002)
+  expect_equal(computePDI(seq(0,80,0.5), 0.5), 0.002)
+  expect_equal(computePDI(seq(0,80,0.25), 0.25), 0.002)
 
 })
 

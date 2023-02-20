@@ -229,7 +229,7 @@ getIndices <- function(st, offset, product){
   #Use observations within the loi for the computations
   ind <- seq(st@obs[1], st@obs[length(st@obs)], 1)
 
-  if(product == "Profiles"){
+  if(product != "Profiles"){
     #Handling indices and offset (outside of loi at entry and exit)
     for(o in 1:offset){
       ind <- c(st@obs[1] - o, ind)
@@ -263,7 +263,6 @@ getIndices <- function(st, offset, product){
 #'    \item lat: numeric. Latitude coordinates (degree)
 #'    \item msw: numeric. Maximum Sustained Wind (m/s)
 #'    \item rmw: numeric. Radius of Maximum Wind (km)
-#'    \item roci: numeric. Radius of Outermost Closed Isobar (km)
 #'    \item pc: numeric. Pressure at the center of the storm (mb)
 #'    \item poci: numeric. Pressure of Outermost Closed Isobar (mb)
 #'    \item storm.speed: numeric. Velocity of the storm (m/s)
@@ -418,18 +417,23 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
 #' @param northenH logical. Whether it is northen hemisphere or not
+#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
 #'
 #' @return wind directions (rad) at each (x,y) position
-computeDirection <- function(x, y, northenH){
+computeDirection <- function(x, y, I, northenH){
 
   azimuth <- -(atan2(y, x) - pi/2)
 
   azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
 
   if(northenH){
-    direction <- azimuth *180/pi - 90 - 25
+    direction <- azimuth *180/pi - 90
+    direction[I == 1] <- direction[I == 1] - 40
+    direction[I == 0] <- direction[I == 0] - 20
   }else{
-    direction <- azimuth *180/pi + 90 + 25
+    direction <- azimuth *180/pi + 90
+    direction[I == 1] <- direction[I == 1] + 40
+    direction[I == 0] <- direction[I == 0] + 20
   }
 
   direction[direction < 0] = direction[direction < 0] + 360
@@ -492,10 +496,11 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 #' @param asymmetry character. asymmetry input from stormBehviour
 #' @param x numeric array. Distance in degree from the eye of storm in the x direction
 #' @param y numeric array. Distance in degree from the eye of storm in the y direction
+#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
 #' @param buffer numeric. Buffer size (in degree) for the storm
 #'
 #' @return  numeric vectors. Wind speed values (m/s) and wind directions (rad)
-computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, buffer){
+computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, I, buffer){
 
 
   #Computing sustained wind according to the input model
@@ -525,8 +530,9 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, buf
     northenH = FALSE
   }
 
+
   #Computing wind direction
-  direction <- computeDirection(x, y, northenH)
+  direction <- computeDirection(x, y, I, northenH)
 
   #Adding asymmetry
   wind <- computeAsymmetry(asymmetry, wind, x, y,
@@ -537,7 +543,6 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, buf
   dist <- sqrt(x*x + y*y)
   direction[dist > buffer] <- NA
   wind[dist > buffer] <- NA
-
 
   return(list(wind = wind, direction = direction))
 
@@ -897,7 +902,6 @@ stormBehaviour_sp <- function(sts,
   #Getting new extent
   ext <- terra::ext(raster.template)
   #Buffer size in degree
-  #buffer <- terra::res(raster.template)[1] * sts@buffer / space #NO MORE OK
   buffer <- 2.5
   #Initializing final raster stacks
   final.stack.msw <- c()
@@ -929,14 +933,11 @@ stormBehaviour_sp <- function(sts,
     #Handling indices inside loi.buffer or not
     ind <- getIndices(st, 2, product)
 
-
-
     #Interpolated time step dt, default value dt <- 4 --> 1h
     dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
 
     #Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, dt, empirical_rmw, method)
-
 
     nb.step <- dim(dataTC)[1] - 1
 
@@ -960,19 +961,29 @@ stormBehaviour_sp <- function(sts,
       raster.template.model <- makeTemplateModel(raster.template, buffer, dataTC, j)
       raster.wind <- raster.template.model
       raster.direction <- raster.template.model
+      raster.I <- raster.template.model
 
-      #Computing coordinates to the eye of the storm for x and y axes
-      x <- (terra::crds(raster.wind, na.rm = FALSE)[, 1] - dataTC$lon[j])
-      y <- (terra::crds(raster.wind, na.rm = FALSE)[, 2] - dataTC$lat[j])
+      #Computing coordinates of raster
+      crds <- terra::crds(raster.wind, na.rm = FALSE)
 
+      #Computing distances in degree to the eye of the storm for x and y axes
+      x <- crds[, 1] - dataTC$lon[j]
+      y <- crds[, 2] - dataTC$lat[j]
 
       #Computing distances to the eye of the storm in m
-      dist.m <- terra::distance(x = terra::crds(raster.wind, na.rm = FALSE)[, ],
+      dist.m <- terra::distance(x = crds,
                                 y = cbind(dataTC$lon[j], dataTC$lat[j]),
                                 lonlat = T)
 
+      #Intersect points coordinates with LOI
+      pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
+      sf::st_crs(pts) <- wgs84
+      ind <- which(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE)
+      terra::values(raster.I) <- 0
+      terra::values(raster.I)[ind] <- 1
+
       #Computing wind profile
-      output <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y, buffer)
+      output <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y, terra::values(raster.I), buffer)
       terra::values(raster.wind) <- output$wind
       terra::values(raster.direction) <- output$direction
 
@@ -1152,7 +1163,7 @@ computePDI <- function(wind, time_res){
   #Applying both rho and surface drag coefficient
   pdi <- wind * rho * cd
   #Integrating over the whole track
-  pdi <- sum(pdi, na.rm <- T) * time_res
+  pdi <- sum(pdi, na.rm = T) * time_res
 
   return(round(pdi,3))
 }
@@ -1318,7 +1329,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #' #Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings
 #' ts_nc <- stormBehaviour_pt(sts_nc, points = df)
 #' #Compute PDI for ERICA and NIRAN on points provided in df using default settings
-#' pdiPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "PDI)
+#' pdiPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "PDI")
 #' #Compute Exposure for ERICA and NIRAN on points provided in df using default settings
 #' expPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "Exposure", wind_threshold = c(20,30))
 #'
@@ -1334,6 +1345,7 @@ stormBehaviour_pt <- function(sts,
 
   checkInputsSbPt(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, time_res)
 
+  buffer <- 2.5
   #Initializing final result
   final.result <- list()
 
@@ -1361,13 +1373,26 @@ stormBehaviour_pt <- function(sts,
     #For each point
     for(i in 1:dim(points)[1]){
 
-      #Computing coordinates between eye of storm and point P
-      x <- points$lon[i] - dataTC$lon
-      y <- points$lat[i] - dataTC$lat
+
+      pt <- points[i,]
+
+      #Computing distance between eye of storm and point P
+      x <- pt$lon - dataTC$lon
+      y <- pt$lat - dataTC$lat
+
+
+      #Intersect points coordinates with LOI
+      pts <- sf::st_as_sf(as.data.frame(pt), coords = c("lon","lat"))
+      sf::st_crs(pts) <- wgs84
+      if(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE){
+        I <- 1
+      }else{
+        I <- 0
+      }
 
       #Computing wind profiles
       dist2p <- dist.m[,i]
-      output <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y)
+      output <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y, I, buffer)
 
       vr <- output$wind
       dir <- output$direction
