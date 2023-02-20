@@ -11,7 +11,6 @@ stormBehaviour_sp(
   method = "Willoughby",
   asymmetry = "Boose01",
   empirical_rmw = FALSE,
-  format = "analytic",
   space_res = "2.5min",
   time_res = 1,
   verbose = 2
@@ -25,6 +24,8 @@ stormBehaviour_sp(
 \item "MSW", Maximum Sustained Wind
 \item "PDI", Power Dissipation Index
 \item "Exposure", hours spent for each and all categories together
+\item "Profiles", 2D wind speed structures of wind speed with wind direction
+for each observation
 }
 Default value is set to "MSW"}
 
@@ -49,15 +50,6 @@ Default value is set to "None".}
 empirically, according to getRmw function or using the Radius of Maximum Wind
 from the observations. Default value is set to FALSE}
 
-\item{format}{either a character among "analytic" and "profiles":
-\itemize{
-\item  If "analytic", analytic rasters (integration in space and
-time over the track) are returned.
-\item  If "profiles", product input is
-ignored and set to "MSW" and 2D wind speed structures for each observation
-are returned.
-}}
-
 \item{space_res}{character. Space resolution for the raster(s) to compute.
 Either 30sec, 2.5min, 5min or 10min. Default value is set to 30sec}
 
@@ -76,21 +68,12 @@ informations about the process and/or outputs and notes.
 Default value is set to 2}
 }
 \value{
-Depending on format input:
-\itemize{
-\item  If "analytic", analytic rasters (integration in space and time over the track)
-are returned within a raster stack. Each layer is named after the storm and the product
-computed as follow: stormName_product
-\item If "profiles", product input is ignored and set to "MSW" and
-2D wind speed structures for each observation are returned within a raster
-stack. Each layer is named after the storm and the index of observation
-computed as follow: stormName_profileIndex
-}
+...
 }
 \description{
 This function computes/rasterizes analytic products for each storm of a \code{Storms}
-object, including Maximum Sustained Wind, Power Dissipation Index and Category exposure.
-It can also rasterize the 2D wind speed structures or produce time series of wind speed
+object, including Maximum Sustained Wind, Power Dissipation Index, Category exposure and
+2D wind speed structures of wind speed
 for every observations
 }
 \examples{
@@ -105,6 +88,6 @@ pdi_nc <- stormBehaviour_sp(sts_nc, time_res = 0.5, method = "Holland",
 exp_pam <- stormBehaviour_sp(pam, product = "Exposure")
 
 #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
-prof_nc <- stormBehaviour_sp(sts_nc, format = "profiles")
+prof_nc <- stormBehaviour_sp(sts_nc, product = "Profiles")
 
 }
