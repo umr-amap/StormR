@@ -69,3 +69,13 @@ This function computes products for each storm of a \code{Storms} object
 among TS (time series of wind speed), Power Dissipation Index and Category exposure for each
 given points provided in points input
 }
+\examples{
+df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+#Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings
+ts_nc <- stormBehaviour_pt(sts_nc, points = df)
+#Compute PDI for ERICA and NIRAN on points provided in df using default settings
+pdiPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "PDI")
+#Compute Exposure for ERICA and NIRAN on points provided in df using default settings
+expPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "Exposure", wind_threshold = c(20,30))
+
+}
