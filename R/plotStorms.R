@@ -65,7 +65,7 @@ plotTrack <- function(st) {
     lon,
     lat,
     col = "black",
-    lty = st@lty.track,
+    lty = 2,
     lwd = 1,
     cex = cex
   )

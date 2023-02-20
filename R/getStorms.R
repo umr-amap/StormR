@@ -13,23 +13,27 @@
 #' @slot  sshs numeric. Maximum category reached in the Saffir Simpson Hurricane Scale
 #' @slot numobs.all numeric. Total number of observations available.
 #' @slot obs.all  data.frame. Contains all of the observations available.
-#' An observation is made up of several slots which are:
+#' An observation is made up of several fields which are:
 #' \itemize{
 #'   \item iso.time, Date and hours of observations (UTC)
 #'   \item lon, Longitude coordinate (deg)
 #'   \item lat, Latitude coordinate (deg)
 #'   \item msw, Maximum Sustained Wind (m/s)
+#'   \item sshs, Category in the Saffir Simpson Hurricane Scale
+#'  }
+#'  The following field is not mandatory nut highly recommand
+#'  \itemize{
 #'   \item rmw, Radius of Maximum Wind (km)
-#'   \item roci, Radius of the Outermost Closed Isobar (km)
-#'   \item pres, pressure at the center (mb)
+#'  }
+#' Also the following fields are only mandatory to perform Holland model (See Details)
+#' \itemize{
+#'   \item pres, Pressure at the center (mb)
 #'   \item poci, Pressure of the Outermost Closed Isobar (mb)
-#'   \item sshs, Category in the Saffir Simpson Hurricane Scale,
 #' }
 #' @slot numobs numeric. Total number of observations available within the location of interest
-#' extented with its corresponding buffer (See class Storms)
+#' extented with its corresponding buffer (See Storms class)
 #' @slot obs numeric vector. Indices of observations within the location of interest
-#' extented with its corresponding buffer (See class Storms)
-#' @slot lty.track numeric. Indicates which line type is used to plot the storm on a map
+#' extented with its corresponding buffer (See Storms class)
 #' @returns A S4 object gathering all the following informations
 #' @importFrom methods new
 #' @export
@@ -42,8 +46,7 @@ Storm <- methods::setClass(
     numobs.all = "numeric",
     obs.all = "data.frame",
     obs = "numeric",
-    numobs = "numeric",
-    lty.track = "numeric"
+    numobs = "numeric"
   )
 )
 
@@ -394,7 +397,6 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 #' @param sds StormsDataset
 #' @param index numeric, index of the storm in the database
 #' @param loi_sf_buffer sf object. Location of interest extended with buffer
-#' @param k numeric. linetype
 #'
 #' @return a list with 4 slots:
 #'   \itemize{
@@ -404,7 +406,7 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 #'     \item numeric vector (number of storms)
 #'   }
 writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_storms,
-                       sds, index, loi_sf_buffer, k){
+                       sds, index, loi_sf_buffer){
 
 
   #Getting lon/lat coordinates
@@ -467,7 +469,6 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 
     storm@obs <- ind
     storm@numobs <- length(ind)
-    storm@lty.track <- k
     storm@sshs <- max(storm@obs.all$sshs,na.rm = T)
 
 
@@ -613,8 +614,6 @@ getStorms <- function(sds = IBTRACS_SP,
     storm.seasons <- list()
     storm.sshs <- list()
     nb.storms <- 0
-    k <- 2 #initializing line type
-
     for (i in indices) {
       sts.output <- writeStorm(storm_list = storm.list,
                                storm_names = storm.names,
@@ -623,8 +622,7 @@ getStorms <- function(sds = IBTRACS_SP,
                                nb_storms = nb.storms,
                                sds = sds,
                                index = i,
-                               loi_sf_buffer = loi.sf.buffer,
-                               k = k)
+                               loi_sf_buffer = loi.sf.buffer)
       if(!is.null(sts.output[[1]])){
         storm.list <- sts.output[[1]]
         storm.names <- sts.output[[2]]
@@ -638,8 +636,6 @@ getStorms <- function(sds = IBTRACS_SP,
         utils::setTxtProgressBar(pb, count)
         count <- count + 1
       }
-
-      k <- k + 1
     }
 
     if (verbose > 0 & length(indices) > 1)
