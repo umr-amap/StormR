@@ -148,6 +148,10 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   #Checking method input
   stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
   stopifnot("Only one method must be chosen" = length(method) == 1)
+  if(method == "Holland"){
+    stopifnot("Cannot perform Holland method (missing pressure input)" = "pres" %in% colnames(sts@data[[1]]@obs.all))
+    stopifnot("Cannot perform Holland method (missing poci input)" = "poci" %in% colnames(sts@data[[1]]@obs.all))
+  }
 
   #Checking asymmetry input
   stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01"))
@@ -333,7 +337,11 @@ getDataInterpolate <- function(st, indices, dt, empirical_rmw, method){
   if(empirical_rmw){
     data$rmw[indices.obs] <- getRmw(data$msw[indices.obs], lat)
   }else{
-    if(all(is.na(st@obs.all$rmw[indices]))){
+
+    if(!("rmw" %in% colnames(st@obs.all))){
+      warning("Missing rmw data to perform model. empirical_rmw set to TRUE")
+      data$rmw[indices.obs] <- getRmw(data$msw[indices.obs], lat)
+    }else if(all(is.na(st@obs.all$rmw[indices]))){
       warning("Missing rmw data to perform model. empirical_rmw set to TRUE")
       data$rmw[indices.obs] <- getRmw(data$msw[indices.obs], lat)
     }else{

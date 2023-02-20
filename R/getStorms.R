@@ -391,7 +391,7 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 #' @param storm_seasons list of cyclonic seasons. To further integrate in a Storms object
 #' @param storm_sshs list of storm sshs. To further integrate in a Storms object
 #' @param nb_storms numeric. number of storm to further integrate in a Storms object
-#' @param database Storm database
+#' @param sds StormsDataset
 #' @param index numeric, index of the storm in the database
 #' @param loi_sf_buffer sf object. Location of interest extended with buffer
 #' @param k numeric. linetype
@@ -404,12 +404,12 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 #'     \item numeric vector (number of storms)
 #'   }
 writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_storms,
-                       database, index, loi_sf_buffer, k){
+                       sds, index, loi_sf_buffer, k){
 
 
   #Getting lon/lat coordinates
-  lon <- database$longitude[, index]
-  lat <- database$latitude[, index]
+  lon <- sds@database$longitude[, index]
+  lat <- sds@database$latitude[, index]
   coords <- data.frame(lon = lon, lat = lat)
 
   #Keep only non NA data (that are either the first or last observations)
@@ -417,7 +417,7 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
   coords <- coords[valid_indices,]
 
   #Removing invalid iso_time
-  isotime <- database$isotimes[valid_indices, index]
+  isotime <- sds@database$isotimes[valid_indices, index]
   list.isotime <- as.numeric(stringr::str_sub(isotime,12,13))
   #Keep only 03H 06H 09H 12H 15H 18h 21H 00h iso times
   ind.isotime <- which(list.isotime %% 3 == 0)
@@ -438,19 +438,23 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
     nb_storms <- nb_storms + 1
 
     storm <- Storm()
-    storm@name <- database$names[index]
-    storm@season <- database$seasons[index]
-    storm@obs.all <- data.frame(
-      iso.time = isotime,
-      lon = lon[valid_indices],
-      lat = lat[valid_indices],
-      msw = zoo::na.approx(round(database$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2),
-      rmw = zoo::na.approx(database$rmw[valid_indices, index], na.rm = F, rule = 2),
-      roci = zoo::na.approx(database$roci[valid_indices, index], na.rm = F, rule = 2),
-      pres = zoo::na.approx(database$pres[valid_indices, index], na.rm = F, rule = 2),
-      poci = zoo::na.approx(database$poci[valid_indices, index], na.rm = F, rule = 2),
-      sshs = database$sshs[valid_indices, index]
-    )
+    storm@name <- sds@database$names[index]
+    storm@season <- sds@database$seasons[index]
+    storm@obs.all <- data.frame(iso.time = isotime,
+                                lon = lon[valid_indices],
+                                lat = lat[valid_indices],
+                                msw = zoo::na.approx(round(sds@database$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2),
+                                sshs = sds@database$sshs[valid_indices, index])
+    if("rmw" %in% names(sds@fields))
+      storm@obs.all$rmw <- zoo::na.approx(sds@database$rmw[valid_indices, index], na.rm = F, rule = 2)
+
+    if("pressure" %in% names(sds@fields))
+      storm@obs.all$pres <- zoo::na.approx(sds@database$pres[valid_indices, index], na.rm = F, rule = 2)
+
+    if("poci" %in% names(sds@fields))
+      storm@obs.all$poci <- zoo::na.approx(sds@database$poci[valid_indices, index], na.rm = F, rule = 2)
+
+
 
     #Wrapping longitudes from -180/180 to 0/360
     lg <- which(storm@obs.all$lon < 0)
@@ -617,7 +621,7 @@ getStorms <- function(sds = IBTRACS_SP,
                                storm_seasons = storm.seasons,
                                storm_sshs = storm.sshs,
                                nb_storms = nb.storms,
-                               database = sds@database,
+                               sds = sds,
                                index = i,
                                loi_sf_buffer = loi.sf.buffer,
                                k = k)
