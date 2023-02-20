@@ -233,7 +233,7 @@ getIndices <- function(st, offset, product){
   #Use observations within the loi for the computations
   ind <- seq(st@obs[1], st@obs[length(st@obs)], 1)
 
-  if(product != "Profiles"){
+  if("MSW" %in% product | "PDI" %in% product | "Exposure" %in% product){
     #Handling indices and offset (outside of loi at entry and exit)
     for(o in 1:offset){
       ind <- c(st@obs[1] - o, ind)
@@ -1003,7 +1003,7 @@ stormBehaviour_sp <- function(sts,
         aux.stack.pdi <- stackProduct("PDI", aux.stack.pdi, raster.template, raster.wind, NULL)
       if("Exposure" %in% product)
         aux.stack.exp <- stackProduct("Exposure", aux.stack.exp, raster.template, raster.wind, wind_threshold)
-      if(product == "Profiles"){
+      if("Profiles" %in% product){
         names(raster.wind) <- paste0(st@name,"_","Profiles","_",dataTC$indices[j])
         names(raster.direction) <- paste0(st@name,"_","WindDirection","_",dataTC$indices[j])
         aux.stack.prof <- stackRaster(aux.stack.prof, raster.template, raster.wind)
@@ -1056,7 +1056,7 @@ stormBehaviour_sp <- function(sts,
     final.stack <- c(final.stack, final.stack.pdi)
   if("Exposure" %in% product)
     final.stack <- c(final.stack, final.stack.exp)
-  if(product == "Profiles")
+  if("Profiles" %in% product)
     final.stack <- c(final.stack, aux.stack.prof, aux.stack.direction)
 
   final.stack <- terra::rast(final.stack)
