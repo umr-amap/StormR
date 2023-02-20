@@ -121,6 +121,18 @@ Correspond in fact of time series of wind speed on every observations (real and 
 <li><p>(6:number of point coordinates), if product == "Exposure"</p></li>
 </ul></div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">166.5</span>, <span class="fl">163</span><span class="op">)</span>, lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">22</span>, <span class="op">-</span><span class="fl">19</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings</span></span></span>
+<span class="r-in"><span><span class="va">ts_nc</span> <span class="op">&lt;-</span> <span class="fu">stormBehaviour_pt</span><span class="op">(</span><span class="va">sts_nc</span>, points <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#Compute PDI for ERICA and NIRAN on points provided in df using default settings</span></span></span>
+<span class="r-in"><span><span class="va">pdiPt_nc</span> <span class="op">&lt;-</span> <span class="fu">stormBehaviour_pt</span><span class="op">(</span><span class="va">sts_nc</span>, points <span class="op">=</span> <span class="va">df</span>, product <span class="op">=</span> <span class="st">"PDI"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#Compute Exposure for ERICA and NIRAN on points provided in df using default settings</span></span></span>
+<span class="r-in"><span><span class="va">expPt_nc</span> <span class="op">&lt;-</span> <span class="fu">stormBehaviour_pt</span><span class="op">(</span><span class="va">sts_nc</span>, points <span class="op">=</span> <span class="va">df</span>, product <span class="op">=</span> <span class="st">"Exposure"</span>, wind_threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

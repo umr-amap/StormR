@@ -49,10 +49,11 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">initDatabase</span><span class="op">(</span></span>
 <span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"IBTrACS.SP.v04r00.nc"</span>, package <span class="op">=</span> <span class="st">"StormR"</span><span class="op">)</span>,</span>
-<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sid <span class="op">=</span> <span class="st">"sid"</span>, basin <span class="op">=</span> <span class="st">"basin"</span>, names <span class="op">=</span> <span class="st">"name"</span>, seasons <span class="op">=</span> <span class="st">"season"</span>, isoTime <span class="op">=</span></span>
-<span>    <span class="st">"iso_time"</span>, lon <span class="op">=</span> <span class="st">"usa_lon"</span>, lat <span class="op">=</span> <span class="st">"usa_lat"</span>, msw <span class="op">=</span> <span class="st">"usa_wind"</span>, rmw <span class="op">=</span> <span class="st">"usa_rmw"</span>, roci</span>
-<span>    <span class="op">=</span> <span class="st">"usa_roci"</span>, pressure <span class="op">=</span> <span class="st">"usa_pres"</span>, poci <span class="op">=</span> <span class="st">"usa_poci"</span>, sshs <span class="op">=</span> <span class="st">"usa_sshs"</span><span class="op">)</span>,</span>
-<span>  basin <span class="op">=</span> <span class="st">"SP"</span></span>
+<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>basin <span class="op">=</span> <span class="st">"basin"</span>, names <span class="op">=</span> <span class="st">"name"</span>, seasons <span class="op">=</span> <span class="st">"season"</span>, isoTime <span class="op">=</span> <span class="st">"iso_time"</span>,</span>
+<span>    lon <span class="op">=</span> <span class="st">"usa_lon"</span>, lat <span class="op">=</span> <span class="st">"usa_lat"</span>, msw <span class="op">=</span> <span class="st">"usa_wind"</span>, rmw <span class="op">=</span> <span class="st">"usa_rmw"</span>, pressure <span class="op">=</span></span>
+<span>    <span class="st">"usa_pres"</span>, poci <span class="op">=</span> <span class="st">"usa_poci"</span>, sshs <span class="op">=</span> <span class="st">"usa_sshs"</span><span class="op">)</span>,</span>
+<span>  basin <span class="op">=</span> <span class="st">"SP"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -70,6 +71,10 @@ See Details</p></dd>
 <dt>basin</dt>
 <dd><p>character. Basin name to filter the database within its boundaries. If NULL, no filter is performed and the
 whole database will be collected when calling collectData method.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>logical.</p></dd>
 
 </dl></div>
     <div id="value">
