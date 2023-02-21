@@ -13,6 +13,7 @@
 #' @slot basin character. Basin name to filter the database within its boundaries. If NULL, no filter is performed and the
 #' whole database will be collected when calling collectData method.
 #' @slot database list of 12 slots (See Details)
+#' Please detail here the fields needed, with a short description, and precise if they are mandatory or not. 
 #' @export
 StormsDataset <- methods::setClass(
   "StormsDataset",
@@ -38,7 +39,6 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   #Checking fields input
   stopifnot("fields must be character" = identical(class(fields),"character"))
   #Mandatory fields
-  stopifnot("No 'basin' selection in fields" = "basin" %in% names(fields))
   stopifnot("No 'names' selection in fields" = "names" %in% names(fields))
   stopifnot("No 'seasons' selection in fields" = "seasons" %in% names(fields))
   stopifnot("No 'isoTime' selection in fields" = "isoTime" %in% names(fields))
@@ -47,6 +47,9 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   stopifnot("No 'msw' selection in fields" = "msw" %in% names(fields))
   stopifnot("No 'sshs' selection in fields" = "sshs" %in% names(fields))
   #Optional fields
+  if(!("basin" %in% names(fields)))
+    warning("No 'basin' selection in fields, Cannot use basin filtering when collecting data")
+
   if(!("rmw" %in% names(fields)))
     warning("No 'rmw' selection in fields, use empirical_rmw = TRUE for the forthcoming computations")
 
@@ -60,6 +63,8 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   #Checking basin input
   stopifnot("basin must be character" = identical(class(basin),"character"))
   stopifnot("basin must be length one" = length(length) == 1)
+  # Add test (warning or stop ?) if a value is provided but no basin field provided
+  # Following test seems wrong as only dedicated to IBTRACS. Testing of coherency should be done at the collectData
   stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', 'NI', or 'ALL'" =
               basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))
   #Checking verbose input
@@ -78,6 +83,7 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
 #' @param verbose logical.
 #' @return An object of class StormsDataset
 #' @export
+# User should have no possibility to add data to "extdata". Maybe the best is to have no default value, or only "." to the path.
 initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
                          fields = c("basin" = "basin",
                                     "names" = "name",
