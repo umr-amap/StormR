@@ -70,35 +70,30 @@
 
 
 <dt><code>numobs.all</code></dt>
-<dd><p>numeric. Total number of observations available.</p></dd>
-
-
-<dt><code>obs.all</code></dt>
-<dd><p>data.frame. Contains all of the observations available.
-An observation is made up of several slots which are:</p><ul><li><p>iso.time, Date and hours of observations (UTC)</p></li>
-<li><p>lon, Longitude coordinate (deg)</p></li>
-<li><p>lat, Latitude coordinate (deg)</p></li>
-<li><p>msw, Maximum Sustained Wind (m/s)</p></li>
-<li><p>rmw, Radius of Maximum Wind (km)</p></li>
-<li><p>roci, Radius of the Outermost Closed Isobar (km)</p></li>
-<li><p>pres, pressure at the center (mb)</p></li>
-<li><p>poci, Pressure of the Outermost Closed Isobar (mb)</p></li>
-<li><p>sshs, Category in the Saffir Simpson Hurricane Scale,</p></li>
-</ul></dd>
+<dd><p>numeric. Total number of observations available</p></dd>
 
 
 <dt><code>numobs</code></dt>
 <dd><p>numeric. Total number of observations available within the location of interest
-extented with its corresponding buffer (See class Storms)</p></dd>
+extented with its corresponding buffer (See Storms class)</p></dd>
 
 
 <dt><code>obs</code></dt>
 <dd><p>numeric vector. Indices of observations within the location of interest
-extented with its corresponding buffer (See class Storms)</p></dd>
+extented with its corresponding buffer (See Storms class)</p></dd>
 
 
-<dt><code>lty.track</code></dt>
-<dd><p>numeric. Indicates which line type is used to plot the storm on a map</p></dd>
+<dt><code>obs.all</code></dt>
+<dd><p>data.frame. Contains all of the observations available.
+An observation is made up of several fields which are:</p><ul><li><p>iso.time, Date and hours of observations (UTC)</p></li>
+<li><p>lon, Longitude coordinate (deg)</p></li>
+<li><p>lat, Latitude coordinate (deg)</p></li>
+<li><p>msw, Maximum Sustained Wind (m/s)</p></li>
+<li><p>sshs, Category in the Saffir Simpson Hurricane Scale</p></li>
+</ul><p>The following field is not mandatory but highly recommand</p><ul><li><p>rmw, Radius of Maximum Wind (km)</p></li>
+</ul><p>Also, the following fields are only mandatory to perform Holland model (See Details)</p><ul><li><p>pres, Pressure at the center (mb)</p></li>
+<li><p>poci, Pressure of the Outermost Closed Isobar (mb)</p></li>
+</ul></dd>
 
 
 </dl></div>

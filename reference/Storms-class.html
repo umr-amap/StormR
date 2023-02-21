@@ -58,7 +58,15 @@
     
 
 <dl><dt><code>data</code></dt>
-<dd><p>A list of Storm objects</p></dd>
+<dd><p>A list of Storm objects (See Storm class)</p></dd>
+
+
+<dt><code>nb.storms</code></dt>
+<dd><p>numeric. Total number of storms available in data</p></dd>
+
+
+<dt><code>names</code></dt>
+<dd><p>character vector. Names of Storms available in data</p></dd>
 
 
 <dt><code>seasons</code></dt>
@@ -66,29 +74,21 @@
 in <code>data</code></p></dd>
 
 
-<dt><code>names</code></dt>
-<dd><p>character vector. Names of Storms available in data</p></dd>
-
-
 <dt><code>sshs</code></dt>
 <dd><p>numeric vector. Maximum category reached in the Saffir Simpson Hurricane Scale
 for all storms available in data</p></dd>
-
-
-<dt><code>nb.storms</code></dt>
-<dd><p>numeric. Total number of storms available in data</p></dd>
-
-
-<dt><code>spatial.loi</code></dt>
-<dd><p>sf object. Represents the location of interest. Projection is EPSG:4326</p></dd>
 
 
 <dt><code>buffer</code></dt>
 <dd><p>numeric. Buffer used to extent spatial.loi (km)</p></dd>
 
 
+<dt><code>spatial.loi</code></dt>
+<dd><p>sf object. Represents the location of interest. Projection is EPSG:4326</p></dd>
+
+
 <dt><code>spatial.loi.buffer</code></dt>
-<dd><p>buffer extension of spatial.loi</p></dd>
+<dd><p>sf object. Buffer extension of spatial.loi</p></dd>
 
 
 </dl></div>
