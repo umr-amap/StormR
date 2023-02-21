@@ -54,9 +54,9 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 
 
 
-#' Holland et al. 1980 model
+#' Holland 1980 model
 #'
-#' Compute radial wind speed according to Holland et al. 1980 model
+#' Compute radial wind speed according to Holland  1980 model
 #'
 #' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
@@ -261,7 +261,7 @@ getIndices <- function(st, offset, product){
 #' according to getRmw function
 #' @param method character. method input from stormBehaviour_sp
 #'
-#' @return a data.frame of dimension length(indices) : 10. Columns are
+#' @return a data.frame of dimension length(indices) : 9. Columns are
 #'  \itemize{
 #'    \item lon: numeric. Longitude coordinates (degree)
 #'    \item lat: numeric. Latitude coordinates (degree)
@@ -824,22 +824,23 @@ maskProduct <- function(final_stack, loi, template){
 
 #' Compute indicators of storm behaviour
 #'
-#' This function computes/rasterizes analytic products for each storm of a `Storms`
+#' This function computes/rasterizes analytic products for each storm of a Storms
 #' object, including Maximum Sustained Wind, Power Dissipation Index, Category exposure and
-#' 2D wind speed structures of wind speed
-#' for every observations
+#' 2D wind speed structures/direction of wind speed for every observations
 #'
 #' @param sts Storms object
-#' @param product character. Product to compute that is either
+#' @param product character. Product to compute that is either:
 #'   \itemize{
 #'     \item "MSW", Maximum Sustained Wind
 #'     \item "PDI", Power Dissipation Index
-#'     \item "Exposure", hours spent for each and all categories together
+#'     \item "Exposure", hour exposition for wind upper than wind_threshold input
 #'     \item "Profiles", 2D wind speed structures of wind speed with wind direction
 #'            for each observation
 #'   }
 #'   Default value is set to "MSW"
-#' @param wind_threshold numeric vector. ...
+#' @param wind_threshold numeric vector. Minimal wind threshold(s) (m/s) to compute
+#' Exposure product. Ignored if Exposure is not part of the product to compute.
+#' Default value is set Saffir Simpson Hurricane Scale thresholds
 #' @param method character. Cyclonic model used to compute product, that is either
 #'   \itemize{
 #'   \item "Willoughby"
@@ -847,32 +848,41 @@ maskProduct <- function(final_stack, loi, template){
 #'   }
 #'  Default value is set to "Willoughby"
 #' @param asymmetry character. Indicates which version of asymmetry to use in
-#'   the computations, that is either
+#' the computations, that is either:
 #'   \itemize{
 #'   \item "None", no asymmetry
-#'   \item "Boose01", first version
+#'   \item "Boose01", (See Details)
 #'   }
 #'  Default value is set to "None".
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
-#'   empirically, according to getRmw function or using the Radius of Maximum Wind
-#'    from the observations. Default value is set to FALSE
+#' empirically, according to getRmw function (See Details) or using the Radius of Maximum Wind
+#' from the observations. Default value is set to FALSE
 #' @param space_res character. Space resolution for the raster(s) to compute.
-#'  Either 30sec, 2.5min, 5min or 10min. Default value is set to 30sec
-#' @param time_res numeric. Period of time (hours) used to compute the
-#'   analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
-#'   (30min), and 0.25 (15min). Default value is set to 1
-#' @param verbose numeric. Either 0, 1, 2 or 3. Whether or not the function must be verbose and display
-#' informations about the process and/or outputs and notes.
+#' Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min
+#' @param time_res numeric. Period of time used to interpolated data.
+#' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
+#' Default value is set to 1
+#' @param verbose numeric. Whether or not the function must be verbose and display
+#' informations about the process and/or outputs and additional notes.
+#' Allowed values:
 #' \itemize{
 #' \item 0 Nothing is displayed
 #' \item 1 Informations about the process are displayed
 #' \item 2 Outputs are also displayed
-#' \item 3 Additional notes are displayed
+#' \item 3 Additional notes are also displayed
 #' }
 #' Default value is set to 2
-#' @returns ...
-#'
-#'
+#' @returns SpatRaster stack which provides the desired product computed, projected
+#' in WGS84 and spanning over the extented LOI of the Storms object. Number of layers depends
+#' on the number of storm available in sts input and also product and time_res inputs:
+#' \itemize{
+#'    \item "MSW" produces one layer. Name of layer is "STORMNAME_MSW"
+#'    \item "PDI" produces one layer. Name of layer is "STORMNAME_PDI"
+#'    \item "Exposure" produces one layer for each wind values available
+#'           in wind_threshold input. Name of layers are "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2" ...
+#'    \item "Profiles" produces two layers for each observations (real and interpolated).
+#'           Name of layers are "STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
+#' }
 #'
 #' @examples
 #' #Compute MSW for PAM 2015 in Vanuatu using default settings
@@ -1286,23 +1296,24 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 
 
 
-#' Compute product on given points coordinates for given storms
+#' Compute indicators of storm behaviour
 #'
-#' This function computes products for each storm of a `Storms` object
-#' among TS (time series of wind speed), Power Dissipation Index and Category exposure for each
-#' given points provided in points input
+#' This function is the pointwise version of stormBehaviour_sp. Available product are
+#' Time Series of wind speed (TS), Power Dissipation Index (PDI) and Exposure
 #'
 #' @param sts Storms object
 #' @param points data.frame. Contains longitude/latitude coordinates within column
-#'   names "lon" and "lat".
+#'   names "lon" and "lat", on which to compute the desired product
 #' @param product character. Product to compute that is either
 #'   \itemize{
-#'     \item "MSW", Maximum Sustained Wind
+#'     \item "TS", Time Series of wind speed
 #'     \item "PDI", Power Dissipation Index
-#'     \item "Exposure", hours spent for each and all categories together
+#'     \item "Exposure", hour exposition for wind upper than wind_threshold input
 #'   }
-#'   Default value is set to "MSW"
-#' @param wind_threshold numeric vector. Wind threshold
+#'  Default value is set to "TS"
+#' @param wind_threshold numeric vector. Minimal wind threshold(s) (m/s) to compute
+#' Exposure product. Ignored if Exposure is not part of the product to compute.
+#' Default value is set Saffir Simpson Hurricane Scale thresholds
 #' @param method character. Cyclonic model used to compute product, that is either
 #'   \itemize{
 #'     \item "Willoughby"
@@ -1313,23 +1324,26 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'   the computations, that is either
 #'   \itemize{
 #'     \item "None", no asymmetry
-#'     \item "Boose01", first version
+#'     \item "Boose01", (See Details)
 #'   }
-#'  Default value is set to "None".
+#'  Default value is set to "Boose01".
 #' @param empirical_rmw logical. Whether to compute the Radius of Maximum Wind
-#'   empirically, according to getRmw function or using the Radius of Maximum Wind
-#'    from the observations. Default value is set to FALSE
-#' @param time_res numeric. Time discretization (hours) used to compute the
-#'   analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
-#'   (30min), and 0.25 (15min). Default value is set to 1
+#'  empirically, according to getRmw function (See Details) or using the Radius of Maximum Wind
+#'  from the observations. Default value is set to FALSE
+#' @param time_res numeric. Period of time used to interpolated data.
+#' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
+#' Default value is set to 1
 #'
-#' @returns Computed product for each points are returned
-#'   through a named list. Each slot is named after the storm and has dimensions:
+#' @returns Computed product for each points are returned through data.frames contained in a named list.
+#' Each slot (named after the storm) is a data.frame that has the following dimensions:
 #'    \itemize{
-#'      \item (number of observations:number of point coordinates), if product == "MSW".
-#'       Correspond in fact of time series of wind speed on every observations (real and interpolated)
-#'      \item (1:number of point coordinates), if product == "PDI"
-#'      \item (6:number of point coordinates), if product == "Exposure"
+#'      \item If product == "TS": a data frame whose number of rows corresponds to the number
+#'            of interpolated obervations. The columns provides respectively the wind speed value (m/s),
+#'            the wind direction (in degree), the indice of observation and the ISO time of observation.
+#'      \item If product == "PDI": a data.frame with one row and one column that
+#'             contains PDI value for each point in points.
+#'      \item If product == "Exposure": a data.frame with one row for each wind threshold
+#'            and one column that contains Exposure value for each point in points.
 #'    }
 #'
 #' @examples

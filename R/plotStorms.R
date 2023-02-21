@@ -7,6 +7,7 @@
 #'
 #' This function returns the Saffir Simpson Hurricane Scale color associated
 #' with a maximum sustained wind speed
+#'
 #' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #'
@@ -45,7 +46,7 @@ getColors <- function(msw) {
 
 
 
-#' Plot track of a a storm
+#' Plot track of a storm
 #'
 #' This function plots the track of a storm on a map that should be previously plotted
 #'
@@ -84,10 +85,12 @@ plotTrack <- function(st) {
 
 
 
+
 #' Add labels on plot
 #'
-#' Add ISO Times and name labels on the track of a storm on a map that should be
+#' Add names labels, indices of observations and ISO Times for a given storm on a map that should be
 #' previsouly plotted
+#'
 #' @noRd
 #' @param st Storm object
 #' @param by numeric. Increment of the sequence for the labels to plot
@@ -116,7 +119,6 @@ plotLabels <- function(st, by, pos) {
   }
 
 }
-
 
 
 
@@ -194,23 +196,28 @@ checkInputsPs <- function(sts, names, category, labels, by,
 
 
 
-#' Plot several storm tracks
+#' Plot storm track(s)
 #'
-#' This function plots a set of storm tracks contained in a Storms object (see “getStorms” function).
+#' This function plots a set of storm tracks contained in a Storms object (See “getStorms” function).
 #' Depending on the inputs, the user can choose to plot only a desired set of storms
-#' extracted from the Storms object .
+#' extracted from the Storms object
 #'
 #' @param sts Storms object
-#' @param names character vector. Name(s) of the storm(s) to plot on map. Default
-#' value is set to NULL, which will plot every storm in sts. To see which storms
-#' are included in a Storms object, you can use "sts@names"
+#' @param names character vector. Name(s) of the storm(s) to plot on the map. Default
+#' value is set to NULL, which will plot every storm provided in sts. To see which storms
+#' are included in a Storms object, you can use the getter "getNames()"
 #' @param category numeric vector. Should be either a category or a range of categories
 #' in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
 #' will consider every storm in sts. Otherwise it will consider only storms that
 #' reached category input
-#' @param loi logical. Whether or not to plot spatial.loi.buffer on the map
-#' Default value is set to TRUE.
-#' @param labels logical. Whether or not to plot ISO Times and name labels
+#' @param xlim numeric vector. A set of longitude coordinates that controls the
+#' longitude extent of the plot. Default value is set to NULL which will let
+#' the plot extends according to the longitude range of the extented LOI
+#' @param ylim numeric vector. A set of latitude coordinates that controls the
+#' latitude extent of the plot. Default value is set to NULL which will let
+#' the plot extends according to the the latitude range of the extented LOI
+#' @param labels logical. Whether or not to plot names labels with the corresponding
+#' indices of obervations and ISO Times along the track(s)
 #' @param by numeric. Defines the frequency at which labels are plotted for the
 #' 3-hourly records. Default value is set to 8 which represents a 24h time interval
 #' between each labeled observations. Ignored if labels == FALSE
@@ -219,15 +226,11 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #' Default value is set to 3. Ignored if labels == FALSE
 #' @param legends logical. Whether or not to plot legends. Default value is set
 #' to TRUE
-#' @param xlim numeric vector. A set of longitude coordinates that controls the
-#' longitude extent of the plot. Default value is set to NULL which will let
-#' the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
-#' @param ylim numeric vector. A set of latitude coordinates that controls the
-#' latitude extent of the plot. Default value is set to NULL which will let
-#' the plot extends according to the x bounding box of spatial.loi.buffer from sts input.
-#' @param reset_setting logical. Whether the graphical parameter should be reset on exit. Default
-#' value is set to TRUE. It is usefull for the plotBehaviour function. We highly recommand not to change this
-#' input.
+#' @param loi logical. Whether or not to plot the extented LOI on the map.
+#' Default value is set to TRUE
+#' @param reset_setting logical. Whether the graphical parameter should be reset
+#' on exit. Default value is set to TRUE. It is usefull for the plotBehaviour function.
+#' We highly recommand not to change thisinput.
 #' @returns NULL
 #' @import rworldxtra
 #'
@@ -246,9 +249,17 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #'
 #'
 #' @export
-plotStorms <- function(sts, names = NULL, category = NULL, labels = FALSE,
-                       by = 8, pos = 3, legends = TRUE, loi = TRUE, xlim = NULL,
-                       ylim = NULL, reset_setting = TRUE){
+plotStorms <- function(sts,
+                       names = NULL,
+                       category = NULL,
+                       xlim = NULL,
+                       ylim = NULL,
+                       labels = FALSE,
+                       by = 8,
+                       pos = 3,
+                       legends = TRUE,
+                       loi = TRUE,
+                       reset_setting = TRUE){
 
 
   checkInputsPs(sts, names, category, labels, by, pos, legends,

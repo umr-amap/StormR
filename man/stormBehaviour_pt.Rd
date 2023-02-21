@@ -2,7 +2,7 @@
 % Please edit documentation in R/stormBehaviour.R
 \name{stormBehaviour_pt}
 \alias{stormBehaviour_pt}
-\title{Compute product on given points coordinates for given storms}
+\title{Compute indicators of storm behaviour}
 \usage{
 stormBehaviour_pt(
   sts,
@@ -19,17 +19,19 @@ stormBehaviour_pt(
 \item{sts}{Storms object}
 
 \item{points}{data.frame. Contains longitude/latitude coordinates within column
-names "lon" and "lat".}
+names "lon" and "lat", on which to compute the desired product}
 
 \item{product}{character. Product to compute that is either
 \itemize{
-\item "MSW", Maximum Sustained Wind
+\item "TS", Time Series of wind speed
 \item "PDI", Power Dissipation Index
-\item "Exposure", hours spent for each and all categories together
+\item "Exposure", hour exposition for wind upper than wind_threshold input
 }
-Default value is set to "MSW"}
+Default value is set to "TS"}
 
-\item{wind_threshold}{numeric vector. Wind threshold}
+\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to compute
+Exposure product. Ignored if Exposure is not part of the product to compute.
+Default value is set Saffir Simpson Hurricane Scale thresholds}
 
 \item{method}{character. Cyclonic model used to compute product, that is either
 \itemize{
@@ -42,32 +44,34 @@ Default value is set to "Willoughby"}
 the computations, that is either
 \itemize{
 \item "None", no asymmetry
-\item "Boose01", first version
+\item "Boose01", (See Details)
 }
-Default value is set to "None".}
+Default value is set to "Boose01".}
 
 \item{empirical_rmw}{logical. Whether to compute the Radius of Maximum Wind
-empirically, according to getRmw function or using the Radius of Maximum Wind
+empirically, according to getRmw function (See Details) or using the Radius of Maximum Wind
 from the observations. Default value is set to FALSE}
 
-\item{time_res}{numeric. Time discretization (hours) used to compute the
-analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
-(30min), and 0.25 (15min). Default value is set to 1}
+\item{time_res}{numeric. Period of time used to interpolated data.
+Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
+Default value is set to 1}
 }
 \value{
-Computed product for each points are returned
-through a named list. Each slot is named after the storm and has dimensions:
+Computed product for each points are returned through data.frames contained in a named list.
+Each slot (named after the storm) is a data.frame that has the following dimensions:
 \itemize{
-\item (number of observations:number of point coordinates), if product == "MSW".
-Correspond in fact of time series of wind speed on every observations (real and interpolated)
-\item (1:number of point coordinates), if product == "PDI"
-\item (6:number of point coordinates), if product == "Exposure"
+\item If product == "TS": a data frame whose number of rows corresponds to the number
+of interpolated obervations. The columns provides respectively the wind speed value (m/s),
+the wind direction (in degree), the indice of observation and the ISO time of observation.
+\item If product == "PDI": a data.frame with one row and one column that
+contains PDI value for each point in points.
+\item If product == "Exposure": a data.frame with one row for each wind threshold
+and one column that contains Exposure value for each point in points.
 }
 }
 \description{
-This function computes products for each storm of a \code{Storms} object
-among TS (time series of wind speed), Power Dissipation Index and Category exposure for each
-given points provided in points input
+This function is the pointwise version of stormBehaviour_sp. Available product are
+Time Series of wind speed (TS), Power Dissipation Index (PDI) and Exposure
 }
 \examples{
 df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))

@@ -14,22 +14,22 @@ Gather all the needed informations to model a set of storms
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{A list of Storm objects}
+\item{\code{data}}{A list of Storm objects (See Storm class)}
+
+\item{\code{nb.storms}}{numeric. Total number of storms available in data}
+
+\item{\code{names}}{character vector. Names of Storms available in data}
 
 \item{\code{seasons}}{numeric vector. (Range of the) cyclonic seasons of Storms available
 in \code{data}}
 
-\item{\code{names}}{character vector. Names of Storms available in data}
-
 \item{\code{sshs}}{numeric vector. Maximum category reached in the Saffir Simpson Hurricane Scale
 for all storms available in data}
 
-\item{\code{nb.storms}}{numeric. Total number of storms available in data}
+\item{\code{buffer}}{numeric. Buffer used to extent spatial.loi (km)}
 
 \item{\code{spatial.loi}}{sf object. Represents the location of interest. Projection is EPSG:4326}
 
-\item{\code{buffer}}{numeric. Buffer used to extent spatial.loi (km)}
-
-\item{\code{spatial.loi.buffer}}{buffer extension of spatial.loi}
+\item{\code{spatial.loi.buffer}}{sf object. Buffer extension of spatial.loi}
 }}
 

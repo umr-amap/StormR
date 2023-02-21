@@ -19,17 +19,19 @@ stormBehaviour_sp(
 \arguments{
 \item{sts}{Storms object}
 
-\item{product}{character. Product to compute that is either
+\item{product}{character. Product to compute that is either:
 \itemize{
 \item "MSW", Maximum Sustained Wind
 \item "PDI", Power Dissipation Index
-\item "Exposure", hours spent for each and all categories together
+\item "Exposure", hour exposition for wind upper than wind_threshold input
 \item "Profiles", 2D wind speed structures of wind speed with wind direction
 for each observation
 }
 Default value is set to "MSW"}
 
-\item{wind_threshold}{numeric vector. ...}
+\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to compute
+Exposure product. Ignored if Exposure is not part of the product to compute.
+Default value is set Saffir Simpson Hurricane Scale thresholds}
 
 \item{method}{character. Cyclonic model used to compute product, that is either
 \itemize{
@@ -39,42 +41,52 @@ Default value is set to "MSW"}
 Default value is set to "Willoughby"}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations, that is either
+the computations, that is either:
 \itemize{
 \item "None", no asymmetry
-\item "Boose01", first version
+\item "Boose01", (See Details)
 }
 Default value is set to "None".}
 
 \item{empirical_rmw}{logical. Whether to compute the Radius of Maximum Wind
-empirically, according to getRmw function or using the Radius of Maximum Wind
+empirically, according to getRmw function (See Details) or using the Radius of Maximum Wind
 from the observations. Default value is set to FALSE}
 
 \item{space_res}{character. Space resolution for the raster(s) to compute.
-Either 30sec, 2.5min, 5min or 10min. Default value is set to 30sec}
+Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min}
 
-\item{time_res}{numeric. Period of time (hours) used to compute the
-analytic raster(s). Allowed values are 1 (60min), 0.75 (45min), 0.5
-(30min), and 0.25 (15min). Default value is set to 1}
+\item{time_res}{numeric. Period of time used to interpolated data.
+Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
+Default value is set to 1}
 
-\item{verbose}{numeric. Either 0, 1, 2 or 3. Whether or not the function must be verbose and display
-informations about the process and/or outputs and notes.
+\item{verbose}{numeric. Whether or not the function must be verbose and display
+informations about the process and/or outputs and additional notes.
+Allowed values:
 \itemize{
 \item 0 Nothing is displayed
 \item 1 Informations about the process are displayed
 \item 2 Outputs are also displayed
-\item 3 Additional notes are displayed
+\item 3 Additional notes are also displayed
 }
 Default value is set to 2}
 }
 \value{
-...
+SpatRaster stack which provides the desired product computed, projected
+in WGS84 and spanning over the extented LOI of the Storms object. Number of layers depends
+on the number of storm available in sts input and also product and time_res inputs:
+\itemize{
+\item "MSW" produces one layer. Name of layer is "STORMNAME_MSW"
+\item "PDI" produces one layer. Name of layer is "STORMNAME_PDI"
+\item "Exposure" produces one layer for each wind values available
+in wind_threshold input. Name of layers are "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2" ...
+\item "Profiles" produces two layers for each observations (real and interpolated).
+Name of layers are "STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
+}
 }
 \description{
-This function computes/rasterizes analytic products for each storm of a \code{Storms}
+This function computes/rasterizes analytic products for each storm of a Storms
 object, including Maximum Sustained Wind, Power Dissipation Index, Category exposure and
-2D wind speed structures of wind speed
-for every observations
+2D wind speed structures/direction of wind speed for every observations
 }
 \examples{
 #Compute MSW for PAM 2015 in Vanuatu using default settings

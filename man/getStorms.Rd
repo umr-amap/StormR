@@ -17,7 +17,7 @@ getStorms(
 \arguments{
 \item{sds}{StormsDataset object. Default value is set to IBTRACS_SP which is
 a database provided by this package and based on the IBTrACS.SP.v04r00.nc file.
-The database must be previously loaded (See Details)}
+(See StormDataset class)}
 
 \item{loi}{Location of Interest. Must be either:
 \itemize{
@@ -29,19 +29,20 @@ The database must be previously loaded (See Details)}
 
 \item{seasons}{numeric vector. Should be either one or a range of calendar
 years. For cyclones that formed in one year and dissipated in the following
-year, the latter should be used}
+year, the latter should be used. Default values will allow searching for storms
+between 1980 and the maximum cyclonic season available in the stormDataSet Object}
 
 \item{names}{character vector. Names of storms. Default value is set to NULL.}
 
-\item{max_dist}{numeric. Indicates the buffer distance (in km) used to generate
-spatial.loi.buffer. Default value is set to 300km. This value also represents
-the maximum distance from the track of the storm where computations can be performed}
+\item{max_dist}{numeric. Indicates the buffer distance (in km) used to extend
+the location of interest. Default value is set to 300km.}
 
 \item{remove_TD}{logical. Whether or not to remove tropical depressions (< 18 m/s)
 and include cyclones only. Default value is set to TRUE.}
 
-\item{verbose}{numeric. Either 0, 1, 2 or 3. Whether or not the function must
-be verbose and display informations about the process, outputs, and additional notes
+\item{verbose}{numeric. Whether or not the function must
+be verbose and display informations about the process, outputs, and additional notes.
+Allowed values:
 \itemize{
 \item 0 Nothing is displayed
 \item 1 Informations about the process are displayed
