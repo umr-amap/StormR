@@ -20,28 +20,31 @@ Gather all the needed informations to model a single storm
 
 \item{\code{sshs}}{numeric. Maximum category reached in the Saffir Simpson Hurricane Scale}
 
-\item{\code{numobs.all}}{numeric. Total number of observations available.}
+\item{\code{numobs.all}}{numeric. Total number of observations available}
+
+\item{\code{numobs}}{numeric. Total number of observations available within the location of interest
+extented with its corresponding buffer (See Storms class)}
+
+\item{\code{obs}}{numeric vector. Indices of observations within the location of interest
+extented with its corresponding buffer (See Storms class)}
 
 \item{\code{obs.all}}{data.frame. Contains all of the observations available.
-An observation is made up of several slots which are:
+An observation is made up of several fields which are:
 \itemize{
 \item iso.time, Date and hours of observations (UTC)
 \item lon, Longitude coordinate (deg)
 \item lat, Latitude coordinate (deg)
 \item msw, Maximum Sustained Wind (m/s)
+\item sshs, Category in the Saffir Simpson Hurricane Scale
+}
+The following field is not mandatory but highly recommand
+\itemize{
 \item rmw, Radius of Maximum Wind (km)
-\item roci, Radius of the Outermost Closed Isobar (km)
-\item pres, pressure at the center (mb)
+}
+Also, the following fields are only mandatory to perform Holland model (See Details)
+\itemize{
+\item pres, Pressure at the center (mb)
 \item poci, Pressure of the Outermost Closed Isobar (mb)
-\item sshs, Category in the Saffir Simpson Hurricane Scale,
 }}
-
-\item{\code{numobs}}{numeric. Total number of observations available within the location of interest
-extented with its corresponding buffer (See class Storms)}
-
-\item{\code{obs}}{numeric vector. Indices of observations within the location of interest
-extented with its corresponding buffer (See class Storms)}
-
-\item{\code{lty.track}}{numeric. Indicates which line type is used to plot the storm on a map}
 }}
 

@@ -11,7 +11,11 @@
 #' @slot name character. Name of the storm
 #' @slot season  numeric. Cyclonic season in which the storm has occured
 #' @slot  sshs numeric. Maximum category reached in the Saffir Simpson Hurricane Scale
-#' @slot numobs.all numeric. Total number of observations available.
+#' @slot numobs.all numeric. Total number of observations available
+#' @slot numobs numeric. Total number of observations available within the location of interest
+#' extented with its corresponding buffer (See Storms class)
+#' @slot obs numeric vector. Indices of observations within the location of interest
+#' extented with its corresponding buffer (See Storms class)
 #' @slot obs.all  data.frame. Contains all of the observations available.
 #' An observation is made up of several fields which are:
 #' \itemize{
@@ -21,19 +25,15 @@
 #'   \item msw, Maximum Sustained Wind (m/s)
 #'   \item sshs, Category in the Saffir Simpson Hurricane Scale
 #'  }
-#'  The following field is not mandatory nut highly recommand
+#'  The following field is not mandatory but highly recommand
 #'  \itemize{
 #'   \item rmw, Radius of Maximum Wind (km)
 #'  }
-#' Also the following fields are only mandatory to perform Holland model (See Details)
+#' Also, the following fields are only mandatory to perform Holland model (See Details)
 #' \itemize{
 #'   \item pres, Pressure at the center (mb)
 #'   \item poci, Pressure of the Outermost Closed Isobar (mb)
 #' }
-#' @slot numobs numeric. Total number of observations available within the location of interest
-#' extented with its corresponding buffer (See Storms class)
-#' @slot obs numeric vector. Indices of observations within the location of interest
-#' extented with its corresponding buffer (See Storms class)
 #' @returns A S4 object gathering all the following informations
 #' @importFrom methods new
 #' @export
@@ -44,9 +44,9 @@ Storm <- methods::setClass(
     season = "numeric",
     sshs = "numeric",
     numobs.all = "numeric",
-    obs.all = "data.frame",
+    numobs = "numeric",
     obs = "numeric",
-    numobs = "numeric"
+    obs.all = "data.frame"
   )
 )
 
@@ -77,16 +77,16 @@ setOldClass("sf")
 #'
 #' Gather all the needed informations to model a set of storms
 #'
-#' @slot data A list of Storm objects
+#' @slot data A list of Storm objects (See Storm class)
+#' @slot nb.storms numeric. Total number of storms available in data
+#' @slot names character vector. Names of Storms available in data
 #' @slot seasons numeric vector. (Range of the) cyclonic seasons of Storms available
 #'  in `data`
-#' @slot names character vector. Names of Storms available in data
 #' @slot  sshs numeric vector. Maximum category reached in the Saffir Simpson Hurricane Scale
 #'  for all storms available in data
-#' @slot nb.storms numeric. Total number of storms available in data
-#' @slot spatial.loi sf object. Represents the location of interest. Projection is EPSG:4326
 #' @slot buffer numeric. Buffer used to extent spatial.loi (km)
-#' @slot spatial.loi.buffer buffer extension of spatial.loi
+#' @slot spatial.loi sf object. Represents the location of interest. Projection is EPSG:4326
+#' @slot spatial.loi.buffer sf object. Buffer extension of spatial.loi
 #' @return A S4 object gathering all the following informations
 #' @importFrom methods new
 #' @import sp
@@ -95,12 +95,12 @@ Storms <- methods::setClass(
   "Storms",
   slots = c(
     data = "list",
-    seasons = "numeric",
-    names = "character",
-    sshs = "numeric",
     nb.storms = "numeric",
-    spatial.loi = "sf",
+    names = "character",
+    seasons = "numeric",
+    sshs = "numeric",
     buffer = "numeric",
+    spatial.loi = "sf",
     spatial.loi.buffer = "sf"
   )
 )
@@ -310,11 +310,12 @@ convertLoi <- function(loi){
 
 
 
+
 #' make loi buffer
 #'
 #' @noRd
-#' @param loi sf object. loi input from getStorms already convert into sf object
-#' @param buffer numeric. Buffer size to use
+#' @param loi sf object. loi input from getStorms already converted into sf object
+#' @param buffer numeric. Buffer size to use (in km)
 #'
 #' @return loi extended with buffer in a sf format
 makeBuffer <- function(loi, buffer){
@@ -337,7 +338,7 @@ makeBuffer <- function(loi, buffer){
 #' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
 #' and include cyclones only. Default value is set to TRUE.
 #'
-#' @return indices of storms in the data base, that match the filter inputs
+#' @return indices of storms in the database, that match the filter inputs
 retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 
   if (length(filter_seasons) == 1) {
@@ -384,7 +385,7 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 
 
 
-#' Write data to initialize a Storms object
+#' Write data to initialize a Storm object
 #'
 #' Whether or not to add a storm (with id index in database) in the upcoming Storms object
 #'
@@ -392,17 +393,18 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 #' @param storm_list list of Storm object. To further integrate in a Storms object
 #' @param storm_names list of storm names. To further integrate in a Storms object
 #' @param storm_seasons list of cyclonic seasons. To further integrate in a Storms object
-#' @param storm_sshs list of storm sshs. To further integrate in a Storms object
+#' @param storm_sshs list of sshs categories. To further integrate in a Storms object
 #' @param nb_storms numeric. number of storm to further integrate in a Storms object
-#' @param sds StormsDataset
+#' @param sds StormsDataset object. sds input from getStorms
 #' @param index numeric, index of the storm in the database
 #' @param loi_sf_buffer sf object. Location of interest extended with buffer
 #'
-#' @return a list with 4 slots:
+#' @return a list with 5 slots:
 #'   \itemize{
 #'     \item list of storm objects
 #'     \item list of character (names of storms)
 #'     \item list of numeric (seasons of storms)
+#'     \item list of numeric (maximum reached categories of storms in sshs)
 #'     \item numeric vector (number of storms)
 #'   }
 writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_storms,
@@ -497,7 +499,7 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #'
 #' @param sds StormsDataset object. Default value is set to IBTRACS_SP which is
 #' a database provided by this package and based on the IBTrACS.SP.v04r00.nc file.
-#' The database must be previously loaded (See Details)
+#' (See StormDataset class)
 #' @param loi Location of Interest. Must be either:
 #' \itemize{
 #' \item a SpatialPolygon (shapefile)
@@ -507,15 +509,16 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #' }
 #' @param seasons numeric vector. Should be either one or a range of calendar
 #' years. For cyclones that formed in one year and dissipated in the following
-#' year, the latter should be used
+#' year, the latter should be used. Default values will allow searching for storms
+#' between 1980 and the maximum cyclonic season available in the stormDataSet Object
 #' @param names character vector. Names of storms. Default value is set to NULL.
-#' @param max_dist numeric. Indicates the buffer distance (in km) used to generate
-#' spatial.loi.buffer. Default value is set to 300km. This value also represents
-#' the maximum distance from the track of the storm where computations can be performed
+#' @param max_dist numeric. Indicates the buffer distance (in km) used to extend
+#' the location of interest. Default value is set to 300km.
 #' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
 #' and include cyclones only. Default value is set to TRUE.
-#' @param verbose numeric. Either 0, 1, 2 or 3. Whether or not the function must
-#' be verbose and display informations about the process, outputs, and additional notes
+#' @param verbose numeric. Whether or not the function must
+#' be verbose and display informations about the process, outputs, and additional notes.
+#' Allowed values:
 #' \itemize{
 #' \item 0 Nothing is displayed
 #' \item 1 Informations about the process are displayed

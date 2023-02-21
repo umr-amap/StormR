@@ -2,35 +2,44 @@
 % Please edit documentation in R/plotStorms.R
 \name{plotStorms}
 \alias{plotStorms}
-\title{Plot several storm tracks}
+\title{Plot storm track(s)}
 \usage{
 plotStorms(
   sts,
   names = NULL,
   category = NULL,
+  xlim = NULL,
+  ylim = NULL,
   labels = FALSE,
   by = 8,
   pos = 3,
   legends = TRUE,
   loi = TRUE,
-  xlim = NULL,
-  ylim = NULL,
   reset_setting = TRUE
 )
 }
 \arguments{
 \item{sts}{Storms object}
 
-\item{names}{character vector. Name(s) of the storm(s) to plot on map. Default
-value is set to NULL, which will plot every storm in sts. To see which storms
-are included in a Storms object, you can use "sts@names"}
+\item{names}{character vector. Name(s) of the storm(s) to plot on the map. Default
+value is set to NULL, which will plot every storm provided in sts. To see which storms
+are included in a Storms object, you can use the getter "getNames()"}
 
 \item{category}{numeric vector. Should be either a category or a range of categories
 in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
 will consider every storm in sts. Otherwise it will consider only storms that
 reached category input}
 
-\item{labels}{logical. Whether or not to plot ISO Times and name labels}
+\item{xlim}{numeric vector. A set of longitude coordinates that controls the
+longitude extent of the plot. Default value is set to NULL which will let
+the plot extends according to the longitude range of the extented LOI}
+
+\item{ylim}{numeric vector. A set of latitude coordinates that controls the
+latitude extent of the plot. Default value is set to NULL which will let
+the plot extends according to the the latitude range of the extented LOI}
+
+\item{labels}{logical. Whether or not to plot names labels with the corresponding
+indices of obervations and ISO Times along the track(s)}
 
 \item{by}{numeric. Defines the frequency at which labels are plotted for the
 3-hourly records. Default value is set to 8 which represents a 24h time interval
@@ -43,25 +52,17 @@ Default value is set to 3. Ignored if labels == FALSE}
 \item{legends}{logical. Whether or not to plot legends. Default value is set
 to TRUE}
 
-\item{loi}{logical. Whether or not to plot spatial.loi.buffer on the map
-Default value is set to TRUE.}
+\item{loi}{logical. Whether or not to plot the extented LOI on the map.
+Default value is set to TRUE}
 
-\item{xlim}{numeric vector. A set of longitude coordinates that controls the
-longitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer from sts input.}
-
-\item{ylim}{numeric vector. A set of latitude coordinates that controls the
-latitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of spatial.loi.buffer from sts input.}
-
-\item{reset_setting}{logical. Whether the graphical parameter should be reset on exit. Default
-value is set to TRUE. It is usefull for the plotBehaviour function. We highly recommand not to change this
-input.}
+\item{reset_setting}{logical. Whether the graphical parameter should be reset
+on exit. Default value is set to TRUE. It is usefull for the plotBehaviour function.
+We highly recommand not to change thisinput.}
 }
 \description{
-This function plots a set of storm tracks contained in a Storms object (see “getStorms” function).
+This function plots a set of storm tracks contained in a Storms object (See “getStorms” function).
 Depending on the inputs, the user can choose to plot only a desired set of storms
-extracted from the Storms object .
+extracted from the Storms object
 }
 \examples{
 #Plot category 5 TCs in the WP Basin between 2010 and 2020
