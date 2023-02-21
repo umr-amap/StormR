@@ -18,10 +18,17 @@ plotBehaviour(
 \arguments{
 \item{sts}{Storms object}
 
-\item{raster_product}{Spatraster object. Name of the layer must be
-"stormName_product" where product is either "MSW", "PDI", "Exposure_min-max",
-"Profiles_index", "WindDirection_index" where "min" and "max" represent the
-threshold used to compute Exposure raster and index stands for the index of observation.}
+\item{raster_product}{SpatRaster object. Name of the layer must be
+"STORMNAME_product" where product is either:
+\itemize{
+\item "MSW"
+\item "PDI"
+\item "Exposure_threshold" where "threshold" represents the wind threshold
+used to compute Exposure raster
+\item "Profiles_index" where index stands for the index of observation
+\item "WindDirection_index" where index stands for the index of observation
+
+}}
 
 \item{color_palette}{character vector. Represents the color palette used for the plot.
 Default value is set to NULL, which will automatically choose a color palette
@@ -29,15 +36,14 @@ provided by this package and depending on the product}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the x bounding box of the spatial LOI buffer
-provided in sts}
+the plot extends according to the longitude range of the extented LOI}
 
 \item{ylim}{numeric vector. A set of latitude coordinates that controls the
 latitude extent of the plot. Default value is set to NULL which will let
-the plot extends according to the y bounding box of the spatial LOI buffer
-provided in sts}
+the plot extends according to the longitude range of the extented LOI}
 
-\item{labels}{logical. Whether or not to plot ISO Times and name labels}
+\item{labels}{logical. Whether or not to plot name labels with the corresponding
+indices of obervations and ISO Times along the track}
 
 \item{by}{numeric. Defines the frequency at which labels are plotted for the
 3-hourly records. Default value is set to 8 which represents a 24h time interval
@@ -48,10 +54,9 @@ labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 Default value is set to 3. Ignored if labels == FALSE}
 }
 \description{
-This function plots a rasterize product (maximum sustained wind, power
-dissipation index, category exposure, or 2D wind speed structure and Wind direction at a given
-observation) associated with a storm contained in a Storms object
-alongside with its track
+This function plots a rasterized product (among maximum sustained wind, power
+dissipation index, category exposure, or 2D wind speed structure/wind direction at a given
+observation) associated with a storm provided in a Storms object alongside with its track
 }
 \examples{
 #Plot MSW analytic raster for Pam (2015) in Vanuatu

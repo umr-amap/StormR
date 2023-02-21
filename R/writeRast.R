@@ -2,6 +2,7 @@
 
 
 
+
 #' Check inputs for writeRast function
 #'
 #' @noRd
@@ -36,11 +37,11 @@ checkInputsWr <- function(rast, format, filename, path){
 
 #' Save raster(s) in the desired format
 #'
-#' This function writes SpatRast raster(s) in the given format among Geotiff or
+#' This function writes SpatRaster(s) in the given format among Geotiff or
 #' netcdf
 #'
-#' @param rast SpatRast object.
-#' @param format character. Format of the file to export rast. Either ".tiff"
+#' @param rast SpatRaster object
+#' @param format character. Format of the file to export. Either ".tiff"
 #' or ".nc". Default value is set to ".tiff"
 #' @param filename character. Name of the file. Default value is set to NULL,
 #' in this case it will be set to names(rast)
