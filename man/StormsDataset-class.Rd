@@ -8,6 +8,47 @@
 \description{
 Choose the database to use within the package's functions
 }
+\details{
+The fields input must provide at least 8 mandatory fields (and at most 11) in order to benefit
+from all the functionalities of this package:
+\itemize{
+\item A field called "basin": which dimension contains the basin location of storms in the database
+\item A field called "name": which dimension contains the names of storms in the database
+\item A field called "seasons": which dimension contains the cyclonic seasons
+of storms in the database
+\item A field called "isoTime": which dimension contains the ISO times of each
+observations for all storms in the database
+\item A field called "lon": which dimension contains the longitude coordinates
+of each observations for all storms in the database
+\item A field called "lat": which dimension contains the latitude coordinates
+of each observations for all storms in the database
+\item A field called "msw": which dimension contains the maximum sustained wind
+speed of each observations for all storms in the database
+\item A field called "sshs": which dimension contains the Saffir Simpson Hurricane
+Scale index of each observations for all storms in the database
+}
+The following fields are optional but highly recommanded:
+\itemize{
+\item A field called "basin": which dimension contains the basin location of storms in the database.
+Used to filter the stoms in the database
+\item A field called "rmw": which dimension contains the radius of maximum
+wind speed of each observations for all storms in the database
+(See stormBehaviour_sp, stormBehaviour_pt)
+}
+Finally these following fields are optional but mandatory to perform Holland model
+(See stormBehaviour_sp, stormBehaviour_pt)
+\itemize{
+\item A field called "pressure": which dimension contains the pressure (mb) in the eye
+for of each observations for all storms in the database
+\item A field called "poci": which dimension contains the Pressure at the Outermost
+Closed Isobar (mb) for of each observations for all storms in the database
+}
+
+Default value is set according to the most relevant dimensions of IBTraCS databases:
+fields = fields = c("basin" = "basin", "names" = "name", "seasons" = "season",
+"isoTime" = "iso_time", "lon" = "usa_lon", "lat" = "usa_lat", "msw" = "usa_wind",
+"rmw" = "usa_rmw", "pressure" = "usa_pres", "poci" = "usa_poci", "sshs" = "usa_sshs")
+}
 \section{Slots}{
 
 \describe{
@@ -16,9 +57,20 @@ Choose the database to use within the package's functions
 \item{\code{fields}}{named character vector. Dictionary that provides all the name of dimension to extract from the netcdf database.
 See Details}
 
-\item{\code{basin}}{character. Basin name to filter the database within its boundaries. If NULL, no filter is performed and the
-whole database will be collected when calling collectData method.}
+\item{\code{basin}}{character. Basin name to filter the database within its boundaries. Default value is set to NULL, and
+no filter is performed, then the whole database will be collected when calling collectData method. It must be either
+\itemize{
+\item "NA": North Atlantic
+\item "SA": South Atlantic
+\item "EP": Estern North Pacific
+\item "WP": Western North Pacific
+\item "SP": South Pacific
+\item "SI": South India
+\item "NI": North India
+}}
 
-\item{\code{database}}{list of 12 slots (See Details)}
+\item{\code{database}}{list of 8 to 11 slots depending on the fields input. Each slot is either a
+1D array of dimension (number of storms), for "names" and "seasons" fields, or a 2D array of
+of dimension (Maximum number of observations:number of storms), for the remaining fields}
 }}
 
