@@ -235,6 +235,7 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #' @import rworldxtra
 #'
 #' @examples
+#' \dontrun{
 #' #Plot category 5 TCs in the WP Basin between 2010 and 2020
 #' plotStorms(sts_wp, category = c(3,5))
 #'
@@ -246,6 +247,7 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #'
 #' #Plot a single storm (ERICA)
 #' plotStorms(sts_nc, names = "ERICA")
+#' }
 #'
 #'
 #' @export

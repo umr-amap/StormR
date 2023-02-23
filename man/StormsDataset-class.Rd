@@ -18,12 +18,12 @@ from all the functionalities of this package:
 of storms in the database
 \item A field called "isoTime": which dimension contains the ISO times of each
 observations for all storms in the database
-\item A field called "lon": which dimension contains the longitude coordinates
+\item A field called "lon": which dimension contains the longitude coordinates (degree)
 of each observations for all storms in the database
-\item A field called "lat": which dimension contains the latitude coordinates
+\item A field called "lat": which dimension contains the latitude coordinates (degree)
 of each observations for all storms in the database
 \item A field called "msw": which dimension contains the maximum sustained wind
-speed of each observations for all storms in the database
+speed (knt) of each observations for all storms in the database
 \item A field called "sshs": which dimension contains the Saffir Simpson Hurricane
 Scale index of each observations for all storms in the database
 }

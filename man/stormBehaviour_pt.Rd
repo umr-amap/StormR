@@ -74,12 +74,17 @@ This function is the pointwise version of stormBehaviour_sp. Available product a
 Time Series of wind speed (TS), Power Dissipation Index (PDI) and Exposure
 }
 \examples{
-df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
-#Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings
-ts_nc <- stormBehaviour_pt(sts_nc, points = df)
-#Compute PDI for ERICA and NIRAN on points provided in df using default settings
-pdiPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "PDI")
+\dontrun{
+pts <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+
+#Compute time series of wind speed for ERICA and NIRAN on points provided in pts using default settings
+ts_nc <- stormBehaviour_pt(sts_nc, points = pts)
+
+#Compute PDI for ERICA and NIRAN on points provided in pts using default settings
+pdiPt_nc <- stormBehaviour_pt(sts_nc, points = pts, product = "PDI")
+
 #Compute Exposure for ERICA and NIRAN on points provided in df using default settings
-expPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "Exposure", wind_threshold = c(20,30))
+expPt_nc <- stormBehaviour_pt(sts_nc, points = pts, product = "Exposure", wind_threshold = c(20,30))
+}
 
 }

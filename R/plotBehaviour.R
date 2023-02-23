@@ -103,6 +103,7 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #' @returns NULL
 #'
 #' @examples
+#' \dontrun{
 #' #Plot MSW analytic raster for Pam (2015) in Vanuatu
 #' pam <- getStorms(loi = "Vanuatu", names = "PAM")
 #' pam_msw <- stormBehaviour_sp(pam, verbose = 0)
@@ -112,6 +113,7 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #' pam <- getStorms(loi = "Vanuatu", names = "PAM")
 #' pam_prof <- stormBehaviour_sp(pam, product = "Profiles", verbose = 0)
 #' plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
+#' }
 #'
 #'
 #'@export

@@ -59,6 +59,7 @@ dissipation index, category exposure, or 2D wind speed structure/wind direction 
 observation) associated with a storm provided in a Storms object alongside with its track
 }
 \examples{
+\dontrun{
 #Plot MSW analytic raster for Pam (2015) in Vanuatu
 pam <- getStorms(loi = "Vanuatu", names = "PAM")
 pam_msw <- stormBehaviour_sp(pam, verbose = 0)
@@ -68,6 +69,7 @@ plotBehaviour(pam, pam_msw)
 pam <- getStorms(loi = "Vanuatu", names = "PAM")
 pam_prof <- stormBehaviour_sp(pam, product = "Profiles", verbose = 0)
 plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
+}
 
 
 }

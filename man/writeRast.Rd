@@ -22,18 +22,17 @@ This function writes SpatRaster(s) in the given format among Geotiff or
 netcdf
 }
 \examples{
-#Save MSW raster in Geotiff file for PAM (2015) over Vanuatu
-pam_msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff",
-                                  package = "StormR"))
-writeRast(pam_msw, path = paste0(tempdir(),"/"))
+\dontrun{
+#Save MSW raster in Geotiff file for Pam 2015 over Vanuatu
+pam <- getStorms(loi = "Vanuatu", names = "PAM")
+pam.msw <- stormBehaviour_sp(pam)
+writeRast(pam.msw, path = paste0(tempdir(),"/"))
 
-#Save PDI rasters in Geotiff files for ERICA (2003) and NIRAN (2015)
-#over New Caledonia
-erica_pdi <- terra::rast(system.file("extdata", "ERICA_PDI.tiff",
-                                    package = "StormR"))
-niran_pdi <- terra::rast(system.file("extdata", "NIRAN_PDI.tiff",
-                                    package = "StormR"))
-pdi_nc <- c(erica_pdi,niran_pdi)
-writeRast(pdi_nc, path = paste0(tempdir(),"/"))
+#Save PDI rasters in Geotiff files for Erica 2003 and Niran 2021 over
+#New Caledonia
+sts.nc <- getStorms(loi = "New Caledonia", names = c("ERICA", "NIRAN"))
+pdi.nc <- stormbehaviour_sp(sts.nc, product = "PDI")
+writeRast(pdi.nc, path = paste0(tempdir(),"/"))
+}
 
 }
