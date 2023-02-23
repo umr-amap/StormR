@@ -34,7 +34,6 @@
 #'   \item pres, Pressure at the center (mb)
 #'   \item poci, Pressure of the Outermost Closed Isobar (mb)
 #' }
-#' @returns A S4 object gathering all the following informations
 #' @importFrom methods new
 #' @export
 Storm <- methods::setClass(
@@ -127,7 +126,6 @@ setOldClass("sf")
 #' @slot buffer numeric. Buffer used to extent spatial.loi (km)
 #' @slot spatial.loi sf object. Represents the location of interest. Projection is EPSG:4326
 #' @slot spatial.loi.buffer sf object. Buffer extension of spatial.loi
-#' @return A S4 object gathering all the following informations
 #' @importFrom methods new
 #' @import sp
 #' @export

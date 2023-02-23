@@ -10,9 +10,63 @@
 #' @slot filename character. Name of the file to be loaded
 #' @slot fields named character vector. Dictionary that provides all the name of dimension to extract from the netcdf database.
 #' See Details
-#' @slot basin character. Basin name to filter the database within its boundaries. If NULL, no filter is performed and the
-#' whole database will be collected when calling collectData method.
-#' @slot database list of 12 slots (See Details)
+#' @slot basin character. Basin name to filter the database within its boundaries. Default value is set to NULL, and
+#' no filter is performed, then the whole database will be collected when calling collectData method. It must be either
+#' \itemize{
+#'   \item "NA": North Atlantic
+#'   \item "SA": South Atlantic
+#'   \item "EP": Estern North Pacific
+#'   \item "WP": Western North Pacific
+#'   \item "SP": South Pacific
+#'   \item "SI": South India
+#'   \item "NI": North India
+#' }
+#' @slot database list of 8 to 11 slots depending on the fields input. Each slot is either a
+#' 1D array of dimension (number of storms), for "names" and "seasons" fields, or a 2D array of
+#' of dimension (Maximum number of observations:number of storms), for the remaining fields
+#'
+#' @details
+#' The fields input must provide at least 8 mandatory fields (and at most 11) in order to benefit
+#' from all the functionalities of this package:
+#' \itemize{
+#'   \item A field called "basin": which dimension contains the basin location of storms in the database
+#'   \item A field called "name": which dimension contains the names of storms in the database
+#'   \item A field called "seasons": which dimension contains the cyclonic seasons
+#'        of storms in the database
+#'   \item A field called "isoTime": which dimension contains the ISO times of each
+#'         observations for all storms in the database
+#'   \item A field called "lon": which dimension contains the longitude coordinates (degree)
+#'         of each observations for all storms in the database
+#'   \item A field called "lat": which dimension contains the latitude coordinates (degree)
+#'         of each observations for all storms in the database
+#'   \item A field called "msw": which dimension contains the maximum sustained wind
+#'         speed (knt) of each observations for all storms in the database
+#'   \item A field called "sshs": which dimension contains the Saffir Simpson Hurricane
+#'         Scale index of each observations for all storms in the database
+#' }
+#' The following fields are optional but highly recommanded:
+#' \itemize{
+#'  \item A field called "basin": which dimension contains the basin location of storms in the database.
+#'        Used to filter the stoms in the database
+#'  \item A field called "rmw": which dimension contains the radius of maximum
+#'        wind speed of each observations for all storms in the database
+#'        (See stormBehaviour_sp, stormBehaviour_pt)
+#' }
+#' Finally these following fields are optional but mandatory to perform Holland model
+#' (See stormBehaviour_sp, stormBehaviour_pt)
+#' \itemize{
+#'   \item A field called "pressure": which dimension contains the pressure (mb) in the eye
+#'         for of each observations for all storms in the database
+#'   \item A field called "poci": which dimension contains the Pressure at the Outermost
+#'         Closed Isobar (mb) for of each observations for all storms in the database
+#' }
+#'
+#' Default value is set according to the most relevant dimensions of IBTraCS databases:
+#' fields = fields = c("basin" = "basin", "names" = "name", "seasons" = "season",
+#' "isoTime" = "iso_time", "lon" = "usa_lon", "lat" = "usa_lat", "msw" = "usa_wind",
+#' "rmw" = "usa_rmw", "pressure" = "usa_pres", "poci" = "usa_poci", "sshs" = "usa_sshs")
+#'
+#'
 #' @export
 StormsDataset <- methods::setClass(
   "StormsDataset",
@@ -29,6 +83,15 @@ StormsDataset <- methods::setClass(
 
 
 
+#' check inputs for InitDatabase function
+#'
+#' @noRd
+#' @param filename character
+#' @param fields character vector
+#' @param basin character
+#' @param verbose logical
+#'
+#' @return NULL
 checkInputsIDb <- function(filename, fields, basin, verbose){
 
   #Checking filename input
@@ -38,7 +101,6 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   #Checking fields input
   stopifnot("fields must be character" = identical(class(fields),"character"))
   #Mandatory fields
-  stopifnot("No 'basin' selection in fields" = "basin" %in% names(fields))
   stopifnot("No 'names' selection in fields" = "names" %in% names(fields))
   stopifnot("No 'seasons' selection in fields" = "seasons" %in% names(fields))
   stopifnot("No 'isoTime' selection in fields" = "isoTime" %in% names(fields))
@@ -47,6 +109,8 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   stopifnot("No 'msw' selection in fields" = "msw" %in% names(fields))
   stopifnot("No 'sshs' selection in fields" = "sshs" %in% names(fields))
   #Optional fields
+  if(!("basin" %in% names(fields)))
+    warning("No 'basin' selection in fields, Cannot use basin filtering when collecting data")
   if(!("rmw" %in% names(fields)))
     warning("No 'rmw' selection in fields, use empirical_rmw = TRUE for the forthcoming computations")
 
@@ -60,13 +124,17 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   #Checking basin input
   stopifnot("basin must be character" = identical(class(basin),"character"))
   stopifnot("basin must be length one" = length(length) == 1)
-  stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', 'NI', or 'ALL'" =
-              basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))
+  stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
+              basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
   #Checking verbose input
   stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
 
 
 }
+
+
+
+
 
 #' Initialize a StormsDataset object
 #'
@@ -90,7 +158,7 @@ initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc
                                     "pressure" = "usa_pres",
                                     "poci" = "usa_poci",
                                     "sshs" = "usa_sshs"),
-                         basin = "SP",
+                         basin = NULL,
                          verbose = TRUE){
 
   checkInputsIDb(filename, fields, basin, verbose)
@@ -113,7 +181,7 @@ initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc
   len <- dim(basins)[2]
   ind <- seq(1,len)
 
-  if(!is.null(basin) & basin != "ALL"){
+  if(!is.null(basin)){
     ind <- which(basins[1,] == basin)
     len <- length(ind)
   }
