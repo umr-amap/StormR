@@ -88,18 +88,22 @@ This function computes/rasterizes analytic products for each storm of a Storms
 object, including Maximum Sustained Wind, Power Dissipation Index, Category exposure and
 2D wind speed structures/direction of wind speed for every observations
 }
+\details{
+Add details on Willoughy/ Holland method Boose asymmetry and getRMW method ...
+}
 \examples{
-#Compute MSW for PAM 2015 in Vanuatu using default settings
-msw_pam <- stormBehaviour_sp(pam)
+\dontrun{
+#Compute MSW for Pam 2015 in Vanuatu using default settings
+msw.pam <- stormBehaviour_sp(pam)
 
-#Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
-pdi_nc <- stormBehaviour_sp(sts_nc, time_res = 0.5, method = "Holland",
-                        product = "PDI")
+#Compute PDI for Erica and Niran in New Caledonia using Holland model without asymmetry
+pdi.nc <- stormBehaviour_sp(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 
-#Compute Exposure (wind threshold: 40 to 50 m/s) for PAM 2015 in Vanuatu using default settings
-exp_pam <- stormBehaviour_sp(pam, product = "Exposure")
+#Compute Exposure for Pam 2015 in Vanuatu using default settings
+exp.pam <- stormBehaviour_sp(pam, product = "Exposure")
 
-#Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
-prof_nc <- stormBehaviour_sp(sts_nc, product = "Profiles")
+#Compute profiles wind speed for Erica and Niran in New Caledonia using default settings
+prof.nc <- stormBehaviour_sp(sts_nc, product = "Profiles")
+}
 
 }

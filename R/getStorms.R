@@ -647,19 +647,32 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #' @returns a Storms object that gathers all storms that match the criteria given
 #' in the inputs
 #'
+#' @details Available countries for the loi input are those provided in the rwolrdxtra package, derived
+#' from the newest version of Natural Earth Data. Check the following link for more informations:
+#' http://www.naturalearthdata.com/downloads/10m-cultural-vectors/
+#'
+#'
 #' @examples
-#' #Focus on a single storm
+#' \dontrun{
+#' #Focus on a single storm on a given country
 #' pam <- getStorms(loi = "Vanuatu", names = "PAM")
+#'
+#' #Focus on a single point coordinates (in degree) for the above storm
+#' pt <- c(169, -19)
+#' pam.pt <- getStorms(loi = pt, names = "PAM")
 #'
 #' #Focus on several storms over New Caledonia
 #' sts_nc <- getStorms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #'
 #' #Focus on every storms that occured in the SP basin between 2010 and 2020
+#' #and within the boundaries of the South Pacific Basin
 #' poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
 #' sp <- sf::st_polygon(list(poly))
 #' sp <- sf::st_sfc(sp, crs = 4326)
 #' sp <- sf::st_as_sf(sp)
 #' sts_sp <- getStorms(loi = sp, seasons = c(2010,2020))
+#' }
+#'
 #'
 #' @importFrom methods as
 #' @export

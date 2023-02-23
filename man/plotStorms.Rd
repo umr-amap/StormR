@@ -65,6 +65,7 @@ Depending on the inputs, the user can choose to plot only a desired set of storm
 extracted from the Storms object
 }
 \examples{
+\dontrun{
 #Plot category 5 TCs in the WP Basin between 2010 and 2020
 plotStorms(sts_wp, category = c(3,5))
 
@@ -76,6 +77,7 @@ plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
 
 #Plot a single storm (ERICA)
 plotStorms(sts_nc, names = "ERICA")
+}
 
 
 }

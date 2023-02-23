@@ -761,6 +761,7 @@ rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product,
 
 
 
+
 #' Select the rasterizeProduct function to use depending on the product
 #'
 #' @noRd
@@ -884,19 +885,21 @@ maskProduct <- function(final_stack, loi, template){
 #'           Name of layers are "STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
 #' }
 #'
+#' @details Add details on Willoughy/ Holland method Boose asymmetry and getRMW method ...
 #' @examples
-#' #Compute MSW for PAM 2015 in Vanuatu using default settings
-#' msw_pam <- stormBehaviour_sp(pam)
+#' \dontrun{
+#' #Compute MSW for Pam 2015 in Vanuatu using default settings
+#' msw.pam <- stormBehaviour_sp(pam)
 #'
-#' #Compute PDI for ERICA and NIRAN in New Caledonia using Holland model without asymmetry
-#' pdi_nc <- stormBehaviour_sp(sts_nc, time_res = 0.5, method = "Holland",
-#'                         product = "PDI")
+#' #Compute PDI for Erica and Niran in New Caledonia using Holland model without asymmetry
+#' pdi.nc <- stormBehaviour_sp(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 #'
-#' #Compute Exposure (wind threshold: 40 to 50 m/s) for PAM 2015 in Vanuatu using default settings
-#' exp_pam <- stormBehaviour_sp(pam, product = "Exposure")
+#' #Compute Exposure for Pam 2015 in Vanuatu using default settings
+#' exp.pam <- stormBehaviour_sp(pam, product = "Exposure")
 #'
-#' #Compute profiles wind speed for ERICA and NIRAN in New Caledonia using default settings
-#' prof_nc <- stormBehaviour_sp(sts_nc, product = "Profiles")
+#' #Compute profiles wind speed for Erica and Niran in New Caledonia using default settings
+#' prof.nc <- stormBehaviour_sp(sts_nc, product = "Profiles")
+#' }
 #'
 #' @export
 stormBehaviour_sp <- function(sts,
@@ -1347,13 +1350,18 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'    }
 #'
 #' @examples
-#' df <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
-#' #Compute time series of wind speed for ERICA and NIRAN on points provided in df using default settings
-#' ts_nc <- stormBehaviour_pt(sts_nc, points = df)
-#' #Compute PDI for ERICA and NIRAN on points provided in df using default settings
-#' pdiPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "PDI")
+#' \dontrun{
+#' pts <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+#'
+#' #Compute time series of wind speed for ERICA and NIRAN on points provided in pts using default settings
+#' ts_nc <- stormBehaviour_pt(sts_nc, points = pts)
+#'
+#' #Compute PDI for ERICA and NIRAN on points provided in pts using default settings
+#' pdiPt_nc <- stormBehaviour_pt(sts_nc, points = pts, product = "PDI")
+#'
 #' #Compute Exposure for ERICA and NIRAN on points provided in df using default settings
-#' expPt_nc <- stormBehaviour_pt(sts_nc, points = df, product = "Exposure", wind_threshold = c(20,30))
+#' expPt_nc <- stormBehaviour_pt(sts_nc, points = pts, product = "Exposure", wind_threshold = c(20,30))
+#' }
 #'
 #' @export
 stormBehaviour_pt <- function(sts,

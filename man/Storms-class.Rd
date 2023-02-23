@@ -5,9 +5,6 @@
 \alias{Storms-class}
 \alias{Storms}
 \title{Storms object}
-\value{
-A S4 object gathering all the following informations
-}
 \description{
 Gather all the needed informations to model a set of storms
 }
