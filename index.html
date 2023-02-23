@@ -161,7 +161,7 @@ $$</span></p>
 <span><span class="co">##############################################</span></span>
 <span></span>
 <span><span class="co">#Load the data for the tropical cyclone Pam which hit the Vanuatu in 2015</span></span>
-<span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>seasons <span class="op">=</span> <span class="fl">2015</span>, names <span class="op">=</span> <span class="st">"PAM"</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span><span class="op">)</span></span>
+<span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>seasons <span class="op">=</span> <span class="fl">2015</span>, names <span class="op">=</span> <span class="st">"PAM"</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Plot the tropical cyclone track and observations over or around the location of interest</span></span>
 <span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, labels <span class="op">=</span> <span class="cn">T</span>, legends <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
@@ -191,7 +191,7 @@ $$</span></p>
 <span><span class="co">################################################</span></span>
 <span></span>
 <span><span class="co">#Load all tropical cyclones that have passed nearby New Caledonia between 2019 and 2021</span></span>
-<span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2019</span>, <span class="fl">2021</span><span class="op">)</span>, loi <span class="op">=</span> <span class="st">"New Caledonia"</span><span class="op">)</span></span>
+<span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2019</span>, <span class="fl">2021</span><span class="op">)</span>, loi <span class="op">=</span> <span class="st">"New Caledonia"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Plot all tropical cyclone tracks and observations over or around the location of interest</span></span>
 <span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">sts</span>, labels <span class="op">=</span> <span class="cn">T</span>, legends <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
@@ -212,7 +212,7 @@ $$</span></p>
 <span><span class="co">##################################################################</span></span>
 <span></span>
 <span><span class="co">#Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2021</span></span>
-<span><span class="va">stsEEZnc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="va">eezNC</span><span class="op">)</span></span>
+<span><span class="va">stsEEZnc</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>loi <span class="op">=</span> <span class="va">eezNC</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Plot category 3 tropical cyclones (Saffir-Simpson hurricane wind scale, SSHWS)</span></span>
 <span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">stsEEZnc</span>, category <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -225,7 +225,7 @@ $$</span></p>
 <span><span class="co">#Set point location coordinates, lat/long, in decimal degrees (WGS84)</span></span>
 <span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">188.17</span>,<span class="op">-</span><span class="fl">13.92</span><span class="op">)</span></span>
 <span><span class="co">#Get all tropical cyclones that had passed near the point (by default &lt;= 300 km away)</span></span>
-<span><span class="va">stsPt</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="va">pt</span><span class="op">)</span></span>
+<span><span class="va">stsPt</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>loi <span class="op">=</span> <span class="va">pt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Plot all tropical cyclone tracks and observations around the point of interest</span></span>
 <span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">stsPt</span><span class="op">)</span></span>
@@ -258,7 +258,7 @@ $$</span></p>
 <span><span class="va">loi</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span><span class="va">pol</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Load the data for the tropical cyclone Harold which hit the Vanuatu in 2020</span></span>
-<span><span class="va">harold</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>seasons <span class="op">=</span> <span class="fl">2020</span>, names<span class="op">=</span> <span class="st">"HAROLD"</span>, loi <span class="op">=</span> <span class="va">loi</span><span class="op">)</span></span>
+<span><span class="va">harold</span> <span class="op">&lt;-</span> <span class="fu">getStorms</span><span class="op">(</span>seasons <span class="op">=</span> <span class="fl">2020</span>, names<span class="op">=</span> <span class="st">"HAROLD"</span>, loi <span class="op">=</span> <span class="va">loi</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Compute wind profiles using Willoughby model with asymmetry</span></span>
 <span><span class="va">profWillV1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_sp.html">stormBehaviour_sp</a></span><span class="op">(</span><span class="va">harold</span>, product <span class="op">=</span> <span class="st">"Profiles"</span><span class="op">)</span></span>
