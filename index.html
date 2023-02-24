@@ -66,12 +66,12 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>StormR is a R package developed to analyze past storms and tropical cyclones that occurred anywhere in the world after 1980. It allows users to compute cyclone characteristics (e.g., maximum sustained wind speed, exposure period), gather storms of interest in a single object, rasterize available data, and plot maps of cyclone tracks and charateristics.</p>
+<p>StormR is an R package allowing to easily extract tropical cyclone (TC) data for given locations or areas of interests, generate TC wind fields, and to compute statistics characterising the behaviour of TC winds (maximum sustained wind speed, power dissipation index, time of exposure to different wind speeds).</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of StormR as follows:</p>
+<p>StormR can be installed from GitHub as follows</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"umr-amap/StormR"</span><span class="op">)</span></span></code></pre></div>
@@ -79,8 +79,90 @@
 <div class="section level2">
 <h2 id="data-source">Data source<a class="anchor" aria-label="anchor" href="#data-source"></a>
 </h2>
-<p>StormR uses the netcdf file ‘IBTrACS.ALL.v04r00.nc’ from the <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International Best Track Archive for Climate Stewardship</a>. This package extracts the information needed to plot, compute and analyze tropical cyclones from this database. The IBTrACS database provides records of storms and tropical cyclones around the world every 3 hours since 1841 (note that data for the most recent storms may not be available yet and that not all storms of the earlier years are captured). Recods in the database are derived from various agencies in the USA and uses the following names and abbrevaitions for the world’s ocean basins: * NA : North Atlantic * SA : South Atlantic * EP : Eastern North Pacific * WP : Western North Pacific * SP : South Pacific * SI : South Indian * NI : North Indian * ALL: the above 7 basins combined</p>
-<p>in the StormR package, the default value for the basin is set to SP, as the developpement team is located/interested in this particular region and because this basin has been used to test the package. However, the user can select a different basin. For the purpose of data reliability and accuracy, StormR only faciltates access to storms and tropical cyclones after 1980. Data for older storms is spatially less accurate and may therefore produce errors: you can <a href="https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf" class="external-link">Click here</a> for more details on data limitations of the IBTrACS database.</p>
+<p>To run stormR functions users have to provide a TC storm track dataset with the following fields</p>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+</colgroup>
+<thead><tr class="header">
+<th align="left"><strong>Field name</strong></th>
+<th align="left"><strong>Description</strong></th>
+<th align="left"><strong>Example</strong></th>
+<th align="left"><strong>Type</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left"><em>basin</em></td>
+<td align="left">Name of the area where the storm originated. Traditionally divided into seven basins: NA (North Atlantic), EP (Eastern North Pacific), WP (Western North Pacific), NI (North Indian), SI (South Indian), SP (Southern Pacific), SA (South Atlantic)</td>
+<td align="left">SP</td>
+<td align="left">Mandatory</td>
+</tr>
+<tr class="even">
+<td align="left"><em>name</em></td>
+<td align="left">Name of the storm in capital letters</td>
+<td align="left">PAM</td>
+<td align="left">Mandatory</td>
+</tr>
+<tr class="odd">
+<td align="left"><em>seasons</em></td>
+<td align="left">Year of observation</td>
+<td align="left">2015</td>
+<td align="left">Mandatory</td>
+</tr>
+<tr class="even">
+<td align="left"><em>isoTime</em></td>
+<td align="left">Date and time of observation (YYYY-MM-DD HH:mm:ss)</td>
+<td align="left">13/03/2015 12:00</td>
+<td align="left">Mandatory</td>
+</tr>
+<tr class="odd">
+<td align="left"><em>lon</em></td>
+<td align="left">Longitude of the observation (decimal degrees north)</td>
+<td align="left">168.7</td>
+<td align="left">Mandatory</td>
+</tr>
+<tr class="even">
+<td align="left"><em>lat</em></td>
+<td align="left">Latitude of the observation (decimal degrees east)</td>
+<td align="left">-17.6</td>
+<td align="left">Mandatory</td>
+</tr>
+<tr class="odd">
+<td align="left"><em>msw</em></td>
+<td align="left">Maximum Sustained Wind speed in knots</td>
+<td align="left">150</td>
+<td align="left">Mandatory</td>
+</tr>
+<tr class="even">
+<td align="left"><em>sshs</em></td>
+<td align="left">Saffir Simpson Hurricane Scale rating based on msw (-1 = tropical depression [<span class="math inline"><em>m</em><em>s</em><em>w</em> &lt; 34</span>], 0 = tropical storm [<span class="math inline">34 &lt; <em>m</em><em>s</em><em>w</em> &lt; 64</span>], 1 = category 1 [<span class="math inline">64 ≤ <em>m</em><em>s</em><em>w</em> &lt; 83</span>], 2 = Category 2 [<span class="math inline">83 ≤ <em>m</em><em>s</em><em>w</em> &lt; 96</span>], 3 = Category 3 [<span class="math inline">96 ≤ <em>m</em><em>s</em><em>w</em> &lt; 113</span>], 4 = Category 4 [<span class="math inline">113 ≤ <em>m</em><em>s</em><em>w</em> &lt; 137</span>], 5 = Category 5 [<span class="math inline"><em>m</em><em>s</em><em>w</em> ≥ 137</span>])</td>
+<td align="left">5</td>
+<td align="left">Mandatory</td>
+</tr>
+<tr class="odd">
+<td align="left"><em>rmw</em></td>
+<td align="left">Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles?</td>
+<td align="left">12</td>
+<td align="left">Recommended</td>
+</tr>
+<tr class="even">
+<td align="left"><em>pressure</em></td>
+<td align="left">Central pressure in millibar</td>
+<td align="left">911</td>
+<td align="left">Optional</td>
+</tr>
+<tr class="odd">
+<td align="left"><em>poci</em></td>
+<td align="left">Pressure of the last closed isobar in millibar</td>
+<td align="left">922</td>
+<td align="left">Optional</td>
+</tr>
+</tbody>
+</table>
+<p>By default we propose to use the data provided by USA agencies in the IBTrACS database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International Best Track Archive for Climate Stewardship</a>. This database provides records of storms and tropical cyclones around the world every 3 hours since 1841 (note that data for the most recent storms may not be available yet and that not all storms of the earlier years are captured).</p>
 </div>
 <div class="section level2">
 <h2 id="models">Models<a class="anchor" aria-label="anchor" href="#models"></a>
