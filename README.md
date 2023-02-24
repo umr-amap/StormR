@@ -8,7 +8,7 @@
 
 ## Overview
 
-StormR is an R package allowing to easily extract tropical cyclone (TC) data for given locations or areas of interests, generate TC wind fields, and to compute statistics characterising the behaviour of TC winds (maximum sustained wind speed, power dissipation index, time of exposure to different wind speeds).
+StormR is a R package allowing to easily extract tropical cyclone data for given locations or areas of interests, generate tropical cyclone wind fields, and to compute statistics characterising the behaviour of tropical cyclone winds (maximum sustained wind speed, power dissipation index, time of exposure to different wind speeds).
 
 ## Installation
 
@@ -21,23 +21,23 @@ devtools::install_github("umr-amap/StormR")
 
 ## Data source
 
-To run stormR functions users have to provide a TC storm track dataset with the following fields
+To run stormR functions users have to provide a tropical cyclone storm track dataset in which the location and the characteristics of storms are given across their lifetime. The following fields are mandatory, recommended, or optional
 
 | **Field name** | **Description** | **Example** | **Type** |
-|:---|:---|:---|:---|
-| *basin* | Name of the area where the storm originated. Traditionally divided into seven basins: NA (North Atlantic), EP (Eastern North Pacific), WP (Western North Pacific), NI (North Indian), SI (South Indian), SP (Southern Pacific), SA (South Atlantic) | SP | Mandatory |
-| *name* | Name of the storm in capital letters | PAM | Mandatory |
-| *seasons* | Year of observation | 2015 | Mandatory |
-| *isoTime* | Date and time of observation (YYYY-MM-DD HH:mm:ss) | 13/03/2015 12:00 | Mandatory |
-| *lon* | Longitude of the observation (decimal degrees north) | 168.7 | Mandatory |
-| *lat* | Latitude of the observation (decimal degrees east) | -17.6 | Mandatory |
-| *msw* | Maximum Sustained Wind speed in knots | 150 | Mandatory |
-| *sshs* | Saffir Simpson Hurricane Scale rating based on msw (-1 = tropical depression [$msw < 34$], 0 = tropical storm [$34 < msw < 64$], 1 = category 1 [$64 \le msw <83$], 2 = Category 2 [$83 \le msw < 96$], 3 = Category 3 [$96 \le msw < 113$], 4 = Category 4 [$113 \le msw < 137$], 5 = Category 5 [$msw \ge 137$]) | 5 | Mandatory |
-| *rmw* | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles? | 12 | Recommended |
-| *pressure* | Central pressure in millibar | 911 | Optional |
-| *poci* | Pressure of the last closed isobar in millibar | 922 | Optional |
+|:---|:---|:---:|:---:|
+| $basin$ | Name of the area where the storm originated. Traditionally divided into seven basins: <br/>NA (North Atlantic)<br/>EP (Eastern North Pacific)<br/>WP (Western North Pacific)<br/>NI (North Indian)<br/>SI (South Indian)<br/>SP (Southern Pacific)<br/>SA (South Atlantic) | SP | Mandatory |
+| $name$ | Name of the storm in capital letters | PAM | Mandatory |
+| $seasons$ | Year of observation | 2015 | Mandatory |
+| $isoTime$ | Date and time of observation (YYYY-MM-DD HH:mm:ss) | 13/03/2015 12:00 | Mandatory |
+| $lon$ | Longitude of the observation (decimal degrees north) | 168.7 | Mandatory |
+| $lat$ | Latitude of the observation (decimal degrees east) | -17.6 | Mandatory |
+| $msw$ | Maximum Sustained Wind speed in knots | 150 | Mandatory |
+| $sshs$ | Saffir Simpson Hurricane Scale rating based on $msw$:<br/>$-1 =$ tropical depression [$msw < 34$]<br/>$0 =$ tropical storm [$34 < msw < 64$], $1 =$ category 1 [$64 \le msw < 83$]<br/>$2 =$ Category 2 [$83 \le msw < 96$]<br/>$3 =$ Category 3 [$96 \le msw < 113$]<br/>$4 =$ Category 4 [$113 \le msw < 137$]<br/>$5 =$ Category 5 [$msw \ge 137$]) | 5 | Recommended |
+| $rmw$ | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles | 12 | Recommended |
+| $pressure$ | Central pressure in millibar | 911 | Optional |
+| $poci$ | Pressure of the last closed isobar in millibar | 922 | Optional |
 
-By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides records of storms and tropical cyclones around the world every 3 hours since 1841 (note that data for the most recent storms may not be available yet and that not all storms of the earlier years are captured).
+By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides records of storms and tropical cyclones around the world every 3 hours since 1841.
 
 ## Models
 
