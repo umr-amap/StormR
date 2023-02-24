@@ -12,7 +12,7 @@ StormR is a R package allowing to easily extract tropical cyclone data for given
 
 ## Installation
 
-StormR can be installed from GitHub as follows
+StormR can be installed from GitHub as follows:
 
 ``` r
 #install.packages("devtools")
@@ -21,7 +21,7 @@ devtools::install_github("umr-amap/StormR")
 
 ## Data source
 
-To run stormR functions users have to provide a tropical cyclone storm track dataset in which the location and the characteristics of storms are given across their lifetime. The following fields are mandatory, recommended, or optional
+To run stormR functions users have to provide a tropical cyclone storm track dataset in which the location and the characteristics of storms are given across their lifetime. By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides records of storms and tropical cyclones around the world every 3 hours since 1841. Alternatively, users can other database as long as the following fields are provided:
 
 | **Field name** | **Description** | **Example** | **Type** |
 |:---|:---|:---:|:---:|
@@ -36,8 +36,6 @@ To run stormR functions users have to provide a tropical cyclone storm track dat
 | $rmw$ | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles | 12 | Recommended |
 | $pressure$ | Central pressure in millibar | 911 | Optional |
 | $poci$ | Pressure of the last closed isobar in millibar | 922 | Optional |
-
-By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides records of storms and tropical cyclones around the world every 3 hours since 1841.
 
 ## Models
 
