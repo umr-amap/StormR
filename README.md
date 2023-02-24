@@ -8,31 +8,36 @@
 
 ## Overview
 
-StormR is a R package developed to analyze past storms and tropical cyclones that occurred anywhere in the world after 1980. It allows users to compute cyclone characteristics (e.g., maximum sustained wind speed, exposure period), gather storms of interest in a single object, rasterize available data, and plot maps of cyclone tracks and charateristics.
+StormR is an R package allowing to easily extract tropical cyclone (TC) data for given locations or areas of interests, generate TC wind fields, and to compute statistics characterising the behaviour of TC winds (maximum sustained wind speed, power dissipation index, time of exposure to different wind speeds).
 
 ## Installation
 
-You can install the development version of StormR as follows:
+StormR can be installed from GitHub as follows
 
 ``` r
 #install.packages("devtools")
 devtools::install_github("umr-amap/StormR")
 ```
 
-
 ## Data source
-StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This package extracts the information needed to plot, compute and analyze tropical cyclones from this database. The IBTrACS database provides records of storms and tropical cyclones around the world every 3 hours since 1841 (note that data for the most recent storms may not be available yet and that not all storms of the earlier years are captured). Recods in the database are derived from various agencies in the USA and uses the following names and abbrevaitions for the world's ocean basins:
-* NA : North Atlantic
-* SA : South Atlantic
-* EP : Eastern North Pacific
-* WP : Western North Pacific
-* SP : South Pacific
-* SI : South Indian
-* NI : North Indian
-* ALL: the above 7 basins combined
 
-in the StormR package, the default value for the basin is set to SP, as the developpement team is located/interested in this particular region and because this basin has been used to test the package. However, the user can select a different basin.
-For the purpose of data reliability and accuracy, StormR only faciltates access to storms and tropical cyclones after 1980. Data for older storms is spatially less accurate and may therefore produce errors: you can [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for more details on data limitations of the IBTrACS database.
+To run stormR functions users have to provide a TC storm track dataset with the following fields
+
+| **Field name** | **Description** | **Example** | **Type** |
+|:---|:---|:---|:---|
+| *basin* | Name of the area where the storm originated. Traditionally divided into seven basins: NA (North Atlantic), EP (Eastern North Pacific), WP (Western North Pacific), NI (North Indian), SI (South Indian), SP (Southern Pacific), SA (South Atlantic) | SP | Mandatory |
+| *name* | Name of the storm in capital letters | PAM | Mandatory |
+| *seasons* | Year of observation | 2015 | Mandatory |
+| *isoTime* | Date and time of observation (YYYY-MM-DD HH:mm:ss) | 13/03/2015 12:00 | Mandatory |
+| *lon* | Longitude of the observation (decimal degrees north) | 168.7 | Mandatory |
+| *lat* | Latitude of the observation (decimal degrees east) | -17.6 | Mandatory |
+| *msw* | Maximum Sustained Wind speed in knots | 150 | Mandatory |
+| *sshs* | Saffir Simpson Hurricane Scale rating based on msw (-1 = tropical depression [$msw < 34$], 0 = tropical storm [$34 < msw < 64$], 1 = category 1 [$64 \le msw <83$], 2 = Category 2 [$83 \le msw < 96$], 3 = Category 3 [$96 \le msw < 113$], 4 = Category 4 [$113 \le msw < 137$], 5 = Category 5 [$msw \ge 137$]) | 5 | Mandatory |
+| *rmw* | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles? | 12 | Recommended |
+| *pressure* | Central pressure in millibar | 911 | Optional |
+| *poci* | Pressure of the last closed isobar in millibar | 922 | Optional |
+
+By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides records of storms and tropical cyclones around the world every 3 hours since 1841 (note that data for the most recent storms may not be available yet and that not all storms of the earlier years are captured).
 
 ## Models
 
