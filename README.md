@@ -21,7 +21,7 @@ devtools::install_github("umr-amap/StormR")
 
 ## Data source
 
-To run stormR functions users have to provide a tropical cyclone storm track dataset in which the location and the characteristics of storms are given across their lifetime. By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides records of storms and tropical cyclones around the world every 3 hours since 1841. Other databases can be used as long as the following fields are provided:
+To run stormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifetime. By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:
 
 | **Field name** | **Description** | **Example** | **Type** |
 |:---|:---|:---:|:---:|
@@ -37,62 +37,53 @@ To run stormR functions users have to provide a tropical cyclone storm track dat
 | $pressure$ | Central pressure in millibar | 911 | Optional |
 | $poci$ | Pressure of the last closed isobar in millibar | 922 | Optional |
 
-## Models
+## Wind field models
 
-StormR allows computing radial wind speed using two cyclonic models:
-
-$\textbf{Willoughby et al. 2006}$ <br />
-Insert comments about the model here <br />
-
-
-$$
-\left\{
-\begin{aligned}
-v_r &= msw\left(\frac{r}{rmw}\right)^{nn} \quad if \quad r < rmw \\
-v_r &= msw\left((1-AA))e^{-\frac{|r-rmw|}{XX1}} + AA e^{-\frac{|r-rmw|}{XX2}}\right) \quad if \quad r \geq rmw \\
-\end{aligned}
-\right.
-$$
-
-
-where <br />
-$v_r \quad$ Radial wind speed $(m.s^{-1})$ <br />
-$r \quad$ Distance to the eye of the storm where $v_r$ is computed $(km)$ <br />
-$msw \quad$ Maximum sustained wind speed $(m.s^{-1})$ <br />
-$rmw \quad$ Radius of maximum sustained wind speed $(km)$ <br />
-$XX1 = 287.6 - 1.942msw + 7.799\log(rmw) + 1.819|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
-$XX2 = 25 \quad$ Coefficient <br />
-$nn = 2.1340 + 0.0077msw - 0.4522\log(rmw) - 0.0038|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
-
-
-
-$\textbf{Holland 1980}$ <br />
-Insert comments about the model here <br />
-
+Using these data StormR computes radial wind speed $v_r$ at the distance $r$ from the center of the storm using two parametric models developed by Holland (1980) and Willoughby et al. (2006)
+<br />
+<br />
+$\textbf{Holland (1980)}$ <br />
 
 $$
 v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\frac{rmw}{r}\right)^b} + \left(\frac{rf}{2}\right)^2} - \left(\frac{rf}{2}\right)
 $$
 
 where <br />
-$v_r \quad$ Radial wind speed $(m.s^{-1})$ <br />
-$r \quad$ Distance to the eye of the storm where $v_r$ is computed $(km)$ <br />
-$msw \quad$ Maximum sustained wind speed $(m.s^{-1})$ <br />
-$rmw \quad$ Radius of maximum sustained wind speed $(km)$ <br />
-$pc \quad$ Pressure at the eye of the storm $(mb)$ <br />
-$poci \quad$ Pressure at Outermost Closed Isobar of the storm $(mb)$ <br />
-$\rho = 1.15 \quad$ Air density $(kg.m^{-3})$ <br />
-$f = 2 \times 7.29 \times10^{-5} \sin(\phi) \quad$ Coriolis force $(N.kg^{-1})$, $\phi$ being the latitude <br />
-$b = \frac{\rho e \times msw^2}{poci - pc} \quad$ Shape factor <br />
+$v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
+$r$ is the distance to the eye of the storm (in $km$) <br />
+$msw$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
+$rmw$ is the radius of maximum sustained wind speed (in $km$) <br />
+$pc$ is the pressure at the eye of the storm ($pressure$ in $mb$) <br />
+$poci$ is the pressure at outermost closed isobar of the storm (in $mb$) <br />
+$\rho = 1.15$ is the air density (in $kg.m^{-3}$) <br />
+$f = 2 \times 7.29 \times10^{-5} \sin(\phi)$ is the coriolis force (in $N.kg^{-1}$, with $\phi$ being the latitude) <br />
+$b = \frac{\rho e \times msw^2}{poci - pc}$ is the shape factor <br />
+<br />
+<br />
+$\textbf{Willoughby et al. (2006)}$ <br />
 
+$$
+\left\{
+\begin{aligned}
+v_r &= msw\left(\frac{r}{rmw}\right)^{n} \quad if \quad r < rmw \\
+v_r &= msw\left((1-A)e^{-\frac{|r-rmw|}{X1}} + A e^{-\frac{|r-rmw|}{X2}}\right) \quad if \quad r \geq rmw \\
+\end{aligned}
+\right.
+$$
 
+where <br />
+$v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
+$r$ is the distance to the eye of the storm (in $km$) <br />
+$msw$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
+$rmw$ is the radius of maximum sustained wind speed (in $km$) <br />
+$X1 = 287.6 - 1.942msw + 7.799\ln(rmw) + 1.819|\phi|$<br />
+$X2 = 25$ <br />
+$n = 2.1340 + 0.0077msw - 0.4522\ln(rmw) - 0.0038|\phi|$<br />
+$A = 0.5913 + 0.0029msw - 0.1361\ln(rmw) - 0.0042|\phi| (A\ge0)$<br />
+$\phi$ is the latitude of the center of the storm 
 
-It is also possible to use an empirical formula derived from Willoughby et al. 2006 model
-to compute the radius of maximum wind speed, as follow: <br />
+Note that for both models if $rmw$ is not provided then it is approximated using an empirical formula derived from Willoughby et al. (2006)<br />
 $rmw = 46.4e^{(-0.0155msw + 0.0169|\phi|)}$
-
-
-
 
 ## Asymmetry
 
