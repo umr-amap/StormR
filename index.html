@@ -66,7 +66,7 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>StormR is an R package allowing to easily extract tropical cyclone (TC) data for given locations or areas of interests, generate TC wind fields, and to compute statistics characterising the behaviour of TC winds (maximum sustained wind speed, power dissipation index, time of exposure to different wind speeds).</p>
+<p>StormR is a R package allowing to easily extract tropical cyclone data for given locations or areas of interests, generate tropical cyclone wind fields, and to compute statistics characterising the behaviour of tropical cyclone winds (maximum sustained wind speed, power dissipation index, time of exposure to different wind speeds).</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -79,90 +79,90 @@
 <div class="section level2">
 <h2 id="data-source">Data source<a class="anchor" aria-label="anchor" href="#data-source"></a>
 </h2>
-<p>To run stormR functions users have to provide a TC storm track dataset with the following fields</p>
+<p>To run stormR functions users have to provide a tropical cyclone storm track dataset in which the location and the characteristics of storms are given across their lifetime. The following fields are mandatory, recommended, or optional</p>
 <table class="table">
 <colgroup>
-<col width="25%">
-<col width="25%">
-<col width="25%">
-<col width="25%">
+<col width="22%">
+<col width="22%">
+<col width="27%">
+<col width="27%">
 </colgroup>
 <thead><tr class="header">
 <th align="left"><strong>Field name</strong></th>
 <th align="left"><strong>Description</strong></th>
-<th align="left"><strong>Example</strong></th>
-<th align="left"><strong>Type</strong></th>
+<th align="center"><strong>Example</strong></th>
+<th align="center"><strong>Type</strong></th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left"><em>basin</em></td>
-<td align="left">Name of the area where the storm originated. Traditionally divided into seven basins: NA (North Atlantic), EP (Eastern North Pacific), WP (Western North Pacific), NI (North Indian), SI (South Indian), SP (Southern Pacific), SA (South Atlantic)</td>
-<td align="left">SP</td>
-<td align="left">Mandatory</td>
+<td align="left"><span class="math inline"><em>b</em><em>a</em><em>s</em><em>i</em><em>n</em></span></td>
+<td align="left">Name of the area where the storm originated. Traditionally divided into seven basins: <br>NA (North Atlantic)<br>EP (Eastern North Pacific)<br>WP (Western North Pacific)<br>NI (North Indian)<br>SI (South Indian)<br>SP (Southern Pacific)<br>SA (South Atlantic)</td>
+<td align="center">SP</td>
+<td align="center">Mandatory</td>
 </tr>
 <tr class="even">
-<td align="left"><em>name</em></td>
+<td align="left"><span class="math inline"><em>n</em><em>a</em><em>m</em><em>e</em></span></td>
 <td align="left">Name of the storm in capital letters</td>
-<td align="left">PAM</td>
-<td align="left">Mandatory</td>
+<td align="center">PAM</td>
+<td align="center">Mandatory</td>
 </tr>
 <tr class="odd">
-<td align="left"><em>seasons</em></td>
+<td align="left"><span class="math inline"><em>s</em><em>e</em><em>a</em><em>s</em><em>o</em><em>n</em><em>s</em></span></td>
 <td align="left">Year of observation</td>
-<td align="left">2015</td>
-<td align="left">Mandatory</td>
+<td align="center">2015</td>
+<td align="center">Mandatory</td>
 </tr>
 <tr class="even">
-<td align="left"><em>isoTime</em></td>
+<td align="left"><span class="math inline"><em>i</em><em>s</em><em>o</em><em>T</em><em>i</em><em>m</em><em>e</em></span></td>
 <td align="left">Date and time of observation (YYYY-MM-DD HH:mm:ss)</td>
-<td align="left">13/03/2015 12:00</td>
-<td align="left">Mandatory</td>
+<td align="center">13/03/2015 12:00</td>
+<td align="center">Mandatory</td>
 </tr>
 <tr class="odd">
-<td align="left"><em>lon</em></td>
+<td align="left"><span class="math inline"><em>l</em><em>o</em><em>n</em></span></td>
 <td align="left">Longitude of the observation (decimal degrees north)</td>
-<td align="left">168.7</td>
-<td align="left">Mandatory</td>
+<td align="center">168.7</td>
+<td align="center">Mandatory</td>
 </tr>
 <tr class="even">
-<td align="left"><em>lat</em></td>
+<td align="left"><span class="math inline"><em>l</em><em>a</em><em>t</em></span></td>
 <td align="left">Latitude of the observation (decimal degrees east)</td>
-<td align="left">-17.6</td>
-<td align="left">Mandatory</td>
+<td align="center">-17.6</td>
+<td align="center">Mandatory</td>
 </tr>
 <tr class="odd">
-<td align="left"><em>msw</em></td>
+<td align="left"><span class="math inline"><em>m</em><em>s</em><em>w</em></span></td>
 <td align="left">Maximum Sustained Wind speed in knots</td>
-<td align="left">150</td>
-<td align="left">Mandatory</td>
+<td align="center">150</td>
+<td align="center">Mandatory</td>
 </tr>
 <tr class="even">
-<td align="left"><em>sshs</em></td>
-<td align="left">Saffir Simpson Hurricane Scale rating based on msw (-1 = tropical depression [<span class="math inline"><em>m</em><em>s</em><em>w</em> &lt; 34</span>], 0 = tropical storm [<span class="math inline">34 &lt; <em>m</em><em>s</em><em>w</em> &lt; 64</span>], 1 = category 1 [<span class="math inline">64 ≤ <em>m</em><em>s</em><em>w</em> &lt; 83</span>], 2 = Category 2 [<span class="math inline">83 ≤ <em>m</em><em>s</em><em>w</em> &lt; 96</span>], 3 = Category 3 [<span class="math inline">96 ≤ <em>m</em><em>s</em><em>w</em> &lt; 113</span>], 4 = Category 4 [<span class="math inline">113 ≤ <em>m</em><em>s</em><em>w</em> &lt; 137</span>], 5 = Category 5 [<span class="math inline"><em>m</em><em>s</em><em>w</em> ≥ 137</span>])</td>
-<td align="left">5</td>
-<td align="left">Mandatory</td>
+<td align="left"><span class="math inline"><em>s</em><em>s</em><em>h</em><em>s</em></span></td>
+<td align="left">Saffir Simpson Hurricane Scale rating based on <span class="math inline"><em>m</em><em>s</em><em>w</em></span>:<br><span class="math inline"> − 1=</span> tropical depression [<span class="math inline"><em>m</em><em>s</em><em>w</em> &lt; 34</span>]<br><span class="math inline">0=</span> tropical storm [<span class="math inline">34 &lt; <em>m</em><em>s</em><em>w</em> &lt; 64</span>], <span class="math inline">1=</span> category 1 [<span class="math inline">64 ≤ <em>m</em><em>s</em><em>w</em> &lt; 83</span>]<br><span class="math inline">2=</span> Category 2 [<span class="math inline">83 ≤ <em>m</em><em>s</em><em>w</em> &lt; 96</span>]<br><span class="math inline">3=</span> Category 3 [<span class="math inline">96 ≤ <em>m</em><em>s</em><em>w</em> &lt; 113</span>]<br><span class="math inline">4=</span> Category 4 [<span class="math inline">113 ≤ <em>m</em><em>s</em><em>w</em> &lt; 137</span>]<br><span class="math inline">5=</span> Category 5 [<span class="math inline"><em>m</em><em>s</em><em>w</em> ≥ 137</span>])</td>
+<td align="center">5</td>
+<td align="center">Recommended</td>
 </tr>
 <tr class="odd">
-<td align="left"><em>rmw</em></td>
-<td align="left">Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles?</td>
-<td align="left">12</td>
-<td align="left">Recommended</td>
+<td align="left"><span class="math inline"><em>r</em><em>m</em><em>w</em></span></td>
+<td align="left">Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles</td>
+<td align="center">12</td>
+<td align="center">Recommended</td>
 </tr>
 <tr class="even">
-<td align="left"><em>pressure</em></td>
+<td align="left"><span class="math inline"><em>p</em><em>r</em><em>e</em><em>s</em><em>s</em><em>u</em><em>r</em><em>e</em></span></td>
 <td align="left">Central pressure in millibar</td>
-<td align="left">911</td>
-<td align="left">Optional</td>
+<td align="center">911</td>
+<td align="center">Optional</td>
 </tr>
 <tr class="odd">
-<td align="left"><em>poci</em></td>
+<td align="left"><span class="math inline"><em>p</em><em>o</em><em>c</em><em>i</em></span></td>
 <td align="left">Pressure of the last closed isobar in millibar</td>
-<td align="left">922</td>
-<td align="left">Optional</td>
+<td align="center">922</td>
+<td align="center">Optional</td>
 </tr>
 </tbody>
 </table>
-<p>By default we propose to use the data provided by USA agencies in the IBTrACS database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International Best Track Archive for Climate Stewardship</a>. This database provides records of storms and tropical cyclones around the world every 3 hours since 1841 (note that data for the most recent storms may not be available yet and that not all storms of the earlier years are captured).</p>
+<p>By default we propose to use the data provided by USA agencies in the IBTrACS database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International Best Track Archive for Climate Stewardship</a>. This database provides records of storms and tropical cyclones around the world every 3 hours since 1841.</p>
 </div>
 <div class="section level2">
 <h2 id="models">Models<a class="anchor" aria-label="anchor" href="#models"></a>
