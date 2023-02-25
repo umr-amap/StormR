@@ -314,10 +314,6 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
 
   #checking sds input
   stopifnot("sds is missing" = !missing(sds))
-  if(!sds@loaded){
-    err <- paste0("Data have not been collected yet, please run ",deparse(substitute(sds))," <- collectData(",deparse(substitute(sds)),")\n")
-    stop(err)
-  }
 
   #Checking loi input
   if(!missing(loi)){
@@ -490,7 +486,7 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
   #Removing TD if remove_TD == T
 
   if(remove_TD){
-    i <- which(apply(array(database$sshs[,indices], dim = c(dim(database$sshs)[1], length(indices))),2,max, na.rm = T) >= 0)
+    i <- which(apply(array(database$msw[,indices], dim = c(dim(database$msw)[1], length(indices))),2, max, na.rm = T) >= 18 * knt2ms)
     indices <- indices[i]
   }
 
@@ -498,6 +494,46 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 
 }
 
+
+
+
+
+#' Get the sshs associated with a msw
+#'
+#' @noRd
+#' @param msw numeric maximum sustained wind
+#'
+#' @return numeric, sshs
+computeSSHS <- function(msw){
+
+  if (is.na(msw)) {
+    res <- NA
+
+  } else if (msw < sshs[1]) {
+    res <- -1
+
+  } else if (msw >= sshs[1] & msw < sshs[2]) {
+    res <- 0
+
+  } else if (msw >= sshs[2] & msw < sshs[3]) {
+    res <- 1
+
+  } else if (msw >= sshs[3] & msw < sshs[4]) {
+    res <- 2
+
+  } else if (msw >= sshs[4] & msw < sshs[5]) {
+    res <- 3
+
+  } else if (msw >= sshs[5] & msw < sshs[6]) {
+    res <- 4
+
+  } else if (msw >= sshs[6]) {
+    res <- 5
+  }
+
+  return(res)
+
+}
 
 
 
@@ -564,8 +600,14 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
     storm@obs.all <- data.frame(iso.time = isotime,
                                 lon = lon[valid_indices],
                                 lat = lat[valid_indices],
-                                msw = zoo::na.approx(round(sds@database$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2),
-                                sshs = sds@database$sshs[valid_indices, index])
+                                msw = zoo::na.approx(round(sds@database$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2))
+
+    if("sshs" %in% names(sds@fields)){
+      storm@obs.all$sshs <- sds@database$sshs[valid_indices, index]
+    }else{
+      storm@obs.all$sshs <- unlist(lapply(X = storm@obs.all$msw, FUN = computeSSHS))
+    }
+
     if("rmw" %in% names(sds@fields))
       storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[valid_indices, index] * nm2km), na.rm = F, rule = 2)
 

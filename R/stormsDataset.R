@@ -107,7 +107,6 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   stopifnot("No 'lon' selection in fields" = "lon" %in% names(fields))
   stopifnot("No 'lat' selection in fields" = "lat" %in% names(fields))
   stopifnot("No 'msw' selection in fields" = "msw" %in% names(fields))
-  stopifnot("No 'sshs' selection in fields" = "sshs" %in% names(fields))
   #Optional fields
   if(!("basin" %in% names(fields)))
     warning("No 'basin' selection in fields, Cannot use basin filtering when collecting data")
@@ -154,10 +153,10 @@ initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc
                                     "lon" = "usa_lon",
                                     "lat" = "usa_lat",
                                     "msw" = "usa_wind",
+                                    "sshs" = "usa_sshs",
                                     "rmw" = "usa_rmw",
                                     "pressure" = "usa_pres",
-                                    "poci" = "usa_poci",
-                                    "sshs" = "usa_sshs"),
+                                    "poci" = "usa_poci"),
                          basin = NULL,
                          verbose = TRUE){
 
@@ -196,9 +195,10 @@ initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc
                latitude = array(ncdf4::ncvar_get(dataBase, fields["lat"])[,ind],
                                 dim = c(row,len)),
                msw = array(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind],
-                           dim = c(row,len)),
-               sshs = array(ncdf4::ncvar_get(dataBase, fields["sshs"])[,ind],
-                            dim = c(row,len)))
+                           dim = c(row,len)))
+
+  if("sshs" %in% names(fields))
+    data$sshs <- array(ncdf4::ncvar_get(dataBase, fields["sshs"])[,ind], dim = c(row,len))
 
   if("rmw" %in% names(fields))
     data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind], dim = c(row,len))
