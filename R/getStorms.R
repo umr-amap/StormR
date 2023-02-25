@@ -567,7 +567,7 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
                                 msw = zoo::na.approx(round(sds@database$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2),
                                 sshs = sds@database$sshs[valid_indices, index])
     if("rmw" %in% names(sds@fields))
-      storm@obs.all$rmw <- zoo::na.approx(sds@database$rmw[valid_indices, index], na.rm = F, rule = 2)
+      storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[valid_indices, index] * nm2km), na.rm = F, rule = 2)
 
     if("pressure" %in% names(sds@fields))
       storm@obs.all$pres <- zoo::na.approx(sds@database$pres[valid_indices, index], na.rm = F, rule = 2)

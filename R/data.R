@@ -20,16 +20,6 @@
 
 
 
-#' Tropical cyclones over the West Pacific Basin
-#'
-#' Gathers informations about all TCs over category TD in the sshs that occured
-#' in the WP basin between 2010 and 2020
-#'
-#' @format ## `sts_wp`
-#' a Storms object generated with getStorms
-"sts_wp"
-
-
 #' EEZ of New Caledonia
 #'
 #' Provide the geographic limits of the eez of New Caledonia
