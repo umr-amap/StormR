@@ -504,11 +504,10 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 #' @param asymmetry character. asymmetry input from stormBehviour
 #' @param x numeric array. Distance in degree from the eye of storm in the x direction
 #' @param y numeric array. Distance in degree from the eye of storm in the y direction
-#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
 #' @param buffer numeric. Buffer size (in degree) for the storm
 #'
-#' @return  numeric vectors. Wind speed values (m/s) and wind directions (rad)
-computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, I, buffer){
+#' @return  numeric vector. Wind speed values (m/s)
+computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, buffer){
 
 
   #Computing sustained wind according to the input model
@@ -538,10 +537,6 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, I, 
     northenH = FALSE
   }
 
-
-  #Computing wind direction
-  direction <- computeDirection(x, y, I, northenH)
-
   #Adding asymmetry
   wind <- computeAsymmetry(asymmetry, wind, x, y,
                            data$vx.deg[index], data$vy.deg[index],
@@ -549,12 +544,54 @@ computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, I, 
 
   #Remove cells outside of buffer
   dist <- sqrt(x*x + y*y)
-  direction[dist > buffer] <- NA
   wind[dist > buffer] <- NA
 
-  return(list(wind = wind, direction = direction))
+  return(wind)
 
 }
+
+
+
+
+
+#' Compute wind direction according to the selected method and asymmetry
+#'
+#' @noRd
+#' @param data data.frame. Data generated with getInterpolatedData function
+#' @param index numeric. Index of interpolated observation in data to use for
+#' the computations
+#' @param x numeric array. Distance in degree from the eye of storm in the x direction
+#' @param y numeric array. Distance in degree from the eye of storm in the y direction
+#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
+#' @param buffer numeric. Buffer size (in degree) for the storm
+#'
+#' @return  numeric vector. Wind directions (degree)
+computeWindDirection <- function(data, index, x, y, I, buffer){
+
+
+  if(data$lat[index] > 0){
+    northenH = TRUE
+  }else{
+    northenH = FALSE
+  }
+
+
+  #Computing wind direction
+  direction <- computeDirection(x, y, I, northenH)
+
+  #Remove cells outside of buffer
+  dist <- sqrt(x*x + y*y)
+  direction[dist > buffer] <- NA
+
+  return(direction)
+
+}
+
+
+
+
+
+
 
 
 
@@ -981,8 +1018,6 @@ stormBehaviour_sp <- function(sts,
       #Making template to compute wind profiles
       raster.template.model <- makeTemplateModel(raster.template, buffer, dataTC, j)
       raster.wind <- raster.template.model
-      raster.direction <- raster.template.model
-      raster.I <- raster.template.model
 
       #Computing coordinates of raster
       crds <- terra::crds(raster.wind, na.rm = FALSE)
@@ -996,18 +1031,21 @@ stormBehaviour_sp <- function(sts,
                                 y = cbind(dataTC$lon[j], dataTC$lat[j]),
                                 lonlat = T)
 
-      #Intersect points coordinates with LOI
-      pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
-      sf::st_crs(pts) <- wgs84
-      ind <- which(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE)
-      terra::values(raster.I) <- 0
-      terra::values(raster.I)[ind] <- 1
-
       #Computing wind profile
-      output <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y, terra::values(raster.I), buffer)
-      terra::values(raster.wind) <- output$wind
-      terra::values(raster.direction) <- output$direction
+      terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y, buffer)
 
+      #Computing wind direction
+      if("Profiles" %in% product){
+        raster.direction <- raster.template.model
+        raster.I <- raster.template.model
+        #Intersect points coordinates with LOI
+        pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
+        sf::st_crs(pts) <- wgs84
+        ind <- which(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE)
+        terra::values(raster.I) <- 0
+        terra::values(raster.I)[ind] <- 1
+        terra::values(raster.direction) <- computeDirection(dataTC, j, x, y, terra::values(raster.I), buffer)
+      }
 
       #Stacking products
       if("MSW" %in% product)
@@ -1422,10 +1460,10 @@ stormBehaviour_pt <- function(sts,
 
       #Computing wind profiles
       dist2p <- dist.m[,i]
-      output <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y, I, buffer)
+      vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y, buffer)
 
-      vr <- output$wind
-      dir <- output$direction
+      #Computing wind direction
+      dir <- computeDirection(dataTC, i, x, y, I, buffer)
 
       #Computing product
       res <- computeProduct(product, vr, dir, time_res, res, wind_threshold)
