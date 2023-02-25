@@ -5,6 +5,7 @@
 #Data for routines
 resolutions = c("30sec" = 0.00833333, "2.5min" = 0.04166667, "5min" = 0.08333333, "10min" = 0.1666667)
 knt2ms <- 0.514
+nm2km <- 1.852
 km <- 1000
 wgs84 <- 4326
 sshs <- c(18, 33, 42, 49, 58, 70, 100)
@@ -40,7 +41,7 @@ df_getDataInterpolate <-getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, FAL
 
 
 
-usethis::use_data(resolutions, knt2ms, km, wgs84, Basins, sshs,
+usethis::use_data(resolutions, knt2ms, nm2km, km, wgs84, Basins, sshs,
                   oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
                   df_getDataInterpolate,
                   internal = TRUE, overwrite = T)
