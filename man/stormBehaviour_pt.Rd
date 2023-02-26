@@ -18,60 +18,70 @@ stormBehaviour_pt(
 \arguments{
 \item{sts}{Storms object}
 
-\item{points}{data.frame. Contains longitude/latitude coordinates within column
-names "lon" and "lat", on which to compute the desired product}
+\item{points}{data.frame. Contains longitude/latitude coordinates within
+column names "lon" and "lat", on which to compute the desired product}
 
-\item{product}{character. Product to compute that is either
+\item{product}{character. Product to compute. Must be either:
 \itemize{
-\item "TS", Time Series of wind speed
-\item "PDI", Power Dissipation Index
-\item "Exposure", hour exposition for wind upper than wind_threshold input
+\item "TS": Time Series of wind speed
+\item "PDI": Power Dissipation Index
+\item "Exposure": hour exposition for wind greater than wind_threshold
+input
 }
 Default value is set to "TS"}
 
-\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to compute
-Exposure product. Ignored if Exposure is not part of the product to compute.
-Default value is set Saffir Simpson Hurricane Scale thresholds}
+\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to
+compute Exposure product. Ignored if Exposure is not part of the products to
+compute. Default value is set to Saffir Simpson Hurricane Scale thresholds}
 
-\item{method}{character. Cyclonic model used to compute product, that is either
+\item{method}{character. Cyclonic model used to compute product. Must be
+either:
 \itemize{
-\item "Willoughby"
-\item "Holland"
+\item "Willoughby": model based on fits performed on cyclonic observations
+\item "Holland": model based on both basic cyclonic Physics and parameters
+fitting according to cyclonic observations
 }
-Default value is set to "Willoughby"}
+Default value is set to "Willoughby" (See Details)}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations, that is either
+the computations. Must be either:
 \itemize{
-\item "None", no asymmetry
-\item "Boose01", (See Details)
+\item "Boose01": formula that substract wind speed to the original wind
+field depending on the position to the eye of the storm and its
+velocity
+\item "None": no asymmetry is added
 }
-Default value is set to "Boose01".}
+Default value is set to "Boose01" (See Details)}
 
-\item{empirical_rmw}{logical. Whether to compute the Radius of Maximum Wind
-empirically, according to getRmw function (See Details) or using the Radius of Maximum Wind
-from the observations. Default value is set to FALSE}
+\item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
+empirically or using the radius of maximum wind from the observations.
+Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
+et al. 2006 is used to compute rmw}
 
-\item{time_res}{numeric. Period of time used to interpolated data.
+\item{time_res}{numeric. Period of time used to interpolate data.
 Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 Default value is set to 1}
 }
 \value{
-Computed product for each points are returned through data.frames contained in a named list.
-Each slot (named after the storm) is a data.frame that has the following dimensions:
+Computed product for each points are returned through data.frames
+contained in a named list. Each slot, named after the storm, is a data.frame
+that has the following dimensions:
 \itemize{
-\item If product == "TS": a data frame whose number of rows corresponds to the number
-of interpolated obervations. The columns provides respectively the wind speed value (m/s),
-the wind direction (in degree), the indice of observation and the ISO time of observation.
+\item If product == "TS": a data frame whose number of rows corresponds to
+the number of interpolated observations. The columns provides
+respectively the wind speed values (m/s), the wind directions
+(in degree), the indices and the ISO time of observation
 \item If product == "PDI": a data.frame with one row and one column that
 contains PDI value for each point in points.
-\item If product == "Exposure": a data.frame with one row for each wind threshold
-and one column that contains Exposure value for each point in points.
+\item If product == "Exposure": a data.frame with one row for each wind
+threshold and one column that contains Exposure value for each point
+in points.
 }
 }
 \description{
-This function is the pointwise version of stormBehaviour_sp. Available product are
-Time Series of wind speed (TS), Power Dissipation Index (PDI) and Exposure
+This function is the pointwise version of stormBehaviour_sp. Available
+products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
+and Exposure
 }
 \examples{
 \dontrun{

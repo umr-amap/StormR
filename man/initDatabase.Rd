@@ -14,15 +14,26 @@ initDatabase(
 )
 }
 \arguments{
-\item{filename}{character. Name of the file to be loaded}
+\item{filename}{character. Name of the database to load. Must be a netcdf
+file}
 
-\item{fields}{named character vector. Dictionary that provides all the name of dimension to extract from the netcdf database.
-See Details}
+\item{fields}{named character vector. Dictionary that provides all the name
+of dimension to extract from the netcdf database (See StormsDataSet class)}
 
-\item{basin}{character. Basin name to filter the database within its boundaries. If NULL, no filter is performed and the
-whole database will be collected when calling collectData method.}
+\item{basin}{character. Basin name to filter the database within its
+boundaries. Default value is set to NULL. It must be either
+\itemize{
+\item "NA": North Atlantic
+\item "SA": South Atlantic
+\item "EP": Eastern North Pacific
+\item "WP": Western North Pacific
+\item "SP": South Pacific
+\item "SI": South India
+\item "NI": North India
+}}
 
-\item{verbose}{logical.}
+\item{verbose}{logical. Whether or not the function should display
+informations about the process}
 }
 \value{
 An object of class StormsDataset
