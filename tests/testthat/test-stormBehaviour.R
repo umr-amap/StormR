@@ -267,7 +267,7 @@ test_that("Test getIndices function", {
 
 test_that("Test getDataInterpolate function", {
 
-  expect_equal(getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, FALSE, "Willoughby"), df_getDataInterpolate)
+  expect_equal(getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, 3,FALSE, "Willoughby"), df_getDataInterpolate)
 
 })
 

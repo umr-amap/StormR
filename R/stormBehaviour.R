@@ -257,6 +257,8 @@ getIndices <- function(st, offset, product){
 #' @noRd
 #' @param st Storm object
 #' @param indices numeric vector extracted from getIndices
+#' @param dt numeric. time step
+#' @param time_diff numeric. Time diff in database
 #' @param empirical_rmw logical. Whether to use rmw from the data or to compute them
 #' according to getRmw function
 #' @param method character. method input from stormBehaviour_sp
@@ -273,8 +275,7 @@ getIndices <- function(st, offset, product){
 #'    \item vx.deg: numeric. Velocity of the speed in the x direction (deg/h)
 #'    \item vy.deg: numeric Velocity of the speed in the y direction (deg/h)
 #'  }
-getDataInterpolate <- function(st, indices, dt, empirical_rmw, method){
-
+getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method){
 
   len.indices <- length(indices)
   len.data <- dt * (len.indices - 1) - (len.indices-2)
@@ -293,7 +294,7 @@ getDataInterpolate <- function(st, indices, dt, empirical_rmw, method){
   #Filling indices and isoTimes
   ind = c()
   isoT = c()
-  timeRes = 1/((dt-1)/3) * 60
+  timeRes = 1/((dt-1)/time_diff) * 60
 
   for(i in indices[1:len.indices-1]){
     lab = as.character(i)
@@ -991,11 +992,15 @@ stormBehaviour_sp <- function(sts,
     #Handling indices inside loi.buffer or not
     ind <- getIndices(st, 2, product)
 
+
+    it1 <- st@obs.all$iso.time[1]
+    it2 <- st@obs.all$iso.time[2]
+    time.diff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
     #Interpolated time step dt, default value dt <- 4 --> 1h
-    dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
+    dt <- 1 + (1 / time_res * time.diff) # + 1 for the limit values
 
     #Getting data associated with storm st
-    dataTC <- getDataInterpolate(st, ind, dt, empirical_rmw, method)
+    dataTC <- getDataInterpolate(st, ind, dt, time.diff, empirical_rmw, method)
 
     nb.step <- dim(dataTC)[1] - 1
 
@@ -1422,11 +1427,14 @@ stormBehaviour_pt <- function(sts,
     #Handling indices inside loi.buffer or not
     ind <- getIndices(st, 2, "none")
 
+    it1 <- st@obs.all$iso.time[1]
+    it2 <- st@obs.all$iso.time[2]
+    time.diff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
     #Interpolated time step dt, default value dt <- 4 --> 1h
-    dt <- 1 + (1 / time_res * 3) # + 1 for the limit values
+    dt <- 1 + (1 / time_res * time.diff) # + 1 for the limit values
 
     #Getting data associated with storm st
-    dataTC <- getDataInterpolate(st, ind, dt, empirical_rmw, method)
+    dataTC <- getDataInterpolate(st, ind, dt, time.diff, empirical_rmw, method)
 
 
     #Computing distances from the eye of storm for every observations x, and
