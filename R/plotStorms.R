@@ -198,55 +198,52 @@ checkInputsPs <- function(sts, names, category, labels, by,
 
 #' Plot storm track(s)
 #'
-#' This function plots a set of storm tracks contained in a Storms object (See “getStorms” function).
-#' Depending on the inputs, the user can choose to plot only a desired set of storms
-#' extracted from the Storms object
+#' This function plots a set of storm tracks contained in a Storms object
+#' (See “getStorms” function). Depending on the inputs, the user can choose to
+#' plot only a desired set of storms extracted from the Storms object
 #'
 #' @param sts Storms object
-#' @param names character vector. Name(s) of the storm(s) to plot on the map. Default
-#' value is set to NULL, which will plot every storm provided in sts. To see which storms
-#' are included in a Storms object, you can use the getter "getNames()"
-#' @param category numeric vector. Should be either a category or a range of categories
-#' in the Saffir Simpson scale (-2 to 5). Default value is set to NULL which
-#' will consider every storm in sts. Otherwise it will consider only storms that
-#' reached category input
+#' @param names character vector. Name(s) of the storm(s) in capital letters to
+#' plot on the map. Default value is set to NULL, which will plot every storm
+#' provided in sts. To see which storms are included in a Storms object,
+#' you can use the getter "getNames()"
+#' @param category numeric vector. Should be either a category or a range of
+#' categories in the Saffir Simpson scale (-1 to 5). Default value is set to
+#' NULL which will consider every storm in sts. Otherwise it will consider only
+#' storms that reached category input
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
 #' longitude extent of the plot. Default value is set to NULL which will let
-#' the plot extends according to the longitude range of the extented LOI
+#' the plot extends according to the longitude range of the extended LOI
 #' @param ylim numeric vector. A set of latitude coordinates that controls the
 #' latitude extent of the plot. Default value is set to NULL which will let
-#' the plot extends according to the the latitude range of the extented LOI
-#' @param labels logical. Whether or not to plot names labels with the corresponding
-#' indices of obervations and ISO Times along the track(s)
+#' the plot extends according to the the latitude range of the extended LOI
+#' @param labels logical. Whether or not to plot names labels with the
+#' corresponding indices of observations and ISO Times along the track(s)
 #' @param by numeric. Defines the frequency at which labels are plotted for the
-#' 3-hourly records. Default value is set to 8 which represents a 24h time interval
-#' between each labeled observations. Ignored if labels == FALSE
+#' 3 (or 6) hourly records. Default value is set to 8 which represents a 24h
+#' (or 48h) time interval between each labeled observations. Ignored if
+#' labels == FALSE
 #' @param pos numeric. Must be between 1 and 4. Correspond to the position of
 #' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 #' Default value is set to 3. Ignored if labels == FALSE
 #' @param legends logical. Whether or not to plot legends. Default value is set
 #' to TRUE
-#' @param loi logical. Whether or not to plot the extented LOI on the map.
+#' @param loi logical. Whether or not to plot the extended LOI on the map.
 #' Default value is set to TRUE
 #' @param reset_setting logical. Whether the graphical parameter should be reset
-#' on exit. Default value is set to TRUE. It is usefull for the plotBehaviour function.
-#' We highly recommand not to change thisinput.
+#' on exit. Default value is set to TRUE. It is useful for the plotBehaviour
+#' function. We highly recommend not to change this input
 #' @returns NULL
 #' @import rworldxtra
 #'
 #' @examples
 #' \dontrun{
-#' #Plot category 5 TCs in the WP Basin between 2010 and 2020
-#' plotStorms(sts_wp, category = c(3,5))
-#'
-#' #Plot a single storm (ERICA) with labels every 24h
+#' #Plot Erica over New Caledonia with labels every 24h
 #' plotStorms(sts_nc, names = "ERICA", labels = TRUE)
 #'
-#' #Plot a single storm (ERICA), with labels every 6h on the right side
+#' #Plot Erica, with labels every 6h on the right side of observations
 #' plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
 #'
-#' #Plot a single storm (ERICA)
-#' plotStorms(sts_nc, names = "ERICA")
 #' }
 #'
 #'

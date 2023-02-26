@@ -538,6 +538,7 @@ computeSSHS <- function(msw){
 
 
 
+
 #' Write data to initialize a Storm object
 #'
 #' Whether or not to add a storm (with id index in database) in the upcoming Storms object
@@ -657,8 +658,8 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #' gathers all the storms specified by the user
 #'
 #' @param sds StormsDataset object. Default value is set to IBTRACS_SP which is
-#' a database provided by this package and based on the IBTrACS.SP.v04r00.nc file.
-#' (See StormDataset class)
+#' a database provided by this package and based on the IBTrACS.SP.v04r00.nc
+#' file. (See StormsDataset class)
 #' @param loi Location of Interest. Must be either:
 #' \itemize{
 #' \item a SpatialPolygon (shapefile)
@@ -668,46 +669,48 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #' }
 #' @param seasons numeric vector. Should be either one or a range of calendar
 #' years. For cyclones that formed in one year and dissipated in the following
-#' year, the latter should be used. Default values will allow searching for storms
-#' between 1980 and the maximum cyclonic season available in the stormDataSet Object
-#' @param names character vector. Names of storms. Default value is set to NULL.
+#' year, the latter should be used. Default values will allow searching for
+#' storms between 1980 and the maximum cyclonic season available in the
+#' StormsDataSet object
+#' @param names character vector. Names of storms in capital letters. Default
+#' value is set to NULL.
 #' @param max_dist numeric. Indicates the buffer distance (in km) used to extend
-#' the location of interest. Default value is set to 300km.
-#' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
-#' and include cyclones only. Default value is set to TRUE.
-#' @param verbose numeric. Whether or not the function must
-#' be verbose and display informations about the process, outputs, and additional notes.
-#' Allowed values:
+#' the location of interest. Default value is set to 300km
+#' @param remove_TD logical. Whether or not to remove tropical depressions
+#' (< 18 m/s) and include cyclones only. Default value is set to TRUE
+#' @param verbose numeric. Whether or not the function should display
+#' informations about the process, outputs, and additional notes. Allowed values
+#' are:
 #' \itemize{
-#' \item 0 Nothing is displayed
-#' \item 1 Informations about the process are displayed
-#' \item 2 Outputs are also displayed
-#' \item 3 Additional notes to manipulate Storms objects are also displayed
+#' \item 0: Nothing is displayed
+#' \item 1: Informations about the process are displayed
+#' \item 2: Outputs are also displayed
+#' \item 3: Additional notes to manipulate Storms objects are also displayed
 #' }
 #' Default value is set to 2
 #'
-#' @returns a Storms object that gathers all storms that match the criteria given
-#' in the inputs
+#' @returns a Storms object that gathers all storms that match the criteria
+#' given in the inputs
 #'
-#' @details Available countries for the loi input are those provided in the rwolrdxtra package, derived
-#' from the newest version of Natural Earth Data. Check the following link for more informations:
+#' @details Available countries for the loi input are those provided in the
+#' rwolrdxtra package, derived from the newest version of Natural Earth Data.
+#' Check the following link for more informations:
 #' http://www.naturalearthdata.com/downloads/10m-cultural-vectors/
 #'
 #'
 #' @examples
 #' \dontrun{
-#' #Focus on a single storm on a given country
+#' #Get data for a single storm on a given country
 #' pam <- getStorms(loi = "Vanuatu", names = "PAM")
 #'
-#' #Focus on a single point coordinates (in degree) for the above storm
+#' #Get data for the above storm on a point coordinates (Eastern/Northern degree)
 #' pt <- c(169, -19)
 #' pam.pt <- getStorms(loi = pt, names = "PAM")
 #'
-#' #Focus on several storms over New Caledonia
+#' #Get data for two storms over New Caledonia
 #' sts_nc <- getStorms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #'
-#' #Focus on every storms that occured in the SP basin between 2010 and 2020
-#' #and within the boundaries of the South Pacific Basin
+#' #Get data for every storms that occured in the SP basin between 2010 and 2020
 #' poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
 #' sp <- sf::st_polygon(list(poly))
 #' sp <- sf::st_sfc(sp, crs = 4326)

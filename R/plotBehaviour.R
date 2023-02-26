@@ -67,8 +67,9 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'Plot rasterized information storm behaviour
 #'
 #'This function plots a rasterized product (among maximum sustained wind, power
-#'dissipation index, category exposure, or 2D wind speed structure/wind direction at a given
-#'observation) associated with a storm provided in a Storms object alongside with its track
+#'dissipation index, category exposure, or 2D wind speed structure/wind direction
+#'at a given observation) associated with a storm provided in a Storms object
+#' alongside with its track
 #'
 #'@param sts Storms object
 #'@param raster_product SpatRaster object. Name of the layer must be
@@ -79,32 +80,34 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'    \item "Exposure_threshold" where "threshold" represents the wind threshold
 #'          used to compute Exposure raster
 #'    \item "Profiles_index" where index stands for the index of observation
-#'    \item "WindDirection_index" where index stands for the index of observation
+#'    \item "WindDirection_index" where index stands for the index of
+#'          observation
 #'
 #'  }
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
 #' longitude extent of the plot. Default value is set to NULL which will let
-#' the plot extends according to the longitude range of the extented LOI
+#' the plot extends according to the longitude range of the extended LOI
 #' @param ylim numeric vector. A set of latitude coordinates that controls the
 #' latitude extent of the plot. Default value is set to NULL which will let
-#' the plot extends according to the longitude range of the extented LOI
-#' @param labels logical. Whether or not to plot name labels with the corresponding
-#' indices of obervations and ISO Times along the track
+#' the plot extends according to the longitude range of the extended LOI
+#' @param labels logical. Whether or not to plot name labels with the
+#' corresponding indices of observations and ISO Times along the track
 #' @param by numeric. Defines the frequency at which labels are plotted for the
-#' 3-hourly records. Default value is set to 8 which represents a 24h time interval
-#' between each labeled observations. Ignored if labels == FALSE
+#' 3 (or 6) hourly records. Default value is set to 8 which represents a 24h
+#' (or 48h) time interval between each labeled observations. Ignored if
+#' labels == FALSE
 #' @param pos numeric. Must be between 1 and 4. Correspond to the position of
 #' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 #' Default value is set to 3. Ignored if labels == FALSE
-#' @param color_palette character vector. Represents the color palette used for the plot.
-#' Default value is set to NULL, which will automatically choose a color palette
-#' provided by this package and depending on the product
+#' @param color_palette character vector. Represents the color palette used for
+#' the plot. Default value is set to NULL, which will automatically choose a
+#' color palette provided by this package and depending on the product
 #'
 #' @returns NULL
 #'
 #' @examples
 #' \dontrun{
-#' #Plot MSW analytic raster for Pam (2015) in Vanuatu
+#' #Plot MSW raster for Pam (2015) in Vanuatu
 #' pam <- getStorms(loi = "Vanuatu", names = "PAM")
 #' pam_msw <- stormBehaviour_sp(pam, verbose = 0)
 #' plotBehaviour(pam, pam_msw)

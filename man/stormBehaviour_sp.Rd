@@ -19,84 +19,94 @@ stormBehaviour_sp(
 \arguments{
 \item{sts}{Storms object}
 
-\item{product}{character. Product to compute that is either:
+\item{product}{character. Product to compute among:
 \itemize{
-\item "MSW", Maximum Sustained Wind
-\item "PDI", Power Dissipation Index
-\item "Exposure", hour exposition for wind upper than wind_threshold input
-\item "Profiles", 2D wind speed structures of wind speed with wind direction
-for each observation
+\item "MSW": Maximum Sustained Wind
+\item "PDI": Power Dissipation Index
+\item "Exposure": hour exposition for wind greater than wind_threshold
+input
+\item "Profiles", 2D wind speed structures of wind speed with wind
+direction for each observation
 }
 Default value is set to "MSW"}
 
-\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to compute
-Exposure product. Ignored if Exposure is not part of the product to compute.
-Default value is set Saffir Simpson Hurricane Scale thresholds}
+\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to
+compute Exposure product. Ignored if Exposure is not part of the products to
+compute. Default value is set to Saffir Simpson Hurricane Scale thresholds}
 
-\item{method}{character. Cyclonic model used to compute product, that is either
+\item{method}{character. Cyclonic model used to compute product. Must be
+either:
 \itemize{
-\item "Willoughby"
-\item "Holland"
+\item "Willoughby": model based on fits performed on cyclonic observations
+\item "Holland": model based on both basic cyclonic Physics and parameters
+fitting according to cyclonic observations
 }
-Default value is set to "Willoughby"}
+Default value is set to "Willoughby" (See Details)}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations, that is either:
+the computations. Must be either:
 \itemize{
-\item "None", no asymmetry
-\item "Boose01", (See Details)
+\item "Boose01": formula that substract wind speed to the original wind
+field depending on the position to the eye of the storm and its
+velocity
+\item "None": no asymmetry is added
 }
-Default value is set to "None".}
+Default value is set to "Boose01" (See Details)}
 
-\item{empirical_rmw}{logical. Whether to compute the Radius of Maximum Wind
-empirically, according to getRmw function (See Details) or using the Radius of Maximum Wind
-from the observations. Default value is set to FALSE}
+\item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
+empirically or using the radius of maximum wind from the observations.
+Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
+et al. 2006 is used to compute rmw}
 
 \item{space_res}{character. Space resolution for the raster(s) to compute.
 Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min}
 
-\item{time_res}{numeric. Period of time used to interpolated data.
+\item{time_res}{numeric. Period of time used to interpolate data.
 Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 Default value is set to 1}
 
-\item{verbose}{numeric. Whether or not the function must be verbose and display
+\item{verbose}{numeric. Whether or not the function should display
 informations about the process and/or outputs and additional notes.
-Allowed values:
+Allowed values are:
 \itemize{
-\item 0 Nothing is displayed
-\item 1 Informations about the process are displayed
-\item 2 Outputs are also displayed
-\item 3 Additional notes are also displayed
+\item 0: Nothing is displayed
+\item 1: Informations about the process are displayed
+\item 2: Outputs are also displayed
+\item 3: Additional notes are also displayed
 }
 Default value is set to 2}
 }
 \value{
-SpatRaster stack which provides the desired product computed, projected
-in WGS84 and spanning over the extented LOI of the Storms object. Number of layers depends
-on the number of storm available in sts input and also product and time_res inputs:
+SpatRaster stack which provides the desired product computed,
+projected in WGS84 and spanning over the extented LOI of the Storms object.
+Number of layers depends on the number of storm available in sts input and
+also product and time_res inputs:
 \itemize{
-\item "MSW" produces one layer. Name of layer is "STORMNAME_MSW"
-\item "PDI" produces one layer. Name of layer is "STORMNAME_PDI"
+\item "MSW" produces one layer per storm. Name of layer is "STORMNAME_MSW"
+\item "PDI" produces one layer per storm. Name of layer is "STORMNAME_PDI"
 \item "Exposure" produces one layer for each wind values available
-in wind_threshold input. Name of layers are "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2" ...
-\item "Profiles" produces two layers for each observations (real and interpolated).
-Name of layers are "STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
+in wind_threshold input and for each storm. Name of layers are
+"STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
+\item "Profiles" produces two layers for each observations
+(real and interpolated) and each storm. Name of layers are
+"STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
 }
 }
 \description{
-This function computes/rasterizes analytic products for each storm of a Storms
-object, including Maximum Sustained Wind, Power Dissipation Index, Category exposure and
-2D wind speed structures/direction of wind speed for every observations
+This function computes/rasterizes analytic products for each storm of a
+Storms object, including Maximum Sustained Wind, Power Dissipation Index,
+Category exposure and 2D wind speed structures/direction of wind speed for
+every observations
 }
 \details{
 Add details on Willoughy/ Holland method Boose asymmetry and getRMW method ...
 }
 \examples{
 \dontrun{
-#Compute MSW for Pam 2015 in Vanuatu using default settings
+#Compute MSW product for Pam 2015 in Vanuatu using default settings
 msw.pam <- stormBehaviour_sp(pam)
 
-#Compute PDI for Erica and Niran in New Caledonia using Holland model without asymmetry
+#Compute PDI product for Erica and Niran in New Caledonia using Holland model without asymmetry
 pdi.nc <- stormBehaviour_sp(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 
 #Compute Exposure for Pam 2015 in Vanuatu using default settings
