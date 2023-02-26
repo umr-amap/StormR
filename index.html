@@ -79,7 +79,7 @@
 <div class="section level2">
 <h2 id="data-source">Data source<a class="anchor" aria-label="anchor" href="#data-source"></a>
 </h2>
-<p>To run stormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifetime. By default we propose to use the data provided by USA agencies in the IBTrACS database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International Best Track Archive for Climate Stewardship</a>. This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:</p>
+<p>To run StormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifetime. By default we propose to use the data provided by USA agencies in the IBTrACS database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International Best Track Archive for Climate Stewardship</a>. This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:</p>
 <table class="table">
 <colgroup>
 <col width="22%">
@@ -185,21 +185,29 @@ $$</span></p>
 <div class="section level2">
 <h2 id="asymmetry">Asymmetry<a class="anchor" aria-label="anchor" href="#asymmetry"></a>
 </h2>
-<p>The above models compute symmetric 2D structures of radial wind speed around the eye of the storm. Nevertheless, in most cases, tropical cyclone are not symmetric and it can be interesting to add asymmetry to the computations in order to get a much more accurate 2D structures of radial wind speed. This package proposes two formula to add such asymmetries: <br></p>
-<p><span class="math inline"><strong>Version 1 (Boose et al. 2001 version)</strong></span> <br> Insert comments here <br><span class="math inline">$v_{r_{as}} = v_r - S(1-\sin(\alpha))\frac{v_h}{2}$</span></p>
-<p>where <br><span class="math inline"><em>v</em><sub><em>r</em><sub><em>a</em><em>s</em></sub></sub>  </span> New radial wind speed with asymmetry <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span> <br><span class="math inline"><em>v</em><sub><em>r</em></sub>  </span> Former radial wind speed without asymmetry <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span> <br><span class="math inline"><em>v</em><sub><em>h</em></sub>  </span> Velocity of storm <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span> <br><span class="math inline"><em>v</em><sub><em>r</em><sub>|<em>v</em><sub><em>h</em></sub></sub></sub>  </span> Former radial wind speed without asymmetry <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span>, where values have been computed substracting <span class="math inline"><em>v</em><sub><em>h</em></sub></span> to <span class="math inline"><em>m</em><em>s</em><em>w</em></span> i.e <span class="math inline"><em>v</em><sub><em>m</em><em>a</em><em>x</em></sub> = <em>m</em><em>s</em><em>w</em> − <em>v</em><sub><em>h</em></sub></span> in the input <span class="math inline"><em>S</em></span> Asymmetry coefficient (usually set to 1) <br><span class="math inline"><em>α</em>  </span> Angle between the storm direction and the point where <span class="math inline"><em>v</em><sub><em>r</em><sub><em>a</em><em>s</em></sub></sub></span> is computed. Clockwise in Nothern hemisphere, counterclokwise in Southern hemisphere. <br></p>
+<p>The above models compute symmetric 2D structures of radial wind speed around the eye of the storm. Nevertheless, in most cases, tropical cyclone are not symmetric and it can be interesting to add asymmetry to the computations in order to get a much more accurate 2D structures of radial wind speed. This package proposes the following formula extracted from Boose et al. (2001): <br></p>
+<p><span class="math inline">$v_{r_{as}} = v_r - S(1-\sin(\alpha))\frac{v_h}{2}$</span></p>
+<p>where <br><span class="math inline"><em>v</em><sub><em>r</em><sub><em>a</em><em>s</em></sub></sub>  </span> is the new radial wind speed with asymmetry <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span> <br><span class="math inline"><em>v</em><sub><em>r</em></sub>  </span> is the former radial wind speed without asymmetry <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span> <br><span class="math inline"><em>v</em><sub><em>h</em></sub>  </span> is the velocity of storm <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span> <br><span class="math inline"><em>S</em></span> Asymmetry coefficient (usually set to 1) <br><span class="math inline"><em>α</em>  </span> is tha angle between the storm direction and the point where <span class="math inline"><em>v</em><sub><em>r</em><sub><em>a</em><em>s</em></sub></sub></span> is computed. Clockwise in Nothern hemisphere, counterclokwise in Southern hemisphere. <br></p>
+</div>
+<div class="section level2">
+<h2 id="wind-direction">Wind Direction<a class="anchor" aria-label="anchor" href="#wind-direction"></a>
+</h2>
+<p>Wind direction <span class="math inline"><em>D</em></span> (in degree) at each point is computed according to the following formula: <br></p>
+<p><span class="math inline"><em>D</em> = <em>A</em><sub><em>z</em></sub> − 90 − <em>I</em></span></p>
+<p>where <br><span class="math inline"><em>A</em><sub><em>z</em></sub>  </span> is the azimuth from the point to the storm center <br><span class="math inline"><em>I</em>  </span> is the cross isobar inflow angle which is either 20° on water or 40° on land <br></p>
+<p>The above formula works for the northen hemisphere. As direction of wind is clockwise in the southern hemisphere, this formula becomes <span class="math inline"><em>D</em> = <em>A</em><sub><em>z</em></sub> + 90 + <em>I</em></span>.</p>
 </div>
 <div class="section level2">
 <h2 id="products">Products<a class="anchor" aria-label="anchor" href="#products"></a>
 </h2>
 <p>StormR let the user compute several products. They can either be computed on specific longitude/latitute coordinates or rasterized over the location of interest. The following describes the products available: <br></p>
 <ul>
-<li>Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span> at distance <span class="math inline"><em>r</em></span> of the eye of the storm according to</li>
+<li>Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span> according to</li>
 </ul>
-<p><span class="math display">max (<em>v</em><sub><em>r</em></sub>(<em>t</em>)|<em>t</em>∈[0,<em>T</em>])</span></p>
+<p><span class="math display">max (<em>v</em>(<em>t</em>)|<em>t</em>∈[0,<em>T</em>])</span></p>
 <p>where <span class="math inline"><em>T</em></span> stands for the whole lifecycle of the storm. <br></p>
 <ul>
-<li>Power Dissipation Index (PDI): It provides the value of the PDI at distance <span class="math inline"><em>r</em></span> of the eye of the storm according to</li>
+<li>Power Dissipation Index (PDI): It provides the value of the PDI according to</li>
 </ul>
 <p><span class="math display">∫<sub><em>T</em></sub><em>ρ</em><em>C</em><sub><em>d</em></sub><em>v</em><sub><em>r</em></sub><sup>3</sup><em>d</em><em>t</em></span></p>
 <p><span class="math inline"><em>T</em></span> stands for the whole lifecycle of the storm, <span class="math inline"><em>ρ</em></span> represents the air density fixed here at <span class="math inline">10<sup>−3</sup></span> <span class="math inline"><em>k</em><em>g</em>.<em>m</em><sup>−3</sup></span> ? Finally, <span class="math inline"><em>C</em><sub><em>d</em></sub></span> models the drag coefficient of the storm. Although there exist various methods and formula to compute this parameter that are widely debatable, we chose here the following parametrization derived in <a href="https://doi.org/10.1038/s41586-022-05326-4" class="external-link">Wang, G., Wu, L., Mei, W. et al. Ocean currents show global intensification of weak tropical cyclones. Nature 611, 496–500 (2022)</a>:</p>
@@ -212,20 +220,20 @@ C_d &amp;= \left(0.55 + 2.97\frac{v_r}{31.5} - 1.49\left(\frac{v_r}{31.5}\right)
 \right.
 $$</span></p>
 <ul>
-<li>Exposure: It provides the time exposure (in hours) for a given category <span class="math inline"><em>C</em></span> (in the Saffir Simpson Hurricane Scale), where radial wind speed <span class="math inline"><em>v</em><sub><em>r</em></sub><sup><em>C</em></sup></span> spans in <span class="math inline"><em>C</em><sub><em>r</em></sub> := [min(<em>v</em><sub><em>r</em></sub><sup><em>c</em></sup>|<em>c</em>=<em>C</em>):max(<em>v</em><sub><em>r</em></sub><sup><em>c</em></sup>|<em>c</em>=<em>C</em>)]</span> , and at distance <span class="math inline"><em>r</em></span> of the eye of the storm, according to</li>
+<li>Exposure: It provides the time exposure (in hours) to a certain range of wind speed greater than a threshold <span class="math inline"><em>T</em><em>h</em><em>d</em></span> <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span>, according to</li>
 </ul>
-<p><span class="math display">∫<sub><em>T</em></sub><em>c</em>(<em>v</em><sub><em>r</em></sub>)<em>d</em><em>t</em></span></p>
+<p><span class="math display">∫<sub><em>T</em></sub><em>c</em>(<em>v</em>)<em>d</em><em>t</em></span></p>
 <p><span class="math display">$$
 \left\{
 \begin{aligned}
-c(v_r) &amp;= 1 \quad if \quad v_r \in C_r\\
-c(v_r) &amp;= 0 \quad if \quad v_r \notin C_r\\
+c(v) &amp;= 1 \quad if \quad v \geq Thd\\
+c(v) &amp;= 0 \quad if \quad v &lt; Thd\\
 \end{aligned}
 \right.
 $$</span></p>
 <p>where <span class="math inline"><em>T</em></span> stands for the whole lifecycle of the storm. <br></p>
 <ul>
-<li>2D radial wind speed structures (Only rasterized and not point-wised)</li>
+<li>2D radial wind speed/ direction structures (Only rasterized)</li>
 </ul>
 </div>
 <div class="section level2">
@@ -240,28 +248,27 @@ $$</span></p>
 <span><span class="co">##############################################</span></span>
 <span></span>
 <span><span class="co">#Load the data for the tropical cyclone Pam which hit the Vanuatu in 2015</span></span>
-<span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>seasons <span class="op">=</span> <span class="fl">2015</span>, names <span class="op">=</span> <span class="st">"PAM"</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span><span class="op">)</span></span>
+<span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Plot the tropical cyclone track and observations over or around the location of interest</span></span>
 <span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, labels <span class="op">=</span> <span class="cn">T</span>, legends <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry from REF?). The function returns a raster with a 10 km spatial resolution by default .</span></span>
-<span><span class="va">st_msw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_sp.html">stormBehaviour_sp</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span>
-<span><span class="va">st_pdi</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_sp.html">stormBehaviour_sp</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="st">"PDI"</span><span class="op">)</span></span>
-<span><span class="va">st_exposure</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_sp.html">stormBehaviour_sp</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="st">"Exposure"</span><span class="op">)</span></span>
+<span><span class="co">#Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry). The function returns a raster with a 2.5min spatial resolution by default.</span></span>
+<span><span class="va">st_prod</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_sp.html">stormBehaviour_sp</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSW"</span>, <span class="st">"PDI"</span>, <span class="st">"Exposure"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#Plot the MSW, PDI, and EXP rasters alongside with the track of the storm and the limit of the location of interest</span></span>
+<span></span>
+<span><span class="co">#Plot the MSW, PDI, and an Exposure rasters alongside with the track of the storm and the limit of the location of interest</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/screen.html" class="external-link">split.screen</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/screen.html" class="external-link">screen</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">st_msw</span>, labels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">st_prod</span><span class="op">[[</span><span class="st">"PAM_MSW"</span><span class="op">]</span><span class="op">]</span>, labels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/screen.html" class="external-link">screen</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">st_pdi</span>, labels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">st_prod</span><span class="op">[[</span><span class="st">"PAM_PDI"</span><span class="op">]</span><span class="op">]</span>, labels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/screen.html" class="external-link">screen</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">st_exposure</span><span class="op">[[</span><span class="st">"PAM_Exposure_40-50"</span><span class="op">]</span><span class="op">]</span>, labels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">st_prod</span><span class="op">[[</span><span class="st">"PAM_Exposure_50"</span><span class="op">]</span><span class="op">]</span>, labels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co">#Export the MSW raster in a given directory (here a temporary directory)</span></span>
-<span><span class="fu"><a href="reference/writeRast.html">writeRast</a></span><span class="op">(</span><span class="va">st_msw</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,<span class="st">"/"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/writeRast.html">writeRast</a></span><span class="op">(</span><span class="va">st_prod</span><span class="op">[[</span><span class="st">"PAM_MSW"</span><span class="op">]</span><span class="op">]</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,<span class="st">"/"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span></span>
@@ -270,7 +277,7 @@ $$</span></p>
 <span><span class="co">################################################</span></span>
 <span></span>
 <span><span class="co">#Load all tropical cyclones that have passed nearby New Caledonia between 2019 and 2021</span></span>
-<span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2019</span>, <span class="fl">2021</span><span class="op">)</span>, loi <span class="op">=</span> <span class="st">"New Caledonia"</span><span class="op">)</span></span>
+<span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"New Caledonia"</span>, seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2019</span>, <span class="fl">2021</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Plot all tropical cyclone tracks and observations over or around the location of interest</span></span>
 <span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">sts</span>, labels <span class="op">=</span> <span class="cn">T</span>, legends <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
@@ -290,7 +297,7 @@ $$</span></p>
 <span><span class="co">#Tropical cyclones around a spatial polygon (created or imported)#</span></span>
 <span><span class="co">##################################################################</span></span>
 <span></span>
-<span><span class="co">#Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2021</span></span>
+<span><span class="co">#Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2022</span></span>
 <span><span class="va">stsEEZnc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="va">eezNC</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Plot category 3 tropical cyclones (Saffir-Simpson hurricane wind scale, SSHWS)</span></span>
@@ -317,7 +324,6 @@ $$</span></p>
 <span><span class="co">#Time series at given locations#</span></span>
 <span><span class="co">################################</span></span>
 <span></span>
-<span></span>
 <span><span class="co">#Compute time series of wind speed at given location using coordinates provided in a data frame</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">166.5</span>, <span class="fl">166.7</span><span class="op">)</span>, lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">22.1</span>, <span class="op">-</span> <span class="fl">22.3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">wind_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_pt.html">stormBehaviour_pt</a></span><span class="op">(</span><span class="va">sts</span>, points <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span>
@@ -331,13 +337,12 @@ $$</span></p>
 <span><span class="co">#Tropical cyclone profile#</span></span>
 <span><span class="co">##########################</span></span>
 <span></span>
-<span></span>
 <span><span class="co">#Make a location of interest around Espiritu Santo in Vanuatu</span></span>
 <span><span class="va">pol</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">167</span>,<span class="fl">168</span>,<span class="fl">168</span>,<span class="fl">167</span>,<span class="fl">167</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">16</span>,<span class="op">-</span><span class="fl">16</span>,<span class="op">-</span><span class="fl">13</span>,<span class="op">-</span><span class="fl">13</span>,<span class="op">-</span><span class="fl">16</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">loi</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span><span class="va">pol</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Load the data for the tropical cyclone Harold which hit the Vanuatu in 2020</span></span>
-<span><span class="va">harold</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>seasons <span class="op">=</span> <span class="fl">2020</span>, names<span class="op">=</span> <span class="st">"HAROLD"</span>, loi <span class="op">=</span> <span class="va">loi</span><span class="op">)</span></span>
+<span><span class="va">harold</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="va">loi</span>, names<span class="op">=</span> <span class="st">"HAROLD"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Compute wind profiles using Willoughby model with asymmetry</span></span>
 <span><span class="va">profWillV1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_sp.html">stormBehaviour_sp</a></span><span class="op">(</span><span class="va">harold</span>, product <span class="op">=</span> <span class="st">"Profiles"</span><span class="op">)</span></span>
