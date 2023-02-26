@@ -7,8 +7,8 @@
 initDatabase(
   filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
   fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time",
-    lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure =
-    "usa_pres", poci = "usa_poci", sshs = "usa_sshs"),
+    lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", sshs = "usa_sshs", rmw =
+    "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
   basin = NULL,
   verbose = TRUE
 )
