@@ -154,6 +154,7 @@ Storms <- methods::setClass(
 #' storms in the Storms object share the same name. Default value is set de NULL
 #'
 #' @return Storm object
+#' @export
 setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getStorm") )
 setMethod("getStorm", signature("Storms"), function(sts, name, season = NULL){
   if(!is.null(season)){
@@ -179,6 +180,7 @@ setMethod("getStorm", signature("Storms"), function(sts, name, season = NULL){
 #'
 #' @return numeric vector. Cyclonic seasons of each storms (or the selected one
 #' through names input)provided by a given Storms object
+#' @export
 setGeneric("getSeasons", function(sts, name = NULL) standardGeneric("getSeasons") )
 setMethod("getSeasons", signature("Storms"), function(sts, name = NULL){
   if(is.null(name)){
@@ -246,6 +248,7 @@ setMethod("getBuffer", signature("Storms"), function(sts) sts@spatial.loi.buffer
 #' @param sts Storms object
 #'
 #' @return numeric. Buffer size (in km) used to generate the extended LOI for a given Storms object
+#' @export
 setGeneric("getBufferSize", function(sts) standardGeneric("getBufferSize"))
 setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
 
@@ -484,10 +487,11 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
   indices <- indices[which(database$names[indices] != "NOT_NAMED")]
 
   #Removing TD if remove_TD == T
-
   if(remove_TD){
-    i <- which(apply(array(database$msw[,indices], dim = c(dim(database$msw)[1], length(indices))),2, max, na.rm = T) >= 18 * knt2ms)
-    indices <- indices[i]
+    suppressWarnings({
+      suppressWarnings(i <- which(apply(array(database$msw[,indices], dim = c(dim(database$msw)[1], length(indices))),2, max, na.rm = T) >= 18 * knt2ms))
+      indices <- indices[i]
+    })
   }
 
   return(indices)
@@ -564,7 +568,6 @@ computeSSHS <- function(msw){
 writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_storms,
                        sds, index, loi_sf_buffer){
 
-
   #Getting lon/lat coordinates
   lon <- sds@database$longitude[, index]
   lat <- sds@database$latitude[, index]
@@ -580,7 +583,13 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
   #Keep only 03H 06H 09H 12H 15H 18h 21H 00h iso times
   ind.isotime <- which(list.isotime %% 3 == 0)
   coords <- coords[ind.isotime,]
+
+  if(dim(coords)[1] == 0){
+    #ERROR
+    return(list(NULL,NULL,NULL,NULL,NULL))
+  }
   row.names(coords) <- seq(1,dim(coords)[1])
+
 
   #Creating sf point coordinates to intersect with loi_sf_buffer
   pts <- sf::st_as_sf(coords, coords = c("lon", "lat"))
@@ -603,6 +612,7 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
                                 lat = lat[valid_indices],
                                 msw = zoo::na.approx(round(sds@database$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2))
 
+
     if("sshs" %in% names(sds@fields)){
       storm@obs.all$sshs <- sds@database$sshs[valid_indices, index]
     }else{
@@ -612,12 +622,12 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
     if("rmw" %in% names(sds@fields))
       storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[valid_indices, index] * nm2km), na.rm = F, rule = 2)
 
+
     if("pressure" %in% names(sds@fields))
-      storm@obs.all$pres <- zoo::na.approx(sds@database$pres[valid_indices, index], na.rm = F, rule = 2)
+      storm@obs.all$pres <- storm@obs.all$pres <- zoo::na.approx(sds@database$pres[valid_indices, index], na.rm = F, rule = 2)
 
     if("poci" %in% names(sds@fields))
       storm@obs.all$poci <- zoo::na.approx(sds@database$poci[valid_indices, index], na.rm = F, rule = 2)
-
 
 
     #Wrapping longitudes from -180/180 to 0/360
@@ -632,7 +642,6 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
     storm@obs <- ind
     storm@numobs <- length(ind)
     storm@sshs <- max(storm@obs.all$sshs,na.rm = T)
-
 
     return(list(append(storm_list, storm),
                 append(storm_names, storm@name),
@@ -769,7 +778,6 @@ getStorms <- function(sds = IBTRACS_SP,
                             filter_seasons = seasons,
                             remove_TD = remove_TD)
 
-
   if (verbose > 0 & length(indices) >= 1) {
     if(is.null(names) & length(seasons) == 2){
       cat(length(indices),"potential candidates...\n")
@@ -801,6 +809,7 @@ getStorms <- function(sds = IBTRACS_SP,
                                sds = sds,
                                index = i,
                                loi_sf_buffer = loi.sf.buffer)
+
       if(!is.null(sts.output[[1]])){
         storm.list <- sts.output[[1]]
         storm.names <- sts.output[[2]]
@@ -808,7 +817,6 @@ getStorms <- function(sds = IBTRACS_SP,
         storm.sshs <- sts.output[[4]]
         nb.storms <- sts.output[[5]]
       }
-
 
       if (verbose > 0 & length(indices) > 1){
         utils::setTxtProgressBar(pb, count)
