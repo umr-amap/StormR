@@ -8,111 +8,112 @@
 
 ## Overview
 
-StormR is a package developed to analyze past storms and tropical cyclones that occurred anywhere in the world after 1980. It allows users to compute cyclone characteristics (e.g., maximum sustained wind speed, exposure period), gather storms of interest in a single object, rasterize available data, and plot maps of cyclone tracks and charateristics.
+StormR is a R package allowing to easily extract tropical cyclone data for given locations or areas of interests, generate tropical cyclone wind fields, and to compute statistics characterising the behaviour of tropical cyclone winds (maximum sustained wind speed, power dissipation index, time of exposure to different wind speeds).
 
 ## Installation
 
-You can install the development version of StormR as follows:
+StormR can be installed from GitHub as follows:
 
 ``` r
 #install.packages("devtools")
 devtools::install_github("umr-amap/StormR")
 ```
 
-
 ## Data source
-StormR uses the netcdf file 'IBTrACS.ALL.v04r00.nc' from the [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This package extracts the information needed to plot, compute and analyze tropical cyclones from this database. The IBTrACS database provides records of storms and tropical cyclones around the world every 3 hours since 1841 (note that data for the most recent storms may not be available yet and that not all storms of the earlier years are captured). Recods in the database are derived from various agencies in the USA and uses the following names and abbrevaitions for the world's ocean basins:
-* NA : North Atlantic
-* SA : South Atlantic
-* EP : Eastern North Pacific
-* WP : Western North Pacific
-* SP : South Pacific
-* SI : South Indian
-* NI : North Indian
-* ALL: the above 7 basins combined
 
-in the StormR package, the default value for the basin is set to SP, as the developpement team is located/interested in this particular region and because this basin has been used to test the package. However, the user can select a different basin.
-For the purpose of data reliability and accuracy, StormR only faciltates access to storms and tropical cyclones after 1980. Data for older storms is spatially less accurate and may therefore produce errors: you can [Click here](https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_version4_Technical_Details.pdf) for more details on data limitations of the IBTrACS database.
+To run StormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifetime. By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:
 
-## Models
+| **Field name** | **Description** | **Example** | **Type** |
+|:---|:---|:---:|:---:|
+| $basin$ | Name of the area where the storm originated. Traditionally divided into seven basins: <br/>NA (North Atlantic)<br/>EP (Eastern North Pacific)<br/>WP (Western North Pacific)<br/>NI (North Indian)<br/>SI (South Indian)<br/>SP (Southern Pacific)<br/>SA (South Atlantic) | SP | Mandatory |
+| $name$ | Name of the storm in capital letters | PAM | Mandatory |
+| $seasons$ | Year of observation | 2015 | Mandatory |
+| $isoTime$ | Date and time of observation (YYYY-MM-DD HH:mm:ss) | 13/03/2015 12:00 | Mandatory |
+| $lon$ | Longitude of the observation (decimal degrees north) | 168.7 | Mandatory |
+| $lat$ | Latitude of the observation (decimal degrees east) | -17.6 | Mandatory |
+| $msw$ | Maximum Sustained Wind speed in knots | 150 | Mandatory |
+| $sshs$ | Saffir Simpson Hurricane Scale rating based on $msw$:<br/>$-1 =$ tropical depression [$msw < 34$]<br/>$0 =$ tropical storm [$34 < msw < 64$], $1 =$ category 1 [$64 \le msw < 83$]<br/>$2 =$ Category 2 [$83 \le msw < 96$]<br/>$3 =$ Category 3 [$96 \le msw < 113$]<br/>$4 =$ Category 4 [$113 \le msw < 137$]<br/>$5 =$ Category 5 [$msw \ge 137$]) | 5 | Recommended |
+| $rmw$ | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles | 12 | Recommended |
+| $pressure$ | Central pressure in millibar | 911 | Optional |
+| $poci$ | Pressure of the last closed isobar in millibar | 922 | Optional |
 
-StormR allows computing radial wind speed using two cyclonic models:
+## Wind field models
 
-$\textbf{Willoughby et al. 2006}$ <br />
-Insert comments about the model here <br />
-
-
-$$
-\left\{
-\begin{aligned}
-v_r &= msw\left(\frac{r}{rmw}\right)^{nn} \quad if \quad r < rmw \\
-v_r &= msw\left((1-AA))e^{-\frac{|r-rmw|}{XX1}} + AA e^{-\frac{|r-rmw|}{XX2}}\right) \quad if \quad r \geq rmw \\
-\end{aligned}
-\right.
-$$
-
-
-where <br />
-$v_r \quad$ Radial wind speed $(m.s^{-1})$ <br />
-$r \quad$ Distance to the eye of the storm where $v_r$ is computed $(km)$ <br />
-$msw \quad$ Maximum sustained wind speed $(m.s^{-1})$ <br />
-$rmw \quad$ Radius of maximum sustained wind speed $(km)$ <br />
-$XX1 = 287.6 - 1.942msw + 7.799\log(rmw) + 1.819|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
-$XX2 = 25 \quad$ Coefficient <br />
-$nn = 2.1340 + 0.0077msw - 0.4522\log(rmw) - 0.0038|\phi| \quad$ Coefficient, $\phi$ being the latitude <br />
-
-
-
-$\textbf{Holland 1980}$ <br />
-Insert comments about the model here <br />
-
+Using these data StormR computes radial wind speed $v_r$ at the distance $r$ from the center of the storm using two parametric models developed by Holland (1980) and Willoughby et al. (2006)
+<br />
+<br />
+$\textbf{Holland (1980)}$ <br />
 
 $$
 v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\frac{rmw}{r}\right)^b} + \left(\frac{rf}{2}\right)^2} - \left(\frac{rf}{2}\right)
 $$
 
 where <br />
-$v_r \quad$ Radial wind speed $(m.s^{-1})$ <br />
-$r \quad$ Distance to the eye of the storm where $v_r$ is computed $(km)$ <br />
-$msw \quad$ Maximum sustained wind speed $(m.s^{-1})$ <br />
-$rmw \quad$ Radius of maximum sustained wind speed $(km)$ <br />
-$pc \quad$ Pressure at the eye of the storm $(mb)$ <br />
-$poci \quad$ Pressure at Outermost Closed Isobar of the storm $(mb)$ <br />
-$\rho = 1.15 \quad$ Air density $(kg.m^{-3})$ <br />
-$f = 2 \times 7.29 \times10^{-5} \sin(\phi) \quad$ Coriolis force $(N.kg^{-1})$, $\phi$ being the latitude <br />
-$b = \frac{\rho e \times msw^2}{poci - pc} \quad$ Shape factor <br />
+$v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
+$r$ is the distance to the eye of the storm (in $km$) <br />
+$msw$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
+$rmw$ is the radius of maximum sustained wind speed (in $km$) <br />
+$pc$ is the pressure at the eye of the storm ($pressure$ in $mb$) <br />
+$poci$ is the pressure at outermost closed isobar of the storm (in $mb$) <br />
+$\rho = 1.15$ is the air density (in $kg.m^{-3}$) <br />
+$f = 2 \times 7.29 \times10^{-5} \sin(\phi)$ is the coriolis force (in $N.kg^{-1}$, with $\phi$ being the latitude) <br />
+$b = \frac{\rho e \times msw^2}{poci - pc}$ is the shape factor <br />
+<br />
+<br />
+$\textbf{Willoughby et al. (2006)}$ <br />
 
+$$
+\left\{
+\begin{aligned}
+v_r &= msw\left(\frac{r}{rmw}\right)^{n} \quad if \quad r < rmw \\
+v_r &= msw\left((1-A)e^{-\frac{|r-rmw|}{X1}} + A e^{-\frac{|r-rmw|}{X2}}\right) \quad if \quad r \geq rmw \\
+\end{aligned}
+\right.
+$$
 
+where <br />
+$v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
+$r$ is the distance to the eye of the storm (in $km$) <br />
+$msw$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
+$rmw$ is the radius of maximum sustained wind speed (in $km$) <br />
+$X1 = 287.6 - 1.942msw + 7.799\ln(rmw) + 1.819|\phi|$<br />
+$X2 = 25$ <br />
+$n = 2.1340 + 0.0077msw - 0.4522\ln(rmw) - 0.0038|\phi|$<br />
+$A = 0.5913 + 0.0029msw - 0.1361\ln(rmw) - 0.0042|\phi| (A\ge0)$<br />
+$\phi$ is the latitude of the center of the storm 
 
-It is also possible to use an empirical formula derived from Willoughby et al. 2006 model
-to compute the radius of maximum wind speed, as follow: <br />
+Note that for both models if $rmw$ is not provided then it is approximated using an empirical formula derived from Willoughby et al. (2006)<br />
 $rmw = 46.4e^{(-0.0155msw + 0.0169|\phi|)}$
-
-
-
 
 ## Asymmetry
 
 The above models compute symmetric 2D structures of radial wind speed around the
 eye of the storm. Nevertheless, in most cases, tropical cyclone are not symmetric
 and it can be interesting to add asymmetry to the computations in order to get a
-much more accurate 2D structures of radial wind speed. This package proposes two formula
-to add such asymmetries: <br />
+much more accurate 2D structures of radial wind speed. This package proposes the following
+formula extracted from Boose et al. (2001): <br />
 
-$\textbf{Version 1 (Boose et al. 2001 version)}$ <br />
-Insert comments here  <br />
 $v_{r_{as}} = v_r - S(1-\sin(\alpha))\frac{v_h}{2}$
 
 where <br />
-$v_{r_{as}} \quad$ New radial wind speed with asymmetry $(m.s^{-1})$ <br />
-$v_r \quad$ Former radial wind speed without asymmetry $(m.s^{-1})$ <br />
-$v_h \quad$ Velocity of storm $(m.s^{-1})$ <br />
-$v_{r_{|v_h}} \quad$ Former radial wind speed without asymmetry $(m.s^{-1})$, where values
-have been computed substracting $v_h$ to $msw$ i.e $v_{max} = msw-v_h$ in the input
+$v_{r_{as}} \quad$ is the new radial wind speed with asymmetry $(m.s^{-1})$ <br />
+$v_r \quad$ is the former radial wind speed without asymmetry $(m.s^{-1})$ <br />
+$v_h \quad$ is the velocity of storm $(m.s^{-1})$ <br />
 $S$ Asymmetry coefficient (usually set to 1) <br />
-$\alpha \quad$ Angle between the storm direction and the point where $v_{r_{as}}$ is computed.
+$\alpha \quad$ is tha angle between the storm direction and the point where $v_{r_{as}}$ is computed.
 Clockwise in Nothern hemisphere, counterclokwise in Southern hemisphere. <br />
 
+## Wind Direction
+Wind direction $D$ (in degree) at each point is computed according to the following formula: <br />
+
+$D = A_z - 90 - I$
+
+where <br />
+$A_z\quad$ is the azimuth from the point to the storm center <br/>
+$I\quad$ is the cross isobar inflow angle which is either 20° on water or 40° on land <br/>
+
+The above formula works for the northen hemisphere. As direction of wind is clockwise in the southern hemisphere,
+this formula becomes $D = A_z + 90 + I$.
 
 
 ## Products
@@ -121,16 +122,15 @@ specific longitude/latitute coordinates or rasterized over the location of inter
 The following describes the products available: <br />
 
 
-* Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed $(m.s^{-1})$
-  at distance $r$ of the eye of the storm according to
+* Maximum Sustained Wind speed (MSW). It provides the value of the maximum sustained wind speed $(m.s^{-1})$ according to
 
 $$
-\max(v_r(t) | t \in [0,T])
+\max(v(t) | t \in [0,T])
 $$
 
   where $T$ stands for the whole lifecycle of the storm. <br />
 
-* Power Dissipation Index (PDI): It provides the value of the PDI at distance $r$ of the eye of the     storm according to
+* Power Dissipation Index (PDI): It provides the value of the PDI according to
 
 $$
 \int_T \rho C_d v_r^3 dt
@@ -147,24 +147,24 @@ C_d &= \left(0.55 + 2.97\frac{v_r}{31.5} - 1.49\left(\frac{v_r}{31.5}\right)^2\r
 \right.
 $$
 
-* Exposure: It provides the time exposure (in hours) for a given category $C$ (in the Saffir Simpson     Hurricane Scale), where radial wind speed $v_r^C$ spans in $C_r := [\min(v_r^c | c = C):\max(v_r^c | c = C)]$ , and at distance $r$ of the eye of the storm, according to
+* Exposure: It provides the time exposure (in hours) to a certain range of wind speed greater than a threshold $Thd$ $(m.s^{-1})$, according to
 
 $$
-\int_T c(v_r) dt
+\int_T c(v) dt
 $$
 
 $$
 \left\{
 \begin{aligned}
-c(v_r) &= 1 \quad if \quad v_r \in C_r\\
-c(v_r) &= 0 \quad if \quad v_r \notin C_r\\
+c(v) &= 1 \quad if \quad v \geq Thd\\
+c(v) &= 0 \quad if \quad v < Thd\\
 \end{aligned}
 \right.
 $$
 
   where $T$ stands for the whole lifecycle of the storm. <br />
 
-* 2D radial wind speed structures (Only rasterized and not point-wised)
+* 2D radial wind speed/ direction structures (Only rasterized)
 
 ## Usage
 
@@ -178,28 +178,27 @@ library(StormR)
 ##############################################
 
 #Load the data for the tropical cyclone Pam which hit the Vanuatu in 2015
-st <- getStorms(seasons = 2015, names = "PAM", loi = "Vanuatu")
+st <- getStorms(loi = "Vanuatu", names = "PAM")
 
 #Plot the tropical cyclone track and observations over or around the location of interest
 plotStorms(st, labels = T, legends = T)
 
-#Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry from REF?). The function returns a raster with a 10 km spatial resolution by default .
-st_msw <- stormBehaviour_sp(st)
-st_pdi <- stormBehaviour_sp(st, product = "PDI")
-st_exposure <- stormBehaviour_sp(st, product = "Exposure")
+#Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry). The function returns a raster with a 2.5min spatial resolution by default.
+st_prod <- stormBehaviour_sp(st, product = c("MSW", "PDI", "Exposure"))
 
-#Plot the MSW, PDI, and EXP rasters alongside with the track of the storm and the limit of the location of interest
+
+#Plot the MSW, PDI, and an Exposure rasters alongside with the track of the storm and the limit of the location of interest
 split.screen(c(1,3))
 screen(1)
-plotBehaviour(st, st_msw, labels = T)
+plotBehaviour(st, st_prod[["PAM_MSW"]], labels = T)
 screen(2)
-plotBehaviour(st, st_pdi, labels = T)
+plotBehaviour(st, st_prod[["PAM_PDI"]], labels = T)
 screen(3)
-plotBehaviour(st, st_exposure[["PAM_Exposure_40-50"]], labels = T)
+plotBehaviour(st, st_prod[["PAM_Exposure_50"]], labels = T)
 
 
 #Export the MSW raster in a given directory (here a temporary directory)
-writeRast(st_msw, path = paste0(tempdir(),"/"))
+writeRast(st_prod[["PAM_MSW"]], path = paste0(tempdir(),"/"))
 
 
 
@@ -208,7 +207,7 @@ writeRast(st_msw, path = paste0(tempdir(),"/"))
 ################################################
 
 #Load all tropical cyclones that have passed nearby New Caledonia between 2019 and 2021
-sts <- getStorms(seasons = c(2019, 2021), loi = "New Caledonia")
+sts <- getStorms(loi = "New Caledonia", seasons = c(2019, 2021))
 
 #Plot all tropical cyclone tracks and observations over or around the location of interest
 plotStorms(sts, labels = T, legends = T)
@@ -228,7 +227,7 @@ plotBehaviour(sts, sts_pdi[["NIRAN_PDI"]], labels = T)
 #Tropical cyclones around a spatial polygon (created or imported)#
 ##################################################################
 
-#Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2021
+#Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2022
 stsEEZnc <- getStorms(loi = eezNC)
 
 #Plot category 3 tropical cyclones (Saffir-Simpson hurricane wind scale, SSHWS)
@@ -255,7 +254,6 @@ plotStorms(stsPt, category = c(4,5), labels = T)
 #Time series at given locations#
 ################################
 
-
 #Compute time series of wind speed at given location using coordinates provided in a data frame
 df <- data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
 wind_ts <- stormBehaviour_pt(sts, points = df)
@@ -269,13 +267,12 @@ plot(wind_ts$NIRAN[,2], type = "b", ylab = "maximum sustained wind speed (m/s)")
 #Tropical cyclone profile#
 ##########################
 
-
 #Make a location of interest around Espiritu Santo in Vanuatu
 pol <- sf::st_sfc(sf::st_polygon(list(cbind(c(167,168,168,167,167),c(-16,-16,-13,-13,-16)))))
 loi <- sf::st_sf(pol, crs = 4326)
 
 #Load the data for the tropical cyclone Harold which hit the Vanuatu in 2020
-harold <- getStorms(seasons = 2020, names= "HAROLD", loi = loi)
+harold <- getStorms(loi = loi, names= "HAROLD")
 
 #Compute wind profiles using Willoughby model with asymmetry
 profWillV1 <- stormBehaviour_sp(harold, product = "Profiles")
