@@ -283,30 +283,7 @@ plotStorms <- function(sts,
     ext$ymax <- ylim[2]
   }
 
-
-
-  #Plotting base map
-  w = 5
-  h = w * 1.125
-  grDevices::dev.new(width = w, height = h)
-  opar <- graphics::par(no.readonly = TRUE)
-  graphics::par(mar = c(5, 4, 4, 6))
-
-  world <- rworldmap::getMap(resolution <- "high")
-  maps::map(world, fill = TRUE, col = groundColor, bg = oceanColor, wrap = c(0, 360),
-            xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax))
-  maps::map.axes(cex.axis = 1)
-
-  #Plotting loi
-  if (loi)
-    plot(sts@spatial.loi.buffer, lwd = 1, border = "blue", add = T)
-
-  if(as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT")
-    plot(sts@spatial.loi, lwd = 2, col = "blue", pch = 4, add = T)
-
-
-
-  #Handling categories
+  #Handling categories and names
   if(!is.null(category) & is.null(names)){
 
     if(length(category) == 2){
@@ -319,75 +296,103 @@ plotStorms <- function(sts,
       #length category == 1
       ind <- which(sts@sshs == category)
     }
+
     sts.aux <- unlist(sts@data)[ind]
 
   }else{
 
-    if(!is.null(category) & !is.null(names))
-      warning("category input ignored\n")
+    if(!is.null(names)){
+      if(!is.null(category))
+        warning("category input ignored\n")
 
-    sts.aux <- sts@data
+      ind <- which(sts@names %in% names)
+      sts.aux <- unlist(sts@data)[ind]
+
+    }else{
+      sts.aux <- sts@data
+    }
   }
+
+  #Plotting base map
+  opar <- graphics::par(no.readonly = TRUE)
+  graphics::par(mar=c(4, 12, 4, 8))
+
+  world <- rworldmap::getMap(resolution <- "high")
+  maps::map(world,
+            fill = TRUE,
+            col = groundColor,
+            bg = oceanColor,
+            wrap = c(0, 360),
+            xlim = c(ext$xmin-1, ext$xmax+1),
+            ylim = c(ext$ymin-1, ext$ymax+1))
+  maps::map.axes(cex.axis = 1)
+
+  #Plotting loi
+  if (loi)
+    plot(sts@spatial.loi.buffer, lwd = 1, border = "blue", add = T)
+
+  if(loi & as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT")
+    plot(sts@spatial.loi, lwd = 2, col = "blue", pch = 4, add = T)
 
   #Plotting track(s) and labels
-  if(is.null(names)) {
-
-    lapply(sts.aux, plotTrack)
-
-    if(labels)
-      lapply(sts.aux, plotLabels, by, pos)
-
-  } else{
-
-    for(n in names){
-      s = getSeasons(sts, n)
-      for(i in 1:length(s)){
-        st = getStorm(sts, n, s[i])
-        plotTrack(st)
-        if(labels)
-          plotLabels(st, by, pos)
-      }
-
-    }
-  }
-
+  lapply(sts.aux, plotTrack)
+  if(labels)
+    lapply(sts.aux, plotLabels, by, pos)
 
   #Adding legends
-  if (legends) {
+  if(legends) {
 
-    graphics::legend(x = "topright", inset = c(-0.7, 0), xpd = TRUE,
-                     legend = c(expression(paste("Tropical Depression (below 17 m.s" ^ "-1",")")),
-                                expression(paste("Tropical Storm (18 to 32 m.s" ^ "-1",")")),
-                                expression(paste("Category 1 (33 to 42 m.s" ^ "-1",")")),
-                                expression(paste("Category 2 (43 to 49 m.s" ^ "-1",")")),
-                                expression(paste("Category 3 (50 to 58 m.s" ^ "-1",")")),
-                                expression(paste("Category 4 (58 to 70 m.s" ^ "-1",")")),
-                                expression(paste("Category 5 (70 m.s" ^ "-1","and higher)"))),
-                     col = c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C",
-                             "#FD8D3C", "#F03B20", "#BD0026"),
-                     pch = 19,
-                     cex = 0.8)
+    leg <- c(expression(paste("TD (< 18 m.s" ^ "-1",")")),
+             expression(paste("TS (18 to 32 m.s" ^ "-1",")")),
+             expression(paste("Cat. 1 (33 to 42 m.s" ^ "-1",")")),
+             expression(paste("Cat. 2 (43 to 49 m.s" ^ "-1",")")),
+             expression(paste("Cat. 3 (50 to 58 m.s" ^ "-1",")")),
+             expression(paste("Cat. 4 (58 to 70 m.s" ^ "-1",")")),
+             expression(paste("Cat. 5 ( >= 70 m.s" ^ "-1",")")))
 
-    if(as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT"){
-      graphics::legend(x = "right", inset = c(-0.355,0), xpd = TRUE,
-                       legend = c("LOI", "LOI buffer"),
-                       col = "blue",
-                       lty = c(0,1),
-                       lwd = c(2,1),
-                       pch = c(4,NA),
-                       cex = 0.8)
-    }else{
-      graphics::legend(x = "right", inset = c(-0.375,0), xpd = TRUE,
-                       legend = c("LOI buffer"),
-                       col = "blue",
-                       lty = 1,
-                       cex = 0.8)
+    col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
+
+    lty <- rep(0,7)
+    pch <- rep(19,7)
+    lwd <- rep(1,7)
+
+    if (loi){
+      if(loi & as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT"){
+        leg <- c(leg, "LOI")
+        col <- c(col, "blue")
+        lty <- c(lty, 0)
+        pch <- c(pch,4)
+        lwd <- c(lwd, 2)
+      }
+      leg <- c(leg, "LOI buffer")
+      col <- c(col, "blue")
+      lty <- c(lty, 1)
+      pch <- c(pch, NA)
+      lwd <- c(lwd, 1)
     }
 
+    #Handling inset
+    coord <- par("usr")
+    print(coord)
+    e <- coord[2] - coord[1]
+    inset <- e * 0.05
+    print(e)
+    print(inset)
+
+    graphics::legend(x = coord[2] + inset,
+                     y = coord[4],
+                     xpd = T,
+                     legend = leg,
+                     col = col,
+                     lty = lty,
+                     pch = pch,
+                     lwd = lwd,
+                     cex = 0.8)
 
   }
 
   if(reset_setting)
     on.exit(graphics::par(opar))
 
+  return(NULL)
 }
