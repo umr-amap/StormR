@@ -1059,7 +1059,7 @@ stormBehaviour_sp <- function(sts,
         ind <- which(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE)
         terra::values(raster.I) <- 0
         terra::values(raster.I)[ind] <- 1
-        terra::values(raster.direction) <- computeDirection(dataTC, j, x, y, terra::values(raster.I), buffer)
+        terra::values(raster.direction) <- computeWindDirection(dataTC, j, x, y, terra::values(raster.I), buffer)
       }
 
       #Stacking products
@@ -1491,7 +1491,7 @@ stormBehaviour_pt <- function(sts,
       vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y, buffer)
 
       #Computing wind direction
-      dir <- computeDirection(dataTC, i, x, y, I, buffer)
+      dir <- computeWindDirection(dataTC, i, x, y, I, buffer)
 
       #Computing product
       res <- computeProduct(product, vr, dir, time_res, res, wind_threshold)
