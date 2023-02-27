@@ -372,12 +372,9 @@ plotStorms <- function(sts,
     }
 
     #Handling inset
-    coord <- par("usr")
-    print(coord)
-    e <- coord[2] - coord[1]
-    inset <- e * 0.05
-    print(e)
-    print(inset)
+    coord <- graphics::par("usr")
+    inset <- (coord[2] - coord[1]) * 0.05
+
 
     graphics::legend(x = coord[2] + inset,
                      y = coord[4],
