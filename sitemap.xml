@@ -34,6 +34,57 @@
     <loc>/reference/eezNC.html</loc>
   </url>
   <url>
+    <loc>/reference/getBuffer.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getBufferSize.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getInObs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getLOI.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getNames.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getNbObs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getNbStorms.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getObs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getSSHS.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getSeasons.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getStorm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getStorm_inObs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getStorm_name.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getStorm_nbObs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getStorm_obs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getStorm_season.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getStorm_sshs.html</loc>
+  </url>
+  <url>
     <loc>/reference/getStorms.html</loc>
   </url>
   <url>
@@ -59,9 +110,6 @@
   </url>
   <url>
     <loc>/reference/sts_nc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sts_wp.html</loc>
   </url>
   <url>
     <loc>/reference/writeRast.html</loc>

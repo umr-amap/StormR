@@ -49,54 +49,62 @@
 
     <div id="details">
     <h2>Details</h2>
-    <p>The fields input must provide at least 8 mandatory fields (and at most 11) in order to benefit
-from all the functionalities of this package:</p><ul><li><p>A field called "basin": which dimension contains the basin location of storms in the database</p></li>
-<li><p>A field called "name": which dimension contains the names of storms in the database</p></li>
-<li><p>A field called "seasons": which dimension contains the cyclonic seasons
-of storms in the database</p></li>
-<li><p>A field called "isoTime": which dimension contains the ISO times of each
-observations for all storms in the database</p></li>
-<li><p>A field called "lon": which dimension contains the longitude coordinates (degree)
-of each observations for all storms in the database</p></li>
-<li><p>A field called "lat": which dimension contains the latitude coordinates (degree)
-of each observations for all storms in the database</p></li>
-<li><p>A field called "msw": which dimension contains the maximum sustained wind
-speed (knt) of each observations for all storms in the database</p></li>
-<li><p>A field called "sshs": which dimension contains the Saffir Simpson Hurricane
-Scale index of each observations for all storms in the database</p></li>
-</ul><p>The following fields are optional but highly recommanded:</p><ul><li><p>A field called "basin": which dimension contains the basin location of storms in the database.
-Used to filter the stoms in the database</p></li>
+    <p>The fields input must provide at least 6 mandatory fields (and at most 11) in
+order to benefit from all the functionalities of this package:</p><ul><li><p>A field called "name": which dimension contains the names of storms
+in the netcdf database</p></li>
+<li><p>A field called "seasons": which dimension contains the cyclonic
+seasons of storms in the netcdf database</p></li>
+<li><p>A field called "isoTime": which dimension contains the ISO times of
+each (3 or 6 hourly) observations for all storms in the database</p></li>
+<li><p>A field called "lon": which dimension contains the longitude
+coordinates (Eastern degree) of each observations for all storms in
+the netcdf database</p></li>
+<li><p>A field called "lat": which dimension contains the latitude
+coordinates (Nothern degree) of each observations for all storms in
+the netcdf database</p></li>
+<li><p>A field called "msw": which dimension contains the maximum sustained
+wind speed (knt) of each observations for all storms in the netcdf
+database</p></li>
+</ul><p>The following fields are optional but highly recommanded:</p><ul><li><p>A field called "basin": which dimension contains the basin location of
+storms in the netcdf database. Used to filter the storms in the netcdf
+database</p></li>
 <li><p>A field called "rmw": which dimension contains the radius of maximum
-wind speed of each observations for all storms in the database
-(See stormBehaviour_sp, stormBehaviour_pt)</p></li>
-</ul><p>Finally these following fields are optional but mandatory to perform Holland model
-(See stormBehaviour_sp, stormBehaviour_pt)</p><ul><li><p>A field called "pressure": which dimension contains the pressure (mb) in the eye
-for of each observations for all storms in the database</p></li>
-<li><p>A field called "poci": which dimension contains the Pressure at the Outermost
-Closed Isobar (mb) for of each observations for all storms in the database</p></li>
-</ul><p>Default value is set according to the most relevant dimensions of IBTraCS databases:
-fields = fields = c("basin" = "basin", "names" = "name", "seasons" = "season",
-"isoTime" = "iso_time", "lon" = "usa_lon", "lat" = "usa_lat", "msw" = "usa_wind",
-"rmw" = "usa_rmw", "pressure" = "usa_pres", "poci" = "usa_poci", "sshs" = "usa_sshs")</p>
+wind speed (nm) of each observations for all storms in the netcdf
+database (See stormBehaviour_sp, stormBehaviour_pt)</p></li>
+<li><p>A field called "sshs": which dimension contains the Saffir Simpson
+Hurricane Scale index of each observations for all storms in the
+netcdf database</p></li>
+</ul><p>Finally these following fields are optional but mandatory to perform Holland
+model (See stormBehaviour_sp, stormBehaviour_pt)</p><ul><li><p>A field called "pressure": which dimension contains the pressure (mb)
+in the eye for of each observations for all storms in the netcdf
+database</p></li>
+<li><p>A field called "poci": which dimension contains the Pressure at the
+Outermost Closed Isobar (mb) for of each observations for all storms
+in the nectdf database</p></li>
+</ul><p>Default value is set according to the most relevant dimensions of IBTraCS
+databases: fields = fields = c("basin" = "basin", "names" = "name",
+"seasons" = "season", "isoTime" = "iso_time", "lon" = "usa_lon",
+"lat" = "usa_lat", "msw" = "usa_wind", "rmw" = "usa_rmw",
+"pressure" = "usa_pres", "poci" = "usa_poci", "sshs" = "usa_sshs")</p>
     </div>
     <div id="slots">
     <h2>Slots</h2>
     
 
 <dl><dt><code>filename</code></dt>
-<dd><p>character. Name of the file to be loaded</p></dd>
+<dd><p>character. Name of the database to load. Must be a netcdf file</p></dd>
 
 
 <dt><code>fields</code></dt>
-<dd><p>named character vector. Dictionary that provides all the name of dimension to extract from the netcdf database.
-See Details</p></dd>
+<dd><p>named character vector. Dictionary that provides all the name of
+dimensions to extract from the netcdf database (See Details)</p></dd>
 
 
 <dt><code>basin</code></dt>
-<dd><p>character. Basin name to filter the database within its boundaries. Default value is set to NULL, and
-no filter is performed, then the whole database will be collected when calling collectData method. It must be either</p><ul><li><p>"NA": North Atlantic</p></li>
+<dd><p>character. Basin name to filter the database within its
+boundaries. Default value is set to NULL. It must be either</p><ul><li><p>"NA": North Atlantic</p></li>
 <li><p>"SA": South Atlantic</p></li>
-<li><p>"EP": Estern North Pacific</p></li>
+<li><p>"EP": Eastern North Pacific</p></li>
 <li><p>"WP": Western North Pacific</p></li>
 <li><p>"SP": South Pacific</p></li>
 <li><p>"SI": South India</p></li>
@@ -105,9 +113,11 @@ no filter is performed, then the whole database will be collected when calling c
 
 
 <dt><code>database</code></dt>
-<dd><p>list of 8 to 11 slots depending on the fields input. Each slot is either a
-1D array of dimension (number of storms), for "names" and "seasons" fields, or a 2D array of
-of dimension (Maximum number of observations:number of storms), for the remaining fields</p></dd>
+<dd><p>list of 6 to 10 slots depending on the fields input. Each slot
+is either a 1D array of dimension (number of storms), for "names" and
+"seasons" fields, or a 2D array of dimension
+(Maximum number of observations:number of storms), for the remaining fields
+which are "isoTime", "lon", "lat", "msw", "rmw", "pressure", "poci", "sshs"</p></dd>
 
 
 </dl></div>
