@@ -51,7 +51,7 @@ Storm <- methods::setClass(
 
 #Getter for Storm class
 
-#' getName
+#' getStorm_name
 #'
 #' Getter to access name of the storm
 #'
@@ -59,54 +59,54 @@ Storm <- methods::setClass(
 #'
 #' @return character. Name of the storm
 #' @export
-setGeneric("getName", function(st) standardGeneric("getName"))
-setMethod("getName", signature("Storm"), function(st) st@name)
+setGeneric("getStorm_name", function(st) standardGeneric("getStorm_name"))
+setMethod("getStorm_name", signature("Storm"), function(st) st@name)
 
-#' getSeason
+#' getStorm_season
 #'
 #' @param st Storm object
 #'
 #' @return numeric. Cyclonic season of the storm
 #' @export
-setGeneric("getSeason", function(st) standardGeneric("getSeason"))
-setMethod("getSeason", signature("Storm"), function(st) st@season)
+setGeneric("getStorm_season", function(st) standardGeneric("getStorm_season"))
+setMethod("getStorm_season", signature("Storm"), function(st) st@season)
 
 
-#' getsshs
+#' getStorm_sshs
 #'
 #' @param st Storm object
 #'
 #' @return numeric. Maximum catergory reached in the Saffir Simpson Hurricane Scale
 #' @export
-setGeneric("getsshs", function(st) standardGeneric("getsshs"))
-setMethod("getsshs", signature("Storm"), function(st) st@sshs)
+setGeneric("getStorm_sshs", function(st) standardGeneric("getStorm_sshs"))
+setMethod("getStorm_sshs", signature("Storm"), function(st) st@sshs)
 
-#' getNbObs
+#' getStorm_nbObs
 #'
 #' @param st Storm object
 #'
 #' @return numeric. Number of observations available within the Storm object
 #' @export
-setGeneric("getNbObs", function(st) standardGeneric("getNbObs"))
-setMethod("getNbObs", signature("Storm"), function(st) st@numobs.all)
+setGeneric("getStorm_nbObs", function(st) standardGeneric("getStorm_nbObs"))
+setMethod("getStorm_nbObs", signature("Storm"), function(st) st@numobs.all)
 
-#' getObs
+#' getStorm_obs
 #'
 #' @param st Storm object
 #'
 #' @return data.frame. Observations for a given Storm object
 #' @export
-setGeneric("getObs", function(st) standardGeneric("getObs"))
-setMethod("getObs", signature("Storm"), function(st) st@obs.all)
+setGeneric("getStorm_obs", function(st) standardGeneric("getStorm_obs"))
+setMethod("getStorm_obs", signature("Storm"), function(st) st@obs.all)
 
-#' getInObs
+#' getStorm_inObs
 #'
 #' @param st Storm object
 #'
 #' @return numeric. Indices within the extented LOI for a given Storm object
 #' @export
-setGeneric("getInObs", function(st) standardGeneric("getInObs"))
-setMethod("getInObs", signature("Storm"), function(st) st@obs)
+setGeneric("getStorm_inObs", function(st) standardGeneric("getStorm_inObs"))
+setMethod("getStorm_inObs", signature("Storm"), function(st) st@obs)
 
 
 
@@ -160,7 +160,7 @@ setMethod("getStorm", signature("Storms"), function(sts, name, season = NULL){
   if(!is.null(season)){
     w = which(sts@names == name)
     for(i in 1:length(w)){
-      if(getSeason(sts@data[[w[i]]]) == season){
+      if(getStorm_season(sts@data[[w[i]]]) == season){
         j = w[i]
         break
       }
@@ -255,7 +255,7 @@ setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
 
 #Getters for Storms class to access information from Storm class provided in data
 
-#' getStormNbobs
+#' getNbobs
 #'
 #' @param sts  Storms object
 #' @param name character. Name of the storm to extract
@@ -264,10 +264,10 @@ setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
 #'
 #' @return numeric. Number of observations available within the given storm
 #' @export
-setGeneric("getStormNbObs", function(sts, name, season = NULL) standardGeneric("getStormNbObs"))
-setMethod("getStormNbObs", signature("Storms"), function(sts, name, season = NULL) getNbObs(getStorm(sts, name, season)))
+setGeneric("getNbObs", function(sts, name, season = NULL) standardGeneric("getNbObs"))
+setMethod("getNbObs", signature("Storms"), function(sts, name, season = NULL) getStorm_nbObs(getStorm(sts, name, season)))
 
-#' getStormObs
+#' getObs
 #'
 #' @param sts  Storms object
 #' @param name character. Name of the storm to extract
@@ -276,10 +276,10 @@ setMethod("getStormNbObs", signature("Storms"), function(sts, name, season = NUL
 #'
 #' @return data.frame. Observations of the given storm
 #' @export
-setGeneric("getStormObs", function(sts, name, season = NULL) standardGeneric("getStormObs"))
-setMethod("getStormObs", signature("Storms"), function(sts, name, season = NULL) getObs(getStorm(sts, name, season)))
+setGeneric("getObs", function(sts, name, season = NULL) standardGeneric("getObs"))
+setMethod("getObs", signature("Storms"), function(sts, name, season = NULL) getStorm_obs(getStorm(sts, name, season)))
 
-#' getStormInObs
+#' getInObs
 #'
 #' @param sts  Storms object
 #' @param name character. Name of the storm to extract
@@ -288,8 +288,8 @@ setMethod("getStormObs", signature("Storms"), function(sts, name, season = NULL)
 #'
 #' @return numeric. Indices within the extented LOI for the given Storm object
 #' @export
-setGeneric("getStormInObs", function(sts, name, season = NULL) standardGeneric("getStormInObs"))
-setMethod("getStormInObs", signature("Storms"), function(sts, name, season = NULL) getInObs(getStorm(sts, name, season)))
+setGeneric("getInObs", function(sts, name, season = NULL) standardGeneric("getInObs"))
+setMethod("getInObs", signature("Storms"), function(sts, name, season = NULL) getStorm_inObs(getStorm(sts, name, season)))
 
 
 
@@ -841,7 +841,6 @@ getStorms <- function(sds = IBTRACS_SP,
                spatial.loi.buffer = loi.sf.buffer)
 
     names(sts@data) <- sts@names
-    names(sts@names) <- sts@names
     names(sts@sshs) <- sts@names
     names(sts@seasons) <- sts@names
 
@@ -873,7 +872,7 @@ getStorms <- function(sds = IBTRACS_SP,
           n = sts@names[i]
           s = sts@seasons[[i]]
           sshs = sts@sshs[[i]]
-          cat("       ",n,"-", s, "-", sshs, "-",length(getStormInObs(sts, n, s)),"\n")
+          cat("       ",n,"-", s, "-", sshs, "-",length(getInObs(sts, n, s)),"\n")
         }
         cat("\n")
       }
@@ -885,9 +884,9 @@ getStorms <- function(sds = IBTRACS_SP,
         cat("    - Use getBufferSize function to access buffer size\n")
         cat("    - Use getBuffer function to access buffer\n")
         cat("    - Use getStorm function to access all informations about one particular storm\n")
-        cat("    - Use getStormNbobs function to access all number of all observations for one particular storm\n")
-        cat("    - Use getStormObs function to access all observations about of one particular storm\n")
-        cat("    - Use getStormInObs function to access observations labels within the buffer for one particular storm")
+        cat("    - Use getNbobs function to access all number of all observations for one particular storm\n")
+        cat("    - Use getObs function to access all observations about of one particular storm\n")
+        cat("    - Use getInObs function to access observations labels within the buffer for one particular storm")
         }
     }
 

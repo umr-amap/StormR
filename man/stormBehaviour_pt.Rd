@@ -87,7 +87,8 @@ and Exposure
 \dontrun{
 pts <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
 
-#Compute time series of wind speed for ERICA and NIRAN on points provided in pts using default settings
+#Compute time series of wind speed for ERICA and NIRAN on points
+#provided in pts using default settings
 ts_nc <- stormBehaviour_pt(sts_nc, points = pts)
 
 #Compute PDI for ERICA and NIRAN on points provided in pts using default settings
