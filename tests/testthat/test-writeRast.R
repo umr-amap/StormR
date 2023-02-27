@@ -6,8 +6,6 @@ test_that("Tests checkInputsWr function", {
 
   msw <- stormBehaviour_sp(pam, verbose = 0)
 
-  msw <- terra::rast(system.file("extdata", "PAM_MSW.tiff", package = "StormR"))
-
   #Checking rast validity
   expect_error(writeRast(format = ".tiff",
                          filename = NULL,
