@@ -225,12 +225,12 @@ test_that("Tests invalid inputs", {
 
 test_that("Storm class getters", {
 
-  expect_identical(getName(pam@data[["PAM"]]), pam@data[["PAM"]]@name)
-  expect_identical(getSeason(pam@data[["PAM"]]), pam@data[["PAM"]]@season)
-  expect_identical(getsshs(pam@data[["PAM"]]), pam@data[["PAM"]]@sshs)
-  expect_identical(getNbObs(pam@data[["PAM"]]), pam@data[["PAM"]]@numobs.all)
-  expect_identical(getObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs.all)
-  expect_identical(getInObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs)
+  expect_identical(getStorm_name(pam@data[["PAM"]]), pam@data[["PAM"]]@name)
+  expect_identical(getStorm_season(pam@data[["PAM"]]), pam@data[["PAM"]]@season)
+  expect_identical(getStorm_sshs(pam@data[["PAM"]]), pam@data[["PAM"]]@sshs)
+  expect_identical(getStorm_nbObs(pam@data[["PAM"]]), pam@data[["PAM"]]@numobs.all)
+  expect_identical(getStorm_obs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs.all)
+  expect_identical(getStorm_inObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs)
 
 })
 
@@ -259,9 +259,9 @@ test_that("Storms class getters", {
 
 test_that("Storms class getters for Storm class", {
 
-  expect_identical(getStormNbObs(sts_nc, "NIRAN"), getNbObs(getStorm(sts_nc, "NIRAN")))
-  expect_identical(getStormObs(sts_nc, "NIRAN"), getObs(getStorm(sts_nc, "NIRAN")))
-  expect_identical(getStormInObs(sts_nc, "NIRAN"), getInObs(getStorm(sts_nc, "NIRAN")))
+  expect_identical(getNbObs(sts_nc, "NIRAN"), getStorm_nbObs(getStorm(sts_nc, "NIRAN")))
+  expect_identical(getObs(sts_nc, "NIRAN"), getStorm_obs(getStorm(sts_nc, "NIRAN")))
+  expect_identical(getInObs(sts_nc, "NIRAN"), getStorm_inObs(getStorm(sts_nc, "NIRAN")))
 
 })
 
