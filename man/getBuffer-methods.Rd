@@ -4,7 +4,7 @@
 \name{getBuffer}
 \alias{getBuffer}
 \alias{getBuffer,Storms-method}
-\title{getBuffer}
+\title{Get the extended location of interest from a Storms object}
 \usage{
 getBuffer(sts)
 

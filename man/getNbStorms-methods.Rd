@@ -4,7 +4,7 @@
 \name{getNbStorms}
 \alias{getNbStorms}
 \alias{getNbStorms,Storms-method}
-\title{getNbStorms}
+\title{Get the number of storms provided in a Storms object}
 \usage{
 getNbStorms(sts)
 

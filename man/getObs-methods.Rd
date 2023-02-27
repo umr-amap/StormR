@@ -5,7 +5,7 @@
 \alias{getObs}
 \alias{getObs,Storms-method}
 \alias{getObs,Storm-method}
-\title{getObs}
+\title{Get the observations available for a given storm}
 \usage{
 getObs(s, ...)
 

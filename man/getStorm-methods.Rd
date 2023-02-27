@@ -4,7 +4,7 @@
 \name{getStorm}
 \alias{getStorm}
 \alias{getStorm,Storms-method}
-\title{getStorm}
+\title{Get all informations about a storm from a Storms object}
 \usage{
 getStorm(sts, name, season = NULL)
 

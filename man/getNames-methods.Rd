@@ -5,7 +5,7 @@
 \alias{getNames}
 \alias{getNames,Storms-method}
 \alias{getNames,Storm-method}
-\title{getNames}
+\title{Get the name(s) of storm(s) provided in a Storms/Storm object}
 \usage{
 getNames(s)
 

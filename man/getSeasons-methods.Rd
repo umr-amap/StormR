@@ -5,7 +5,7 @@
 \alias{getSeasons}
 \alias{getSeasons,Storms-method}
 \alias{getSeasons,Storm-method}
-\title{getSeasons}
+\title{Get the cyclonic seasons of storm(s) provided in a Storms/Storm object}
 \usage{
 getSeasons(s, ...)
 
