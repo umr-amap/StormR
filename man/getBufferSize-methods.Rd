@@ -14,8 +14,9 @@ getBufferSize(sts)
 \item{sts}{Storms object}
 }
 \value{
-numeric. Buffer size (in km) used to generate the extended LOI for a given Storms object
+numeric. Buffer size (in km) used to generate the extended location
+of interest for the given Storms object
 }
 \description{
-getBufferSize
+Get the buffer size for a Storms object
 }

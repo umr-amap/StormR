@@ -4,23 +4,30 @@
 \name{getInObs}
 \alias{getInObs}
 \alias{getInObs,Storms-method}
+\alias{getInObs,Storm-method}
 \title{getInObs}
 \usage{
-getInObs(sts, name, season = NULL)
+getInObs(s, ...)
 
-\S4method{getInObs}{Storms}(sts, name, season = NULL)
+\S4method{getInObs}{Storms}(s, name, season = NULL)
+
+\S4method{getInObs}{Storm}(s)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{s}{Storms or Storm object}
 
-\item{name}{character. Name of the storm to extract}
+\item{...}{Additional arguments}
 
-\item{season}{numeric. Cyclonic season of the storm to extract. Use only if several
-storms in the Storms object share the same name. Default value is set de NULL}
+\item{name}{character. Name of the storm to extract in capital letters}
+
+\item{season}{numeric. Cyclonic season of the storm to extract. Used only if
+several storms in the Storms object share the same name. Default value is set
+to NULL}
 }
 \value{
-numeric. Indices within the extented LOI for the given Storm object
+numeric vector. Indices within the extended LOI for the given Storm object
 }
 \description{
-getInObs
+Get the indices of observations within th extended Location Of Interest for
+a given storm
 }

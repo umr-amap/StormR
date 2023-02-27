@@ -4,21 +4,29 @@
 \name{getSSHS}
 \alias{getSSHS}
 \alias{getSSHS,Storms-method}
+\alias{getSSHS,Storm-method}
 \title{getSSHS}
 \usage{
-getSSHS(sts, name = NULL)
+getSSHS(s, ...)
 
-\S4method{getSSHS}{Storms}(sts, name = NULL)
+\S4method{getSSHS}{Storms}(s, name = NULL)
+
+\S4method{getSSHS}{Storm}(s)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{s}{Storms or Storm object}
 
-\item{name}{character. Name(s) of the storm(s). Default value is set to NULL}
+\item{...}{Additional argument}
+
+\item{name}{character. Name of a storm in capital letters. Default value is
+set to NULL}
 }
 \value{
-numeric vector. Cyclonic seasons of each storms (or the selected one
-through names input) provided by a given Storms object
+numeric vector. Maximum SSHS reached of each storms (or the selected
+one through name input) provided by the given Storms object or maximum SSHS
+reached for the given Storm object
 }
 \description{
-getSSHS
+Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storms
+available in a Storms object or the maximum SSHS reached of a Storm object
 }

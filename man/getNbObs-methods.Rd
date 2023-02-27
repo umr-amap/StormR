@@ -4,23 +4,29 @@
 \name{getNbObs}
 \alias{getNbObs}
 \alias{getNbObs,Storms-method}
+\alias{getNbObs,Storm-method}
 \title{getNbobs}
 \usage{
-getNbObs(sts, name, season = NULL)
+getNbObs(s, ...)
 
-\S4method{getNbObs}{Storms}(sts, name, season = NULL)
+\S4method{getNbObs}{Storms}(s, name, season = NULL)
+
+\S4method{getNbObs}{Storm}(s)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{s}{Storms or Storm object}
 
-\item{name}{character. Name of the storm to extract}
+\item{...}{Additional arguments}
 
-\item{season}{numeric. Cyclonic season of the storm to extract. Use only if several
-storms in the Storms object share the same name. Default value is set de NULL}
+\item{name}{character. Name of the storm to extract in capital letters}
+
+\item{season}{numeric. Cyclonic season of the storm to extract. Used only if
+several storms in the Storms object share the same name. Default value is set
+to NULL}
 }
 \value{
-numeric. Number of observations available within the given storm
+numeric. Number of observations available for the given storm
 }
 \description{
-getNbobs
+Get the number of observations available for a given storm
 }

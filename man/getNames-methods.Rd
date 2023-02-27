@@ -4,18 +4,23 @@
 \name{getNames}
 \alias{getNames}
 \alias{getNames,Storms-method}
+\alias{getNames,Storm-method}
 \title{getNames}
 \usage{
-getNames(sts)
+getNames(s)
 
-\S4method{getNames}{Storms}(sts)
+\S4method{getNames}{Storms}(s)
+
+\S4method{getNames}{Storm}(s)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{s}{Storms or Storm object}
 }
 \value{
-character vector. Names of each storms provided by a given Storms object
+character vector. Names of each storms provided by the given Storms
+object or name of the storm of the given Storm object
 }
 \description{
-getNames
+Get the names of storms available in a Storms object or the name of the storm
+of a Storm object
 }

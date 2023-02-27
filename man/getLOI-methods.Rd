@@ -14,8 +14,8 @@ getLOI(sts)
 \item{sts}{Storms object}
 }
 \value{
-sf object. Location of interest for a given Storms object
+sf object. Location Of Interest for the given Storms object
 }
 \description{
-getLOI
+Get the Location Of Interest of a Storms object
 }
