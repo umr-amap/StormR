@@ -5,7 +5,8 @@
 \alias{getInObs}
 \alias{getInObs,Storms-method}
 \alias{getInObs,Storm-method}
-\title{getInObs}
+\title{Get the indices of observations within the extended location of interest for
+a given storm}
 \usage{
 getInObs(s, ...)
 
@@ -28,6 +29,6 @@ to NULL}
 numeric vector. Indices within the extended LOI for the given Storm object
 }
 \description{
-Get the indices of observations within th extended Location Of Interest for
+Get the indices of observations within the extended Location Of Interest for
 a given storm
 }

@@ -5,7 +5,7 @@
 \alias{getSSHS}
 \alias{getSSHS,Storms-method}
 \alias{getSSHS,Storm-method}
-\title{getSSHS}
+\title{Get the maximum SSHS reached of storm(s) provided in a Storms/Storm object}
 \usage{
 getSSHS(s, ...)
 

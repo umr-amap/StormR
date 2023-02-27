@@ -4,7 +4,7 @@
 \name{getLOI}
 \alias{getLOI}
 \alias{getLOI,Storms-method}
-\title{getLOI}
+\title{Get the location of interest from a Storms object}
 \usage{
 getLOI(sts)
 

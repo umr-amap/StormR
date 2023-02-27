@@ -5,7 +5,7 @@
 \alias{getNbObs}
 \alias{getNbObs,Storms-method}
 \alias{getNbObs,Storm-method}
-\title{getNbobs}
+\title{Get the number of observations available for a given storm}
 \usage{
 getNbObs(s, ...)
 

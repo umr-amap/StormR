@@ -111,7 +111,7 @@ Storms <- methods::setClass(
 
 
 
-#' getStorm
+#' Get all informations about a storm from a Storms object
 #'
 #' Extract a Storm object from a Storms object
 #'
@@ -148,7 +148,7 @@ setMethod("getStorm", signature("Storms"), function(sts, name, season = NULL){
 
 
 
-#' getNbStorms
+#' Get the number of storms provided in a Storms object
 #'
 #' Get the number of storms available in a Storms object
 #'
@@ -166,7 +166,7 @@ setMethod("getNbStorms", signature("Storms"), function(sts) sts@nb.storms)
 
 
 
-#' getLOI
+#' Get the location of interest from a Storms object
 #'
 #' Get the Location Of Interest of a Storms object
 #'
@@ -184,7 +184,7 @@ setMethod("getLOI", signature("Storms"), function(sts) sts@spatial.loi)
 
 
 
-#' getBuffer
+#' Get the extended location of interest from a Storms object
 #'
 #' Get the Extended location of interest of a Storms object
 #'
@@ -202,7 +202,7 @@ setMethod("getBuffer", signature("Storms"), function(sts) sts@spatial.loi.buffer
 
 
 
-#' getBufferSize
+#' Get the buffer size from a Storms object
 #'
 #' Get the buffer size for a Storms object
 #'
@@ -229,7 +229,7 @@ setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
 
 
 
-#' getNames
+#' Get the name(s) of storm(s) provided in a Storms/Storm object
 #'
 #' Get the names of storms available in a Storms object or the name of the storm
 #'  of a Storm object
@@ -251,7 +251,7 @@ setMethod("getNames", signature("Storm"), function(s) s@name)
 
 
 
-#' getSeasons
+#' Get the cyclonic seasons of storm(s) provided in a Storms/Storm object
 #'
 #' Get the cyclonic season of storms available in a Storms object or the
 #' cyclonic season of a Storm object
@@ -283,7 +283,7 @@ setMethod("getSeasons", signature("Storm"), function(s) s@season)
 
 
 
-#' getSSHS
+#' Get the maximum SSHS reached of storm(s) provided in a Storms/Storm object
 #'
 #' Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storms
 #' available in a Storms object or the maximum SSHS reached of a Storm object
@@ -315,7 +315,7 @@ setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
 
 
 
-#' getNbobs
+#' Get the number of observations available for a given storm
 #'
 #' Get the number of observations available for a given storm
 #'
@@ -340,7 +340,7 @@ setMethod("getNbObs", signature("Storm"), function(s) s@numobs.all)
 
 
 
-#' getObs
+#' Get the observations available for a given storm
 #'
 #' Get the observations available for a given storm
 #'
@@ -365,9 +365,10 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 
 
 
-#' getInObs
+#' Get the indices of observations within the extended location of interest for
+#' a given storm
 #'
-#' Get the indices of observations within th extended Location Of Interest for
+#' Get the indices of observations within the extended Location Of Interest for
 #' a given storm
 #'
 #' @param s  Storms or Storm object

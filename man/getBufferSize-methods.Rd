@@ -4,7 +4,7 @@
 \name{getBufferSize}
 \alias{getBufferSize}
 \alias{getBufferSize,Storms-method}
-\title{getBufferSize}
+\title{Get the buffer size from a Storms object}
 \usage{
 getBufferSize(sts)
 
