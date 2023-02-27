@@ -14,8 +14,8 @@ getBuffer(sts)
 \item{sts}{Storms object}
 }
 \value{
-sf object. Extented location of interest for a given Storms object
+sf object. Extended location of interest for the given Storms object
 }
 \description{
-getBuffer
+Get the Extended location of interest of a Storms object
 }

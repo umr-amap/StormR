@@ -15,12 +15,13 @@ getStorm(sts, name, season = NULL)
 
 \item{name}{character. Name of the storm to extract}
 
-\item{season}{numeric. Cyclonic season of the storm to extract. Use only if several
-storms in the Storms object share the same name. Default value is set de NULL}
+\item{season}{numeric. Cyclonic season of the storm to extract. Used only if
+several storms in the Storms object share the same name.
+Default value is set de NULL}
 }
 \value{
 Storm object
 }
 \description{
-getStorm
+Extract a Storm object from a Storms object
 }

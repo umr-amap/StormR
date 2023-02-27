@@ -4,23 +4,29 @@
 \name{getObs}
 \alias{getObs}
 \alias{getObs,Storms-method}
+\alias{getObs,Storm-method}
 \title{getObs}
 \usage{
-getObs(sts, name, season = NULL)
+getObs(s, ...)
 
-\S4method{getObs}{Storms}(sts, name, season = NULL)
+\S4method{getObs}{Storms}(s, name, season = NULL)
+
+\S4method{getObs}{Storm}(s)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{s}{Storms or Storm object}
 
-\item{name}{character. Name of the storm to extract}
+\item{...}{Additional arguments}
 
-\item{season}{numeric. Cyclonic season of the storm to extract. Use only if several
-storms in the Storms object share the same name. Default value is set de NULL}
+\item{name}{character. Name of the storm to extract in capital letters}
+
+\item{season}{numeric. Cyclonic season of the storm to extract. Used only if
+several storms in the Storms object share the same name. Default value is set
+to NULL}
 }
 \value{
 data.frame. Observations of the given storm
 }
 \description{
-getObs
+Get the observations available for a given storm
 }

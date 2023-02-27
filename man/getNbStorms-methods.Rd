@@ -14,8 +14,8 @@ getNbStorms(sts)
 \item{sts}{Storms object}
 }
 \value{
-numeric. Number of storms available in a given Storms object
+numeric. Number of storms available in the given Storms object
 }
 \description{
-getNbStorms
+Get the number of storms available in a Storms object
 }
