@@ -34,14 +34,13 @@ getRmw <- function(msw, lat) {
 Willoughby_profile <- function(r, rmw, msw, lat){
 
   if (r >= rmw) {
-    xx1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
-    xx2 <- 25
-    aa <- 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
-    vr <- msw * ((1 - aa) * exp(-abs((r - rmw) / xx1)) + aa * exp(-abs(r -
-                                                                          rmw) / xx2))
+    x1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
+    x2 <- 25
+    a <- 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
+    vr <- msw * ((1 - a) * exp(-abs((r - rmw) / x1)) + a * exp(-abs(r - rmw) / x2))
   } else{
-    nn <- 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
-    vr <- msw * abs((r / rmw) ^ nn)
+    n <- 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
+    vr <- msw * abs((r / rmw) ^ n)
   }
 
   return(round(vr,3))
