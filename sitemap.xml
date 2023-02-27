@@ -34,55 +34,55 @@
     <loc>/reference/eezNC.html</loc>
   </url>
   <url>
-    <loc>/reference/getBuffer.html</loc>
+    <loc>/reference/getBuffer-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getBufferSize.html</loc>
+    <loc>/reference/getBufferSize-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getInObs.html</loc>
+    <loc>/reference/getInObs-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getLOI.html</loc>
+    <loc>/reference/getLOI-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getNames.html</loc>
+    <loc>/reference/getNames-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getNbObs.html</loc>
+    <loc>/reference/getNbObs-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getNbStorms.html</loc>
+    <loc>/reference/getNbStorms-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getObs.html</loc>
+    <loc>/reference/getObs-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getSSHS.html</loc>
+    <loc>/reference/getSSHS-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getSeasons.html</loc>
+    <loc>/reference/getSeasons-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getStorm.html</loc>
+    <loc>/reference/getStorm-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getStorm_inObs.html</loc>
+    <loc>/reference/getStorm_inObs-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getStorm_name.html</loc>
+    <loc>/reference/getStorm_name-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getStorm_nbObs.html</loc>
+    <loc>/reference/getStorm_nbObs-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getStorm_obs.html</loc>
+    <loc>/reference/getStorm_obs-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getStorm_season.html</loc>
+    <loc>/reference/getStorm_season-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getStorm_sshs.html</loc>
+    <loc>/reference/getStorm_sshs-methods.html</loc>
   </url>
   <url>
     <loc>/reference/getStorms.html</loc>
