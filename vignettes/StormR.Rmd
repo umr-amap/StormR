@@ -18,21 +18,60 @@ options(knitr.table.format = "latex")
 ```
 
 
-```{r setup, incluse = FALSE}
+```{r setup, include = FALSE}
 library(StormR)
 ```
 
 
 # Introduction
 
-This vignette teaches you how to use StormR package solving basic problems. The 
-StormsDataset used within this document relies on the IBTrACS.SP.v04r00.nc. This 
-dataset gathers all tropical depressions, storms and cyclones that
-occured in the South Pacific ocean over since 1980. It is available in this
-package and named IBTRACS_SP and is also the default setting to retrieve storms
-using getStorms function (See next section).
+This vignette teaches you how to use StormR package with few examples. The main
+characteristics and fetaures of all functionalities of this package are enlighten
+but we highly recommand the reader to check on the documentation to have a deeper
+insight of the whole package.
 
-# Solve common problems
+# Basic workflow 
+
+From now on, we will demonstrate what must/may be done step by step throughout 
+the different sub sections, in order to use this package in its best possible 
+way.
+
+## Choose a StormsDataset
+
+The first thing to do after loading the package is to initialize a database for
+Tropical Depressions/Storms/Cyclones (TD/TS/TC). This will let the package know
+which database you want to use to extract the TD/TS/TC. We strongly advise the user to use IBTRaCS databases as they provide the most extensive and relevant informations about TD/TS/TC.
+
+Thus, this operation is carried out with a call a initDatabase function whose 
+prototype with the default setting is showed right here:
+```{r initdatabase, echo = FALSE}
+initDatabase(
+  filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
+  fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time",
+    lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", sshs = "usa_sshs", rmw =
+    "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
+  basin = NULL,
+  verbose = TRUE
+)
+```
+
+filename input must contains the path to the database the user is interested in.
+For the moment, this package can only read netcdf files (.nc). If one is interested
+in using a database with another format (usually csv), note that several tools
+exist to convert file into a netcdf. Also, a dictionary input (field) will inform which are the dimensions in the netdf file that contain the desired data. Note that some fields are mandatory (names, seasons, lon, lat, isoTime, msw) while others are recommanded (rmw, sshs) or highly recommanded (pressure, poci, basin). Last but not least, a basin input can be used as a filter so that only TD/TS/TC
+that occured in the specified basin are extracted from the database. We strongly
+recommand using the input as it may considerably speed up the next functions.
+
+
+This function returns in fine a StormsDataset object, made especially to gathers
+all these above informations about the database.
+
+In what follows, the StormsDataset used relies on the IBTrACS.SP.v04r00.nc. This 
+dataset gathers all tropical depressions, storms and cyclones that
+occured in the South Pacific ocean since 1980. It is available in this
+package and named IBTRACS_SP and is also the default dataset to use in the 
+package's functions (See next section).
+
 
 ## Get data associated with storms
 
@@ -84,104 +123,95 @@ Here are some getters that will help you saving time to access data.
 From now on, we demonstrate how to use it using the sts.nc Storms object
 initialized right above. 
 
-First of all, if you are interested in getting all the storms names just run the 
+First of all, if you are interested in getting all the storm names, just run the 
 following getter:
 ```{r getNames}
-getNames(sts = sts.nc)
+getNames(sts.nc)
 ```
 
 Also, for each storms in your Storms object, the following getters will return 
 the cyclonic season and the maximum category reached in the SSHS:
 ```{r getSeasons}
 #Get cyclonic seasons
-getSeasons(sts = sts.nc)
+getSeasons(sts.nc)
 #Get maximum reached category in SSHS
-getSSHS(sts = sts.nc)
+getSSHS(sts.nc)
 ```
 
 This getter simply returns the number of storms provided in your Storms Object:
 ```{r getNbStorms}
-getNbStorms(sts = sts.nc)
+getNbStorms(sts.nc)
 ```
 
 
-The next 3 getters are useful to retrieve spatial informations on the Location 
-Of Interest of your Storms object. The first command will return the LOI
-converted in sf format:
+In addition, the next 3 getters are useful to retrieve spatial informations on 
+the Location Of Interest of your Storms object. The first command will return
+the LOI converted in sf format:
 ```{r getLOI}
-getLOI(sts = sts.nc)
+getLOI(sts.nc)
 ```
 
 This second command simply returns the size (in km) of the buffer used to extent
 the LOI:
 ```{r getBufferSize}
-getBufferSize(sts = sts.nc)
+getBufferSize(sts.nc)
 ```
 
-Finally this third command provides the LOI extended with the buffer in sf 
-format. 
+Finally this third command provides the LOI extended with the buffer:
 ```{r getBuffer}
-getBuffer(sts = sts.nc)
+getBuffer(sts.nc)
 ```
 
 One can also be interested in getting all informations about a particular storm.
 This operation is achieved using the following getter:
 ```{r getStorm}
-niran <- getStorm(sts = sts.nc, name = "NIRAN")
+niran <- getStorm(s = sts.nc, name = "NIRAN")
 ```
 
 Note: If serveral storms share the same name, you must specify the cyclonic
-season to differenciate them. For example, 2 storms named Evan are provided 
+season to differentiate them. For example, 2 storms named Evan are provided 
 within the sts.pt Storms object initialized in the first section. 
-This first 
-command will then return an error, as we did not specify which one we are 
+
+This first command will then return an error, as we did not specify which one we are 
 interested in. 
 ```{r getStorm1}
-#getStorm(sts = sts.pt, name = "EVAN")
+#getStorm(s = sts.pt, name = "EVAN")
 ```
+
 We thus tackle this issue using the next 2 commands:
 ```{r getStorm2}
-evan1997 <- getStorm(sts = sts.pt, name = "EVAN", season = 1997)
-evan2013 <- getStorm(sts = sts.pt, name = "EVAN", season = 2013)
+evan1997 <- getStorm(s = sts.pt, name = "EVAN", season = 1997)
+evan2013 <- getStorm(s = sts.pt, name = "EVAN", season = 2013)
 ```
 
-All theses getters are designed to retrieve general informations on first levels
+All these getters are designed to retrieve general informations on first levels
 of Storms objects. However we can go further into the object getting data of a 
-particular storm. Combined with the getStorm getter, these following command 
-perform really well.
+particular storm. In that way, the following getters work with both Storms and 
+Storm signature
 
-This command provides the cyclonic season of a particular storm:
-```{r getStorm_season}
-#getStorm_season(niran)
-#Equivalent to getSeason(getStorm(sts = sts.nc, name = "NIRAN"))
-```
-
-This command provides the maximum category reached in the sshs for a particular
-storm:
-```{r getStorm_sshs}
-#getStorm_sshs(niran)
-#Equivalent to getsshs(getStorm(sts = sts.nc, name = "NIRAN"))
-```
-
-This command provides the number of observations available for a particular
-storm:
-```{r getStorm_nbobs}
-#getStorm_nbObs(niran)
-#Equivalent to getNbObs(getStorm(sts = sts.nc, name = "NIRAN"))
-```
-
-This command provides all the observations of a particular storm:
-```{r getStorm_obs}
-#getStorm_obs(niran)
-#Equivalent to getObs(getStorm(sts = sts.nc, name = "NIRAN"))
+These commands are simply getNames, getSeasons and getSSHS calls for signature 
+Storm object:
+```{r get signature Storm}
+getNames(niran)
+#Equivalent to getNames(s = sts.nc, name = "NIRAN")
+getSeasons(niran)
+#Equivalent to getSeasons(s = sts.nc, name = "NIRAN")
+getSSHS(niran)
+#Equivalent to getSSHS(s = sts.nc, name = "NIRAN")
 ```
 
 
-This command provides the index of observations within the spatial buffer for a 
-particular storm:
-```{r getStorm_inobs}
-#getStorm_inObs(niran)
-#Equivalent to getInObs(getStorm(sts = sts.nc, name = "NIRAN"))
+To conclude, these 3 last getters provide information about observations of a
+particular storm. They respectively return the number of observations, all 
+of the observations and the indices of observations within the extended loi for a 
+particular storm (here Niran 2021):
+```{r getNbobs}
+getNbObs(niran)
+#Equivalent to getNbObs(s= sts.nc, name = "NIRAN")
+getObs(niran)
+#Equivalent to getObs(s = sts.nc, name = "NIRAN")
+getInObs(niran)
+#Equivalent to getInObs(s = sts.nc, name = "NIRAN")
 ```
 
 
@@ -216,8 +246,35 @@ plotStorms(sts.pt, category = 5, labels = TRUE)
 
 ## Computing rasterized products
 
-The most important functionality provided by this package is by far the
-stormBehaviour_sp function. 
+The most important feature provided by this package may be by far the
+stormBehaviour_sp function. Given a Storms object, it allows the user to 
+compute rasterized product for each storm over the location of interest. The
+available products are the Maximum Sustained Wind (MSW) which is the default, the
+Power Index Dissipation (PDI), the hour exposition for wind greater than a wind
+speed threshold (Exposure) and finaly 2D wind speed/direction structures for 
+each observations. The output raster(s) are stacked in a SpatRaster object in
+WGS84 projection. 
+
+Depending on several inputs, the computations are not undertaken the same. The
+user must specify a method to use to regenerate the wind speed structures in
+order to compute the desired product, but also the asymmetry used and other 
+parameters. To do so, the package provides two methods which are the wind models
+derived from Holland (1980) REF? and Willoughby et al. (2006) REF? which is the
+default. The first
+one relies on both basic cyclonic Physics and parameters fitting according to
+cyclonic observations while the second one is based on fits performed on cyclonic observations.
+As tropical storms/cyclones are usually not symmetrical, it is possible to modify
+the structure of wind speed according to the formula derived in Boose et al.
+(2001)
+
+
+Outputs product may also differ modifying the following inputs. First of all, it is possible to 
+choose the spatial resolution among 4 options: 30sec, 2.5min which is the 
+default, 5min and 10min. This choice has been made to match Wordlclim data so 
+that it should be easily compared. Moreover, the time resolution (in hour) for
+the interpolation of observations in the forthcoming computations can also be 
+chosen among 4 options: 1 (60min) which is the default, 0.75 (45min) , 0.5 
+(30min) and 0.25 (15min).
 
 
 
@@ -253,7 +310,7 @@ plotBehaviour(harold, prod.harold[["HAROLD_PDI"]])
 plotBehaviour(harold, prod.harold[["HAROLD_Exposure_58"]])
 ```
 
-##Save product
+## Save product
 
 ```{r writeRast 1}
 writeRast(prod.harold, path = paste0(tempdir(),"/"))
