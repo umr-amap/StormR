@@ -9,7 +9,7 @@ initDatabase(
   fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time",
     lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", sshs = "usa_sshs", rmw =
     "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
-  basin = NULL,
+  basin = "SP",
   verbose = TRUE
 )
 }
