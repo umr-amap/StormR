@@ -137,7 +137,7 @@ where
 $t$ is the time of the observation<br />
 $T$ is the lifespan of the storm<br />
 $\rho$ is the air density (fixed at $10^{-3}$ $kg.m^{-3}$??? $1$ $kg.m^{-3}$ in Kerry (1999)??? $1.225$ $kg.m^{-3}$ on internet???)<br />
-$C_d$ is the drag coefficient of the storm (fixed at $2.6$ X $10^{-3}$ in Wang et al. (2022) $2$ X $10^{-3}$ in Wang et al. (2022))<br />
+$C_d$ is the drag coefficient of the storm (fixed at $2.6$ X $10^{-3}$ in Wang et al. (2022) $2$ X $10^{-3}$ in Kerry (1999))<br />
 
 Although there exist various methods and formula to compute this parameter that are widely debatable, we chose here the following parametrization derived in [Wang, G., Wu, L., Mei, W. et al. Ocean currents show global intensification of weak tropical cyclones. Nature 611, 496–500 (2022)](https://doi.org/10.1038/s41586-022-05326-4):
 
