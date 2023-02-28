@@ -25,7 +25,6 @@ Imports:
     maps,
     methods,
     ncdf4,
-    qpdf,
     rworldmap,
     rworldxtra,
     sf,

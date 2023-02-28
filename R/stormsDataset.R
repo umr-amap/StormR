@@ -129,12 +129,15 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
 
 
   #Checking basin input
-  stopifnot("basin must be character" = identical(class(basin),"character"))
-  stopifnot("basin must be length one" = length(length) == 1)
-  stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
-              basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
-  #Checking verbose input
-  stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
+  if(!is.null(basin)){
+    stopifnot("basin must be character" = identical(class(basin),"character"))
+    stopifnot("basin must be length one" = length(length) == 1)
+    stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
+                basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
+    #Checking verbose input
+    stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
+
+  }
 
 
 }
@@ -176,7 +179,7 @@ initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc
                                     "rmw" = "usa_rmw",
                                     "pressure" = "usa_pres",
                                     "poci" = "usa_poci"),
-                         basin = NULL,
+                         basin = "SP",
                          verbose = TRUE){
 
   checkInputsIDb(filename, fields, basin, verbose)
@@ -233,6 +236,9 @@ initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc
 
   if(verbose)
     cat("=== DONE ===\n")
+
+  if(is.null(basin))
+    basin <- "None"
 
 
 
