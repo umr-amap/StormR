@@ -2,6 +2,13 @@
 
 
 
+########
+#MODELS#
+########
+
+
+
+
 
 #' Compute the Radius of Maximum Wind
 #'
@@ -31,23 +38,20 @@ getRmw <- function(msw, lat) {
 #'
 #' @returns radial wind speed value (m/s) according to Willoughby model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Willoughby_profile <- function(r, rmw, msw, lat){
+Willoughby <- function(r, rmw, msw, lat){
 
-  if (r >= rmw) {
-    x1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
-    x2 <- 25
-    a <- 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
-    vr <- msw * ((1 - a) * exp(-abs((r - rmw) / x1)) + a * exp(-abs(r - rmw) / x2))
-  } else{
-    n <- 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
-    vr <- msw * abs((r / rmw) ^ n)
-  }
+  x1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
+  x2 <- 25
+  a <- 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
+  n <- 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
+
+  vr <- r
+  vr[r >= rmw] <- msw * ((1 - a) * exp(-abs((r[r >= rmw] - rmw) / x1)) + a * exp(-abs(r[r >= rmw] - rmw) / x2))
+  vr[r < rmw] <- msw * abs((r[r < rmw] / rmw) ^ n)
+
 
   return(round(vr,3))
 }
-
-#Vectorize version of the above model
-Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 
 
 
@@ -66,51 +70,18 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #' @returns radial wind speed value (m/s) according to Holland 80 model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Holland_profile <- function(r, rmw, msw, pc, poci, lat){
+Holland <- function(r, rmw, msw, pc, poci, lat){
 
   rho <- 1.15  #air densiy
   f <- 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
   b <- rho * exp(1) * msw**2 / (poci - pc)
 
+  vr <- r
   vr <- sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
 
   return(round(vr,3))
 
 }
-
-#Vectorize version of the above model
-Holland <- Vectorize(Holland_profile, vectorize.args = "r")
-
-
-
-
-
-#' Parametrization of surface drag coefficient according to Wang, G. et al. 2022
-#'
-#' @noRd
-#' @param vr numeric. Radial wind speed (m/s)
-#'
-#' @return Associated surface drag coefficient
-compute_Cd <- function(vr){
-
-  if(is.na(vr)){
-    res <- NA
-
-  }else if(vr <= 18){
-    res <- 0
-
-  }else if(vr > 18 & vr <= 31.5){
-    res <- (0.8 + 0.06 * vr) * 0.001
-
-  }else if(vr > 31.5){
-    res <- (0.55 + 2.97 * vr/31.5 - 1.49 * (vr/ 31.5) ** 2) * 0.001
-  }
-
-  return(round(res, 3))
-}
-
-#Vectorize version of the above function
-rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 
 
 
@@ -629,14 +600,12 @@ stackRaster <- function(stack, raster_template, raster_wind){
 #' @return list of SpatRaster
 stackRasterPDI <- function(stack, raster_template, raster_wind){
 
-  raster.cd <- raster_wind
-  terra::values(raster.cd) <- rasterizeCd(terra::values(raster_wind))
-
-  rho <- 0.001
+  rho <- 1
+  Cd <- 0.002
   #Raising to power 3
   raster_wind <- raster_wind ** 3
   #Applying both rho and surface drag coefficient
-  raster_wind <- raster_wind * rho * raster.cd
+  raster_wind <- raster_wind * rho * Cd
 
   return(stackRaster(stack, raster_template, raster_wind))
 
@@ -1229,12 +1198,12 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
 computePDI <- function(wind, time_res){
 
   #Computing surface drag coefficient
-  cd <- rasterizeCd(wind)
-  rho <- 0.001
+  rho <- 1
+  Cd <- 0.002
   #Raising to power 3
   pdi <- wind ** 3
   #Applying both rho and surface drag coefficient
-  pdi <- wind * rho * cd
+  pdi <- wind * rho * Cd
   #Integrating over the whole track
   pdi <- sum(pdi, na.rm = T) * time_res
 
