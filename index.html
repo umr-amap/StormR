@@ -120,48 +120,54 @@
 </tr>
 <tr class="odd">
 <td align="left"><span class="math inline"><em>l</em><em>o</em><em>n</em></span></td>
-<td align="left">Longitude of the observation (decimal degrees north)</td>
+<td align="left">Longitude of the observation (decimal degrees east)</td>
 <td align="center">168.7</td>
 <td align="center">Mandatory</td>
 </tr>
 <tr class="even">
 <td align="left"><span class="math inline"><em>l</em><em>a</em><em>t</em></span></td>
-<td align="left">Latitude of the observation (decimal degrees east)</td>
+<td align="left">Latitude of the observation (decimal degrees north)</td>
 <td align="center">-17.6</td>
 <td align="center">Mandatory</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math inline"><em>m</em><em>s</em><em>w</em></span></td>
+<td align="left">
+<span class="math inline"><em>m</em><em>s</em><em>w</em></span>*</td>
 <td align="left">Maximum Sustained Wind speed in knots</td>
 <td align="center">150</td>
 <td align="center">Mandatory</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math inline"><em>s</em><em>s</em><em>h</em><em>s</em></span></td>
-<td align="left">Saffir Simpson Hurricane Scale rating based on <span class="math inline"><em>m</em><em>s</em><em>w</em></span>:<br><span class="math inline"> − 1=</span> tropical depression [<span class="math inline"><em>m</em><em>s</em><em>w</em> &lt; 34</span>]<br><span class="math inline">0=</span> tropical storm [<span class="math inline">34 &lt; <em>m</em><em>s</em><em>w</em> &lt; 64</span>], <span class="math inline">1=</span> category 1 [<span class="math inline">64 ≤ <em>m</em><em>s</em><em>w</em> &lt; 83</span>]<br><span class="math inline">2=</span> Category 2 [<span class="math inline">83 ≤ <em>m</em><em>s</em><em>w</em> &lt; 96</span>]<br><span class="math inline">3=</span> Category 3 [<span class="math inline">96 ≤ <em>m</em><em>s</em><em>w</em> &lt; 113</span>]<br><span class="math inline">4=</span> Category 4 [<span class="math inline">113 ≤ <em>m</em><em>s</em><em>w</em> &lt; 137</span>]<br><span class="math inline">5=</span> Category 5 [<span class="math inline"><em>m</em><em>s</em><em>w</em> ≥ 137</span>])</td>
+<td align="left">
+<span class="math inline"><em>s</em><em>s</em><em>h</em><em>s</em></span>*</td>
+<td align="left">Saffir Simpson Hurricane Scale rating based on <span class="math inline"><em>m</em><em>s</em><em>w</em></span>:<br><span class="math inline"> − 1=</span> tropical depression (<span class="math inline"><em>m</em><em>s</em><em>w</em> &lt; 34</span>)<br><span class="math inline">0=</span> tropical storm (<span class="math inline">34 &lt; <em>m</em><em>s</em><em>w</em> &lt; 64</span>), <span class="math inline">1=</span> category 1 (<span class="math inline">64 ≤ <em>m</em><em>s</em><em>w</em> &lt; 83</span>)<br><span class="math inline">2=</span> Category 2 (<span class="math inline">83 ≤ <em>m</em><em>s</em><em>w</em> &lt; 96</span>)<br><span class="math inline">3=</span> Category 3 (<span class="math inline">96 ≤ <em>m</em><em>s</em><em>w</em> &lt; 113</span>)<br><span class="math inline">4=</span> Category 4 (<span class="math inline">113 ≤ <em>m</em><em>s</em><em>w</em> &lt; 137</span>)<br><span class="math inline">5=</span> Category 5 (<span class="math inline"><em>m</em><em>s</em><em>w</em> ≥ 137</span>)</td>
 <td align="center">5</td>
 <td align="center">Recommended</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math inline"><em>r</em><em>m</em><em>w</em></span></td>
+<td align="left">
+<span class="math inline"><em>r</em><em>m</em><em>w</em></span>*</td>
 <td align="left">Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles</td>
 <td align="center">12</td>
 <td align="center">Recommended</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math inline"><em>p</em><em>r</em><em>e</em><em>s</em><em>s</em><em>u</em><em>r</em><em>e</em></span></td>
+<td align="left">
+<span class="math inline"><em>p</em><em>r</em><em>e</em><em>s</em><em>s</em><em>u</em><em>r</em><em>e</em></span>*</td>
 <td align="left">Central pressure in millibar</td>
 <td align="center">911</td>
 <td align="center">Optional</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math inline"><em>p</em><em>o</em><em>c</em><em>i</em></span></td>
+<td align="left">
+<span class="math inline"><em>p</em><em>o</em><em>c</em><em>i</em></span>*</td>
 <td align="left">Pressure of the last closed isobar in millibar</td>
 <td align="center">922</td>
 <td align="center">Optional</td>
 </tr>
 </tbody>
 </table>
+<p>*Units: before running the functions stormR converts nautical miles (<span class="math inline"><em>n</em><em>m</em></span>) into kilometres (<span class="math inline"><em>k</em><em>m</em></span>), <span class="math inline"><em>k</em><em>n</em><em>o</em><em>t</em><em>s</em></span> into meters per second (<span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>), and millibar (<span class="math inline"><em>m</em><em>b</em></span>) into Pascal (<span class="math inline"><em>P</em><em>a</em></span>)</p>
 </div>
 <div class="section level2">
 <h2 id="wind-field-models">Wind field models<a class="anchor" aria-label="anchor" href="#wind-field-models"></a>
@@ -211,19 +217,9 @@ $$</span></p>
 <li>Power Dissipation Index (PDI)<br>
 </li>
 </ul>
-<p>The PDI (<span class="math inline"><em>u</em><em>n</em><em>i</em><em>t</em><em>l</em><em>e</em><em>s</em><em>s</em></span>) is an index measuring the total power dissipated by a tropical storm over its lifespan (Kerry, 2005) and is computed as follow:<br></p>
+<p>The PDI (in <span class="math inline"><em>J</em>.<em>m</em><sup>2</sup></span>) is an index measuring the total power dissipated by a tropical storm over its lifespan (Kerry, 1999, 2005) and is computed as follow:<br></p>
 <p><span class="math display">∫<sub><em>T</em></sub><em>ρ</em><em>C</em><sub><em>d</em></sub><em>v</em><sub><em>r</em></sub><sup>3</sup><em>d</em><em>t</em></span></p>
-<p>where <span class="math inline"><em>t</em></span> is the time of the observation<br><span class="math inline"><em>T</em></span> is the lifespan of the storm<br><span class="math inline"><em>ρ</em></span> is the air density (fixed at <span class="math inline">10<sup>−3</sup></span> <span class="math inline"><em>k</em><em>g</em>.<em>m</em><sup>−3</sup></span>??? <span class="math inline">1</span> <span class="math inline"><em>k</em><em>g</em>.<em>m</em><sup>−3</sup></span> in Kerry (1999)??? <span class="math inline">1.225</span> <span class="math inline"><em>k</em><em>g</em>.<em>m</em><sup>−3</sup></span> on internet???)<br><span class="math inline"><em>C</em><sub><em>d</em></sub></span> is the drag coefficient of the storm (fixed at <span class="math inline">2.6</span> X <span class="math inline">10<sup>−3</sup></span> in Wang et al. (2022) <span class="math inline">2</span> X <span class="math inline">10<sup>−3</sup></span> in Kerry (1999))<br></p>
-<p>Although there exist various methods and formula to compute this parameter that are widely debatable, we chose here the following parametrization derived in <a href="https://doi.org/10.1038/s41586-022-05326-4" class="external-link">Wang, G., Wu, L., Mei, W. et al. Ocean currents show global intensification of weak tropical cyclones. Nature 611, 496–500 (2022)</a>:</p>
-<p><span class="math display">$$
-\left\{
-\begin{aligned}
-C_d &amp;= (0.8 + 0.06v_r) \times 10^{-3} \quad if \quad v_r \leq 31.5 \\
-C_d &amp;= \left(0.55 + 2.97\frac{v_r}{31.5} - 1.49\left(\frac{v_r}{31.5}\right)^2\right) \times 10^{-3} \quad if \quad v_r &gt; 31.5 \\
-\end{aligned}
-\right.
-$$</span></p>
-<p>EN LISANT LE PAPIER CELA N’A PAS L’AIR DE CHANGER GRAND CHOSE, RESTER SUR LES CONSTANTES?</p>
+<p>where <span class="math inline"><em>t</em></span> is the time of the observation<br><span class="math inline"><em>T</em></span> is the lifespan of the storm<br><span class="math inline"><em>ρ</em></span> is the air density fixed to <span class="math inline">1</span> <span class="math inline"><em>k</em><em>g</em>.<em>m</em><sup>−3</sup></span> as in Kerry (1999)<br><span class="math inline"><em>C</em><sub><em>d</em></sub></span> is the drag coefficient of the storm fixed to <span class="math inline">2</span> X <span class="math inline">10<sup>−3</sup></span> as in Kerry (1999)<br></p>
 <ul>
 <li>Time of exposure</li>
 </ul>
