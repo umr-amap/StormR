@@ -26,9 +26,9 @@ getRmw <- function(msw, lat) {
 
 
 
-#' Willoughby et al. 2006 model
+#' Willoughby et al. (2006) model
 #'
-#' Compute radial wind speed according to Willoughby et al. 2006 model
+#' Compute radial wind speed according to Willoughby et al. (2006) model
 #'
 #' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
@@ -57,9 +57,9 @@ Willoughby <- function(r, rmw, msw, lat){
 
 
 
-#' Holland 1980 model
+#' Holland (1980) model
 #'
-#' Compute radial wind speed according to Holland  1980 model
+#' Compute radial wind speed according to Holland (1980) model
 #'
 #' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
@@ -81,6 +81,55 @@ Holland <- function(r, rmw, msw, pc, poci, lat){
 
   return(round(vr,3))
 
+}
+
+
+
+
+
+#' Boose et al. (2004) model
+#'
+#' Compute radial wind speed according to Boose et al. (2004) model
+#'
+#' @noRd
+#' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
+#' @param rmw numeric. Radius of Maximum Wind (km)
+#' @param msw numeric. Maximum Sustained Wind (m/s)
+#' @param pc numeric. Pressure at the center of the storm (hPa)
+#' @param poci Pressure at the Outermost Closed Isobar (hPa)
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
+#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
+#' @param vh numeric. Velociy of the storm (m/s)
+#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
+#' @param northernH logical. Whether it is northen hemisphere or not
+#'
+#' @returns radial wind speed value (m/s) according to Boose04 model at distance `r` to the
+#' eye of the storm located in latitude
+Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, northernH){
+
+  rho <- 1  #air densiy
+  b <- rho * exp(1) * msw**2 / (poci - pc)
+
+  vr <- r
+  vr <- sqrt((rmw/r)**b * exp(1 -(rmw/r)**b))
+
+
+  if(northernH){
+    #Northern Hemisphere, t is clockwise
+    angle <- atan2(vy,vx) - atan2(y,x)
+  }else{
+    #Southern Hemisphere, t is counterclockwise
+    angle <- atan2(y,x) - atan2(vy,vx)
+  }
+
+
+  vr[I == 1] <- (msw - (1 - sin(angle[I == 1])) * vh/2) * vr[I == 1]
+  vr[I == 0] <- 0.8 * (msw - (1 - sin(angle[I == 0])) * vh/2) * vr[I == 0]
+
+
+  return(round(vr,3))
 }
 
 
@@ -116,7 +165,7 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   }
 
   #Checking method input
-  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland", "Boose"))
   stopifnot("Only one method must be chosen" = length(method) == 1)
   if(method == "Holland"){
     stopifnot("Cannot perform Holland method (missing pressure input)" = "pres" %in% colnames(sts@data[[1]]@obs.all))
@@ -341,7 +390,7 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
   }
 
 
-  if(method == "Holland"){
+  if(method == "Holland" | method == "Boose"){
     if(all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices])))
       stop("Missing pressure data to perform Holland model")
 
@@ -472,46 +521,55 @@ computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
 #' @param dist_m numeric array. Distance in meter from the eye of the storm for
 #' each coordinate of the raster_template_model
 #' @param method character. method input form stormBehaviour_sp
-#' @param asymmetry character. asymmetry input from stormBehviour
-#' @param x numeric array. Distance in degree from the eye of storm in the x direction
-#' @param y numeric array. Distance in degree from the eye of storm in the y direction
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
 #' @param buffer numeric. Buffer size (in degree) for the storm
 #'
 #' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, buffer){
+computeWindProfile <- function(data, index, dist_m, method, x, y, I, buffer){
 
 
   #Computing sustained wind according to the input model
-  if (method == "Willoughby") {
-    wind <- Willoughby(
-      msw = data$msw[index],
-      lat = data$lat[index],
-      r = dist_m * 0.001,
-      rmw = data$rmw[index]
-    )
+  if(method == "Willoughby"){
+    wind <- Willoughby(msw = data$msw[index],
+                       lat = data$lat[index],
+                       r = dist_m * 0.001,
+                       rmw = data$rmw[index])
 
-  }else if (method == "Holland") {
+  }else if(method == "Holland"){
     wind <- Holland(
       r = dist_m * 0.001,
       rmw = data$rmw[index],
       msw = data$msw[index],
       pc = data$pc[index] * 100,
       poci = data$poci[index] * 100,
-      lat = data$lat[index]
-    )
+      lat = data$lat[index])
+
+  }else if(method == "Boose"){
+
+    if(data$lat[index] > 0){
+      northernH = TRUE
+    }else{
+      northernH = FALSE
+    }
+
+    wind <- Boose(r = dist_m * 0.001,
+                  rmw = data$rmw[index],
+                  msw = data$msw[index],
+                  pc = data$pc[index] * 100,
+                  poci = data$poci[index] * 100,
+                  x = x,
+                  y = y,
+                  vx = data$vx.deg[index],
+                  vy = data$vy.deg[index],
+                  vh = data$storm.speed[index],
+                  I = I,
+                  northernH = northernH)
   }
 
-
-  if(data$lat[index] > 0){
-    northenH = TRUE
-  }else{
-    northenH = FALSE
-  }
 
   #Adding asymmetry
-  wind <- computeAsymmetry(asymmetry, wind, x, y,
-                           data$vx.deg[index], data$vy.deg[index],
-                           data$storm.speed[index], northenH)
 
   #Remove cells outside of buffer
   dist <- sqrt(x*x + y*y)
@@ -557,12 +615,6 @@ computeWindDirection <- function(data, index, x, y, I, buffer){
   return(direction)
 
 }
-
-
-
-
-
-
 
 
 
@@ -1014,12 +1066,8 @@ stormBehaviour_sp <- function(sts,
                                 y = cbind(dataTC$lon[j], dataTC$lat[j]),
                                 lonlat = T)
 
-      #Computing wind profile
-      terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y, buffer)
-
       #Computing wind direction
-      if("Profiles" %in% product){
-        raster.direction <- raster.template.model
+      if("Profiles" %in% product | method == "Boose"){
         raster.I <- raster.template.model
         #Intersect points coordinates with LOI
         pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
@@ -1027,8 +1075,15 @@ stormBehaviour_sp <- function(sts,
         ind <- which(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE)
         terra::values(raster.I) <- 0
         terra::values(raster.I)[ind] <- 1
-        terra::values(raster.direction) <- computeWindDirection(dataTC, j, x, y, terra::values(raster.I), buffer)
+        if("Profiles" %in% product){
+          raster.direction <- raster.template.model
+          terra::values(raster.direction) <- computeWindDirection(dataTC, j, x, y, terra::values(raster.I), buffer)
+        }
       }
+
+      #Computing wind profile
+      terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method,
+                                                       x, y, terra::values(raster.I), buffer)
 
       #Stacking products
       if("MSW" %in% product)
@@ -1457,7 +1512,7 @@ stormBehaviour_pt <- function(sts,
 
       #Computing wind profiles
       dist2p <- dist.m[,i]
-      vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y, buffer)
+      vr <- computeWindProfile(dataTC, i, dist2p, method, x, y, I, buffer)
 
       #Computing wind direction
       dir <- computeWindDirection(dataTC, i, x, y, I, buffer)
