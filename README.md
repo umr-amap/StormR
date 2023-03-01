@@ -29,13 +29,15 @@ To run StormR functions users have to provide a tropical cyclone storm track dat
 | $name$ | Name of the storm in capital letters | PAM | Mandatory |
 | $seasons$ | Year of observation | 2015 | Mandatory |
 | $isoTime$ | Date and time of observation (YYYY-MM-DD HH:mm:ss) | 13/03/2015 12:00 | Mandatory |
-| $lon$ | Longitude of the observation (decimal degrees north) | 168.7 | Mandatory |
-| $lat$ | Latitude of the observation (decimal degrees east) | -17.6 | Mandatory |
-| $msw$ | Maximum Sustained Wind speed in knots | 150 | Mandatory |
-| $sshs$ | Saffir Simpson Hurricane Scale rating based on $msw$:<br/>$-1 =$ tropical depression [$msw < 34$]<br/>$0 =$ tropical storm [$34 < msw < 64$], $1 =$ category 1 [$64 \le msw < 83$]<br/>$2 =$ Category 2 [$83 \le msw < 96$]<br/>$3 =$ Category 3 [$96 \le msw < 113$]<br/>$4 =$ Category 4 [$113 \le msw < 137$]<br/>$5 =$ Category 5 [$msw \ge 137$]) | 5 | Recommended |
-| $rmw$ | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles | 12 | Recommended |
-| $pressure$ | Central pressure in millibar | 911 | Optional |
-| $poci$ | Pressure of the last closed isobar in millibar | 922 | Optional |
+| $lon$ | Longitude of the observation (decimal degrees east) | 168.7 | Mandatory |
+| $lat$ | Latitude of the observation (decimal degrees north) | -17.6 | Mandatory |
+| $msw$* | Maximum Sustained Wind speed in knots | 150 | Mandatory |
+| $sshs$* | Saffir Simpson Hurricane Scale rating based on $msw$:<br/>$-1 =$ tropical depression ($msw < 34$)<br/>$0 =$ tropical storm ($34 < msw < 64$), $1 =$ category 1 ($64 \le msw < 83$)<br/>$2 =$ Category 2 ($83 \le msw < 96$)<br/>$3 =$ Category 3 ($96 \le msw < 113$)<br/>$4 =$ Category 4 ($113 \le msw < 137$)<br/>$5 =$ Category 5 ($msw \ge 137$) | 5 | Recommended |
+| $rmw$* | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles | 12 | Recommended |
+| $pressure$* | Central pressure in millibar | 911 | Optional |
+| $poci$* | Pressure of the last closed isobar in millibar | 922 | Optional |
+
+*Units: before running the functions stormR converts nautical miles ($nm$) into kilometres ($km$), $knots$ into meters per second ($m.s^{-1}$), and millibar ($mb$) into Pascal ($Pa$) 
 
 ## Wind field models
 
@@ -127,7 +129,7 @@ $T$ is the lifespan of the storm<br />
 
 * Power Dissipation Index (PDI)<br />
 
-The PDI ($unitless$) is an index measuring the total power dissipated by a tropical storm over its lifespan (Kerry, 2005) and is computed as follow:<br />
+The PDI (in $J.m^{2}$) is an index measuring the total power dissipated by a tropical storm over its lifespan (Kerry, 1999, 2005) and is computed as follow:<br />
 
 $$
 \int_T \rho C_d v_r^3 dt
@@ -136,21 +138,8 @@ $$
 where
 $t$ is the time of the observation<br />
 $T$ is the lifespan of the storm<br />
-$\rho$ is the air density (fixed at $10^{-3}$ $kg.m^{-3}$??? $1$ $kg.m^{-3}$ in Kerry (1999)??? $1.225$ $kg.m^{-3}$ on internet???)<br />
-$C_d$ is the drag coefficient of the storm (fixed at $2.6$ X $10^{-3}$ in Wang et al. (2022) $2$ X $10^{-3}$ in Kerry (1999))<br />
-
-Although there exist various methods and formula to compute this parameter that are widely debatable, we chose here the following parametrization derived in [Wang, G., Wu, L., Mei, W. et al. Ocean currents show global intensification of weak tropical cyclones. Nature 611, 496–500 (2022)](https://doi.org/10.1038/s41586-022-05326-4):
-
-$$
-\left\{
-\begin{aligned}
-C_d &= (0.8 + 0.06v_r) \times 10^{-3} \quad if \quad v_r \leq 31.5 \\
-C_d &= \left(0.55 + 2.97\frac{v_r}{31.5} - 1.49\left(\frac{v_r}{31.5}\right)^2\right) \times 10^{-3} \quad if \quad v_r > 31.5 \\
-\end{aligned}
-\right.
-$$
-
-EN LISANT LE PAPIER CELA N'A PAS L'AIR DE CHANGER GRAND CHOSE, RESTER SUR LES CONSTANTES? 
+$\rho$ is the air density fixed to $1$ $kg.m^{-3}$ as in Kerry (1999)<br />
+$C_d$ is the drag coefficient of the storm fixed to $2$ X $10^{-3}$ as in Kerry (1999)<br />
 
 * Time of exposure
 
