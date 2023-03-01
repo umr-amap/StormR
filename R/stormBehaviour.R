@@ -135,6 +135,13 @@ Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, northernH){
 
 
 
+########################
+#Helper to check inputs#
+########################
+
+
+
+
 
 #' Check inputs for stormBehaviour_sp function
 #'
@@ -200,6 +207,14 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
 
 
 
+#################################
+#Helpers to make template rasters#
+#################################
+
+
+
+
+
 #' Generate raster template for the computations
 #'
 #' @noRd
@@ -230,6 +245,41 @@ makeTemplateRaster <- function(buffer, res){
   return(template)
 
 }
+
+
+
+
+
+#' Generate raster template to compute wind speed according to the different models
+#'
+#' @noRd
+#' @param raster_template SpatRaster. Raster generated with makeTemplateRaster function
+#' @param buffer numeric. Buffer size in degree
+#' @param data data.frame. Data generated with getInterpolatedData function
+#' @param index numeric. Index of interpolated observation in data to use to generate raster
+#'
+#' @return SpatRaster
+makeTemplateModel <- function(raster_template, buffer, data, index){
+
+  template <- terra::rast(xmin = data$lon[index] - buffer,
+                          xmax = data$lon[index] + buffer,
+                          ymin = data$lat[index] - buffer,
+                          ymax = data$lat[index] + buffer,
+                          resolution = terra::res(raster_template),
+                          vals = NA)
+  terra::origin(template) <- c(0,0)
+
+  return(template)
+
+}
+
+
+
+
+
+###############################
+#Helpers to get the right data#
+###############################
 
 
 
@@ -413,28 +463,9 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 
 
 
-#' Generate raster template to compute wind speed according to the different models
-#'
-#' @noRd
-#' @param raster_template SpatRaster. Raster generated with makeTemplateRaster function
-#' @param buffer numeric. Buffer size in degree
-#' @param data data.frame. Data generated with getInterpolatedData function
-#' @param index numeric. Index of interpolated observation in data to use to generate raster
-#'
-#' @return SpatRaster
-makeTemplateModel <- function(raster_template, buffer, data, index){
-
-  template <- terra::rast(xmin = data$lon[index] - buffer,
-                         xmax = data$lon[index] + buffer,
-                         ymin = data$lat[index] - buffer,
-                         ymax = data$lat[index] + buffer,
-                         resolution = terra::res(raster_template),
-                         vals = NA)
-  terra::origin(template) <- c(0,0)
-
-  return(template)
-
-}
+##############################################
+#Helpers to handle Models/Asymmetry/Direction#
+##############################################
 
 
 
@@ -615,6 +646,14 @@ computeWindDirection <- function(data, index, x, y, I, buffer){
   return(direction)
 
 }
+
+
+
+
+
+###########################
+#Helpers to stack products#
+###########################
 
 
 
@@ -876,6 +915,13 @@ maskProduct <- function(final_stack, loi, template){
   return(terra::mask(final_stack, m))
 
 }
+
+
+
+
+############################
+#stormBehaviour_sp function#
+############################
 
 
 
@@ -1185,6 +1231,14 @@ stormBehaviour_sp <- function(sts,
 
 
 
+###############################
+#Helpers for stormBehaviour_pt#
+###############################
+
+
+
+
+
 #' Check inputs for stormBehaviour_pt function
 #'
 #' @noRd
@@ -1370,6 +1424,14 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 
   return(final_result)
 }
+
+
+
+
+
+############################
+#stormBehaviour_pt function#
+############################
 
 
 
