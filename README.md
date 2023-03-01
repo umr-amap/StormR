@@ -10,15 +10,6 @@
 
 StormR is a R package allowing to easily extract tropical cyclone data for given locations or areas of interests, generate tropical cyclone wind fields, and to compute statistics characterising the behaviour of tropical cyclone winds (maximum sustained wind speed, power dissipation index, time of exposure to different wind speeds).
 
-## Installation
-
-StormR can be installed from GitHub as follows:
-
-``` r
-#install.packages("devtools")
-devtools::install_github("umr-amap/StormR")
-```
-
 ## Data source
 
 To run StormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifespan. By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive) (Knapp et al., 2010). This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:
@@ -183,20 +174,58 @@ By default the time of exposure is computed for each Saffir-Simpson Hurricane Sc
 
 ## Usage
 
-These are basic examples which show how to solve some common problems
+### Installing StormR package from GitHub
+
+``` r
+#install.packages("devtools")
+devtools::install_github("umr-amap/StormR")
+```
+
+### Loading StormR package
 
 ``` r
 library(StormR)
+```
 
-##############################################
-#Single tropical cyclone over a given country#
-##############################################
+### Using the data provided by USA agencies in the IBTrACS database
 
-#Load the data for the tropical cyclone Pam which hit the Vanuatu in 2015
+``` r
+blabla
+```
+
+### Getting and ploting tropical cyclone track data
+
+The getStorms function allows to get track data for a given tropical cyclone or a set of tropical cyclones nearby a given location of interest (by default up to 300 km around the specified location of interest). The location of interest can be a country, a specific point or set of points defined using longitude and latitude coordinates, or any user defined geographical extent. Users can also select tropical cyclones with their names or season of occurrence. The plotStorms can then be used to visualise the data on a map (either all or a subset of tropical cyclones can be plotted). 
+
+#### Examples
+
+Getting data on the tropical cyclone PAM (2015) nearby Vanuatu  
+
+``` r
 st <- getStorms(loi = "Vanuatu", names = "PAM")
+plotStorms(st, labels=TRUE)
+```
 
-#Plot the tropical cyclone track and observations over or around the location of interest
-plotStorms(st, labels = T, legends = T)
+Getting data on all tropical cyclone nearby Nouméa (longitude = 166.45, latitude = -22.27) since 1980 and only plotting category 4 and 5 tropical cyclones (Saffir-Simpson hurricane wind scale)
+
+``` r
+pt <- c(166.45,-22.27)
+st <- getStorms(loi = pt)
+plotStorms(st, category = c(4,5), labels=TRUE)
+```
+
+Getting data on all tropical cyclone nearby an area defined using an imported shape file, here the exclusive economic zone of New Caledonia, between 2010 and 2020.
+
+``` r
+sp <- eezNC
+st <- getStorms(loi = eezNC, season=c(2010,2020))
+plotStorms(st, labels=FALSE)
+```
+
+################################################
+
+
+``` r
 
 #Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry). The function returns a raster with a 2.5min spatial resolution by default.
 st_prod <- stormBehaviour_sp(st, product = c("MSW", "PDI", "Exposure"))
@@ -214,6 +243,8 @@ plotBehaviour(st, st_prod[["PAM_Exposure_50"]], labels = T)
 
 #Export the MSW raster in a given directory (here a temporary directory)
 writeRast(st_prod[["PAM_MSW"]], path = paste0(tempdir(),"/"))
+
+
 
 
 
