@@ -79,7 +79,7 @@
 <div class="section level2">
 <h2 id="data-source">Data source<a class="anchor" aria-label="anchor" href="#data-source"></a>
 </h2>
-<p>To run StormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifetime. By default we propose to use the data provided by USA agencies in the IBTrACS database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International Best Track Archive for Climate Stewardship</a>. This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:</p>
+<p>To run StormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifespan. By default we propose to use the data provided by USA agencies in the IBTrACS database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International Best Track Archive for Climate Stewardship</a> (Knapp et al., 2010). This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:</p>
 <table class="table">
 <colgroup>
 <col width="22%">
@@ -133,50 +133,57 @@
 <tr class="odd">
 <td align="left">
 <span class="math inline"><em>m</em><em>s</em><em>w</em></span>*</td>
-<td align="left">Maximum Sustained Wind speed in knots</td>
+<td align="left">Maximum sustained wind speed in knots (<span class="math inline"><em>k</em><em>t</em></span>)</td>
 <td align="center">150</td>
 <td align="center">Mandatory</td>
 </tr>
 <tr class="even">
 <td align="left">
 <span class="math inline"><em>s</em><em>s</em><em>h</em><em>s</em></span>*</td>
-<td align="left">Saffir Simpson Hurricane Scale rating based on <span class="math inline"><em>m</em><em>s</em><em>w</em></span>:<br><span class="math inline"> − 1=</span> tropical depression (<span class="math inline"><em>m</em><em>s</em><em>w</em> &lt; 34</span>)<br><span class="math inline">0=</span> tropical storm (<span class="math inline">34 &lt; <em>m</em><em>s</em><em>w</em> &lt; 64</span>), <span class="math inline">1=</span> category 1 (<span class="math inline">64 ≤ <em>m</em><em>s</em><em>w</em> &lt; 83</span>)<br><span class="math inline">2=</span> Category 2 (<span class="math inline">83 ≤ <em>m</em><em>s</em><em>w</em> &lt; 96</span>)<br><span class="math inline">3=</span> Category 3 (<span class="math inline">96 ≤ <em>m</em><em>s</em><em>w</em> &lt; 113</span>)<br><span class="math inline">4=</span> Category 4 (<span class="math inline">113 ≤ <em>m</em><em>s</em><em>w</em> &lt; 137</span>)<br><span class="math inline">5=</span> Category 5 (<span class="math inline"><em>m</em><em>s</em><em>w</em> ≥ 137</span>)</td>
+<td align="left">Saffir-Simpson hurricane wind scale rating based on <span class="math inline"><em>m</em><em>s</em><em>w</em></span> (hre in <span class="math inline"><em>k</em><em>t</em></span>):<br><span class="math inline"> − 1=</span> tropical depression (<span class="math inline"><em>m</em><em>s</em><em>w</em> &lt; 34</span>)<br><span class="math inline">0=</span> tropical storm (<span class="math inline">34 &lt; <em>m</em><em>s</em><em>w</em> &lt; 64</span>), <span class="math inline">1=</span> category 1 (<span class="math inline">64 ≤ <em>m</em><em>s</em><em>w</em> &lt; 83</span>)<br><span class="math inline">2=</span> Category 2 (<span class="math inline">83 ≤ <em>m</em><em>s</em><em>w</em> &lt; 96</span>)<br><span class="math inline">3=</span> Category 3 (<span class="math inline">96 ≤ <em>m</em><em>s</em><em>w</em> &lt; 113</span>)<br><span class="math inline">4=</span> Category 4 (<span class="math inline">113 ≤ <em>m</em><em>s</em><em>w</em> &lt; 137</span>)<br><span class="math inline">5=</span> Category 5 (<span class="math inline"><em>m</em><em>s</em><em>w</em> ≥ 137</span>)</td>
 <td align="center">5</td>
 <td align="center">Recommended</td>
 </tr>
 <tr class="odd">
 <td align="left">
 <span class="math inline"><em>r</em><em>m</em><em>w</em></span>*</td>
-<td align="left">Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles</td>
+<td align="left">Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles (<span class="math inline"><em>n</em><em>m</em></span>)</td>
 <td align="center">12</td>
 <td align="center">Recommended</td>
 </tr>
 <tr class="even">
 <td align="left">
 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>s</em><em>s</em><em>u</em><em>r</em><em>e</em></span>*</td>
-<td align="left">Central pressure in millibar</td>
+<td align="left">Central pressure in millibar (<span class="math inline"><em>m</em><em>b</em></span>)</td>
 <td align="center">911</td>
 <td align="center">Optional</td>
 </tr>
 <tr class="odd">
 <td align="left">
 <span class="math inline"><em>p</em><em>o</em><em>c</em><em>i</em></span>*</td>
-<td align="left">Pressure of the last closed isobar in millibar</td>
+<td align="left">Pressure of the last closed isobar in millibar (<span class="math inline"><em>m</em><em>b</em></span>)</td>
 <td align="center">922</td>
 <td align="center">Optional</td>
 </tr>
 </tbody>
 </table>
-<p>*Units: before running the functions stormR converts nautical miles (<span class="math inline"><em>n</em><em>m</em></span>) into kilometres (<span class="math inline"><em>k</em><em>m</em></span>), <span class="math inline"><em>k</em><em>n</em><em>o</em><em>t</em><em>s</em></span> into meters per second (<span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>), and millibar (<span class="math inline"><em>m</em><em>b</em></span>) into Pascal (<span class="math inline"><em>P</em><em>a</em></span>)</p>
+<p>*Units: before running the functions stormR converts nautical miles (<span class="math inline"><em>n</em><em>m</em></span>) into kilometres (<span class="math inline"><em>k</em><em>m</em></span>), knots (<span class="math inline"><em>k</em><em>t</em></span>) into meters per second (<span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>), and millibar (<span class="math inline"><em>m</em><em>b</em></span>) into Pascal (<span class="math inline"><em>P</em><em>a</em></span>)</p>
 </div>
 <div class="section level2">
 <h2 id="wind-field-models">Wind field models<a class="anchor" aria-label="anchor" href="#wind-field-models"></a>
 </h2>
-<p>Using these data StormR computes radial wind speed <span class="math inline"><em>v</em><sub><em>r</em></sub></span> at the distance <span class="math inline"><em>r</em></span> from the center of the storm using parametric models. Two widely used models developed by Holland (1980) and Willoughby et al. (2006) are available. <br><br><span class="math inline"><strong>Holland (1980)</strong></span> <br></p>
+<p>Using these data StormR computes radial wind speed <span class="math inline"><em>v</em><sub><em>r</em></sub></span> (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>) at the distance <span class="math inline"><em>r</em></span> (in <span class="math inline"><em>k</em><em>m</em></span>) from the center of the storm using parametric models. Two widely used models developed by Holland (1980) and Willoughby et al. (2006) are available.</p>
+<div class="section level3">
+<h3 id="holland-1980">Holland (1980)<a class="anchor" aria-label="anchor" href="#holland-1980"></a>
+</h3>
 <p><span class="math display">$$
 v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\frac{rmw}{r}\right)^b} + \left(\frac{rf}{2}\right)^2} - \left(\frac{rf}{2}\right)
 $$</span></p>
-<p>where <br><span class="math inline"><em>v</em><sub><em>r</em></sub></span> is the radial wind speed (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>) <br><span class="math inline"><em>r</em></span> is the distance to the eye of the storm (in <span class="math inline"><em>k</em><em>m</em></span>) <br><span class="math inline"><em>m</em><em>s</em><em>w</em></span> is the maximum sustained wind speed (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>) <br><span class="math inline"><em>r</em><em>m</em><em>w</em></span> is the radius of maximum sustained wind speed (in <span class="math inline"><em>k</em><em>m</em></span>) <br><span class="math inline"><em>p</em><em>c</em></span> is the pressure at the center of the storm (<span class="math inline"><em>p</em><em>r</em><em>e</em><em>s</em><em>s</em><em>u</em><em>r</em><em>e</em></span> in <span class="math inline"><em>m</em><em>b</em></span>) <br><span class="math inline"><em>p</em><em>o</em><em>c</em><em>i</em></span> is the pressure at outermost closed isobar of the storm (in <span class="math inline"><em>m</em><em>b</em></span>) <br><span class="math inline"><em>ρ</em> = 1.15</span> is the air density (in <span class="math inline"><em>k</em><em>g</em>.<em>m</em><sup>−3</sup></span>) <br><span class="math inline"><em>f</em> = 2 × 7.29 × 10<sup>−5</sup>sin (<em>ϕ</em>)</span> is the Coriolis force (in <span class="math inline"><em>N</em>.<em>k</em><em>g</em><sup>−1</sup></span>, with <span class="math inline"><em>ϕ</em></span> being the latitude) <br><span class="math inline">$b = \frac{\rho e \times msw^2}{poci - pc}$</span> is the shape parameter <br><br><br><span class="math inline"><strong>Willoughby et al. (2006)</strong></span> <br></p>
+<p>where <br><span class="math inline"><em>v</em><sub><em>r</em></sub></span> is the radial wind speed (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>) <br><span class="math inline"><em>r</em></span> is the distance to the eye of the storm (in <span class="math inline"><em>k</em><em>m</em></span>) <br><span class="math inline"><em>m</em><em>s</em><em>w</em></span> is the maximum sustained wind speed (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>) <br><span class="math inline"><em>r</em><em>m</em><em>w</em></span> is the radius of maximum sustained wind speed (in <span class="math inline"><em>k</em><em>m</em></span>) <br><span class="math inline"><em>p</em><em>c</em></span> is the pressure at the center of the storm (<span class="math inline"><em>p</em><em>r</em><em>e</em><em>s</em><em>s</em><em>u</em><em>r</em><em>e</em></span> in <span class="math inline"><em>m</em><em>b</em></span>) <br><span class="math inline"><em>p</em><em>o</em><em>c</em><em>i</em></span> is the pressure at outermost closed isobar of the storm (in <span class="math inline"><em>m</em><em>b</em></span>) <br><span class="math inline"><em>ρ</em> = 1.15</span> is the air density (in <span class="math inline"><em>k</em><em>g</em>.<em>m</em><sup>−3</sup></span>) <br><span class="math inline"><em>f</em> = 2 × 7.29 × 10<sup>−5</sup>sin (<em>ϕ</em>)</span> is the Coriolis force (in <span class="math inline"><em>N</em>.<em>k</em><em>g</em><sup>−1</sup></span>, with <span class="math inline"><em>ϕ</em></span> being the latitude) <br><span class="math inline">$b = \frac{\rho e \times msw^2}{poci - pc}$</span> is the shape parameter <br></p>
+</div>
+<div class="section level3">
+<h3 id="willoughby-et-al-2006">Willoughby et al. (2006)<a class="anchor" aria-label="anchor" href="#willoughby-et-al-2006"></a>
+</h3>
 <p><span class="math display">$$
 \left\{
 \begin{aligned}
@@ -187,6 +194,7 @@ v_r &amp;= msw\left((1-A)e^{-\frac{|r-rmw|}{X1}} + A e^{-\frac{|r-rmw|}{X2}}\rig
 $$</span></p>
 <p>where <br><span class="math inline"><em>v</em><sub><em>r</em></sub></span> is the radial wind speed (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>) <br><span class="math inline"><em>r</em></span> is the distance to the eye of the storm (in <span class="math inline"><em>k</em><em>m</em></span>) <br><span class="math inline"><em>m</em><em>s</em><em>w</em></span> is the maximum sustained wind speed (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>) <br><span class="math inline"><em>r</em><em>m</em><em>w</em></span> is the radius of maximum sustained wind speed (in <span class="math inline"><em>k</em><em>m</em></span>) <br><span class="math inline"><em>X</em>1 = 287.6 − 1.942<em>m</em><em>s</em><em>w</em> + 7.799ln (<em>r</em><em>m</em><em>w</em>) + 1.819|<em>ϕ</em>|</span><br><span class="math inline"><em>X</em>2 = 25</span> <br><span class="math inline"><em>n</em> = 2.1340 + 0.0077<em>m</em><em>s</em><em>w</em> − 0.4522ln (<em>r</em><em>m</em><em>w</em>) − 0.0038|<em>ϕ</em>|</span><br><span class="math inline"><em>A</em> = 0.5913 + 0.0029<em>m</em><em>s</em><em>w</em> − 0.1361ln (<em>r</em><em>m</em><em>w</em>) − 0.0042|<em>ϕ</em>|(<em>A</em>≥0)</span><br><span class="math inline"><em>ϕ</em></span> is the latitude of the center of the storm</p>
 <p>Note that for both models if <span class="math inline"><em>r</em><em>m</em><em>w</em></span> is not provided then it is approximated using an empirical formula derived from Willoughby et al. (2006)<br><span class="math inline"><em>r</em><em>m</em><em>w</em> = 46.4<em>e</em><sup>(−0.0155<em>m</em><em>s</em><em>w</em>+0.0169|<em>ϕ</em>|)</sup></span></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="asymmetry">Asymmetry<a class="anchor" aria-label="anchor" href="#asymmetry"></a>
@@ -206,24 +214,24 @@ $$</span></p>
 <h2 id="products">Products<a class="anchor" aria-label="anchor" href="#products"></a>
 </h2>
 <p>Based on the computed wind fields, stormR allows to compute different products allowing to characterise the behaviour of winds across time and space at given specific locations (i.e., at given longitude/latitude coordinates) or for all cells of a regular grid (i.e., a raster). Three products are available:<br></p>
-<ul>
-<li>Maximum Sustained Wind speed (MSW)<br>
-</li>
-</ul>
-<p>MSW provides the value of the maximum sustained wind speed (in <span class="math inline">(<em>m</em>.<em>s</em><sup>−1</sup>)</span>) over the lifespan of a storm and is computed as follow:<br></p>
+<div class="section level3">
+<h3 id="maximum-sustained-wind-speed">Maximum Sustained Wind speed<a class="anchor" aria-label="anchor" href="#maximum-sustained-wind-speed"></a>
+</h3>
+<p>Maximum Sustained Wind speed (MSW, in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>) over the lifespan of a storm computed as follow:<br></p>
 <p><span class="math display">max (<em>v</em>(<em>t</em>)|<em>t</em>∈[0,<em>T</em>])</span></p>
 <p>where <span class="math inline"><em>t</em></span> is the time of the observation<br><span class="math inline"><em>T</em></span> is the lifespan of the storm<br></p>
-<ul>
-<li>Power Dissipation Index (PDI)<br>
-</li>
-</ul>
-<p>The PDI (in <span class="math inline"><em>J</em>.<em>m</em><sup>2</sup></span>) is an index measuring the total power dissipated by a tropical storm over its lifespan (Kerry, 1999, 2005) and is computed as follow:<br></p>
+</div>
+<div class="section level3">
+<h3 id="power-dissipation-index-pdi">Power Dissipation Index (PDI)<a class="anchor" aria-label="anchor" href="#power-dissipation-index-pdi"></a>
+</h3>
+<p>The power dissipation index (PDI, in <span class="math inline"><em>J</em>.<em>m</em><sup>2</sup></span>) or total power dissipated by a tropical storm over its lifespan (Kerry, 1999, 2005) computed as follow:<br></p>
 <p><span class="math display">∫<sub><em>T</em></sub><em>ρ</em><em>C</em><sub><em>d</em></sub><em>v</em><sub><em>r</em></sub><sup>3</sup><em>d</em><em>t</em></span></p>
 <p>where <span class="math inline"><em>t</em></span> is the time of the observation<br><span class="math inline"><em>T</em></span> is the lifespan of the storm<br><span class="math inline"><em>ρ</em></span> is the air density fixed to <span class="math inline">1</span> <span class="math inline"><em>k</em><em>g</em>.<em>m</em><sup>−3</sup></span> as in Kerry (1999)<br><span class="math inline"><em>C</em><sub><em>d</em></sub></span> is the drag coefficient of the storm fixed to <span class="math inline">2</span> X <span class="math inline">10<sup>−3</sup></span> as in Kerry (1999)<br></p>
-<ul>
-<li>Time of exposure</li>
-</ul>
-<p>It provides the time of exposure (in <span class="math inline"><em>h</em><em>o</em><em>u</em><em>r</em><em>s</em></span>) above a minimum wind speed threshold as follow:<br></p>
+</div>
+<div class="section level3">
+<h3 id="time-of-exposure">Time of exposure<a class="anchor" aria-label="anchor" href="#time-of-exposure"></a>
+</h3>
+<p>Time of exposure (in <span class="math inline"><em>h</em><em>o</em><em>u</em><em>r</em><em>s</em></span>) above a minimum wind speed threshold as follow:<br></p>
 <p><span class="math display">∫<sub><em>T</em></sub><em>c</em>(<em>v</em><sub><em>t</em></sub>)<em>d</em><em>t</em></span></p>
 <p><span class="math display">$$
 \left\{
@@ -235,8 +243,19 @@ c(v_t) &amp;= 0 \quad if \quad v_t &lt; Thd\\
 $$</span></p>
 <p>where<br><span class="math inline"><em>t</em></span> is the time of the observation<br><span class="math inline"><em>T</em></span> is the lifespan of the storm<br><span class="math inline"><em>v</em><sub><em>t</em></sub></span> is the maximum sustained wind speed at time <span class="math inline"><em>t</em></span> (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>)<br><span class="math inline"><em>T</em><em>h</em><em>d</em></span> is the minimum wind sped threshold (in <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>)<br></p>
 <p>By default the time of exposure is computed for each Saffir-Simpson Hurricane Scale threshold values for tropical cyclone categories (i.e., <span class="math inline">33</span>, <span class="math inline">43</span>, <span class="math inline">50</span> ,<span class="math inline">58</span>, and <span class="math inline">70</span> <span class="math inline"><em>m</em>.<em>s</em><sup>−1</sup></span>)</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <ul>
-<li>2D radial wind speed/ direction structures (Only rasterized)</li>
+<li><p>Boose, E. R., Chamberlin, K. E., &amp; Foster, D. R. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs, 71(1), Article 1. <a href="https://doi.org/10.1890/0012-9615(2001)071%5B0027:LARIOH%5D2.0.CO;2" class="external-link uri">https://doi.org/10.1890/0012-9615(2001)071[0027:LARIOH]2.0.CO;2</a></p></li>
+<li><p>Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. <a href="https://doi.org/10.1175/1520-0493(1980)108" class="external-link uri">https://doi.org/10.1175/1520-0493(1980)108</a>&lt;1212:AAMOTW&gt;2.0.CO;2</p></li>
+<li><p>Emanuel, K. A. (1999). The power of a hurricane: An example of reckless driving on the information superhighway. Weather, 54(4), 107–108. <a href="https://doi.org/10.1002/j.1477-8696.1999.tb06435.x" class="external-link uri">https://doi.org/10.1002/j.1477-8696.1999.tb06435.x</a></p></li>
+<li><p>Emanuel, K. (2005). Increasing destructiveness of tropical cyclones over the past 30 years. Nature, 436(7051), Article 7051. <a href="https://doi.org/10.1038/nature03906" class="external-link uri">https://doi.org/10.1038/nature03906</a></p></li>
+<li><p>Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., &amp; Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). Bulletin of the American Meteorological Society, 91(3), Article 3. <a href="https://doi.org/10.1175/2009bams2755.1" class="external-link uri">https://doi.org/10.1175/2009bams2755.1</a></p></li>
+<li><p>Willoughby, H. E., Darling, R. W. R., &amp; Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. <a href="https://doi.org/10.1175/MWR3106.1" class="external-link uri">https://doi.org/10.1175/MWR3106.1</a></p></li>
+<li><p>Yan, D., &amp; Zhang, T. (2022). Research progress on tropical cyclone parametric wind field models and their application. Regional Studies in Marine Science, 51, 102207. <a href="https://doi.org/10.1016/j.rsma.2022.102207" class="external-link uri">https://doi.org/10.1016/j.rsma.2022.102207</a></p></li>
 </ul>
 </div>
 <div class="section level2">
@@ -365,16 +384,6 @@ $$</span></p>
 <span><span class="fu"><a href="reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">harold</span>,<span class="va">profHollV2</span><span class="op">[</span><span class="st">"HAROLD_Profiles_43"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="cn">T</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">166</span>,<span class="fl">168</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">16.5</span>, <span class="op">-</span><span class="fl">14</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
-</h2>
-<ul>
-<li><p>Willoughby, H. &amp; Darling, Richard &amp; Rahn, M.. (2006). Parametric Representation of the Primary Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review - MON WEATHER REV. 134. 1102-1120. 10.1175/MWR3106.1. <br></p></li>
-<li><p>Holland, Greg. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Mon. Weather Rev.. 108. 1212-1218. 10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2.</p></li>
-<li><p>Boose, Emery &amp; Chamberlin, Kristen &amp; Foster, David. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs - ECOL MONOGR. 71. 27-48. 10.2307/3100043.</p></li>
-<li><p>Wang, G., Wu, L., Mei, W. et al. Ocean currents show global intensification of weak tropical cyclones. Nature 611, 496–500 (2022)</p></li>
-</ul>
 </div>
 <div class="section level2">
 <h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
