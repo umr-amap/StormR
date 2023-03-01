@@ -21,7 +21,7 @@ devtools::install_github("umr-amap/StormR")
 
 ## Data source
 
-To run StormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifetime. By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive). This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:
+To run StormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifespan. By default we propose to use the data provided by USA agencies in the IBTrACS database [International Best Track Archive for Climate Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive) (Knapp et al., 2010). This database provides a fairly comprehensive record of worldwide tropical storms and cyclones with a 3-hours temporal resolution since 1841. Other databases can be used as long as the following fields are provided:
 
 | **Field name** | **Description** | **Example** | **Type** |
 |:---|:---|:---:|:---:|
@@ -31,20 +31,19 @@ To run StormR functions users have to provide a tropical cyclone storm track dat
 | $isoTime$ | Date and time of observation (YYYY-MM-DD HH:mm:ss) | 13/03/2015 12:00 | Mandatory |
 | $lon$ | Longitude of the observation (decimal degrees east) | 168.7 | Mandatory |
 | $lat$ | Latitude of the observation (decimal degrees north) | -17.6 | Mandatory |
-| $msw$* | Maximum Sustained Wind speed in knots | 150 | Mandatory |
-| $sshs$* | Saffir Simpson Hurricane Scale rating based on $msw$:<br/>$-1 =$ tropical depression ($msw < 34$)<br/>$0 =$ tropical storm ($34 < msw < 64$), $1 =$ category 1 ($64 \le msw < 83$)<br/>$2 =$ Category 2 ($83 \le msw < 96$)<br/>$3 =$ Category 3 ($96 \le msw < 113$)<br/>$4 =$ Category 4 ($113 \le msw < 137$)<br/>$5 =$ Category 5 ($msw \ge 137$) | 5 | Recommended |
-| $rmw$* | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles | 12 | Recommended |
-| $pressure$* | Central pressure in millibar | 911 | Optional |
-| $poci$* | Pressure of the last closed isobar in millibar | 922 | Optional |
+| $msw$* | Maximum sustained wind speed in knots ($kt$) | 150 | Mandatory |
+| $sshs$* | Saffir-Simpson hurricane wind scale rating based on $msw$ (hre in $kt$):<br/>$-1 =$ tropical depression ($msw < 34$)<br/>$0 =$ tropical storm ($34 < msw < 64$), $1 =$ category 1 ($64 \le msw < 83$)<br/>$2 =$ Category 2 ($83 \le msw < 96$)<br/>$3 =$ Category 3 ($96 \le msw < 113$)<br/>$4 =$ Category 4 ($113 \le msw < 137$)<br/>$5 =$ Category 5 ($msw \ge 137$) | 5 | Recommended |
+| $rmw$* | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles ($nm$) | 12 | Recommended |
+| $pressure$* | Central pressure in millibar ($mb$) | 911 | Optional |
+| $poci$* | Pressure of the last closed isobar in millibar ($mb$) | 922 | Optional |
 
-*Units: before running the functions stormR converts nautical miles ($nm$) into kilometres ($km$), $knots$ into meters per second ($m.s^{-1}$), and millibar ($mb$) into Pascal ($Pa$) 
+*Units: before running the functions stormR converts nautical miles ($nm$) into kilometres ($km$), knots ($kt$) into meters per second ($m.s^{-1}$), and millibar ($mb$) into Pascal ($Pa$) 
 
 ## Wind field models
 
-Using these data StormR computes radial wind speed $v_r$ at the distance $r$ from the center of the storm using parametric models. Two widely used models developed by Holland (1980) and Willoughby et al. (2006) are available.
-<br />
-<br />
-$\textbf{Holland (1980)}$ <br />
+Using these data StormR computes radial wind speed $v_r$ (in $m.s^{-1}$) at the distance $r$ (in $km$) from the center of the storm using parametric models. Two widely used models developed by Holland (1980) and Willoughby et al. (2006) are available.
+
+### Holland (1980)
 
 $$
 v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\frac{rmw}{r}\right)^b} + \left(\frac{rf}{2}\right)^2} - \left(\frac{rf}{2}\right)
@@ -60,9 +59,8 @@ $poci$ is the pressure at outermost closed isobar of the storm (in $mb$) <br />
 $\rho = 1.15$ is the air density (in $kg.m^{-3}$) <br />
 $f = 2 \times 7.29 \times10^{-5} \sin(\phi)$ is the Coriolis force (in $N.kg^{-1}$, with $\phi$ being the latitude) <br />
 $b = \frac{\rho e \times msw^2}{poci - pc}$ is the shape parameter <br />
-<br />
-<br />
-$\textbf{Willoughby et al. (2006)}$ <br />
+
+### Willoughby et al. (2006)
 
 $$
 \left\{
@@ -113,11 +111,12 @@ $I\quad$ is the cross isobar inflow angle which is either 20° on water or 40° 
 $\phi\quad$ is the latitude of the center of the storm 
 
 ## Products
+
 Based on the computed wind fields, stormR allows to compute different products allowing to characterise the behaviour of winds across time and space at given specific locations (i.e., at given longitude/latitude coordinates) or for all cells of a regular grid (i.e., a raster). Three products are available:<br />
 
-* Maximum Sustained Wind speed (MSW)<br />
+### Maximum Sustained Wind speed
 
-MSW provides the value of the maximum sustained wind speed (in $(m.s^{-1})$) over the lifespan of a storm and is computed as follow:<br />
+Maximum Sustained Wind speed (MSW, in $m.s^{-1}$) over the lifespan of a storm computed as follow:<br />
 
 $$
 \max(v(t) | t \in [0,T])
@@ -127,9 +126,9 @@ where
 $t$ is the time of the observation<br />
 $T$ is the lifespan of the storm<br />
 
-* Power Dissipation Index (PDI)<br />
+### Power Dissipation Index (PDI)
 
-The PDI (in $J.m^{2}$) is an index measuring the total power dissipated by a tropical storm over its lifespan (Kerry, 1999, 2005) and is computed as follow:<br />
+The power dissipation index (PDI, in $J.m^{2}$) or total power dissipated by a tropical storm over its lifespan (Kerry, 1999, 2005) computed as follow:<br />
 
 $$
 \int_T \rho C_d v_r^3 dt
@@ -141,9 +140,9 @@ $T$ is the lifespan of the storm<br />
 $\rho$ is the air density fixed to $1$ $kg.m^{-3}$ as in Kerry (1999)<br />
 $C_d$ is the drag coefficient of the storm fixed to $2$ X $10^{-3}$ as in Kerry (1999)<br />
 
-* Time of exposure
+### Time of exposure
 
-It provides the time of exposure (in $hours$) above a minimum  wind speed threshold as follow:<br />
+Time of exposure (in $hours$) above a minimum  wind speed threshold as follow:<br />
 
 $$
 \int_T c(v_t) dt
@@ -166,7 +165,21 @@ $Thd$ is the minimum wind sped threshold (in $m.s^{-1}$)<br/>
 
 By default the time of exposure is computed for each Saffir-Simpson Hurricane Scale threshold values for tropical cyclone categories (i.e., $33$, $43$, $50$ ,$58$, and $70$ $m.s^{-1}$)
 
-* 2D radial wind speed/ direction structures (Only rasterized)
+## References
+
+ * Boose, E. R., Chamberlin, K. E., & Foster, D. R. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs, 71(1), Article 1. https://doi.org/10.1890/0012-9615(2001)071[0027:LARIOH]2.0.CO;2
+ 
+ * Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
+ 
+ * Emanuel, K. A. (1999). The power of a hurricane: An example of reckless driving on the information superhighway. Weather, 54(4), 107–108. https://doi.org/10.1002/j.1477-8696.1999.tb06435.x
+
+ * Emanuel, K. (2005). Increasing destructiveness of tropical cyclones over the past 30 years. Nature, 436(7051), Article 7051. https://doi.org/10.1038/nature03906
+ 
+  * Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
+
+ * Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
+
+ * Yan, D., & Zhang, T. (2022). Research progress on tropical cyclone parametric wind field models and their application. Regional Studies in Marine Science, 51, 102207. https://doi.org/10.1016/j.rsma.2022.102207
 
 ## Usage
 
@@ -297,16 +310,6 @@ plotBehaviour(harold,profHollV2["HAROLD_Profiles_43"], labels = T, xlim = c(166,
 
 
 ```
-
-## References
-
- * Willoughby, H. & Darling, Richard & Rahn, M.. (2006). Parametric Representation of the Primary     Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review - MON WEATHER REV. 134. 1102-1120. 10.1175/MWR3106.1.  <br />
-
- * Holland, Greg. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Mon. Weather Rev.. 108. 1212-1218. 10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2.
-
- * Boose, Emery & Chamberlin, Kristen & Foster, David. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs - ECOL MONOGR. 71. 27-48. 10.2307/3100043.
-
-* Wang, G., Wu, L., Mei, W. et al. Ocean currents show global     intensification of weak tropical cyclones. Nature 611, 496–500 (2022)
 
 ## Getting help
 
