@@ -103,11 +103,11 @@ Holland <- function(r, rmw, msw, pc, poci, lat){
 #' @param vy numeric. Velociy of the storm in the y direction (deg/h)
 #' @param vh numeric. Velociy of the storm (m/s)
 #' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
-#' @param northernH logical. Whether it is northen hemisphere or not
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #'
 #' @returns radial wind speed value (m/s) according to Boose04 model at distance `r` to the
 #' eye of the storm located in latitude
-Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, northernH){
+Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, lat){
 
   rho <- 1  #air densiy
   b <- rho * exp(1) * msw**2 / (poci - pc)
@@ -116,7 +116,7 @@ Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, northernH){
   vr <- sqrt((rmw/r)**b * exp(1 -(rmw/r)**b))
 
 
-  if(northernH){
+  if(lat >= 0){
     #Northern Hemisphere, t is clockwise
     angle <- atan2(vy,vx) - atan2(y,x)
   }else{
@@ -125,8 +125,8 @@ Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, northernH){
   }
 
 
-  vr[I == 1] <- (msw - (1 - sin(angle[I == 1])) * vh/2) * vr[I == 1]
-  vr[I == 0] <- 0.8 * (msw - (1 - sin(angle[I == 0])) * vh/2) * vr[I == 0]
+  vr[I == 1] <- 0.8 * (msw - (1 - sin(angle[I == 1])) * vh/2) * vr[I == 1]
+  vr[I == 0] <- (msw - (1 - sin(angle[I == 0])) * vh/2) * vr[I == 0]
 
 
   return(round(vr,3))
@@ -477,19 +477,20 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 #' @param data data.frame. Data generated with getInterpolatedData function
 #' @param index numeric. Index of interpolated observation in data to use for
 #' the computations
-#' @param dist_m numeric array. Distance in meter from the eye of the storm for
-#' each coordinate of the raster_template_model
 #' @param method character. method input form stormBehaviour_sp
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
+#' @param crds numeric array (1 column lon, 1 column lat). coordinates of raster
+#' @param dist_m numeric array. Distance in meter from the eye of the storm for
+#' each coordinate of the raster_template_model
 #' @param buffer numeric. Buffer size (in degree) for the storm
+#' @param buffer sf. Land to intersect for Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(data, index, dist_m, method, x, y, I, buffer){
+computeWindProfile <- function(data, index, method, x, y, crds, dist_m, buffer, land){
 
 
-  #Computing sustained wind according to the input model
+  #Computing wind speed according to the input model
   if(method == "Willoughby"){
     wind <- Willoughby(msw = data$msw[index],
                        lat = data$lat[index],
@@ -507,11 +508,14 @@ computeWindProfile <- function(data, index, dist_m, method, x, y, I, buffer){
 
   }else if(method == "Boose"){
 
-    if(data$lat[index] > 0){
-      northernH = TRUE
-    }else{
-      northernH = FALSE
-    }
+    ###ERROR IF LOI IS NOT A LAND
+
+    #Intersect points coordinates with land
+    pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
+    sf::st_crs(pts) <- wgs84
+    ind <- which(sf::st_intersects(pts, land, sparse <- FALSE) == TRUE)
+    I <- rep(0,length(x))
+    I[ind] <- 1
 
     wind <- Boose(r = dist_m * 0.001,
                   rmw = data$rmw[index],
@@ -524,17 +528,25 @@ computeWindProfile <- function(data, index, dist_m, method, x, y, I, buffer){
                   vy = data$vy.deg[index],
                   vh = data$storm.speed[index],
                   I = I,
-                  northernH = northernH)
+                  lat = data$lat[index])
   }
 
 
   #Adding asymmetry
 
+  #Compute wind direction
+  if(method == "Boose"){
+    direction <- computeDirectionBoose(x, y, data$lat[index], I)
+  }else{
+    direction <- computeDirection(x, y, data$lat[index])
+  }
+
   #Remove cells outside of buffer
   dist <- sqrt(x*x + y*y)
   wind[dist > buffer] <- NA
+  direction[dist > buffer] <- NA
 
-  return(wind)
+  return(list(wind = wind, direction = direction))
 
 }
 
@@ -546,17 +558,17 @@ computeWindProfile <- function(data, index, dist_m, method, x, y, I, buffer){
 #' @noRd
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param northernH logical. Whether it is northen hemisphere or not
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
 #'
 #' @return wind directions (rad) at each (x,y) position
-computeDirectionBoose <- function(x, y, I, northernH){
+computeDirectionBoose <- function(x, y, lat, I){
 
   azimuth <- -(atan2(y, x) - pi/2)
 
   azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
 
-  if(northernH){
+  if(lat >= 0){
     direction <- azimuth *180/pi - 90
     direction[I == 1] <- direction[I == 1] - 40
     direction[I == 0] <- direction[I == 0] - 20
@@ -580,17 +592,16 @@ computeDirectionBoose <- function(x, y, I, northernH){
 #' @noRd
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param northernH logical. Whether it is northen hemisphere or not
-#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #'
 #' @return wind directions (rad) at each (x,y) position
-computeDirection <- function(x, y, northernH){
+computeDirection <- function(x, y, lat){
 
   azimuth <- -(atan2(y, x) - pi/2)
 
   azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
 
-  if(northernH){
+  if(lat >= 0){
     direction <- azimuth *180/pi - 90
 
   }else{
@@ -601,47 +612,6 @@ computeDirection <- function(x, y, northernH){
   direction[direction > 360] = direction[direction > 360] - 360
 
   return(direction)
-}
-
-
-
-
-
-#' Compute wind direction according to the selected method and asymmetry
-#'
-#' @noRd
-#' @param data data.frame. Data generated with getInterpolatedData function
-#' @param index numeric. Index of interpolated observation in data to use for
-#' the computations
-#' @param method character. method input form stormBehaviour_sp
-#' @param x numeric array. Distance in degree from the eye of storm in the x direction
-#' @param y numeric array. Distance in degree from the eye of storm in the y direction
-#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
-#' @param buffer numeric. Buffer size (in degree) for the storm
-#'
-#' @return  numeric vector. Wind directions (degree)
-computeWindDirection <- function(data, index, method, x, y, I, buffer){
-
-
-  if(data$lat[index] > 0){
-    northernH = TRUE
-  }else{
-    northernH = FALSE
-  }
-
-  #Computing wind direction
-  if(method == "Boose"){
-    direction <- computeDirectionBoose(x, y, I, northernH)
-  }else{
-    direction <- computeDirection(x, y, northernH)
-  }
-
-  #Remove cells outside of buffer
-  dist <- sqrt(x*x + y*y)
-  direction[dist > buffer] <- NA
-
-  return(direction)
-
 }
 
 
@@ -1096,6 +1066,7 @@ stormBehaviour_sp <- function(sts,
       #Making template to compute wind profiles
       raster.template.model <- makeTemplateModel(raster.template, buffer, dataTC, j)
       raster.wind <- raster.template.model
+      raster.direction <- raster.template.model
 
       #Computing coordinates of raster
       crds <- terra::crds(raster.wind, na.rm = FALSE)
@@ -1109,24 +1080,12 @@ stormBehaviour_sp <- function(sts,
                                 y = cbind(dataTC$lon[j], dataTC$lat[j]),
                                 lonlat = T)
 
-      #Computing wind direction
-      if("Profiles" %in% product | method == "Boose"){
-        raster.I <- raster.template.model
-        #Intersect points coordinates with LOI
-        pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
-        sf::st_crs(pts) <- wgs84
-        ind <- which(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE)
-        terra::values(raster.I) <- 0
-        terra::values(raster.I)[ind] <- 1
-        if("Profiles" %in% product){
-          raster.direction <- raster.template.model
-          terra::values(raster.direction) <- computeWindDirection(dataTC, j, x, y, terra::values(raster.I), buffer)
-        }
-      }
+      #Computing wind speed/direction
+      output <- computeWindProfile(dataTC, j, method, x, y, crds, dist.m, buffer,
+                                   sts@spatial.loi)
 
-      #Computing wind profile
-      terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method,
-                                                       x, y, terra::values(raster.I), buffer)
+      terra::values(raster.wind) <- output$wind
+      terra::values(raster.direction) <- output$direction
 
       #Stacking products
       if("MSW" %in% product)
@@ -1257,7 +1216,7 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   #Checking points input
   stopifnot("no data found" = !missing(points))
   stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
-  stopifnot("colnames of points must be lon, lat" = colnames(points) == c("lon","lat"))
+  stopifnot("colnames of points must be \"x\" (Eastern degree), \"y\" (Northern degree)" = colnames(points) == c("x","y"))
   stopifnot("Invalid points coordinates" = points$lon >= 0 & points$lon <= 360 &
               points$lat >= -90 & points$lat <= 90)
 
@@ -1272,7 +1231,7 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   }
 
   #Checking method input
-  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland", "Boose"))
   stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Checking asymmetry input
@@ -1403,7 +1362,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
     df <- data.frame(result, indices = indices, isoTimes = isoT)
     c <- c()
     for(i in 1:dim(points)[1]){
-      c <- c(c, paste0("(",points$lon[i],",",points$lat[i],")w"), paste0("(",points$lon[i],",",points$lat[i],")dir"))
+      c <- c(c, paste0("(",points$x[i],",",points$y[i],")w"), paste0("(",points$x[i],",",points$y[i],")dir"))
     }
     c <- c(c, "indices", "isoTimes")
     colnames(df) <- c
@@ -1544,7 +1503,7 @@ stormBehaviour_pt <- function(sts,
     #every points y
     dist.m <- terra::distance(
       x <- cbind(dataTC$lon,dataTC$lat),
-      y <- cbind(points$lon, points$lat),
+      y <- cbind(points$x, points$y),
       lonlat <- T
     )
 
@@ -1552,29 +1511,20 @@ stormBehaviour_pt <- function(sts,
     #For each point
     for(i in 1:dim(points)[1]){
 
-
+      #Coordinates
       pt <- points[i,]
 
       #Computing distance between eye of storm and point P
-      x <- pt$lon - dataTC$lon
-      y <- pt$lat - dataTC$lat
+      x <- pt$x - dataTC$lon
+      y <- pt$y - dataTC$lat
 
-
-      #Intersect points coordinates with LOI
-      pts <- sf::st_as_sf(as.data.frame(pt), coords = c("lon","lat"))
-      sf::st_crs(pts) <- wgs84
-      if(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE){
-        I <- 1
-      }else{
-        I <- 0
-      }
-
-      #Computing wind profiles
+      #Computing wind speed/direction
       dist2p <- dist.m[,i]
-      vr <- computeWindProfile(dataTC, i, dist2p, method, x, y, I, buffer)
+      output <- computeWindProfile(dataTC, i, method, x, y, pt, dist2p, buffer, sts@spatial.loi)
 
-      #Computing wind direction
-      dir <- computeWindDirection(dataTC, i, x, y, I, buffer)
+      print(output)
+      vr <- output$wind
+      dir <- output$direction
 
       #Computing product
       res <- computeProduct(product, vr, dir, time_res, res, wind_threshold)
