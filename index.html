@@ -283,19 +283,59 @@ $$</span></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, labels<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Getting data on all tropical cyclone nearby Nouméa (longitude = 166.45, latitude = -22.27) since 1980 and only plotting category 4 and 5 tropical cyclones (Saffir-Simpson hurricane wind scale)</p>
+<p>Getting data on all tropical cyclones nearby Nouméa (longitude = 166.45, latitude = -22.27) since 1980 and only plotting category 4 and 5 tropical cyclones (Saffir-Simpson hurricane wind scale) or tropical cyclone Niran.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">166.45</span>,<span class="op">-</span><span class="fl">22.27</span><span class="op">)</span></span>
 <span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="va">pt</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span>, labels<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Getting data on all tropical cyclone nearby an area defined using an imported shape file, here the exclusive economic zone of New Caledonia, between 2010 and 2020.</p>
+<span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span>, labels<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, names<span class="op">=</span><span class="st">"NIRAN"</span>, labels<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Getting data on all tropical cyclones nearby an area defined using an imported shape file, here the exclusive economic zone of New Caledonia, between 2010 and 2020.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="va">eezNC</span></span>
 <span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="va">eezNC</span>, season<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>,<span class="fl">2020</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, labels<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="computing-and-plotting-2d-wind-fields">Computing and plotting 2D wind fields<a class="anchor" aria-label="anchor" href="#computing-and-plotting-2d-wind-fields"></a>
+</h3>
+<p>The stormBehaviour_sp function allows computing 2D tropical cyclone wind fields using different parametric models and at different spatial and temporal resolutions. Then using the “Profiles” product of the stormBehaviour_sp function and the plotBehaviour function users can plot 2D wind profile at given time of observation.</p>
+<div class="section level4">
+<h4 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h4>
+<p>Computing and plotting 2D wind profile generated by the topical cyclone Pam (2015) near the island of Efate (Vanuatu)</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span>
+<span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_sp.html">stormBehaviour_sp</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="st">"Profiles"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">profile</span><span class="op">[[</span><span class="st">"PAM_Profiles_41"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="computing-and-plotting-time-series-of-wind-speed-and-direction">Computing and plotting time series of wind speed and direction<a class="anchor" aria-label="anchor" href="#computing-and-plotting-time-series-of-wind-speed-and-direction"></a>
+</h3>
+<p>The stormBehaviour_pt function allows computing wind speed and direction for a given location or set of locations (provided with a data frame with “long” and “lat” columns) along the lifespan of a tropical cyclone.</p>
+<div class="section level4">
+<h4 id="example-1">Example<a class="anchor" aria-label="anchor" href="#example-1"></a>
+</h4>
+<p>Computing and plotting time series of the speed and direction of winds generated by the topical cyclone Pam (2015) at Efate (longitude = 168.33, latitude = -17.73) in Vanuatu.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>lon<span class="op">=</span><span class="fl">168.33</span>,lat<span class="op">=</span><span class="op">-</span><span class="fl">17.73</span><span class="op">)</span></span>
+<span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getStorms.html">getStorms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span>
+<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_pt.html">stormBehaviour_pt</a></span><span class="op">(</span><span class="va">st</span>, points <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ts</span><span class="op">$</span><span class="va">PAM</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">~</span><span class="va">ts</span><span class="op">$</span><span class="va">PAM</span><span class="op">[</span>,<span class="fl">3</span><span class="op">]</span>,type<span class="op">=</span><span class="st">"b"</span>,xlab<span class="op">=</span><span class="st">"Observation ID"</span>,ylab<span class="op">=</span><span class="st">"Wind speed (m/s)"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ts</span><span class="op">$</span><span class="va">PAM</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">~</span><span class="va">ts</span><span class="op">$</span><span class="va">PAM</span><span class="op">[</span>,<span class="fl">3</span><span class="op">]</span>,type<span class="op">=</span><span class="st">"b"</span>,xlab<span class="op">=</span><span class="st">"Observation ID"</span>,ylab<span class="op">=</span><span class="st">"Wind direction (degree north)"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="computing-plotting-and-exporting-wind-beahaviour-products">Computing, plotting, and exporting wind beahaviour products<a class="anchor" aria-label="anchor" href="#computing-plotting-and-exporting-wind-beahaviour-products"></a>
+</h3>
+<p>Beside computing 2D tropical cyclone wind fields, the stormBehaviour_sp function allows computing different products allowing to characterise the behaviour of winds across time and space. Three products are available: maximum sustained wind speed, power dissipation index, and time of exposure above a minimum wind speed threshold. These products can be plotted using the plotBehaviour function or exported as raster files using the writeRast function.</p>
+<div class="section level4">
+<h4 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a>
+</h4>
 <div id="section" class="section level48">
 <p class="heading"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry). The function returns a raster with a 2.5min spatial resolution by default.</span></span>
 <span><span class="va">st_prod</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stormBehaviour_sp.html">stormBehaviour_sp</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSW"</span>, <span class="st">"PDI"</span>, <span class="st">"Exposure"</span><span class="op">)</span><span class="op">)</span></span>
