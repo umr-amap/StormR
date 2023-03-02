@@ -471,78 +471,6 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 
 
 
-#' Compute wind direction
-#' @noRd
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param northenH logical. Whether it is northen hemisphere or not
-#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
-#'
-#' @return wind directions (rad) at each (x,y) position
-computeDirection <- function(x, y, I, northenH){
-
-  azimuth <- -(atan2(y, x) - pi/2)
-
-  azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
-
-  if(northenH){
-    direction <- azimuth *180/pi - 90
-    direction[I == 1] <- direction[I == 1] - 40
-    direction[I == 0] <- direction[I == 0] - 20
-  }else{
-    direction <- azimuth *180/pi + 90
-    direction[I == 1] <- direction[I == 1] + 40
-    direction[I == 0] <- direction[I == 0] + 20
-  }
-
-  direction[direction < 0] = direction[direction < 0] + 360
-  direction[direction > 360] = direction[direction > 360] - 360
-
-  return(direction)
-}
-
-
-
-
-
-#' Compute asymmetry
-#'
-#' @noRd
-#' @param asymmetry character. Asymmetry input form stormBehaviour
-#' @param wind numeric vector. Wind values
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
-#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
-#' @param vh numeric. Velociy of the storm (m/s)
-#' @param northenH logical. Whether it is northen hemisphere or not
-#'
-#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at each (x,y) position
-computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
-
-  if(asymmetry == "None"){
-    wind <- wind
-  }else if(asymmetry == "Boose01"){
-
-    if(northenH){
-      #Northern Hemisphere, t is clockwise
-      angle <- atan2(vy,vx) - atan2(y,x)
-    }else{
-      #Southern Hemisphere, t is counterclockwise
-      angle <- atan2(y,x) - atan2(vy,vx)
-    }
-
-    wind <- wind - (1 - sin(angle)) * vh/2
-
-  }
-
-  return(round(wind,3))
-}
-
-
-
-
-
 #' Compute wind profile according to the selected method and asymmetry
 #'
 #' @noRd
@@ -614,30 +542,99 @@ computeWindProfile <- function(data, index, dist_m, method, x, y, I, buffer){
 
 
 
+#' Compute wind direction according to Boose et al. (2004) model
+#' @noRd
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param northernH logical. Whether it is northen hemisphere or not
+#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
+#'
+#' @return wind directions (rad) at each (x,y) position
+computeDirectionBoose <- function(x, y, I, northernH){
+
+  azimuth <- -(atan2(y, x) - pi/2)
+
+  azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
+
+  if(northernH){
+    direction <- azimuth *180/pi - 90
+    direction[I == 1] <- direction[I == 1] - 40
+    direction[I == 0] <- direction[I == 0] - 20
+  }else{
+    direction <- azimuth *180/pi + 90
+    direction[I == 1] <- direction[I == 1] + 40
+    direction[I == 0] <- direction[I == 0] + 20
+  }
+
+  direction[direction < 0] = direction[direction < 0] + 360
+  direction[direction > 360] = direction[direction > 360] - 360
+
+  return(direction)
+}
+
+
+
+
+
+#' Compute symetrical wind direction
+#' @noRd
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param northernH logical. Whether it is northen hemisphere or not
+#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
+#'
+#' @return wind directions (rad) at each (x,y) position
+computeDirection <- function(x, y, northernH){
+
+  azimuth <- -(atan2(y, x) - pi/2)
+
+  azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
+
+  if(northernH){
+    direction <- azimuth *180/pi - 90
+
+  }else{
+    direction <- azimuth *180/pi + 90
+  }
+
+  direction[direction < 0] = direction[direction < 0] + 360
+  direction[direction > 360] = direction[direction > 360] - 360
+
+  return(direction)
+}
+
+
+
+
+
 #' Compute wind direction according to the selected method and asymmetry
 #'
 #' @noRd
 #' @param data data.frame. Data generated with getInterpolatedData function
 #' @param index numeric. Index of interpolated observation in data to use for
 #' the computations
+#' @param method character. method input form stormBehaviour_sp
 #' @param x numeric array. Distance in degree from the eye of storm in the x direction
 #' @param y numeric array. Distance in degree from the eye of storm in the y direction
 #' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
 #' @param buffer numeric. Buffer size (in degree) for the storm
 #'
 #' @return  numeric vector. Wind directions (degree)
-computeWindDirection <- function(data, index, x, y, I, buffer){
+computeWindDirection <- function(data, index, method, x, y, I, buffer){
 
 
   if(data$lat[index] > 0){
-    northenH = TRUE
+    northernH = TRUE
   }else{
-    northenH = FALSE
+    northernH = FALSE
   }
 
-
   #Computing wind direction
-  direction <- computeDirection(x, y, I, northenH)
+  if(method == "Boose"){
+    direction <- computeDirectionBoose(x, y, I, northernH)
+  }else{
+    direction <- computeDirection(x, y, northernH)
+  }
 
   #Remove cells outside of buffer
   dist <- sqrt(x*x + y*y)
