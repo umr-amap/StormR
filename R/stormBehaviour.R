@@ -180,7 +180,7 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   }
 
   #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01"))
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Checking empirical_rmw input
@@ -478,6 +478,7 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 #' @param index numeric. Index of interpolated observation in data to use for
 #' the computations
 #' @param method character. method input form stormBehaviour_sp
+#' @param asymmetry character. Asymmetry input form stormBehaviour
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
 #' @param crds numeric array (1 column lon, 1 column lat). coordinates of raster
@@ -487,7 +488,7 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 #' @param buffer sf. Land to intersect for Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(data, index, method, x, y, crds, dist_m, buffer, land){
+computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_m, buffer, land){
 
 
   #Computing wind speed according to the input model
@@ -532,7 +533,6 @@ computeWindProfile <- function(data, index, method, x, y, crds, dist_m, buffer, 
   }
 
 
-  #Adding asymmetry
 
   #Compute wind direction
   if(method == "Boose"){
@@ -541,13 +541,86 @@ computeWindProfile <- function(data, index, method, x, y, crds, dist_m, buffer, 
     direction <- computeDirection(x, y, data$lat[index])
   }
 
+
+
+  #Adding asymmetry
+  output <- computeAsymmetry(asymmetry, wind, direction,x, y,
+                           data$vx.deg[index], data$vy.deg[index],
+                           data$storm.speed[index],
+                           dist_m * 0.001, data$rmw[index], data$lat[index])
+
+
   #Remove cells outside of buffer
   dist <- sqrt(x*x + y*y)
-  wind[dist > buffer] <- NA
-  direction[dist > buffer] <- NA
+  output$wind[dist > buffer] <- NA
+  output$direction[dist > buffer] <- NA
 
-  return(list(wind = wind, direction = direction))
+  return(output)
 
+}
+
+
+
+
+
+#' Compute asymmetry
+#'
+#' @noRd
+#' @param asymmetry character. Asymmetry input form stormBehaviour
+#' @param wind numeric vector. Wind values
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
+#' @param vy numeric. Velocity of the storm in the y direction (deg/h)
+#' @param vh numeric. Velocity of the storm (m/s)
+#' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
+#' @param rmw numeric. Radius of Maximum Wind (km)
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
+#'
+#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at each (x,y) position
+computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rmw, lat){
+
+
+  dir <- -(atan2(y, x) - pi/2)
+
+  if(lat >= 0){
+    dir <- dir - pi/2
+  }else{
+    dir <- dir + pi/2
+  }
+
+  dir[dir < 0] <-  dir[dir < 0] + 2*pi
+  dir[dir > 2*pi] <- dir[dir > 360] - 2*pi
+
+  #Circular symmetrical wind
+  wind_x <- wind * cos(dir)
+  wind_y <- wind * sin(dir)
+
+  #Moving wind
+  stormDir <- -(atan2(vy, vx) - pi/2)
+  if(stormDir < 0){
+    stormDir <- stormDir +2*pi
+  }
+
+  m_wind_x <- vh * cos(stormDir)
+  m_wind_y <- vh * sin(stormDir)
+
+  #Formula for asymmetry
+  if(asymmetry == "Chen"){
+    formula <- 3 * rmw**(3/2) * r **(3/2) /(rmw**3 + r**3 + rmw**(3/2) * r**(3/2))
+  }else{
+    formula <- exp(-r/500 * pi)
+  }
+
+  #Total wind
+  t_wind_x <- wind_x + formula * m_wind_x
+  t_wind_y <- wind_y + formula * m_wind_y
+
+
+
+  wind <- sqrt(t_wind_x**2 + t_wind_y**2)
+
+  return(list(wind = round(wind,3), direction = direction))
 }
 
 
@@ -987,7 +1060,7 @@ stormBehaviour_sp <- function(sts,
                               product = "MSW",
                               wind_threshold = c(18, 33, 42, 49, 58, 70),
                               method = "Willoughby",
-                              asymmetry = "Boose01",
+                              asymmetry = "Chen",
                               empirical_rmw = FALSE,
                               space_res = "2.5min",
                               time_res = 1,
@@ -1081,7 +1154,8 @@ stormBehaviour_sp <- function(sts,
                                 lonlat = T)
 
       #Computing wind speed/direction
-      output <- computeWindProfile(dataTC, j, method, x, y, crds, dist.m, buffer,
+      output <- computeWindProfile(dataTC, j, method, asymmetry,
+                                   x, y, crds, dist.m, buffer,
                                    sts@spatial.loi)
 
       terra::values(raster.wind) <- output$wind
@@ -1235,7 +1309,7 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01"))
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Checking empirical_rmw input
@@ -1474,7 +1548,7 @@ stormBehaviour_pt <- function(sts,
                               product = "TS",
                               wind_threshold = c(18, 33, 42, 49, 58, 70),
                               method = "Willoughby",
-                              asymmetry = "Boose01",
+                              asymmetry = "Chen",
                               empirical_rmw = FALSE,
                               time_res = 1){
 
@@ -1520,9 +1594,8 @@ stormBehaviour_pt <- function(sts,
 
       #Computing wind speed/direction
       dist2p <- dist.m[,i]
-      output <- computeWindProfile(dataTC, i, method, x, y, pt, dist2p, buffer, sts@spatial.loi)
+      output <- computeWindProfile(dataTC, i, method, asymmetry, x, y, pt, dist2p, buffer, sts@spatial.loi)
 
-      print(output)
       vr <- output$wind
       dir <- output$direction
 
