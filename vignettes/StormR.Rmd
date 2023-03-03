@@ -230,10 +230,10 @@ prof.harold <- stormBehaviour_sp(harold, product = "Profiles")
 ```
 
 ## Computing point wise products
-```{r stormBehaviour_pt 1}
+```{r temporalBehaviour 1}
 luganville.pt <- data.frame(lon = 167.1667 , lat = -15.5333)
 
-ts.luganville <- stormBehaviour_pt(harold, points = luganville.pt)
+ts.luganville <- temporalBehaviour(harold, points = luganville.pt)
 ```
 
 

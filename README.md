@@ -256,7 +256,7 @@ plotStorms(stsPt, category = c(4,5), labels = T)
 
 #Compute time series of wind speed at given location using coordinates provided in a data frame
 df <- data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
-wind_ts <- stormBehaviour_pt(sts, points = df)
+wind_ts <- temporalBehaviour(sts, points = df)
 
 plot(wind_ts$NIRAN[,2], type = "b", ylab = "maximum sustained wind speed (m/s)")
 
