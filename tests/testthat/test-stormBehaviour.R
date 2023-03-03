@@ -45,26 +45,13 @@ test_that("Test Willougbhy and Holland functions", {
 
 
 
-test_that("Test rasterizeCd function", {
-
-  expect_equal(rasterizeCd(seq(0, 80, 5)),
-                           c(0.000,  0.000,  0.000,  0.000,  0.002,  0.002,  0.003,
-                             0.002,  0.002,  0.002,  0.002,  0.001,  0.001,  0.000,
-                             0.000, -0.001, -0.002))
-
-})
-
-
-
-
-
 test_that("Test checkInputsSb function", {
 
   #Checking sts input
   expect_error(checkInputsSb(product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -75,7 +62,7 @@ test_that("Test checkInputsSb function", {
                              product = 1,
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -85,7 +72,7 @@ test_that("Test checkInputsSb function", {
                              product = "TS",
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -96,7 +83,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c("18",  "33",  "42",  "49",  "58",  "70"),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -106,7 +93,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(-3, -45),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -117,7 +104,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -127,7 +114,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = 1,
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -137,7 +124,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = TRUE,
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -147,7 +134,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = c("Willougbhy", "Holland"),
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -158,7 +145,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "boose01",
+                             asymmetry = "chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -188,7 +175,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = c("Boose01", "None"),
+                             asymmetry = c("Chen", "None"),
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 1,
@@ -199,7 +186,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = "TRUE",
                              space_res = "2.5min",
                              time_res = 1,
@@ -209,7 +196,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = 1,
                              space_res = "2.5min",
                              time_res = 1,
@@ -220,7 +207,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = TRUE,
@@ -230,7 +217,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = 2.3,
@@ -240,7 +227,7 @@ test_that("Test checkInputsSb function", {
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
                              method = "Willougbhy",
-                             asymmetry = "Boose01",
+                             asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
                              time_res = c(0.25, 0.5),
@@ -267,7 +254,7 @@ test_that("Test getIndices function", {
 
 test_that("Test getDataInterpolate function", {
 
-  expect_equal(getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, 3,FALSE, "Willoughby"), df_getDataInterpolate)
+  expect_equal(getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, 3, FALSE, "Willoughby"), df_getDataInterpolate)
 
 })
 
@@ -277,56 +264,25 @@ test_that("Test getDataInterpolate function", {
 
 test_that("Test computeDirection function", {
 
-  expect_equal(computeDirection(1, 1, 1,TRUE), 275)
-  expect_equal(computeDirection(1, -1, 1,TRUE), 5)
-  expect_equal(computeDirection(-1, -1, 1,TRUE), 95)
-  expect_equal(computeDirection(-1, 1, 1, TRUE), 185)
+  expect_equal(computeDirection(1, 1, 30), 315)
+  expect_equal(computeDirection(1, -1, 30), 45)
+  expect_equal(computeDirection(-1, -1, 30), 135)
+  expect_equal(computeDirection(-1, 1, 30), 225)
 
-  expect_equal(computeDirection(0, 1, 1, TRUE), 230)
-  expect_equal(computeDirection(1, 0, 1, TRUE), 320)
-  expect_equal(computeDirection(0, -1, 1, TRUE), 50)
-  expect_equal(computeDirection(-1, 0, 1, TRUE), 140)
+  expect_equal(computeDirection(0, 1, 30), 270)
+  expect_equal(computeDirection(1, 0, 30), 0)
+  expect_equal(computeDirection(0, -1, 30), 90)
+  expect_equal(computeDirection(-1, 0, 30), 180)
 
-  expect_equal(computeDirection(1, 1, 1, FALSE), 175)
-  expect_equal(computeDirection(1, -1, 1, FALSE), 265)
-  expect_equal(computeDirection(-1, -1, 1, FALSE), 355)
-  expect_equal(computeDirection(-1, 1, 1, FALSE), 85)
+  expect_equal(computeDirection(1, 1, -30), 135)
+  expect_equal(computeDirection(1, -1, -30), 225)
+  expect_equal(computeDirection(-1, -1, -30), 315)
+  expect_equal(computeDirection(-1, 1, -30), 45)
 
-  expect_equal(computeDirection(0, 1, 1, FALSE), 130)
-  expect_equal(computeDirection(1, 0, 1, FALSE), 220)
-  expect_equal(computeDirection(0, -1, 1, FALSE), 310)
-  expect_equal(computeDirection(-1, 0, 1, FALSE), 40)
-
-})
-
-
-
-
-
-test_that("Test computeAsymmetry function", {
-
-  expect_equal(computeAsymmetry("Boose01", 50, 0, 1, 1, -1, 10, TRUE), 41.464)
-  expect_equal(computeAsymmetry("Boose01", 50, 1, 0, 1, -1, 10, TRUE), 41.464)
-  expect_equal(computeAsymmetry("Boose01", 50, -1, 0, 1, -1, 10, TRUE), 48.536)
-  expect_equal(computeAsymmetry("Boose01", 50, 0, -1, 1, -1, 10, TRUE), 48.536)
-
-  expect_equal(computeAsymmetry("Boose01", 50, 0, 1, 1, -1, 10, FALSE), 48.536)
-  expect_equal(computeAsymmetry("Boose01", 50, 1, 0, 1, -1, 10, FALSE), 48.536)
-  expect_equal(computeAsymmetry("Boose01", 50, -1, 0, 1, -1, 10, FALSE), 41.464)
-  expect_equal(computeAsymmetry("Boose01", 50, 0, -1, 1, -1, 10, FALSE), 41.464)
-
-  expect_equal(computeAsymmetry("None", 50, 0, -1, 1, -1, 10, TRUE), 50)
-  expect_equal(computeAsymmetry("None", 50, 0, -1, 1, -1, 10, FALSE), 50)
-
-})
-
-
-
-
-
-test_that("Test stormBehaviour_sp function", {
-
-  expect_equal(computeAsymmetry("None", 50, 0, -1, 1, -1, 10, FALSE), 50)
+  expect_equal(computeDirection(0, 1, -30), 90)
+  expect_equal(computeDirection(1, 0, -30), 180)
+  expect_equal(computeDirection(0, -1, -30), 270)
+  expect_equal(computeDirection(-1, 0, -30), 360)
 
 })
 
@@ -341,7 +297,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -351,7 +307,7 @@ test_that("Test checkInputsSbPt function", {
                                product = 1,
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -360,7 +316,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "MSW",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -369,7 +325,7 @@ test_that("Test checkInputsSbPt function", {
                                product = c("TS", "PDI", "Exposure"),
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -379,7 +335,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "Exposure",
                                wind_threshold = c("18",  "33",  "42",  "49",  "58",  "70"),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -388,7 +344,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "Exposure",
                                wind_threshold = c(-3, -45),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -398,7 +354,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -407,7 +363,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = 1,
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -416,7 +372,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = TRUE,
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -425,7 +381,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -434,7 +390,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = c("Willougbhy", "Holland"),
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -444,7 +400,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "boose01",
+                               asymmetry = "chen",
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -471,7 +427,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = c("Boose01", "None"),
+                               asymmetry = c("Chen", "None"),
                                empirical_rmw = FALSE,
                                time_res = 1))
 
@@ -481,7 +437,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = "TRUE",
                                time_res = 1))
 
@@ -490,7 +446,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = 1,
                                time_res = 1))
 
@@ -500,7 +456,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = TRUE))
 
@@ -509,7 +465,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = 2.3))
 
@@ -518,7 +474,7 @@ test_that("Test checkInputsSbPt function", {
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
-                               asymmetry = "Boose01",
+                               asymmetry = "Chen",
                                empirical_rmw = FALSE,
                                time_res = c(0.25, 0.5)))
 
@@ -530,10 +486,10 @@ test_that("Test checkInputsSbPt function", {
 
 test_that("Test computePDI function", {
 
-  expect_equal(computePDI(seq(0,80), 1), 0.002)
-  expect_equal(computePDI(seq(0,80,0.75), 0.75), 0.002)
-  expect_equal(computePDI(seq(0,80,0.5), 0.5), 0.002)
-  expect_equal(computePDI(seq(0,80,0.25), 0.25), 0.002)
+  expect_equal(computePDI(seq(0,80), 1), 6.48)
+  expect_equal(computePDI(seq(0,80,0.75), 0.75), 6.38)
+  expect_equal(computePDI(seq(0,80,0.5), 0.5), 6.44)
+  expect_equal(computePDI(seq(0,80,0.25), 0.25), 6.42)
 
 })
 
@@ -554,11 +510,6 @@ test_that("Test computeExposure function", {
 
 
 
-test_that("Test stormBehaviour_pt function", {
-
-  expect_equal(computeAsymmetry("None", 50, 0, -1, 1, -1, 10, FALSE), 50)
-
-})
 
 
 
