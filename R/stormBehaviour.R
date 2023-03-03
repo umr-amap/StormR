@@ -1161,7 +1161,7 @@ stormBehaviour_sp <- function(sts,
 
 
 
-#' Check inputs for stormBehaviour_pt function
+#' Check inputs for temporalBehaviour function
 #'
 #' @noRd
 #' @param sts Storms object
@@ -1275,7 +1275,7 @@ computeExposure <- function(wind, time_res, threshold){
 #' rasterizeProduct counterpart function for non raster data
 #'
 #' @noRd
-#' @param product character. Product input from stormBehaviour_pt
+#' @param product character. Product input from temporalBehaviour
 #' @param wind numeric vector. Wind speed values
 #' @param direction numeric vector. Wind direction
 #' @param time_res numeric. Time resolution, used for the numerical integration
@@ -1309,13 +1309,13 @@ computeProduct <- function(product, wind, direction, time_res, result, threshold
 
 
 
-#' Arrange result before the end of stormBehaviour_pt
+#' Arrange result before the end of temporalBehaviour
 #'
 #' @noRd
 #' @param final_result list of data.frame. Where to add the computed product
 #' @param result result output from computeProduct function
-#' @param product character. Product input from stormBehaviour_pt
-#' @param points points input from stormBehaviour_pt
+#' @param product character. Product input from temporalBehaviour
+#' @param points points input from temporalBehaviour
 #' @param isoT numeric vector. Iso Times of observations
 #' @param indices numeric vector. Indices of observations
 #' @param st Storm object.
@@ -1417,17 +1417,17 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'
 #' #Compute time series of wind speed for ERICA and NIRAN on points
 #' #provided in pts using default settings
-#' ts_nc <- stormBehaviour_pt(sts_nc, points = pts)
+#' ts_nc <- temporalBehaviour(sts_nc, points = pts)
 #'
 #' #Compute PDI for ERICA and NIRAN on points provided in pts using default settings
-#' pdiPt_nc <- stormBehaviour_pt(sts_nc, points = pts, product = "PDI")
+#' pdiPt_nc <- temporalBehaviour(sts_nc, points = pts, product = "PDI")
 #'
 #' #Compute Exposure for ERICA and NIRAN on points provided in df using default settings
-#' expPt_nc <- stormBehaviour_pt(sts_nc, points = pts, product = "Exposure", wind_threshold = c(20,30))
+#' expPt_nc <- temporalBehaviour(sts_nc, points = pts, product = "Exposure", wind_threshold = c(20,30))
 #' }
 #'
 #' @export
-stormBehaviour_pt <- function(sts,
+temporalBehaviour <- function(sts,
                               points,
                               product = "TS",
                               wind_threshold = c(18, 33, 42, 49, 58, 70),
