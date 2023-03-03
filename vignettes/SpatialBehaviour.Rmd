@@ -9,7 +9,7 @@ date: "2023-03-03"
 Based on the computed wind fields, stormR allows to compute different products allowing to characterise the behaviour of winds across time and space at given specific locations (i.e., at given longitude/latitude coordinates) or for all cells of a regular grid (i.e., a raster). Three products are available:<br />
 
 ```
-st <- getStorms(loi = "Vanuatu", names = "PAM")
+st <- Storms(loi = "Vanuatu", names = "PAM")
 ```
 
 ### Maximum Sustained Wind speed

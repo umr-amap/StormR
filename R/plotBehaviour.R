@@ -108,12 +108,12 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #' @examples
 #' \dontrun{
 #' #Plot MSW raster for Pam (2015) in Vanuatu
-#' pam <- getStorms(loi = "Vanuatu", names = "PAM")
+#' pam <- Storms(loi = "Vanuatu", names = "PAM")
 #' pam_msw <- spatialBehaviour(pam, verbose = 0)
 #' plotBehaviour(pam, pam_msw)
 #'
 #' #Plot a 2D windspeed structure  for Pam (2015) in Vanuatu
-#' pam <- getStorms(loi = "Vanuatu", names = "PAM")
+#' pam <- Storms(loi = "Vanuatu", names = "PAM")
 #' pam_prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 #' plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
 #' }

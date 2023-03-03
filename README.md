@@ -178,7 +178,7 @@ library(StormR)
 ##############################################
 
 #Load the data for the tropical cyclone Pam which hit the Vanuatu in 2015
-st <- getStorms(loi = "Vanuatu", names = "PAM")
+st <- Storms(loi = "Vanuatu", names = "PAM")
 
 #Plot the tropical cyclone track and observations over or around the location of interest
 plotStorms(st, labels = T, legends = T)
@@ -207,7 +207,7 @@ writeRast(st_prod[["PAM_MSW"]], path = paste0(tempdir(),"/"))
 ################################################
 
 #Load all tropical cyclones that have passed nearby New Caledonia between 2019 and 2021
-sts <- getStorms(loi = "New Caledonia", seasons = c(2019, 2021))
+sts <- Storms(loi = "New Caledonia", seasons = c(2019, 2021))
 
 #Plot all tropical cyclone tracks and observations over or around the location of interest
 plotStorms(sts, labels = T, legends = T)
@@ -228,7 +228,7 @@ plotBehaviour(sts, sts_pdi[["NIRAN_PDI"]], labels = T)
 ##################################################################
 
 #Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2022
-stsEEZnc <- getStorms(loi = eezNC)
+stsEEZnc <- Storms(loi = eezNC)
 
 #Plot category 3 tropical cyclones (Saffir-Simpson hurricane wind scale, SSHWS)
 plotStorms(stsEEZnc, category = 3)
@@ -241,7 +241,7 @@ plotStorms(stsEEZnc, category = 3)
 #Set point location coordinates, lat/long, in decimal degrees (WGS84)
 pt <- c(188.17,-13.92)
 #Get all tropical cyclones that had passed near the point (by default <= 300 km away)
-stsPt <- getStorms(loi = pt)
+stsPt <- Storms(loi = pt)
 
 #Plot all tropical cyclone tracks and observations around the point of interest
 plotStorms(stsPt)
@@ -272,7 +272,7 @@ pol <- sf::st_sfc(sf::st_polygon(list(cbind(c(167,168,168,167,167),c(-16,-16,-13
 loi <- sf::st_sf(pol, crs = 4326)
 
 #Load the data for the tropical cyclone Harold which hit the Vanuatu in 2020
-harold <- getStorms(loi = loi, names= "HAROLD")
+harold <- Storms(loi = loi, names= "HAROLD")
 
 #Compute wind profiles using Willoughby model with asymmetry
 profWillV1 <- spatialBehaviour(harold, product = "Profiles")
