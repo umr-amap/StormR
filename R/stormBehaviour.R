@@ -516,12 +516,12 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
     pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
     sf::st_crs(pts) <- wgs84
 
-    ind <- which(sf::st_intersects(pts, world$geometry[ind_countries], sparse = FALSE) == TRUE)
-
     I <- rep(0,length(x))
-    I[ind] <- 1
 
-
+    for(i in ind_countries){
+      ind <- which(sf::st_intersects(pts, world$geometry[i], sparse = FALSE) == TRUE)
+      I[ind] <- 1
+    }
 
     wind <- Boose(r = dist_m * 0.001,
                   rmw = data$rmw[index],
@@ -1094,7 +1094,7 @@ stormBehaviour_sp <- function(sts,
   final.stack.exp <- c()
 
   if(method == "Boose"){
-    ind_countries <- which(sf::st_intersects(sts@spatial.loi, world$geometry, sparse = FALSE) == TRUE)
+    ind_countries <- which(sf::st_intersects(sts@spatial.loi.buffer, world$geometry, sparse = FALSE) == TRUE)
     asymmetry = "None"
   }else{
     ind_countries <- NULL
@@ -1172,7 +1172,7 @@ stormBehaviour_sp <- function(sts,
       #Computing wind speed/direction
       output <- computeWindProfile(dataTC, j, method, asymmetry,
                                    x, y, crds, dist.m, buffer,
-                                   sts@spatial.loi, ind_countries)
+                                   sts@spatial.loi.buffer, ind_countries)
 
       terra::values(raster.wind) <- output$wind
       terra::values(raster.direction) <- output$direction
@@ -1575,7 +1575,7 @@ stormBehaviour_pt <- function(sts,
   final.result <- list()
 
   if(method == "Boose"){
-    ind_countries <- which(sf::st_intersects(sts@spatial.loi, world$geometry, sparse = FALSE) == TRUE)
+    ind_countries <- which(sf::st_intersects(sts@spatial.loi.buffer, world$geometry, sparse = FALSE) == TRUE)
     asymmetry = "None"
   }else{
     ind_countries <- NULL
