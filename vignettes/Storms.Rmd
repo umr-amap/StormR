@@ -1,0 +1,9 @@
+---
+title: "Storms"
+output: html_document
+date: "2023-03-03"
+---
+
+- A partir d'un StormsDataset, utilisation de la fonction `Storms()` et des getters
+- plot rapide d'objets `Storms` et `Storm`
+- Filtrage par catégories

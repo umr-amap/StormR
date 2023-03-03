@@ -1,0 +1,99 @@
+---
+title: "SpatialBehaviour"
+output: html_document
+date: "2023-03-03"
+---
+
+## Products
+
+Based on the computed wind fields, stormR allows to compute different products allowing to characterise the behaviour of winds across time and space at given specific locations (i.e., at given longitude/latitude coordinates) or for all cells of a regular grid (i.e., a raster). Three products are available:<br />
+
+```
+st <- getStorms(loi = "Vanuatu", names = "PAM")
+```
+
+### Maximum Sustained Wind speed
+
+Maximum Sustained Wind speed (MSW, in $m.s^{-1}$) over the lifespan of a storm computed as follow:<br />
+
+$$
+\max(v(t) | t \in [0,T])
+$$
+
+where
+$t$ is the time of the observation<br />
+$T$ is the lifespan of the storm<br />
+
+Exemple
+```
+SpatialBehaviour()
+plotBehaviour()
+```
+
+### Power Dissipation Index (PDI)
+
+The power dissipation index (PDI, in $J.m^{2}$) or total power dissipated by a tropical storm over its lifespan (Kerry, 1999, 2005) computed as follow:<br />
+
+$$
+\int_T \rho C_d v_r^3 dt
+$$
+
+where
+$t$ is the time of the observation<br />
+$T$ is the lifespan of the storm<br />
+$\rho$ is the air density fixed to $1$ $kg.m^{-3}$ as in Kerry (1999)<br />
+$C_d$ is the drag coefficient of the storm fixed to $2$ X $10^{-3}$ as in Kerry (1999)<br />
+
+Exemple
+```
+SpatialBehaviour()
+plotBehaviour()
+```
+
+
+### Time of exposure
+
+Time of exposure (in $hours$) above a minimum  wind speed threshold as follow:<br />
+
+$$
+\int_T c(v_t) dt
+$$
+
+$$
+\left\{
+\begin{aligned}
+c(v_t) &= 1 \quad if \quad v_t \geq Thd\\
+c(v_t) &= 0 \quad if \quad v_t < Thd\\
+\end{aligned}
+\right.
+$$
+
+where<br/>
+$t$ is the time of the observation<br/>
+$T$ is the lifespan of the storm<br/>
+$v_t$ is the maximum sustained wind speed at time $t$ (in $m.s^{-1}$)<br/>
+$Thd$ is the minimum wind sped threshold (in $m.s^{-1}$)<br/>
+
+By default the time of exposure is computed for each Saffir-Simpson Hurricane Scale threshold values for tropical cyclone categories (i.e., $33$, $43$, $50$ ,$58$, and $70$ $m.s^{-1}$)
+
+
+Exemple
+```
+SpatialBehaviour()
+plotBehaviour()
+```
+
+### Inspecting and exporting SpatialBehviour products
+E.g. exporting the maximum sustained wind speed as a raster file in a given directory (here a temporary directory)
+
+- Exemple de manipulation de rasters
+``` r
+writeRast(st_prod[["PAM_MSW"]], path = paste0(tempdir(),"/"))
+```
+
+
+## References
+* Emanuel, K. A. (1999). The power of a hurricane: An example of reckless driving on the information superhighway. Weather, 54(4), 107–108. https://doi.org/10.1002/j.1477-8696.1999.tb06435.x
+
+ * Emanuel, K. (2005). Increasing destructiveness of tropical cyclones over the past 30 years. Nature, 436(7051), Article 7051. https://doi.org/10.1038/nature03906
+
