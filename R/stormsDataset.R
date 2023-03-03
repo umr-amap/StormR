@@ -54,13 +54,13 @@
 #'        database
 #'  \item A field called "rmw": which dimension contains the radius of maximum
 #'        wind speed (nm) of each observations for all storms in the netcdf
-#'        database (See stormBehaviour_sp, temporalBehaviour)
+#'        database (See spatialBehaviour, temporalBehaviour)
 #'  \item A field called "sshs": which dimension contains the Saffir Simpson
 #'        Hurricane Scale index of each observations for all storms in the
 #'        netcdf database
 #' }
 #' Finally these following fields are optional but mandatory to perform Holland
-#' model (See stormBehaviour_sp, temporalBehaviour)
+#' model (See spatialBehaviour, temporalBehaviour)
 #' \itemize{
 #'   \item A field called "pressure": which dimension contains the pressure (mb)
 #'         in the eye for of each observations for all storms in the netcdf
