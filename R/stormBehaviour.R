@@ -514,7 +514,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
     #Intersect points coordinates with land
     pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
     sf::st_crs(pts) <- wgs84
-    ind <- which(sf::st_intersects(pts, land, sparse <- FALSE) == TRUE)
+    ind <- which(sf::st_intersects(pts, land, sparse = FALSE) == TRUE)
     I <- rep(0,length(x))
     I[ind] <- 1
 
@@ -581,6 +581,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
 computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rmw, lat){
 
 
+  #Circular symmetrical wind
   dir <- -(atan2(y, x) - pi/2)
 
   if(lat >= 0){
@@ -592,15 +593,13 @@ computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rm
   dir[dir < 0] <-  dir[dir < 0] + 2*pi
   dir[dir > 2*pi] <- dir[dir > 360] - 2*pi
 
-  #Circular symmetrical wind
   wind_x <- wind * cos(dir)
   wind_y <- wind * sin(dir)
 
   #Moving wind
   stormDir <- -(atan2(vy, vx) - pi/2)
-  if(stormDir < 0){
+  if(stormDir < 0)
     stormDir <- stormDir +2*pi
-  }
 
   m_wind_x <- vh * cos(stormDir)
   m_wind_y <- vh * sin(stormDir)
@@ -612,13 +611,16 @@ computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rm
     formula <- exp(-r/500 * pi)
   }
 
-  #Total wind
+  #New total wind speed
   t_wind_x <- wind_x + formula * m_wind_x
   t_wind_y <- wind_y + formula * m_wind_y
 
 
-
   wind <- sqrt(t_wind_x**2 + t_wind_y**2)
+
+  #New wind direction
+  direction <- atan2(t_wind_y, t_wind_x) * 180/pi
+  direction[direction < 0] = direction[direction < 0] + 360
 
   return(list(wind = round(wind,3), direction = direction))
 }

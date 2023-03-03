@@ -317,7 +317,7 @@ plotStorms <- function(sts,
   opar <- graphics::par(no.readonly = TRUE)
   graphics::par(mar=c(4, 12, 4, 8))
 
-  world <- rworldmap::getMap(resolution <- "high")
+  world <- rworldmap::getMap(resolution = "high")
   maps::map(world,
             fill = TRUE,
             col = groundColor,
