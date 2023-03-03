@@ -324,7 +324,7 @@ test_that("Test computeAsymmetry function", {
 
 
 
-test_that("Test stormBehaviour_sp function", {
+test_that("Test spatialBehaviour function", {
 
   expect_equal(computeAsymmetry("None", 50, 0, -1, 1, -1, 10, FALSE), 50)
 

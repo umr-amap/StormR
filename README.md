@@ -184,7 +184,7 @@ st <- getStorms(loi = "Vanuatu", names = "PAM")
 plotStorms(st, labels = T, legends = T)
 
 #Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry). The function returns a raster with a 2.5min spatial resolution by default.
-st_prod <- stormBehaviour_sp(st, product = c("MSW", "PDI", "Exposure"))
+st_prod <- spatialBehaviour(st, product = c("MSW", "PDI", "Exposure"))
 
 
 #Plot the MSW, PDI, and an Exposure rasters alongside with the track of the storm and the limit of the location of interest
@@ -216,7 +216,7 @@ plotStorms(sts, labels = T, legends = T)
 plotStorms(sts, names = "NIRAN", labels = T)
 
 #Compute PDI rasters for all tropical cyclones with the default values
-sts_pdi <- stormBehaviour_sp(sts, product = "PDI")
+sts_pdi <- spatialBehaviour(sts, product = "PDI")
 
 #Plot the PDI for the tropical cyclone Niran alongside with the its track
 plotBehaviour(sts, sts_pdi[["NIRAN_PDI"]], labels = T)
@@ -275,10 +275,10 @@ loi <- sf::st_sf(pol, crs = 4326)
 harold <- getStorms(loi = loi, names= "HAROLD")
 
 #Compute wind profiles using Willoughby model with asymmetry
-profWillV1 <- stormBehaviour_sp(harold, product = "Profiles")
+profWillV1 <- spatialBehaviour(harold, product = "Profiles")
 
 #Compute wind profiles using Holland model with asymmetry
-profHollV2 <- stormBehaviour_sp(harold, product = "Profiles", method = "Holland")
+profHollV2 <- spatialBehaviour(harold, product = "Profiles", method = "Holland")
 
 #Compare few profiles between the two above differents methods and asymmetries
 plotBehaviour(harold,profWillV1["HAROLD_Profiles_40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))

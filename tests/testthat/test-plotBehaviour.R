@@ -4,7 +4,7 @@
 
 test_that("Tests checkInputsPb function", {
 
-  msw <- stormBehaviour_sp(pam, verbose = 0)
+  msw <- spatialBehaviour(pam, verbose = 0)
 
   #Checking sts input
   expect_error(checkInputsPb(raster_product = msw,

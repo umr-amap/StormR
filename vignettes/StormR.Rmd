@@ -217,16 +217,16 @@ plotStorms(sts.pt, category = 5, labels = TRUE)
 ## Computing rasterized products
 
 The most important functionality provided by this package is by far the
-stormBehaviour_sp function. 
+spatialBehaviour function. 
 
 
 
-```{r stormBehaviour_sp 1}
-prod.harold <- stormBehaviour_sp(harold, product = c("MSW", "PDI", "Exposure"))
+```{r spatialBehaviour 1}
+prod.harold <- spatialBehaviour(harold, product = c("MSW", "PDI", "Exposure"))
 ```
 
-```{r stormBehaviour_sp 2}
-prof.harold <- stormBehaviour_sp(harold, product = "Profiles")
+```{r spatialBehaviour 2}
+prof.harold <- spatialBehaviour(harold, product = "Profiles")
 ```
 
 ## Computing point wise products
