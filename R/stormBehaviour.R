@@ -485,10 +485,11 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 #' @param dist_m numeric array. Distance in meter from the eye of the storm for
 #' each coordinate of the raster_template_model
 #' @param buffer numeric. Buffer size (in degree) for the storm
-#' @param buffer sf. Land to intersect for Boose model
+#' @param loi sf. loi to intersect for Boose model
+#' @param ind_countries numeric vector. Indices of countries to intersect for Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_m, buffer, land){
+computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_m, buffer, loi, ind_countries){
 
 
   #Computing wind speed according to the input model
@@ -514,9 +515,13 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
     #Intersect points coordinates with land
     pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
     sf::st_crs(pts) <- wgs84
-    ind <- which(sf::st_intersects(pts, land, sparse = FALSE) == TRUE)
+
+    ind <- which(sf::st_intersects(pts, world$geometry[ind_countries], sparse = FALSE) == TRUE)
+
     I <- rep(0,length(x))
     I[ind] <- 1
+
+
 
     wind <- Boose(r = dist_m * 0.001,
                   rmw = data$rmw[index],
@@ -544,11 +549,14 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
 
 
   #Adding asymmetry
-  output <- computeAsymmetry(asymmetry, wind, direction,x, y,
-                           data$vx.deg[index], data$vy.deg[index],
-                           data$storm.speed[index],
-                           dist_m * 0.001, data$rmw[index], data$lat[index])
-
+  if(asymmetry != "None"){
+    output <- computeAsymmetry(asymmetry, wind, direction,x, y,
+                               data$vx.deg[index], data$vy.deg[index],
+                               data$storm.speed[index],
+                               dist_m * 0.001, data$rmw[index], data$lat[index])
+  }else{
+    output <- list(wind = wind, direction = direction)
+  }
 
   #Remove cells outside of buffer
   dist <- sqrt(x*x + y*y)
@@ -1085,6 +1093,12 @@ stormBehaviour_sp <- function(sts,
   final.stack.pdi <- c()
   final.stack.exp <- c()
 
+  if(method == "Boose"){
+    ind_countries <- which(sf::st_intersects(sts@spatial.loi, world$geometry, sparse = FALSE) == TRUE)
+    asymmetry = "None"
+  }else{
+    ind_countries <- NULL
+  }
 
   if(verbose > 0){
     s <- 1 #Initializing count of storms
@@ -1158,7 +1172,7 @@ stormBehaviour_sp <- function(sts,
       #Computing wind speed/direction
       output <- computeWindProfile(dataTC, j, method, asymmetry,
                                    x, y, crds, dist.m, buffer,
-                                   sts@spatial.loi)
+                                   sts@spatial.loi, ind_countries)
 
       terra::values(raster.wind) <- output$wind
       terra::values(raster.direction) <- output$direction
@@ -1560,6 +1574,13 @@ stormBehaviour_pt <- function(sts,
   #Initializing final result
   final.result <- list()
 
+  if(method == "Boose"){
+    ind_countries <- which(sf::st_intersects(sts@spatial.loi, world$geometry, sparse = FALSE) == TRUE)
+    asymmetry = "None"
+  }else{
+    ind_countries <- NULL
+  }
+
   for(st in sts@data) {
 
     #Handling indices inside loi.buffer or not
@@ -1596,7 +1617,8 @@ stormBehaviour_pt <- function(sts,
 
       #Computing wind speed/direction
       dist2p <- dist.m[,i]
-      output <- computeWindProfile(dataTC, i, method, asymmetry, x, y, pt, dist2p, buffer, sts@spatial.loi)
+      output <- computeWindProfile(dataTC, i, method, asymmetry, x, y, pt, dist2p,
+                                   buffer, sts@spatial.loi.buffer, ind_countries)
 
       vr <- output$wind
       dir <- output$direction
