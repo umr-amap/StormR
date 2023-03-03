@@ -16,7 +16,7 @@ Une reference à #time_series
 ``` {r time_series}
 library(StormR)
 df<-data.frame(lon=168.33,lat=-17.73)
-st <- getStorms(loi = "Vanuatu", names = "PAM", verbose=0)
+st <- Storms(loi = "Vanuatu", names = "PAM", verbose=0)
 ts <- temporalBehaviour(st, points = df)
 plot(ts$PAM[,1]~ts$PAM[,3],type="b",xlab="Observation ID",ylab="Wind speed (m/s)")
 plot(ts$PAM[,2]~ts$PAM[,3],type="b",xlab="Observation ID",ylab="Wind direction (degree north)")

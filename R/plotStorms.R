@@ -199,7 +199,7 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #' Plot storm track(s)
 #'
 #' This function plots a set of storm tracks contained in a Storms object
-#' (See “getStorms” function). Depending on the inputs, the user can choose to
+#' (See “Storms” function). Depending on the inputs, the user can choose to
 #' plot only a desired set of storms extracted from the Storms object
 #'
 #' @param sts Storms object

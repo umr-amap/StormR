@@ -392,14 +392,14 @@ setMethod("getInObs", signature("Storm"), function(s) s@obs)
 
 
 ###########
-#GetStorms#
+#Storms#
 ###########
 
 
 
 
 
-#' Check inputs for getStorms function
+#' Check inputs for Storms function
 #'
 #' @noRd
 #' @param sds StormsDataset object
@@ -480,7 +480,7 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
 #' Convert loi into a sf object
 #'
 #' @noRd
-#' @param loi loi input from getStorms
+#' @param loi loi input from Storms
 #'
 #' @return loi in a sf format
 convertLoi <- function(loi){
@@ -533,7 +533,7 @@ convertLoi <- function(loi){
 #' make loi buffer
 #'
 #' @noRd
-#' @param loi sf object. loi input from getStorms already converted into sf object
+#' @param loi sf object. loi input from Storms already converted into sf object
 #' @param buffer numeric. Buffer size to use (in km)
 #'
 #' @return loi extended with buffer in a sf format
@@ -552,8 +552,8 @@ makeBuffer <- function(loi, buffer){
 #'
 #' @noRd
 #' @param database Storms database
-#' @param filter_names character vector. Contains names input from the getStorms
-#' @param filter_seasons numeric vector.  Contains seasons input from the getStorms
+#' @param filter_names character vector. Contains names input from the Storms
+#' @param filter_seasons numeric vector.  Contains seasons input from the Storms
 #' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
 #' and include cyclones only. Default value is set to TRUE.
 #'
@@ -656,7 +656,7 @@ computeSSHS <- function(msw){
 #' @param storm_seasons list of cyclonic seasons. To further integrate in a Storms object
 #' @param storm_sshs list of sshs categories. To further integrate in a Storms object
 #' @param nb_storms numeric. number of storm to further integrate in a Storms object
-#' @param sds StormsDataset object. sds input from getStorms
+#' @param sds StormsDataset object. sds input from Storms
 #' @param index numeric, index of the storm in the database
 #' @param loi_sf_buffer sf object. Location of interest extended with buffer
 #'
@@ -813,27 +813,27 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #' @examples
 #' \dontrun{
 #' #Get data for a single storm on a given country
-#' pam <- getStorms(loi = "Vanuatu", names = "PAM")
+#' pam <- Storms(loi = "Vanuatu", names = "PAM")
 #'
 #' #Get data for the above storm on a point coordinates (Eastern/Northern degree)
 #' pt <- c(169, -19)
-#' pam.pt <- getStorms(loi = pt, names = "PAM")
+#' pam.pt <- Storms(loi = pt, names = "PAM")
 #'
 #' #Get data for two storms over New Caledonia
-#' sts_nc <- getStorms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+#' sts_nc <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #'
 #' #Get data for every storms that occured in the SP basin between 2010 and 2020
 #' poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
 #' sp <- sf::st_polygon(list(poly))
 #' sp <- sf::st_sfc(sp, crs = 4326)
 #' sp <- sf::st_as_sf(sp)
-#' sts_sp <- getStorms(loi = sp, seasons = c(2010,2020))
+#' sts_sp <- Storms(loi = sp, seasons = c(2010,2020))
 #' }
 #'
 #'
 #' @importFrom methods as
 #' @export
-getStorms <- function(sds = IBTRACS_SP,
+Storms <- function(sds = IBTRACS_SP,
                       loi,
                       seasons = c(1980, max(sds@database$seasons, na.rm = T)),
                       names = NULL,
@@ -850,7 +850,7 @@ getStorms <- function(sds = IBTRACS_SP,
 
 
   if (verbose > 0)
-    cat("=== getStorms processing ... ===\n\n-> Making buffer: ")
+    cat("=== Storms processing ... ===\n\n-> Making buffer: ")
 
   #Converting loi
   loi.sf <- convertLoi(loi)

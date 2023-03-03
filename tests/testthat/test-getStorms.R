@@ -310,8 +310,8 @@ test_that("Test writeStorm function", {
 
 
 
-# test_that("Test getStorms function", {
+# test_that("Test Storms function", {
 #
-#   expect_identical(getStorms(loi = "Vanuatu", names = "PAM", verbose = 0), pam)
+#   expect_identical(Storms(loi = "Vanuatu", names = "PAM", verbose = 0), pam)
 #
 # })
