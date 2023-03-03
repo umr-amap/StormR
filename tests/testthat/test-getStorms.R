@@ -238,7 +238,7 @@ test_that("Storm class getters", {
 
 
 
-test_that("Storms class getters", {
+test_that("StormsList class getters", {
 
   expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
   expect_identical(getNames(sts_nc), sts_nc@names)
@@ -310,8 +310,8 @@ test_that("Test writeStorm function", {
 
 
 
-# test_that("Test getStorms function", {
+# test_that("Test Storms function", {
 #
-#   expect_identical(getStorms(loi = "Vanuatu", names = "PAM", verbose = 0), pam)
+#   expect_identical(Storms(loi = "Vanuatu", names = "PAM", verbose = 0), pam)
 #
 # })
