@@ -91,7 +91,7 @@ StormsDataset <- methods::setClass(
 
 
 
-#' check inputs for InitDatabase function
+#' check inputs for defDatabase function
 #'
 #' @noRd
 #' @param filename character
@@ -164,7 +164,7 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
 #' informations about the process
 #' @return An object of class StormsDataset
 #' @export
-initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
+defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
                          fields = c("basin" = "basin",
                                     "names" = "name",
                                     "seasons" = "season",
