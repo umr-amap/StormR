@@ -4,7 +4,7 @@
 #'  buffer of 300km
 #'
 #' @format ## `pam`
-#' a Storms object generated with Storms
+#' a StormsList object generated with Storms
 "pam"
 
 
@@ -15,7 +15,7 @@
 #' NIRAN (2021) over New Caledonia with a buffer of 300km
 #'
 #' @format ## `sts_nc`
-#' a Storms object generated with Storms
+#' a StormsList object generated with Storms
 "sts_nc"
 
 

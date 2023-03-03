@@ -238,7 +238,7 @@ test_that("Storm class getters", {
 
 
 
-test_that("Storms class getters", {
+test_that("StormsList class getters", {
 
   expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
   expect_identical(getNames(sts_nc), sts_nc@names)

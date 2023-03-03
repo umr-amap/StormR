@@ -5,5 +5,5 @@ date: "2023-03-03"
 ---
 
 - A partir d'un StormsDataset, utilisation de la fonction `Storms()` et des getters
-- plot rapide d'objets `Storms` et `Storm`
+- plot rapide d'objets `StormsList` et `Storm`
 - Filtrage par catégories
