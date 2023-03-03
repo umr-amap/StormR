@@ -37,11 +37,16 @@ pdiPalette <- rev(viridis::inferno(50))
 exposurePalette <- rev(viridis::viridis(50))
 
 #Data for test functions
-df_getDataInterpolate <-getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, FALSE, "Willoughby")
+df_getDataInterpolate <-getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, 3, FALSE, "Willoughby")
 
+#Map for intersection
+world <- rworldmap::getMap(resolution = "high")
+world <- sf::st_as_sf(world)
+world <- sf::st_transform(world, crs = wgs84)
 
 
 usethis::use_data(resolutions, knt2ms, nm2km, km, wgs84, Basins, sshs,
                   oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
                   df_getDataInterpolate,
+                  world,
                   internal = TRUE, overwrite = T)

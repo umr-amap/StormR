@@ -700,7 +700,7 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
   sf::st_crs(pts) <- wgs84
 
   #Intersect points coordinates with loi_sf_buffer
-  ind <- which(sf::st_intersects(pts, loi_sf_buffer, sparse <- FALSE) == TRUE)
+  ind <- which(sf::st_intersects(pts, loi_sf_buffer, sparse = FALSE) == TRUE)
 
 
   #Add TC only if it intersects with loi_sf_buffer
