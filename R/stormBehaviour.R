@@ -180,7 +180,7 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   }
 
   #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen"))
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen", "Miyazaki"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Checking empirical_rmw input
@@ -615,7 +615,7 @@ computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rm
   #Formula for asymmetry
   if(asymmetry == "Chen"){
     formula <- 3 * rmw**(3/2) * r **(3/2) /(rmw**3 + r**3 + rmw**(3/2) * r**(3/2))
-  }else{
+  }else if(asymmetry == "Miyazaki"){
     formula <- exp(-r/500 * pi)
   }
 
@@ -1004,17 +1004,17 @@ maskProduct <- function(final_stack, loi, template){
 #'   \item "Willoughby": model based on fits performed on cyclonic observations
 #'   \item "Holland": model based on both basic cyclonic Physics and parameters
 #'         fitting according to cyclonic observations
+#'   \item "Boose": asymmetric model based on Holland model
 #'   }
 #'  Default value is set to "Willoughby" (See Details)
 #' @param asymmetry character. Indicates which version of asymmetry to use in
 #' the computations. Must be either:
 #'   \itemize{
-#'   \item "Boose01": formula that substract wind speed to the original wind
-#'         field depending on the position to the eye of the storm and its
-#'         velocity
-#'   \item "None": no asymmetry is added
+#'     \item "Miyazaki": ...
+#'     \item "Chen": ...
+#'     \item "None": no asymmetry is added
 #'   }
-#'  Default value is set to "Boose01" (See Details)
+#'  Default value is set to "Chen" (See Details)
 #' @param empirical_rmw logical. Whether to compute the radius of maximum wind
 #' empirically or using the radius of maximum wind from the observations.
 #' Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
@@ -1049,7 +1049,7 @@ maskProduct <- function(final_stack, loi, template){
 #'          "STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
 #' }
 #'
-#' @details Add details on Willoughy/ Holland method Boose asymmetry and getRMW method ...
+#' @details Add details on Willoughy/Holland/Boose method, asymmetries and getRMW method ...
 #' @examples
 #' \dontrun{
 #' #Compute MSW product for Pam 2015 in Vanuatu using default settings
@@ -1325,7 +1325,7 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen"))
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen", "Miyazaki"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Checking empirical_rmw input
@@ -1509,17 +1509,17 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'   \item "Willoughby": model based on fits performed on cyclonic observations
 #'   \item "Holland": model based on both basic cyclonic Physics and parameters
 #'         fitting according to cyclonic observations
+#'   \item "Boose": asymmetric model based on Holland model
 #'   }
 #'  Default value is set to "Willoughby" (See Details)
 #' @param asymmetry character. Indicates which version of asymmetry to use in
 #' the computations. Must be either:
 #'   \itemize{
-#'   \item "Boose01": formula that substract wind speed to the original wind
-#'         field depending on the position to the eye of the storm and its
-#'         velocity
+#'      \item "Miyazaki": ...
+#'      \item "Chen": ...
 #'   \item "None": no asymmetry is added
 #'   }
-#'  Default value is set to "Boose01" (See Details)
+#'  Default value is set to "Chen" (See Details)
 #' @param empirical_rmw logical. Whether to compute the radius of maximum wind
 #' empirically or using the radius of maximum wind from the observations.
 #' Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
