@@ -119,7 +119,7 @@ rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 #' Check inputs for spatialBehaviour function
 #'
 #' @noRd
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param product character
 #' @param wind_threshold numeric
 #' @param method character
@@ -863,11 +863,11 @@ maskProduct <- function(final_stack, loi, template){
 #' Compute indicators of storm behaviour
 #'
 #' This function computes/rasterizes analytic products for each storm of a
-#' Storms object, including Maximum Sustained Wind, Power Dissipation Index,
+#' StormsList object, including Maximum Sustained Wind, Power Dissipation Index,
 #' Category exposure and 2D wind speed structures/direction of wind speed for
 #' every observations
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param product character. Product to compute among:
 #'   \itemize{
 #'     \item "MSW": Maximum Sustained Wind
@@ -918,7 +918,7 @@ maskProduct <- function(final_stack, loi, template){
 #' }
 #' Default value is set to 2
 #' @returns SpatRaster stack which provides the desired product computed,
-#' projected in WGS84 and spanning over the extented LOI of the Storms object.
+#' projected in WGS84 and spanning over the extented LOI of the StormsList object.
 #' Number of layers depends on the number of storm available in sts input and
 #' also product and time_res inputs:
 #' \itemize{
@@ -1164,7 +1164,7 @@ spatialBehaviour <- function(sts,
 #' Check inputs for temporalBehaviour function
 #'
 #' @noRd
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param points data.frame
 #' @param product character
 #' @param wind_threshold numeric
@@ -1357,7 +1357,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #' products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
 #' and Exposure
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param points data.frame. Contains longitude/latitude coordinates within
 #' column names "lon" and "lat", on which to compute the desired product
 #' @param product character. Product to compute. Must be either:
