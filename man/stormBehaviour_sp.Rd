@@ -9,7 +9,7 @@ stormBehaviour_sp(
   product = "MSW",
   wind_threshold = c(18, 33, 42, 49, 58, 70),
   method = "Willoughby",
-  asymmetry = "Boose01",
+  asymmetry = "Chen",
   empirical_rmw = FALSE,
   space_res = "2.5min",
   time_res = 1,
@@ -40,18 +40,18 @@ either:
 \item "Willoughby": model based on fits performed on cyclonic observations
 \item "Holland": model based on both basic cyclonic Physics and parameters
 fitting according to cyclonic observations
+\item "Boose": asymmetric model based on Holland model
 }
 Default value is set to "Willoughby" (See Details)}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in
 the computations. Must be either:
 \itemize{
-\item "Boose01": formula that substract wind speed to the original wind
-field depending on the position to the eye of the storm and its
-velocity
+\item "Miyazaki": ...
+\item "Chen": ...
 \item "None": no asymmetry is added
 }
-Default value is set to "Boose01" (See Details)}
+Default value is set to "Chen" (See Details)}
 
 \item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
 empirically or using the radius of maximum wind from the observations.
@@ -99,7 +99,7 @@ Category exposure and 2D wind speed structures/direction of wind speed for
 every observations
 }
 \details{
-Add details on Willoughy/ Holland method Boose asymmetry and getRMW method ...
+Add details on Willoughy/Holland/Boose method, asymmetries and getRMW method ...
 }
 \examples{
 \dontrun{
