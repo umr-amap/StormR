@@ -58,6 +58,23 @@ Storm <- methods::setClass(
 
 
 
+setMethod("show",
+          signature("Storm"),
+          function(object){
+            cat("Name:",object@name,"\n")
+            cat("Season:",object@season,"\n")
+            cat("Maximum category reached (SSHS):", object@sshs,"\n")
+            cat("Number of observations:", object@numobs.all,"\n")
+            cat("Number of observations within buffer:", object@numobs,"\n")
+            cat("Indices of observations within buffer:", object@obs,"\n")
+            cat("Observations:\n")
+            print(object@obs.all)
+          })
+
+
+
+
+
 
 ##############
 #StormsList Class#
@@ -73,7 +90,6 @@ setOldClass("sf")
 #' Gather all the needed informations to model a set of storms
 #'
 #' @slot data A list of Storm objects (See Storm class)
-#' @slot nb.storms numeric. Total number of storms available in data
 #' @slot names character vector. Names of Storms available in data
 #' @slot seasons numeric vector. (Range of the) cyclonic seasons of Storms available
 #'  in `data`
@@ -89,7 +105,6 @@ StormsList <- methods::setClass(
   "StormsList",
   slots = c(
     data = "list",
-    nb.storms = "numeric",
     names = "character",
     seasons = "numeric",
     sshs = "numeric",
@@ -160,7 +175,7 @@ setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL
 #' @rdname getNbStorms-methods
 setGeneric("getNbStorms", function(sts) standardGeneric("getNbStorms"))
 #' @rdname getNbStorms-methods
-setMethod("getNbStorms", signature("StormsList"), function(sts) sts@nb.storms)
+setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data))
 
 
 
@@ -661,7 +676,6 @@ computeSSHS <- function(msw){
 #' @param storm_names list of storm names. To further integrate in a StormsList object
 #' @param storm_seasons list of cyclonic seasons. To further integrate in a StormsList object
 #' @param storm_sshs list of sshs categories. To further integrate in a StormsList object
-#' @param nb_storms numeric. number of storm to further integrate in a StormsList object
 #' @param sds StormsDataset object. sds input from Storms
 #' @param index numeric, index of the storm in the database
 #' @param loi_sf_buffer sf object. Location of interest extended with buffer
@@ -672,9 +686,8 @@ computeSSHS <- function(msw){
 #'     \item list of character (names of storms)
 #'     \item list of numeric (seasons of storms)
 #'     \item list of numeric (maximum reached categories of storms in sshs)
-#'     \item numeric vector (number of storms)
 #'   }
-writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_storms,
+writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs,
                        sds, index, loi_sf_buffer){
 
   #Getting lon/lat coordinates
@@ -710,8 +723,6 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 
   #Add TC only if it intersects with loi_sf_buffer
   if (length(ind) > 0) {
-
-    nb_storms <- nb_storms + 1
 
     storm <- Storm()
     storm@name <- sds@database$names[index]
@@ -755,8 +766,7 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
     return(list(append(storm_list, storm),
                 append(storm_names, storm@name),
                 append(storm_seasons, storm@season),
-                append(storm_sshs, storm@sshs),
-                nb_storms))
+                append(storm_sshs, storm@sshs)))
 
   }else{
 
@@ -908,13 +918,11 @@ Storms <- function(sds = IBTRACS_SP,
     storm.names <- list()
     storm.seasons <- list()
     storm.sshs <- list()
-    nb.storms <- 0
     for (i in indices) {
       sts.output <- writeStorm(storm_list = storm.list,
                                storm_names = storm.names,
                                storm_seasons = storm.seasons,
                                storm_sshs = storm.sshs,
-                               nb_storms = nb.storms,
                                sds = sds,
                                index = i,
                                loi_sf_buffer = loi.sf.buffer)
@@ -924,7 +932,6 @@ Storms <- function(sds = IBTRACS_SP,
         storm.names <- sts.output[[2]]
         storm.seasons <- sts.output[[3]]
         storm.sshs <- sts.output[[4]]
-        nb.storms <- sts.output[[5]]
       }
 
       if (verbose > 0 & length(indices) > 1){
@@ -940,7 +947,6 @@ Storms <- function(sds = IBTRACS_SP,
 
     #Initializing StormsList object
     sts <- new(Class = "StormsList",
-               nb.storms = nb.storms,
                names = unlist(storm.names),
                seasons = unlist(storm.seasons),
                sshs = unlist(storm.sshs),
