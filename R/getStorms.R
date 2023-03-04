@@ -194,7 +194,7 @@ setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL
 #' @rdname getNbStorms-methods
 #' @examples
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
-#' nb <- getNbStomrms(sts)
+#' nb <- getNbStorms(sts)
 setGeneric("getNbStorms", function(sts) standardGeneric("getNbStorms"))
 setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data))
 
