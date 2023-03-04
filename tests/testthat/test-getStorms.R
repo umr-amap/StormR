@@ -292,8 +292,8 @@ test_that("Test retrieveStorms function", {
 
 test_that("Test writeStorm function", {
 
-  expect_identical(writeStorm(list(), list(), list(), list(), IBTRACS_SP, 1170, getBuffer(pam)),
-                   list(list(getStorm(pam,"PAM")),list("PAM"), list(as.integer(2015)), list(as.integer(5))))
+  expect_identical(writeStorm(list(), list(), IBTRACS_SP, 1170, getBuffer(pam)),
+                   list(list(getStorm(pam,"PAM")),list("PAM")))
 
 })
 
