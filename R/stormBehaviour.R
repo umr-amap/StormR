@@ -309,8 +309,8 @@ getIndices <- function(st, offset, product){
       ind <- c(ind, st@obs[length(st@obs)] + o)
     }
 
-    #Remove negative values and values beyond st@numobs.all
-    ind <- ind[ind > 0 & ind <= st@numobs.all]
+    #Remove negative values and values beyond the number of observations
+    ind <- ind[ind > 0 & ind <= getNbObs(st)]
 
   }
 
