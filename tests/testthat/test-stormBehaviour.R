@@ -505,15 +505,3 @@ test_that("Test computeExposure function", {
   expect_equal(computeExposure(seq(0,80,0.25), 0.25, c(30,50)), c(50.25, 30.25))
 
 })
-
-
-
-
-
-
-
-
-
-
-
-
