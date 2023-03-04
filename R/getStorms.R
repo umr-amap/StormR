@@ -17,9 +17,6 @@
 #' @slot name character. Name of the storm
 #' @slot season  numeric. Cyclonic season in which the storm has occured
 #' @slot  sshs numeric. Maximum category reached in the Saffir Simpson Hurricane Scale
-#' @slot numobs.all numeric. Total number of observations available
-#' @slot numobs numeric. Total number of observations available within the location of interest
-#' extented with its corresponding buffer (See StormsList class)
 #' @slot obs numeric vector. Indices of observations within the location of interest
 #' extented with its corresponding buffer (See StormsList class)
 #' @slot obs.all  data.frame. Contains all of the observations available.
@@ -48,14 +45,25 @@ Storm <- methods::setClass(
     name = "character",
     season = "numeric",
     sshs = "numeric",
-    numobs.all = "numeric",
-    numobs = "numeric",
     obs = "numeric",
     obs.all = "data.frame"
   )
 )
 
 
+
+
+
+setMethod("show",
+          signature("Storm"),
+          function(object){
+            cat("Name:",object@name,"\n")
+            cat("Season:",object@season,"\n")
+            cat("Maximum category reached (SSHS):", object@sshs,"\n")
+            cat("Indices of observations within buffer:", object@obs,"\n")
+            cat("Observations:\n")
+            print(object@obs.all)
+          })
 
 
 
@@ -99,6 +107,21 @@ StormsList <- methods::setClass(
 
 
 
+
+
+setMethod("show",
+          signature("StormsList"),
+          function(object){
+            cat("***** StormList *****\n\n")
+            cat("Numbers of Storms:", getNbStorms(object),"\n")
+            cat("Storms availables:\n\n")
+            for(i in 1:getNbStorms(object)){
+              cat("*",i,"\n")
+              show(object@data[[i]])
+              cat("\n")
+            }
+            cat("\n***** End StormList *****\n")
+          })
 
 
 ##########################
@@ -330,9 +353,9 @@ setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
 #' @rdname getNbObs-methods
 setGeneric("getNbObs", function(s, ...) standardGeneric("getNbObs"))
 #' @rdname getNbObs-methods
-setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@numobs.all)
+setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) dim(getStorm(s, name, season)@obs.all)[1])
 #' @rdname getNbObs-methods
-setMethod("getNbObs", signature("Storm"), function(s) s@numobs.all)
+setMethod("getNbObs", signature("Storm"), function(s) dim(s@obs.all)[1])
 
 
 
@@ -740,11 +763,9 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs,
 
     #Removing invalid isotime from obs.all
     storm@obs.all <- storm@obs.all[ind.isotime,]
-    storm@numobs.all <- dim(storm@obs.all)[1]
-    row.names(storm@obs.all) <- seq(1,storm@numobs.all)
+    row.names(storm@obs.all) <- seq(1,dim(storm@obs.all)[1])
 
     storm@obs <- ind
-    storm@numobs <- length(ind)
     storm@sshs <- max(storm@obs.all$sshs,na.rm = T)
 
     return(list(append(storm_list, storm),
