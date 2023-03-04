@@ -3,19 +3,20 @@
 \docType{methods}
 \name{getLOI}
 \alias{getLOI}
-\alias{getLOI,Storms-method}
-\title{Get the location of interest from a Storms object}
+\title{Get LOI from a Storms object}
 \usage{
 getLOI(sts)
-
-\S4method{getLOI}{Storms}(sts)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{sts}{StormsList object}
 }
 \value{
-sf object. Location Of Interest for the given Storms object
+sf object. Location Of Interest for the given StormsList object
 }
 \description{
-Get the Location Of Interest of a Storms object
+Get the Location Of Interest from a StormsList object
+}
+\examples{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+loi <- getLOI(sts)
 }

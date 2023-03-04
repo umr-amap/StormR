@@ -3,25 +3,17 @@
 \docType{methods}
 \name{getNbObs}
 \alias{getNbObs}
-\alias{getNbObs,Storms-method}
-\alias{getNbObs,Storm-method}
-\title{Get the number of observations available for a given storm}
+\title{Get the number of observations available}
 \usage{
 getNbObs(s, ...)
-
-\S4method{getNbObs}{Storms}(s, name, season = NULL)
-
-\S4method{getNbObs}{Storm}(s)
 }
 \arguments{
-\item{s}{Storms or Storm object}
-
-\item{...}{Additional arguments}
+\item{s}{Storm/StormsList object}
 
 \item{name}{character. Name of the storm to extract in capital letters}
 
 \item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the Storms object share the same name. Default value is set
+several storms in the StormsList object share the same name. Default value is set
 to NULL}
 }
 \value{
@@ -29,4 +21,13 @@ numeric. Number of observations available for the given storm
 }
 \description{
 Get the number of observations available for a given storm
+}
+\examples{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+
+## For storm Niran
+getNbObs(getStorm(sts, name = "NIRAN"))
+
+## Equivalent to 
+getNbObs(sts, name = "NIRAN")
 }

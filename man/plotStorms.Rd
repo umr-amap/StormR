@@ -19,11 +19,11 @@ plotStorms(
 )
 }
 \arguments{
-\item{sts}{Storms object}
+\item{sts}{StormsList object}
 
 \item{names}{character vector. Name(s) of the storm(s) in capital letters to
 plot on the map. Default value is set to NULL, which will plot every storm
-provided in sts. To see which storms are included in a Storms object,
+provided in sts. To see which storms are included in a StormsList object,
 you can use the getter "getNames()"}
 
 \item{category}{numeric vector. Should be either a category or a range of
@@ -62,9 +62,9 @@ on exit. Default value is set to TRUE. It is useful for the plotBehaviour
 function. We highly recommend not to change this input}
 }
 \description{
-This function plots a set of storm tracks contained in a Storms object
-(See “getStorms” function). Depending on the inputs, the user can choose to
-plot only a desired set of storms extracted from the Storms object
+This function plots a set of storm tracks contained in a StormsList object
+(See “Storms” function). Depending on the inputs, the user can choose to
+plot only a desired set of storms extracted from the StormsList object
 }
 \examples{
 \dontrun{
