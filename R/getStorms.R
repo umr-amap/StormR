@@ -39,16 +39,12 @@
 #' }
 #' @importFrom methods new
 #' @export
-Storm <- methods::setClass(
-  "Storm",
-  slots = c(
-    name = "character",
-    season = "numeric",
-    sshs = "numeric",
-    obs = "numeric",
-    obs.all = "data.frame"
-  )
-)
+Storm <- methods::setClass("Storm",
+                           slots = c(name = "character",
+                                     season = "numeric",
+                                     sshs = "numeric",
+                                     obs = "numeric",
+                                     obs.all = "data.frame"))
 
 
 
@@ -81,29 +77,17 @@ setOldClass("sf")
 #' Gather all the needed informations to model a set of storms
 #'
 #' @slot data A list of Storm objects (See Storm class)
-#' @slot names character vector. Names of Storms available in data
-#' @slot seasons numeric vector. (Range of the) cyclonic seasons of Storms available
-#'  in `data`
-#' @slot  sshs numeric vector. Maximum category reached in the Saffir Simpson Hurricane Scale
-#'  for all storms available in data
 #' @slot buffer numeric. Buffer used to extent spatial.loi (km)
 #' @slot spatial.loi sf object. Represents the location of interest. Projection is EPSG:4326
 #' @slot spatial.loi.buffer sf object. Buffer extension of spatial.loi
 #' @importFrom methods new
 #' @import sp
 #' @export
-StormsList <- methods::setClass(
-  "StormsList",
-  slots = c(
-    data = "list",
-    names = "character",
-    seasons = "numeric",
-    sshs = "numeric",
-    buffer = "numeric",
-    spatial.loi = "sf",
-    spatial.loi.buffer = "sf"
-  )
-)
+StormsList <- methods::setClass("StormsList",
+                                slots = c(data = "list",
+                                          buffer = "numeric",
+                                          spatial.loi = "sf",
+                                          spatial.loi.buffer = "sf"))
 
 
 
@@ -264,9 +248,9 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 #' @rdname getNames-methods
 setGeneric("getNames", function(s) standardGeneric("getNames"))
 #' @rdname getNames-methods
-setMethod("getNames", signature("StormsList"), function(s) s@names)
-#' @rdname getNames-methods
 setMethod("getNames", signature("Storm"), function(s) s@name)
+#' @rdname getNames-methods
+setMethod("getNames", signature("StormsList"), function(s) unlist(lapply(s@data, getNames)))
 
 
 
@@ -290,15 +274,9 @@ setMethod("getNames", signature("Storm"), function(s) s@name)
 #' @rdname getSeasons-methods
 setGeneric("getSeasons", function(s, ...) standardGeneric("getSeasons"))
 #' @rdname getSeasons-methods
-setMethod("getSeasons", signature("StormsList"), function(s, name = NULL){
-  if(is.null(name)){
-    s@seasons
-  }else{
-    s@seasons[which(s@names == name)]
-  }
-})
-#' @rdname getSeasons-methods
 setMethod("getSeasons", signature("Storm"), function(s) s@season)
+#' @rdname getSeasons-methods
+setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@data, getSeasons)))
 
 
 
@@ -322,15 +300,10 @@ setMethod("getSeasons", signature("Storm"), function(s) s@season)
 #' @rdname getSSHS-methods
 setGeneric("getSSHS", function(s, ...) standardGeneric("getSSHS"))
 #' @rdname getSSHS-methods
-setMethod("getSSHS", signature("StormsList"), function(s, name = NULL){
-  if(is.null(name)){
-    s@sshs
-  }else{
-    s@sshs[which(s@names == name)]
-  }
-})
-#' @rdname getSSHS-methods
 setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
+#' @rdname getSSHS-methods
+setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, getSSHS)))
+
 
 
 
@@ -353,9 +326,10 @@ setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
 #' @rdname getNbObs-methods
 setGeneric("getNbObs", function(s, ...) standardGeneric("getNbObs"))
 #' @rdname getNbObs-methods
-setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) dim(getStorm(s, name, season)@obs.all)[1])
-#' @rdname getNbObs-methods
 setMethod("getNbObs", signature("Storm"), function(s) dim(s@obs.all)[1])
+#' @rdname getNbObs-methods
+setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) dim(getStorm(s, name, season)@obs.all)[1])
+
 
 
 
