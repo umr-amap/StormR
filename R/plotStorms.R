@@ -127,7 +127,7 @@ plotLabels <- function(st, by, pos) {
 #' Check inputs for plotStorms function
 #'
 #' @noRd
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param names character vector
 #' @param category numeric vector
 #' @param labels logical
@@ -198,14 +198,14 @@ checkInputsPs <- function(sts, names, category, labels, by,
 
 #' Plot storm track(s)
 #'
-#' This function plots a set of storm tracks contained in a Storms object
-#' (See “getStorms” function). Depending on the inputs, the user can choose to
-#' plot only a desired set of storms extracted from the Storms object
+#' This function plots a set of storm tracks contained in a StormsList object
+#' (See “Storms” function). Depending on the inputs, the user can choose to
+#' plot only a desired set of storms extracted from the StormsList object
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param names character vector. Name(s) of the storm(s) in capital letters to
 #' plot on the map. Default value is set to NULL, which will plot every storm
-#' provided in sts. To see which storms are included in a Storms object,
+#' provided in sts. To see which storms are included in a StormsList object,
 #' you can use the getter "getNames()"
 #' @param category numeric vector. Should be either a category or a range of
 #' categories in the Saffir Simpson scale (-1 to 5). Default value is set to

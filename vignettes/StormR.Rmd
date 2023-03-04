@@ -1,0 +1,261 @@
+---
+title: "StormR"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{StormR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(fig.align = 'center',
+                      fig.pos = 't',
+                      fig.width = 6, 
+                      fig.asp = 0.6,
+                      cache = FALSE,
+                      eval = FALSE)
+options(knitr.table.format = "latex")
+```
+
+
+```{r setup, incluse = FALSE}
+library(StormR)
+```
+
+
+# Introduction
+
+This vignette teaches you how to use StormR package solving basic problems. The 
+StormsDataset used within this document relies on the IBTrACS.SP.v04r00.nc. This 
+dataset gathers all tropical depressions, storms and cyclones that
+occured in the South Pacific ocean over since 1980. It is available in this
+package and named IBTRACS_SP and is also the default setting to retrieve storms
+using Storms function (See next section).
+
+# Solve common problems
+
+## Get data associated with storms
+
+Once the StormsDataset is loaded, the first thing to do is to select storms we
+are interested in. This operation is done using Storms function. It collects
+the storms coming from a StormsDataset (sds input) over a certain Location Of
+Interest (loi input). This searching location is extended using the max_dist 
+input, and default value is set to 300km. Note that These 2 inputs are mandatory
+to perform this function (See Storms Documentation). It is also possible to 
+filter the storms by their cyclonic seasons and their names 
+(season and input names). Finally, storms with maximum wind speed inferior to
+18 m/s (Tropical Depressions in the Saffir Simpson Hurricane Scale SSHS) can be
+ignored using remove_TD logical input. Default value is set to TRUE. Here are 
+some basic usage of the Storms function.
+
+In this case, we get the data associated with the tropical cyclone Harold that 
+hit Vanuatu in 2020. Note here that the loi represents a whole country. (See
+Storms documentation to get the full list of country available).
+```{r Storms1}
+harold <- Storms(loi = "Vanuatu", names = "HAROLD")
+```
+
+In this second example, we collect data for all tropical storms and cyclones
+over the Exclusive Economic Zone of New Caledonia (eezNC) between 2000 and 2022.
+The loi here is a sf object, but it can also be a shapefile.
+```{r Storms2}
+sts.nc <- Storms(loi = eezNC, seasons = c(2000,2022))
+```
+
+In this last example, we retrieve all data associated with tropical storms and 
+cyclones that occured since 1980 around the point coordinate 188.17: -13.92 
+(longitude, latitude decimal degree) within a 300km buffer. These coordinates 
+are actually located in the American Samoa.
+```{r Storms3}
+pt <- c(188.17,-13.92)
+sts.pt <- Storms(loi = pt)
+```
+
+
+## Access data
+
+The Storms function returns data collected from tropical storms and cyclone 
+in a Storms object especially designed for this purpose (See Storms class). Then
+, one can be interested in getting basics informations from a Storms object
+initialized with Storms. However the structure of this object is quite
+complex and it can rapidly become overwhelming trying to reach data on your own.
+Here are some getters that will help you saving time to access data.
+
+From now on, we demonstrate how to use it using the sts.nc Storms object
+initialized right above. 
+
+First of all, if you are interested in getting all the storms names just run the 
+following getter:
+```{r getNames}
+getNames(sts = sts.nc)
+```
+
+Also, for each storms in your Storms object, the following getters will return 
+the cyclonic season and the maximum category reached in the SSHS:
+```{r getSeasons}
+#Get cyclonic seasons
+getSeasons(sts = sts.nc)
+#Get maximum reached category in SSHS
+getSSHS(sts = sts.nc)
+```
+
+This getter simply returns the number of storms provided in your Storms Object:
+```{r getNbStorms}
+getNbStorms(sts = sts.nc)
+```
+
+
+The next 3 getters are useful to retrieve spatial informations on the Location 
+Of Interest of your Storms object. The first command will return the LOI
+converted in sf format:
+```{r getLOI}
+getLOI(sts = sts.nc)
+```
+
+This second command simply returns the size (in km) of the buffer used to extent
+the LOI:
+```{r getBufferSize}
+getBufferSize(sts = sts.nc)
+```
+
+Finally this third command provides the LOI extended with the buffer in sf 
+format. 
+```{r getBuffer}
+getBuffer(sts = sts.nc)
+```
+
+One can also be interested in getting all informations about a particular storm.
+This operation is achieved using the following getter:
+```{r getStorm}
+niran <- getStorm(sts = sts.nc, name = "NIRAN")
+```
+
+Note: If serveral storms share the same name, you must specify the cyclonic
+season to differenciate them. For example, 2 storms named Evan are provided 
+within the sts.pt Storms object initialized in the first section. 
+This first 
+command will then return an error, as we did not specify which one we are 
+interested in. 
+```{r getStorm1}
+#getStorm(sts = sts.pt, name = "EVAN")
+```
+We thus tackle this issue using the next 2 commands:
+```{r getStorm2}
+evan1997 <- getStorm(sts = sts.pt, name = "EVAN", season = 1997)
+evan2013 <- getStorm(sts = sts.pt, name = "EVAN", season = 2013)
+```
+
+All theses getters are designed to retrieve general informations on first levels
+of Storms objects. However we can go further into the object getting data of a 
+particular storm. Combined with the getStorm getter, these following command 
+perform really well.
+
+This command provides the cyclonic season of a particular storm:
+```{r getStorm_season}
+#getStorm_season(niran)
+#Equivalent to getSeason(getStorm(sts = sts.nc, name = "NIRAN"))
+```
+
+This command provides the maximum category reached in the sshs for a particular
+storm:
+```{r getStorm_sshs}
+#getStorm_sshs(niran)
+#Equivalent to getsshs(getStorm(sts = sts.nc, name = "NIRAN"))
+```
+
+This command provides the number of observations available for a particular
+storm:
+```{r getStorm_nbobs}
+#getStorm_nbObs(niran)
+#Equivalent to getNbObs(getStorm(sts = sts.nc, name = "NIRAN"))
+```
+
+This command provides all the observations of a particular storm:
+```{r getStorm_obs}
+#getStorm_obs(niran)
+#Equivalent to getObs(getStorm(sts = sts.nc, name = "NIRAN"))
+```
+
+
+This command provides the index of observations within the spatial buffer for a 
+particular storm:
+```{r getStorm_inobs}
+#getStorm_inObs(niran)
+#Equivalent to getInObs(getStorm(sts = sts.nc, name = "NIRAN"))
+```
+
+
+
+## Plot data associated with storms
+An interesting feature of this package is the plotStorms function which let you
+plot track(s) of storm(s) provided in a Storms object over the Location Of 
+Interest, using different settings (See plotStorms documentation to get all the 
+available input). Here are some  basics usages of this function.
+
+In this example, we plot tropical cyclone Harold track over the Vanuatu 
+alongside with the labeled observations. Default setting are used to plot
+labels: every 24h and on the right side of observations.
+```{r plotStorms1}
+plotStorms(harold, labels = TRUE)
+```
+
+
+In this second example, we plot tropical cyclone Erica (2003) and Cook (2017), 
+over the EEZ of New Caledonia alongside with the labeled observations (In this
+case every ??H).
+```{r plotStorms2}
+plotStorms(sts.nc, names = c("ERICA", "COOK"), labels = TRUE, by = 12)
+```
+
+In this last example, we plot every tropical cyclone that reached category 5 
+(SSHS) around American Samoa, alongside with the labeled observations.
+```{r plotStorms3}
+plotStorms(sts.pt, category = 5, labels = TRUE)
+```
+
+
+## Computing rasterized products
+
+The most important functionality provided by this package is by far the
+spatialBehaviour function. 
+
+
+
+```{r spatialBehaviour 1}
+prod.harold <- spatialBehaviour(harold, product = c("MSW", "PDI", "Exposure"))
+```
+
+```{r spatialBehaviour 2}
+prof.harold <- spatialBehaviour(harold, product = "Profiles")
+```
+
+## Computing point wise products
+```{r temporalBehaviour 1}
+luganville.pt <- data.frame(lon = 167.1667 , lat = -15.5333)
+
+ts.luganville <- temporalBehaviour(harold, points = luganville.pt)
+```
+
+
+## Visualize products
+
+```{r PlotBehaviour 1}
+plotBehaviour(harold, prod.harold[["HAROLD_MSW"]])
+```
+
+
+```{r PlotBehaviour 2}
+plotBehaviour(harold, prod.harold[["HAROLD_PDI"]])
+```
+
+
+```{r PlotBehaviour 3}
+plotBehaviour(harold, prod.harold[["HAROLD_Exposure_58"]])
+```
+
+##Save product
+
+```{r writeRast 1}
+writeRast(prod.harold, path = paste0(tempdir(),"/"))
+```
+

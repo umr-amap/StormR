@@ -143,10 +143,10 @@ Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, lat){
 
 
 
-#' Check inputs for stormBehaviour_sp function
+#' Check inputs for spatialBehaviour function
 #'
 #' @noRd
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param product character
 #' @param wind_threshold numeric
 #' @param method character
@@ -293,7 +293,7 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
 #' @noRd
 #' @param st Storm Object
 #' @param offset numeric. Offset to apply at the begining and at the end
-#' @param product character. product input from stormBehaviour_sp
+#' @param product character. product input from spatialBehaviour
 #'
 #' @return numeric vector gathering the indices of observation to use to perform
 #' the further computations
@@ -330,7 +330,7 @@ getIndices <- function(st, offset, product){
 #' @param time_diff numeric. Time diff in database
 #' @param empirical_rmw logical. Whether to use rmw from the data or to compute them
 #' according to getRmw function
-#' @param method character. method input from stormBehaviour_sp
+#' @param method character. method input from spatialBehaviour
 #'
 #' @return a data.frame of dimension length(indices) : 9. Columns are
 #'  \itemize{
@@ -785,7 +785,7 @@ stackRasterExposure <- function(stack, raster_template, raster_wind, threshold){
 #' Select the stack function to use depending on the product
 #'
 #' @noRd
-#' @param product character. Product input from stormBehaviour_sp
+#' @param product character. Product input from spatialBehaviour
 #' @param stack list of SpatRaster. where to stack the layer
 #' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
@@ -818,7 +818,7 @@ stackProduct <- function(product, stack, raster_template, raster_wind, threshold
 #' @param stack SpatRaster stack. All the wind speed rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
-#' @param space_res character. space_res input from stormBehaviour_sp
+#' @param space_res character. space_res input from spatialBehaviour
 #'
 #' @return list of SpatRaster
 rasterizeMSW <- function(final_stack, stack, space_res, name){
@@ -847,7 +847,7 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
-#' @param space_res character. space_res input from stormBehaviour_sp
+#' @param space_res character. space_res input from spatialBehaviour
 #' @param product characher
 #' @param threshold numeric vector. Wind threshold
 #'
@@ -880,7 +880,7 @@ rasterizePDI <- function(final_stack, stack, time_res, space_res, name, product,
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
-#' @param space_res character. space_res input from stormBehaviour_sp
+#' @param space_res character. space_res input from spatialBehaviour
 #' @param product characher
 #' @param threshold numeric vector. Wind threshold
 #'
@@ -912,14 +912,14 @@ rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product,
 #' Select the rasterizeProduct function to use depending on the product
 #'
 #' @noRd
-#' @param product character. Product input from stormBehaviour_sp
+#' @param product character. Product input from spatialBehaviour
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
 #' @param time_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param stack SpatRaster stack. All the Exposure rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
-#' @param space_res character. space_res input from stormBehaviour_sp
+#' @param space_res character. space_res input from spatialBehaviour
 #' @param threshold numeric vector. Wind threshold
 #'
 #' @return list of SpatRaster
@@ -980,11 +980,11 @@ maskProduct <- function(final_stack, loi, template){
 #' Compute indicators of storm behaviour
 #'
 #' This function computes/rasterizes analytic products for each storm of a
-#' Storms object, including Maximum Sustained Wind, Power Dissipation Index,
+#' StormsList object, including Maximum Sustained Wind, Power Dissipation Index,
 #' Category exposure and 2D wind speed structures/direction of wind speed for
 #' every observations
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param product character. Product to compute among:
 #'   \itemize{
 #'     \item "MSW": Maximum Sustained Wind
@@ -1035,7 +1035,7 @@ maskProduct <- function(final_stack, loi, template){
 #' }
 #' Default value is set to 2
 #' @returns SpatRaster stack which provides the desired product computed,
-#' projected in WGS84 and spanning over the extented LOI of the Storms object.
+#' projected in WGS84 and spanning over the extented LOI of the StormsList object.
 #' Number of layers depends on the number of storm available in sts input and
 #' also product and time_res inputs:
 #' \itemize{
@@ -1053,20 +1053,20 @@ maskProduct <- function(final_stack, loi, template){
 #' @examples
 #' \dontrun{
 #' #Compute MSW product for Pam 2015 in Vanuatu using default settings
-#' msw.pam <- stormBehaviour_sp(pam)
+#' msw.pam <- spatialBehaviour(pam)
 #'
 #' #Compute PDI product for Erica and Niran in New Caledonia using Holland model without asymmetry
-#' pdi.nc <- stormBehaviour_sp(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
+#' pdi.nc <- spatialBehaviour(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 #'
 #' #Compute Exposure for Pam 2015 in Vanuatu using default settings
-#' exp.pam <- stormBehaviour_sp(pam, product = "Exposure")
+#' exp.pam <- spatialBehaviour(pam, product = "Exposure")
 #'
 #' #Compute profiles wind speed for Erica and Niran in New Caledonia using default settings
-#' prof.nc <- stormBehaviour_sp(sts_nc, product = "Profiles")
+#' prof.nc <- spatialBehaviour(sts_nc, product = "Profiles")
 #' }
 #'
 #' @export
-stormBehaviour_sp <- function(sts,
+spatialBehaviour <- function(sts,
                               product = "MSW",
                               wind_threshold = c(18, 33, 42, 49, 58, 70),
                               method = "Willoughby",
@@ -1102,7 +1102,7 @@ stormBehaviour_sp <- function(sts,
 
   if(verbose > 0){
     s <- 1 #Initializing count of storms
-    cat("=== stormBehaviour_sp processing ... ===\n\n")
+    cat("=== spatialBehaviour processing ... ===\n\n")
 
     cat("Computation settings:\n")
     cat("  (*) Time interpolation: Every", switch(as.numeric(time_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
@@ -1288,7 +1288,7 @@ stormBehaviour_sp <- function(sts,
 #' Check inputs for stormBehaviour_pt function
 #'
 #' @noRd
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param points data.frame
 #' @param product character
 #' @param wind_threshold numeric
@@ -1485,11 +1485,11 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 
 #' Compute indicators of storm behaviour
 #'
-#' This function is the pointwise version of stormBehaviour_sp. Available
+#' This function is the pointwise version of spatialBehaviour. Available
 #' products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
 #' and Exposure
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param points data.frame. Contains longitude/latitude coordinates within
 #' column names "lon" and "lat", on which to compute the desired product
 #' @param product character. Product to compute. Must be either:

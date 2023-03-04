@@ -54,13 +54,13 @@
 #'        database
 #'  \item A field called "rmw": which dimension contains the radius of maximum
 #'        wind speed (nm) of each observations for all storms in the netcdf
-#'        database (See stormBehaviour_sp, stormBehaviour_pt)
+#'        database (See spatialBehaviour, temporalBehaviour)
 #'  \item A field called "sshs": which dimension contains the Saffir Simpson
 #'        Hurricane Scale index of each observations for all storms in the
 #'        netcdf database
 #' }
 #' Finally these following fields are optional but mandatory to perform Holland
-#' model (See stormBehaviour_sp, stormBehaviour_pt)
+#' model (See spatialBehaviour, temporalBehaviour)
 #' \itemize{
 #'   \item A field called "pressure": which dimension contains the pressure (mb)
 #'         in the eye for of each observations for all storms in the netcdf
@@ -91,7 +91,7 @@ StormsDataset <- methods::setClass(
 
 
 
-#' check inputs for InitDatabase function
+#' check inputs for defDatabase function
 #'
 #' @noRd
 #' @param filename character
@@ -167,7 +167,7 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
 #' informations about the process
 #' @return An object of class StormsDataset
 #' @export
-initDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
+defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
                          fields = c("basin" = "basin",
                                     "names" = "name",
                                     "seasons" = "season",
