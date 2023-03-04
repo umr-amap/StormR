@@ -24,14 +24,14 @@ netcdf
 \examples{
 \dontrun{
 #Save MSW raster in Geotiff file for Pam 2015 over Vanuatu
-pam <- getStorms(loi = "Vanuatu", names = "PAM")
-pam.msw <- stormBehaviour_sp(pam)
+pam <- Storms(loi = "Vanuatu", names = "PAM")
+pam.msw <- spatialBehaviour(pam)
 writeRast(pam.msw, path = paste0(tempdir(),"/"))
 
 #Save PDI rasters in Geotiff files for Erica 2003 and Niran 2021 over
 #New Caledonia
-sts.nc <- getStorms(loi = "New Caledonia", names = c("ERICA", "NIRAN"))
-pdi.nc <- stormbehaviour_sp(sts.nc, product = "PDI")
+sts.nc <- Storms(loi = "New Caledonia", names = c("ERICA", "NIRAN"))
+pdi.nc <- spatialBehaviour(sts.nc, product = "PDI")
 writeRast(pdi.nc, path = paste0(tempdir(),"/"))
 }
 

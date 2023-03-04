@@ -7,7 +7,7 @@
 \format{
 \subsection{\code{sts_nc}}{
 
-a Storms object generated with getStorms
+a StormsList object generated with Storms
 }
 }
 \usage{

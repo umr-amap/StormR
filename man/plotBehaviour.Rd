@@ -16,7 +16,7 @@ plotBehaviour(
 )
 }
 \arguments{
-\item{sts}{Storms object}
+\item{sts}{StormsList object}
 
 \item{raster_product}{SpatRaster object. Name of the layer must be
 "STORMNAME_product" where product is either:
@@ -58,19 +58,19 @@ Default value is set to 3. Ignored if labels == FALSE}
 \description{
 This function plots a rasterized product (among maximum sustained wind, power
 dissipation index, category exposure, or 2D wind speed structure/wind direction
-at a given observation) associated with a storm provided in a Storms object
+at a given observation) associated with a storm provided in a StormsList object
 alongside with its track
 }
 \examples{
 \dontrun{
 #Plot MSW raster for Pam (2015) in Vanuatu
-pam <- getStorms(loi = "Vanuatu", names = "PAM")
-pam_msw <- stormBehaviour_sp(pam, verbose = 0)
+pam <- Storms(loi = "Vanuatu", names = "PAM")
+pam_msw <- spatialBehaviour(pam, verbose = 0)
 plotBehaviour(pam, pam_msw)
 
 #Plot a 2D windspeed structure  for Pam (2015) in Vanuatu
-pam <- getStorms(loi = "Vanuatu", names = "PAM")
-pam_prof <- stormBehaviour_sp(pam, product = "Profiles", verbose = 0)
+pam <- Storms(loi = "Vanuatu", names = "PAM")
+pam_prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
 }
 

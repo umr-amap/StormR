@@ -16,7 +16,7 @@ stormBehaviour_pt(
 )
 }
 \arguments{
-\item{sts}{Storms object}
+\item{sts}{StormsList object}
 
 \item{points}{data.frame. Contains longitude/latitude coordinates within
 column names "lon" and "lat", on which to compute the desired product}
@@ -79,7 +79,7 @@ in points.
 }
 }
 \description{
-This function is the pointwise version of stormBehaviour_sp. Available
+This function is the pointwise version of spatialBehaviour. Available
 products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
 and Exposure
 }
