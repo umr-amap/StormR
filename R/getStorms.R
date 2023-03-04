@@ -431,9 +431,10 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
                 identical(class(loi), "character"))
 
 
-    if(identical(class(loi), "numeric"))
+    if(identical(class(loi), "numeric")){
       stopifnot("loi must have valid lon/lat coordinates " = length(loi) == 2
-                & loi[1] >= 0 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
+                & loi[1] >= -180 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
+    }
 
     if(identical(class(loi), "character"))
       stopifnot("loi must be length 1 " = length(loi) == 1)
@@ -507,6 +508,10 @@ convertLoi <- function(loi){
 
   } else if (identical(class(loi), c("numeric"))){
 
+    if(loi[1] < 0){
+      loi[1] <- loi[1] + 360
+      warning("longitude coordinate for loi set between 0-360°")
+    }
     loi.df <- data.frame(lon = loi[1], lat = loi[2])
     loi.sf <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
     sf::st_crs(loi.sf) = wgs84
