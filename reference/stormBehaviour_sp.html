@@ -26,6 +26,9 @@ every observations"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/StormR.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -58,7 +61,7 @@ every observations</p>
 <span>  product <span class="op">=</span> <span class="st">"MSW"</span>,</span>
 <span>  wind_threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">33</span>, <span class="fl">42</span>, <span class="fl">49</span>, <span class="fl">58</span>, <span class="fl">70</span><span class="op">)</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"Willoughby"</span>,</span>
-<span>  asymmetry <span class="op">=</span> <span class="st">"Boose01"</span>,</span>
+<span>  asymmetry <span class="op">=</span> <span class="st">"Chen"</span>,</span>
 <span>  empirical_rmw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  space_res <span class="op">=</span> <span class="st">"2.5min"</span>,</span>
 <span>  time_res <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -93,16 +96,16 @@ compute. Default value is set to Saffir Simpson Hurricane Scale thresholds</p></
 either:</p><ul><li><p>"Willoughby": model based on fits performed on cyclonic observations</p></li>
 <li><p>"Holland": model based on both basic cyclonic Physics and parameters
 fitting according to cyclonic observations</p></li>
+<li><p>"Boose": asymmetric model based on Holland model</p></li>
 </ul><p>Default value is set to "Willoughby" (See Details)</p></dd>
 
 
 <dt>asymmetry</dt>
 <dd><p>character. Indicates which version of asymmetry to use in
-the computations. Must be either:</p><ul><li><p>"Boose01": formula that substract wind speed to the original wind
-field depending on the position to the eye of the storm and its
-velocity</p></li>
+the computations. Must be either:</p><ul><li><p>"Miyazaki": ...</p></li>
+<li><p>"Chen": ...</p></li>
 <li><p>"None": no asymmetry is added</p></li>
-</ul><p>Default value is set to "Boose01" (See Details)</p></dd>
+</ul><p>Default value is set to "Chen" (See Details)</p></dd>
 
 
 <dt>empirical_rmw</dt>
@@ -151,7 +154,7 @@ in wind_threshold input and for each storm. Name of layers are
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Add details on Willoughy/ Holland method Boose asymmetry and getRMW method ...</p>
+    <p>Add details on Willoughy/Holland/Boose method, asymmetries and getRMW method ...</p>
     </div>
 
     <div id="ref-examples">
