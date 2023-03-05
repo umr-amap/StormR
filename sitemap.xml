@@ -31,10 +31,16 @@
     <loc>/reference/Storm-class.html</loc>
   </url>
   <url>
-    <loc>/reference/Storms-class.html</loc>
+    <loc>/reference/Storms.html</loc>
   </url>
   <url>
     <loc>/reference/StormsDataset-class.html</loc>
+  </url>
+  <url>
+    <loc>/reference/StormsList-class.html</loc>
+  </url>
+  <url>
+    <loc>/reference/defDatabase.html</loc>
   </url>
   <url>
     <loc>/reference/eezNC.html</loc>
@@ -73,13 +79,7 @@
     <loc>/reference/getStorm-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getStorms.html</loc>
-  </url>
-  <url>
     <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/initDatabase.html</loc>
   </url>
   <url>
     <loc>/reference/pam.html</loc>
@@ -91,10 +91,13 @@
     <loc>/reference/plotStorms.html</loc>
   </url>
   <url>
-    <loc>/reference/stormBehaviour_pt.html</loc>
+    <loc>/reference/show-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/stormBehaviour_sp.html</loc>
+    <loc>/reference/spatialBehaviour.html</loc>
+  </url>
+  <url>
+    <loc>/reference/stormBehaviour_pt.html</loc>
   </url>
   <url>
     <loc>/reference/sts_nc.html</loc>
