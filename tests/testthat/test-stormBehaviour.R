@@ -54,7 +54,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   #Checking product input
@@ -65,7 +65,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -75,7 +75,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   #Check wind_threshold input
@@ -86,7 +86,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -96,7 +96,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   #Checking method input
@@ -107,7 +107,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -117,7 +117,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -127,7 +127,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -137,7 +137,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   #Checking asymmetry input
@@ -148,7 +148,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -158,7 +158,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = 1,
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -168,7 +168,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = TRUE,
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -178,7 +178,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = c("Chen", "None"),
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   #Checking empirical_rmw inputs
@@ -189,7 +189,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = "TRUE",
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -199,10 +199,10 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = 1,
                              space_res = "2.5min",
-                             time_res = 1,
+                             temp_res = 1,
                              verbose = 2))
 
-  #Checking time_res input
+  #Checking temp_res input
   expect_error(checkInputsSb(sts = pam,
                              product = c("MSW", "PDI", "Exposure"),
                              wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -210,17 +210,7 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = TRUE,
-                             verbose = 2))
-
-  expect_error(checkInputsSb(sts = pam,
-                             product = c("MSW", "PDI", "Exposure"),
-                             wind_threshold = c(18,  33,  42,  49,  58,  70),
-                             method = "Willougbhy",
-                             asymmetry = "Chen",
-                             empirical_rmw = FALSE,
-                             space_res = "2.5min",
-                             time_res = 2.3,
+                             temp_res = TRUE,
                              verbose = 2))
 
   expect_error(checkInputsSb(sts = pam,
@@ -230,7 +220,17 @@ test_that("Test checkInputsSb function", {
                              asymmetry = "Chen",
                              empirical_rmw = FALSE,
                              space_res = "2.5min",
-                             time_res = c(0.25, 0.5),
+                             temp_res = 2.3,
+                             verbose = 2))
+
+  expect_error(checkInputsSb(sts = pam,
+                             product = c("MSW", "PDI", "Exposure"),
+                             wind_threshold = c(18,  33,  42,  49,  58,  70),
+                             method = "Willougbhy",
+                             asymmetry = "Chen",
+                             empirical_rmw = FALSE,
+                             space_res = "2.5min",
+                             temp_res = c(0.25, 0.5),
                              verbose = 2))
 
 })
@@ -299,7 +299,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   #Checking product input
   expect_error(checkInputsSbPt(sts = pam,
@@ -309,7 +309,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -318,7 +318,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -327,7 +327,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   #Check wind_threshold input
   expect_error(checkInputsSbPt(sts = pam,
@@ -337,7 +337,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -346,7 +346,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   #Checking method input
   expect_error(checkInputsSbPt(sts = pam,
@@ -356,7 +356,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -365,7 +365,7 @@ test_that("Test checkInputsSbPt function", {
                                method = 1,
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -374,7 +374,7 @@ test_that("Test checkInputsSbPt function", {
                                method = TRUE,
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -383,7 +383,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -392,7 +392,7 @@ test_that("Test checkInputsSbPt function", {
                                method = c("Willougbhy", "Holland"),
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   #Checking asymmetry input
   expect_error(checkInputsSbPt(sts = pam,
@@ -402,7 +402,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "chen",
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -411,7 +411,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = 1,
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -420,7 +420,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = TRUE,
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -429,7 +429,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = c("Chen", "None"),
                                empirical_rmw = FALSE,
-                               time_res = 1))
+                               temp_res = 1))
 
   #Checking empirical_rmw inputs
   expect_error(checkInputsSbPt(sts = pam,
@@ -439,7 +439,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = "TRUE",
-                               time_res = 1))
+                               temp_res = 1))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -448,9 +448,9 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = 1,
-                               time_res = 1))
+                               temp_res = 1))
 
-  #Checking time_res input
+  #Checking temp_res input
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
@@ -458,16 +458,7 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = TRUE))
-
-  expect_error(checkInputsSbPt(sts = pam,
-                               points = data.frame(lon = 169, lat = -19),
-                               product = "TS",
-                               wind_threshold = c(18,  33,  42,  49,  58,  70),
-                               method = "Willougbhy",
-                               asymmetry = "Chen",
-                               empirical_rmw = FALSE,
-                               time_res = 2.3))
+                               temp_res = TRUE))
 
   expect_error(checkInputsSbPt(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
@@ -476,7 +467,16 @@ test_that("Test checkInputsSbPt function", {
                                method = "Willougbhy",
                                asymmetry = "Chen",
                                empirical_rmw = FALSE,
-                               time_res = c(0.25, 0.5)))
+                               temp_res = 2.3))
+
+  expect_error(checkInputsSbPt(sts = pam,
+                               points = data.frame(lon = 169, lat = -19),
+                               product = "TS",
+                               wind_threshold = c(18,  33,  42,  49,  58,  70),
+                               method = "Willougbhy",
+                               asymmetry = "Chen",
+                               empirical_rmw = FALSE,
+                               temp_res = c(0.25, 0.5)))
 
 })
 
