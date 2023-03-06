@@ -1307,8 +1307,8 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   stopifnot("no data found" = !missing(points))
   stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
   stopifnot("colnames of points must be \"x\" (Eastern degree), \"y\" (Northern degree)" = colnames(points) == c("x","y"))
-  stopifnot("Invalid points coordinates" = points$lon >= 0 & points$lon <= 360 &
-              points$lat >= -90 & points$lat <= 90)
+  stopifnot("Invalid points coordinates" = points$x >= 0 & points$x <= 360 &
+              points$y >= -90 & points$y <= 90)
 
   #Checking product input
   stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
@@ -1449,22 +1449,28 @@ computeProduct <- function(product, wind, direction, temp_res, result, threshold
 finalizeResult <- function(final_result, result, product, points, isoT, indices, st, threshold){
 
   if(product == "TS"){
-    df <- data.frame(result, indices = indices, isoTimes = isoT)
-    c <- c()
+    l <- list()
     for(i in 1:dim(points)[1]){
-      c <- c(c, paste0("(",points$x[i],",",points$y[i],")w"), paste0("(",points$x[i],",",points$y[i],")dir"))
+     
+      if(i > 1)
+        i <- i + 1
+      
+      df <- data.frame(result[,i], result[,i:i+1], indices = indices, isoTimes = isoT)
+      colnames(df) <- c("wind", "direction", "indices", "isoTimes")
+      
+      l <- append(l, list(df))
     }
-    c <- c(c, "indices", "isoTimes")
-    colnames(df) <- c
+    names(l) <- rownames(points)
+  
   }else if(product == "PDI"){
-    df <- data.frame(result, row.names = "PDI")
-    colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
+    l <- data.frame(result, row.names = "PDI")
+    colnames(l) <- rownames(points)
   }else{
-    df <- data.frame(result, row.names = paste("Min threshold:",threshold,"m/s"))
-    colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
+    l <- data.frame(result, row.names = paste("Min threshold:",threshold,"m/s"))
+    colnames(l) <- rownames(points)
   }
 
-  dfn <- list(df)
+  dfn <- list(l)
   names(dfn) <- st@name
   final_result <- append(final_result, dfn)
 
@@ -1569,6 +1575,8 @@ stormBehaviour_pt <- function(sts,
                               temp_res = 1){
 
   checkInputsSbPt(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, temp_res)
+  
+  points$x[points$x < 0] = points$x[points$x < 0] + 360
 
   buffer <- 2.5
   #Initializing final result
