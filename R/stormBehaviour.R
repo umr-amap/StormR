@@ -555,7 +555,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
                                data$storm.speed[index],
                                dist_m * 0.001, data$rmw[index], data$lat[index])
   }else{
-    output <- list(wind = wind, direction = direction)
+    output <- list(wind = round(wind,3), direction = round(direction,3))
   }
 
   #Remove cells outside of buffer
@@ -630,7 +630,7 @@ computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rm
   direction <- atan2(t_wind_y, t_wind_x) * 180/pi
   direction[direction < 0] = direction[direction < 0] + 360
 
-  return(list(wind = round(wind,3), direction = direction))
+  return(list(wind = round(wind,3), direction = round(direction,3)))
 }
 
 
