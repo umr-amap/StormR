@@ -18,6 +18,7 @@ object
 Get the name(s) of storm(s) available in a Storm/StormsList object
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 
 ## For storm Niran
@@ -25,4 +26,5 @@ getNames(getStorm(sts, name = "NIRAN"))
 
 ## For sts
 getNames(sts)
+}
 }

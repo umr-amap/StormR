@@ -24,6 +24,7 @@ Get the indices of observations within the extended Location Of Interest for
 a given storm
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 
 ## For storm Niran
@@ -31,4 +32,5 @@ getInObs(getStorm(sts, name = "NIRAN"))
 
 ## Equivalent to 
 getInObs(sts, name = "NIRAN")
+}
 }

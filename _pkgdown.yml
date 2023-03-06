@@ -1,0 +1,60 @@
+url: ~
+template:
+  bootstrap: 5
+
+reference:
+
+- title: Initialize Storms
+  desc: Functions for initializing Storm/StormsList objects
+  contents:  
+  - '`StormsDataset-class`'
+  - '`defDatabase`'
+  - '`Storm-class`'
+  - '`StormsList-class`'
+  - '`Storms`'
+  
+  
+- title: Getters
+  desc: Functions for getting data associated with Storm/StormsList objects
+  contents:
+  - '`getStorm`'
+  - '`getNames`'
+  - '`getSeasons`'
+  - '`getSSHS`'
+  - '`getNbObs`'
+  - '`getInObs`'
+  - '`getObs`'
+  - '`getNbStorms`'
+  - '`getLOI`'
+  - '`getBuffer`'
+  - '`getBufferSize`'
+  
+  
+- title: Compute products
+  desc: Functions for computing products
+  contents:
+  - '`spatialBehaviour`'
+  - '`stormBehaviour_pt`'
+  
+  
+- title: Plot
+  desc: Functions for plotting tracks and products
+  contents:
+  - '`plotStorms`'
+  - '`plotBehaviour`'
+  
+  
+- title: Write
+  desc: Function for writing data in .GeoTiff or .nc format
+  contents:
+  - '`writeRast`'
+  
+  
+- title: Data
+  desc: Examples data provided by this package
+  contents:
+  - '`pam`'
+  - '`sts_nc`'
+  - '`eezNC`'
+  - '`IBTRACS_SP`'
+  
