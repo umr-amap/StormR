@@ -153,11 +153,11 @@ Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, lat){
 #' @param asymmetry character
 #' @param empirical_rmw logical
 #' @param space_res character
-#' @param time_res numeric
+#' @param temp_res numeric
 #' @param verbose numeric
 #' @return NULL
 checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
-                         empirical_rmw, space_res, time_res, verbose){
+                         empirical_rmw, space_res, temp_res, verbose){
 
   #Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -191,10 +191,10 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   stopifnot("space_res must be length 1" = length(space_res) == 1)
   stopifnot("invalid space_res: must be either 30s, 2.5min, 5min or 10min" = space_res %in% c("30sec", "2.5min", "5min", "10min"))
 
-  #Checking time_res input
-  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
-  stopifnot("time_res must be length 1" = length(time_res) == 1)
-  stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
+  #Checking temp_res input
+  stopifnot("temp_res must be numeric" = identical(class(temp_res), "numeric"))
+  stopifnot("temp_res must be length 1" = length(temp_res) == 1)
+  stopifnot("invalid temp_res: must be either 1, 0.75, 0.5 or 0.25" = temp_res %in% c(1, 0.75, 0.5, 0.25))
 
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -842,7 +842,7 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #'
 #' @noRd
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
@@ -853,12 +853,12 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #'
 #'
 #' @return list of SpatRaster
-rasterizePDI <- function(final_stack, stack, time_res, space_res, name, product, threshold){
+rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, product, threshold){
 
   nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
   #Integrating over the whole track
-  prod <- sum(stack, na.rm = T) * time_res
+  prod <- sum(stack, na.rm = T) * temp_res
   #Applying focal function to smooth results
   prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = T, pad = T)
   names(prod) <- paste0(name,"_",product)
@@ -875,7 +875,7 @@ rasterizePDI <- function(final_stack, stack, time_res, space_res, name, product,
 #'
 #' @noRd
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
@@ -886,7 +886,7 @@ rasterizePDI <- function(final_stack, stack, time_res, space_res, name, product,
 #'
 #'
 #' @return list of SpatRaster
-rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product, threshold){
+rasterizeExp <- function(final_stack, stack, temp_res, space_res, name, product, threshold){
 
   nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
@@ -894,7 +894,7 @@ rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product,
   for(l in 1:length(threshold)){
     ind <- seq(l,terra::nlyr(stack),length(threshold))
     #Integrating over the whole track
-    prod <- sum(terra::subset(stack, ind), na.rm = T) * time_res
+    prod <- sum(terra::subset(stack, ind), na.rm = T) * temp_res
     #Applying focal function to smooth results
     prod <- terra::focal(prod, w = matrix(1, nbg, nbg), max, na.rm = T, na.rm = T)
     names(prod) <- paste0(name,"_",product,"_",threshold[l])
@@ -914,7 +914,7 @@ rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product,
 #' @noRd
 #' @param product character. Product input from spatialBehaviour
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param stack SpatRaster stack. All the Exposure rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
@@ -923,7 +923,7 @@ rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product,
 #' @param threshold numeric vector. Wind threshold
 #'
 #' @return list of SpatRaster
-rasterizeProduct <- function(product, final_stack, stack, time_res, space_res, name, threshold){
+rasterizeProduct <- function(product, final_stack, stack, temp_res, space_res, name, threshold){
 
   if(product == "MSW") {
     #Computing MSW analytic raster
@@ -931,11 +931,11 @@ rasterizeProduct <- function(product, final_stack, stack, time_res, space_res, n
 
   }else if (product == "PDI") {
     #Computing PDI analytic raster
-    final_stack <- rasterizePDI(final_stack, stack, time_res, space_res, name, "PDI", NULL)
+    final_stack <- rasterizePDI(final_stack, stack, temp_res, space_res, name, "PDI", NULL)
 
   }else if (product == "Exposure") {
     #Computing Exposure analytic raster
-    final_stack <- rasterizeExp(final_stack, stack, time_res, space_res, name,"Exposure", threshold)
+    final_stack <- rasterizeExp(final_stack, stack, temp_res, space_res, name,"Exposure", threshold)
 
   }
 
@@ -1021,7 +1021,7 @@ maskProduct <- function(final_stack, loi, template){
 #' et al. 2006 is used to compute rmw
 #' @param space_res character. Space resolution for the raster(s) to compute.
 #' Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min
-#' @param time_res numeric. Period of time used to interpolate data.
+#' @param temp_res numeric. Period of time used to interpolate data.
 #' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 #' Default value is set to 1
 #' @param verbose numeric. Whether or not the function should display
@@ -1037,7 +1037,7 @@ maskProduct <- function(final_stack, loi, template){
 #' @returns SpatRaster stack which provides the desired product computed,
 #' projected in WGS84 and spanning over the extented LOI of the StormsList object.
 #' Number of layers depends on the number of storm available in sts input and
-#' also product and time_res inputs:
+#' also product and temp_res inputs:
 #' \itemize{
 #'    \item "MSW" produces one layer per storm. Name of layer is "STORMNAME_MSW"
 #'    \item "PDI" produces one layer per storm. Name of layer is "STORMNAME_PDI"
@@ -1073,13 +1073,13 @@ spatialBehaviour <- function(sts,
                               asymmetry = "Chen",
                               empirical_rmw = FALSE,
                               space_res = "2.5min",
-                              time_res = 1,
+                              temp_res = 1,
                               verbose = 2){
 
   start_time <- Sys.time()
 
   checkInputsSb(sts, product, wind_threshold, method, asymmetry,
-                empirical_rmw, space_res, time_res, verbose)
+                empirical_rmw, space_res, temp_res, verbose)
 
 
   #Make raster template
@@ -1105,7 +1105,7 @@ spatialBehaviour <- function(sts,
     cat("=== spatialBehaviour processing ... ===\n\n")
 
     cat("Computation settings:\n")
-    cat("  (*) Time interpolation: Every", switch(as.numeric(time_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
+    cat("  (*) Time interpolation: Every", switch(as.numeric(temp_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
     cat("  (*) Space resolution:",names(resolutions[space_res]),"\n")
     cat("  (*) Method used:", method ,"\n")
     cat("  (*) Product(s) to compute:", product ,"\n")
@@ -1129,7 +1129,7 @@ spatialBehaviour <- function(sts,
     it2 <- st@obs.all$iso.time[2]
     time.diff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
     #Interpolated time step dt, default value dt <- 4 --> 1h
-    dt <- 1 + (1 / time_res * time.diff) # + 1 for the limit values
+    dt <- 1 + (1 / temp_res * time.diff) # + 1 for the limit values
 
     #Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, dt, time.diff, empirical_rmw, method)
@@ -1208,17 +1208,17 @@ spatialBehaviour <- function(sts,
     if("MSW" %in% product){
       aux.stack.msw <- terra::rast(aux.stack.msw)
       final.stack.msw <- rasterizeProduct("MSW", final.stack.msw, aux.stack.msw,
-                                          time_res, space_res, st@name, NULL)
+                                          temp_res, space_res, st@name, NULL)
     }
     if("PDI" %in% product){
       aux.stack.pdi <- terra::rast(aux.stack.pdi)
       final.stack.pdi <- rasterizeProduct("PDI", final.stack.pdi, aux.stack.pdi,
-                                          time_res, space_res, st@name, NULL)
+                                          temp_res, space_res, st@name, NULL)
     }
     if("Exposure" %in% product){
       aux.stack.exp <- terra::rast(aux.stack.exp)
       final.stack.exp <- rasterizeProduct("Exposure", final.stack.exp, aux.stack.exp,
-                                          time_res, space_res, st@name, wind_threshold)
+                                          temp_res, space_res, st@name, wind_threshold)
     }
     if("Profiles" %in% product){
       aux.stack.prof <- terra::rast(aux.stack.prof)
@@ -1295,10 +1295,10 @@ spatialBehaviour <- function(sts,
 #' @param method character
 #' @param asymmetry character
 #' @param empirical_rmw logical
-#' @param time_res numeric
+#' @param temp_res numeric
 #' @return NULL
 checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymmetry,
-                            empirical_rmw, time_res){
+                            empirical_rmw, temp_res){
 
   #Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -1331,10 +1331,10 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   #Checking empirical_rmw input
   stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
 
-  #Checking time_res input
-  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
-  stopifnot("time_res must be length 1" = length(time_res) == 1)
-  stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
+  #Checking temp_res input
+  stopifnot("temp_res must be numeric" = identical(class(temp_res), "numeric"))
+  stopifnot("temp_res must be length 1" = length(temp_res) == 1)
+  stopifnot("invalid temp_res: must be either 1, 0.75, 0.5 or 0.25" = temp_res %in% c(1, 0.75, 0.5, 0.25))
 
 }
 
@@ -1346,11 +1346,11 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
 #'
 #' @noRd
 #' @param wind numeric vector. Wind speed values
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #'
 #' @return numeric. PDI computed using the wind speed values in wind
-computePDI <- function(wind, time_res){
+computePDI <- function(wind, temp_res){
 
   #Computing surface drag coefficient
   rho <- 1
@@ -1360,7 +1360,7 @@ computePDI <- function(wind, time_res){
   #Applying both rho and surface drag coefficient
   pdi <- wind * rho * Cd
   #Integrating over the whole track
-  pdi <- sum(pdi, na.rm = T) * time_res
+  pdi <- sum(pdi, na.rm = T) * temp_res
 
   return(round(pdi,3))
 }
@@ -1373,20 +1373,20 @@ computePDI <- function(wind, time_res){
 #'
 #' @noRd
 #' @param wind numeric vector. Wind speed values
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param threshold numeric vector. Wind threshold
 #'
 #' @return numeric vector of length 5 (for each category).
 #'  Exposure computed using the wind speed values in wind
-computeExposure <- function(wind, time_res, threshold){
+computeExposure <- function(wind, temp_res, threshold){
 
   exposure = c()
   for(t in threshold){
     ind <- which(wind >= t)
     expo <- rep(0,length(wind))
     expo[ind] <- 1
-    exposure <- c(exposure, sum(expo, na.rm = T) * time_res)
+    exposure <- c(exposure, sum(expo, na.rm = T) * temp_res)
 }
 
   return(exposure)
@@ -1402,7 +1402,7 @@ computeExposure <- function(wind, time_res, threshold){
 #' @param product character. Product input from stormBehaviour_pt
 #' @param wind numeric vector. Wind speed values
 #' @param direction numeric vector. Wind direction
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param result numeric array. Similar as final_stack, i.e where to add the
 #' computed product
@@ -1414,15 +1414,15 @@ computeExposure <- function(wind, time_res, threshold){
 #'   \item 1 : number of points. If product == "PDI"
 #'   \item 5 : number of points. If product == "Exposure"
 #' }
-computeProduct <- function(product, wind, direction, time_res, result, threshold){
+computeProduct <- function(product, wind, direction, temp_res, result, threshold){
 
   if(product == "TS"){
     prod <- cbind(wind, direction)
   }else if (product == "PDI") {
-    prod <- computePDI(wind, time_res)
+    prod <- computePDI(wind, temp_res)
 
   }else if (product == "Exposure") {
-    prod <- computeExposure(wind, time_res, threshold)
+    prod <- computeExposure(wind, temp_res, threshold)
 
   }
 
@@ -1524,7 +1524,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #' empirically or using the radius of maximum wind from the observations.
 #' Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
 #' et al. 2006 is used to compute rmw
-#' @param time_res numeric. Period of time used to interpolate data.
+#' @param temp_res numeric. Period of time used to interpolate data.
 #' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 #' Default value is set to 1
 #'
@@ -1566,9 +1566,9 @@ stormBehaviour_pt <- function(sts,
                               method = "Willoughby",
                               asymmetry = "Chen",
                               empirical_rmw = FALSE,
-                              time_res = 1){
+                              temp_res = 1){
 
-  checkInputsSbPt(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, time_res)
+  checkInputsSbPt(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, temp_res)
 
   buffer <- 2.5
   #Initializing final result
@@ -1590,7 +1590,7 @@ stormBehaviour_pt <- function(sts,
     it2 <- st@obs.all$iso.time[2]
     time.diff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
     #Interpolated time step dt, default value dt <- 4 --> 1h
-    dt <- 1 + (1 / time_res * time.diff) # + 1 for the limit values
+    dt <- 1 + (1 / temp_res * time.diff) # + 1 for the limit values
 
     #Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, dt, time.diff, empirical_rmw, method)
@@ -1624,7 +1624,7 @@ stormBehaviour_pt <- function(sts,
       dir <- output$direction
 
       #Computing product
-      res <- computeProduct(product, vr, dir, time_res, res, wind_threshold)
+      res <- computeProduct(product, vr, dir, temp_res, res, wind_threshold)
 
     }
 
