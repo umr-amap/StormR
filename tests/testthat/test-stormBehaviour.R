@@ -505,3 +505,20 @@ test_that("Test computeExposure function", {
   expect_equal(computeExposure(seq(0,80,0.25), 0.25, c(30,50)), c(50.25, 30.25))
 
 })
+
+
+
+
+
+test_that("Test temporalBehaviour function", {
+
+  expect_equal(computeAsymmetry("None", 50, 0, -1, 1, -1, 10, FALSE), 50)
+
+})
+
+
+
+
+
+
+
