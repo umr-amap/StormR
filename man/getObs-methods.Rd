@@ -23,6 +23,7 @@ data.frame. Observations of the given storm
 Get the observations available for a given storm
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 
 ## For storm Niran
@@ -30,4 +31,5 @@ getObs(getStorm(sts, name = "NIRAN"))
 
 ## Equivalent to 
 getObs(sts, name = "NIRAN")
+}
 }
