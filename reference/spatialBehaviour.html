@@ -61,7 +61,7 @@ every observations</p>
 <span>  asymmetry <span class="op">=</span> <span class="st">"Chen"</span>,</span>
 <span>  empirical_rmw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  space_res <span class="op">=</span> <span class="st">"2.5min"</span>,</span>
-<span>  time_res <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  temp_res <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -117,7 +117,7 @@ et al. 2006 is used to compute rmw</p></dd>
 Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min</p></dd>
 
 
-<dt>time_res</dt>
+<dt>temp_res</dt>
 <dd><p>numeric. Period of time used to interpolate data.
 Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 Default value is set to 1</p></dd>
@@ -140,7 +140,7 @@ Allowed values are:</p><ul><li><p>0: Nothing is displayed</p></li>
 <p>SpatRaster stack which provides the desired product computed,
 projected in WGS84 and spanning over the extented LOI of the StormsList object.
 Number of layers depends on the number of storm available in sts input and
-also product and time_res inputs:</p><ul><li><p>"MSW" produces one layer per storm. Name of layer is "STORMNAME_MSW"</p></li>
+also product and temp_res inputs:</p><ul><li><p>"MSW" produces one layer per storm. Name of layer is "STORMNAME_MSW"</p></li>
 <li><p>"PDI" produces one layer per storm. Name of layer is "STORMNAME_PDI"</p></li>
 <li><p>"Exposure" produces one layer for each wind values available
 in wind_threshold input and for each storm. Name of layers are
