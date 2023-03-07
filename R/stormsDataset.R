@@ -174,7 +174,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
     warning("No 'pressure' selection in fields, Cannot use Holland method for the forthcoming computations")
   }else{
     stopifnot("No unit conversion directive for 'pressure' selection in unit_conversion" = "pressure" %in% names(unit_conversion))
-    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["pressure"] %in% c("None", "b_to_pa" "mb_to_pa", "psi_to_pa", "atm_to_pa"))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["pressure"] %in% c("None", "b_to_pa", "mb_to_pa", "psi_to_pa", "atm_to_pa"))
   }
    
 
@@ -182,7 +182,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
     warning("No 'poci' selection in fields,  Cannot use Holland method for the forthcoming computations")
   }else{
     stopifnot("No unit conversion directive for 'poci' selection in unit_conversion" = "poci" %in% names(unit_conversion))
-    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["poci"] %in% c("None", "b_to_pa" "mb_to_pa", "psi_to_pa", "atm_to_pa"))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["poci"] %in% c("None", "b_to_pa", "mb_to_pa", "psi_to_pa", "atm_to_pa"))
   }
     
   #Checking basin input

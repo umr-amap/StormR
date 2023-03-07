@@ -18,5 +18,5 @@ Get the number of Storm available in a StormsList object
 }
 \examples{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
-nb <- getNbStomrms(sts)
+nb <- getNbStorms(sts)
 }
