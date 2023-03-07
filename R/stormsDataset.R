@@ -2,6 +2,31 @@
 
 
 
+###########################
+#Unit conversion functions#
+###########################
+
+#For msw
+knt_to_ms = function(x){
+  return(x * kt2ms)
+}
+
+kmh_to_ms = function(x){
+  return(x * kmh2ms)
+}
+
+#For rmw
+nm_to_km = function(x){
+  return(x * nm2km)
+}
+
+#For pressure
+mb_to_pa = function(x){
+  return(x * mb2pa)
+}
+
+
+
 
 #' StormsDataset object
 #'
