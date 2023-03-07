@@ -12,7 +12,7 @@ spatialBehaviour(
   asymmetry = "Chen",
   empirical_rmw = FALSE,
   space_res = "2.5min",
-  time_res = 1,
+  temp_res = 1,
   verbose = 2
 )
 }
@@ -61,7 +61,7 @@ et al. 2006 is used to compute rmw}
 \item{space_res}{character. Space resolution for the raster(s) to compute.
 Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min}
 
-\item{time_res}{numeric. Period of time used to interpolate data.
+\item{temp_res}{numeric. Period of time used to interpolate data.
 Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 Default value is set to 1}
 
@@ -80,7 +80,7 @@ Default value is set to 2}
 SpatRaster stack which provides the desired product computed,
 projected in WGS84 and spanning over the extented LOI of the StormsList object.
 Number of layers depends on the number of storm available in sts input and
-also product and time_res inputs:
+also product and temp_res inputs:
 \itemize{
 \item "MSW" produces one layer per storm. Name of layer is "STORMNAME_MSW"
 \item "PDI" produces one layer per storm. Name of layer is "STORMNAME_PDI"

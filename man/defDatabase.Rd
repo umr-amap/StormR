@@ -10,6 +10,8 @@ defDatabase(
     lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", sshs = "usa_sshs", rmw =
     "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
   basin = "SP",
+  unit_conversion = c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci =
+    "mb_to_pa"),
   verbose = TRUE
 )
 }
@@ -31,6 +33,8 @@ boundaries. Default value is set to NULL. It must be either
 \item "SI": South India
 \item "NI": North India
 }}
+
+\item{unit_conversion}{...}
 
 \item{verbose}{logical. Whether or not the function should display
 informations about the process}

@@ -12,7 +12,7 @@ stormBehaviour_pt(
   method = "Willoughby",
   asymmetry = "Chen",
   empirical_rmw = FALSE,
-  time_res = 1
+  temp_res = 1
 )
 }
 \arguments{
@@ -58,7 +58,7 @@ empirically or using the radius of maximum wind from the observations.
 Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
 et al. 2006 is used to compute rmw}
 
-\item{time_res}{numeric. Period of time used to interpolate data.
+\item{temp_res}{numeric. Period of time used to interpolate data.
 Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 Default value is set to 1}
 }
