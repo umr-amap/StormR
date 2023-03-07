@@ -14,7 +14,8 @@ a StormsDataset object
 IBTRACS_SP
 }
 \description{
-Database extracted from the IBTrACS.SP.v04r00.nc file.
-It provides all the tropical cyclones that occured in the SP Basin from the 1867 to nowadays
+Toy database extracted from the IBTrACS.SP.v04r00.nc file.
+Provides all the tropical cyclones that occured around Vanuatu from 2015 to 2016
+and around New Caledonia from 2020 to 2021
 }
 \keyword{datasets}

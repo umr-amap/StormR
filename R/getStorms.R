@@ -651,8 +651,6 @@ makeBuffer <- function(loi, buffer){
 #' @return indices of storms in the database, that match the filter inputs
 retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 
-  print(filter_seasons)
-  
   if (length(filter_seasons) == 1) {
     #We are interested in only one cyclonic season
     indices <- which(database$seasons == filter_seasons)
