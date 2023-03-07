@@ -7,7 +7,7 @@
 Storms(
   sds = IBTRACS_SP,
   loi,
-  seasons = c(1980, max(sds@database$seasons, na.rm = T)),
+  seasons = c(min(sds@database$seasons, na.rm = T), max(sds@database$seasons, na.rm = T)),
   names = NULL,
   max_dist = 300,
   remove_TD = TRUE,
