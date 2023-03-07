@@ -17,6 +17,11 @@ numeric. Number of storms available in the given StormsList object
 Get the number of Storm available in a StormsList object
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 nb <- getNbStorms(sts)
+<<<<<<< HEAD
+=======
+}
+>>>>>>> website
 }

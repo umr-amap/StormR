@@ -18,6 +18,8 @@ of interest for the given StormsList object
 Get the buffer size for a StormsList object
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 buffsize <- getBufferSize(sts)
+}
 }

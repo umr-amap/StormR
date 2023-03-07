@@ -19,6 +19,7 @@ season for the given Storm object
 Get the cyclonic season of storms available in a Storm/StormsList
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 
 ## For storm Niran
@@ -26,4 +27,5 @@ getSeasons(getStorm(sts, name = "NIRAN"))
 
 ## For sts
 getSeasons(sts)
+}
 }

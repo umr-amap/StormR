@@ -17,6 +17,8 @@ sf object. Location Of Interest for the given StormsList object
 Get the Location Of Interest from a StormsList object
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 loi <- getLOI(sts)
+}
 }

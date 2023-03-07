@@ -23,6 +23,7 @@ numeric. Number of observations available for the given storm
 Get the number of observations available for a given storm
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 
 ## For storm Niran
@@ -30,4 +31,5 @@ getNbObs(getStorm(sts, name = "NIRAN"))
 
 ## Equivalent to 
 getNbObs(sts, name = "NIRAN")
+}
 }
