@@ -504,8 +504,8 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
       r = dist_m * 0.001,
       rmw = data$rmw[index],
       msw = data$msw[index],
-      pc = data$pc[index] * 100,
-      poci = data$poci[index] * 100,
+      pc = data$pc[index],
+      poci = data$poci[index],
       lat = data$lat[index])
 
   }else if(method == "Boose"){
@@ -526,8 +526,8 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
     wind <- Boose(r = dist_m * 0.001,
                   rmw = data$rmw[index],
                   msw = data$msw[index],
-                  pc = data$pc[index] * 100,
-                  poci = data$poci[index] * 100,
+                  pc = data$pc[index],
+                  poci = data$poci[index],
                   x = x,
                   y = y,
                   vx = data$vx.deg[index],

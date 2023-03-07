@@ -770,7 +770,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
     storm@obs.all <- data.frame(iso.time = isotime,
                                 lon = lon[valid_indices],
                                 lat = lat[valid_indices],
-                                msw = zoo::na.approx(round(sds@database$msw[valid_indices, index] * knt2ms), na.rm = F, rule = 2))
+                                msw = zoo::na.approx(round(sds@database$msw[valid_indices, index]), na.rm = F, rule = 2))
 
 
     if("sshs" %in% names(sds@fields)){
@@ -780,7 +780,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
     }
 
     if("rmw" %in% names(sds@fields))
-      storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[valid_indices, index] * nm2km), na.rm = F, rule = 2)
+      storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[valid_indices, index]), na.rm = F, rule = 2)
 
 
     if("pressure" %in% names(sds@fields))
