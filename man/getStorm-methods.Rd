@@ -22,7 +22,3 @@ Storm object
 \description{
 Extract a Storm object from a StormsList object
 }
-\examples{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
-st <- getStorm(sts, name = "NIRAN")
-}

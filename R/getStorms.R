@@ -93,6 +93,7 @@ StormsList <- methods::setClass("StormsList",
 #'
 #' Display the Storm/StormsList object 
 #'
+#' @noRd
 #' @param object Storm/StormList object
 #'
 #' @return NULL
@@ -100,12 +101,14 @@ StormsList <- methods::setClass("StormsList",
 #' @docType methods
 #' @rdname show-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' ## Display information about Niran in sts 
 #' getStorm(sts, name = "NIRAN")
 #'
 #' ## Display information about sts 
 #' sts
+#' }
 setMethod("show",
           signature("Storm"),
           function(object){
@@ -158,8 +161,10 @@ setMethod("show",
 #' @docType methods
 #' @rdname getStorm-methods
 #' @examples
+#' \dontrun
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' st <- getStorm(sts, name = "NIRAN")
+#' }
 setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getStorm"))
 setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL){
   if(!is.null(season)){
@@ -193,8 +198,10 @@ setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL
 #' @docType methods
 #' @rdname getNbStorms-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' nb <- getNbStorms(sts)
+#' }
 setGeneric("getNbStorms", function(sts) standardGeneric("getNbStorms"))
 setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data))
 
@@ -213,8 +220,10 @@ setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data)
 #' @docType methods
 #' @rdname getLOI-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' loi <- getLOI(sts)
+#' }
 setGeneric("getLOI", function(sts) standardGeneric("getLOI"))
 setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 
@@ -234,8 +243,10 @@ setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 #' @docType methods
 #' @rdname getBuffer-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' buff <- getBuffer(sts)
+#' }
 setGeneric("getBuffer", function(sts) standardGeneric("getBuffer"))
 setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.buffer)
 
@@ -255,8 +266,10 @@ setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.bu
 #' @docType methods
 #' @rdname getBufferSize-methods
 #' @examples 
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' buffsize <- getBufferSize(sts)
+#' }
 setGeneric("getBufferSize", function(sts) standardGeneric("getBufferSize"))
 setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 
@@ -284,6 +297,7 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 #' @docType methods
 #' @rdname getNames-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' 
 #' ## For storm Niran
@@ -291,6 +305,7 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 #' 
 #' ## For sts
 #' getNames(sts)
+#' }
 setGeneric("getNames", function(s) standardGeneric("getNames"))
 setMethod("getNames", signature("Storm"), function(s) s@name)
 setMethod("getNames", signature("StormsList"), function(s) unlist(lapply(s@data, getNames)))
@@ -313,6 +328,7 @@ setMethod("getNames", signature("StormsList"), function(s) unlist(lapply(s@data,
 #' @docType methods
 #' @rdname getSeasons-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' 
 #' ## For storm Niran
@@ -320,6 +336,7 @@ setMethod("getNames", signature("StormsList"), function(s) unlist(lapply(s@data,
 #' 
 #' ## For sts
 #' getSeasons(sts)
+#' }
 setGeneric("getSeasons", function(s) standardGeneric("getSeasons"))
 setMethod("getSeasons", signature("Storm"), function(s) s@season)
 setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@data, getSeasons)))
@@ -344,6 +361,7 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 #' @docType methods
 #' @rdname getSSHS-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' 
 #' ## For storm Niran
@@ -351,6 +369,7 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 #' 
 #' ## For sts
 #' getSSHS(sts)
+#' }
 setGeneric("getSSHS", function(s) standardGeneric("getSSHS"))
 setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
 setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, getSSHS)))
@@ -375,6 +394,7 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 #' @docType methods
 #' @rdname getNbObs-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' 
 #' ## For storm Niran
@@ -382,6 +402,7 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 #' 
 #' ## Equivalent to 
 #' getNbObs(sts, name = "NIRAN")
+#' }
 setGeneric("getNbObs", function(s, ...) standardGeneric("getNbObs"))
 setMethod("getNbObs", signature("Storm"), function(s) dim(s@obs.all)[1])
 setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) dim(getStorm(s, name, season)@obs.all)[1])
@@ -406,6 +427,7 @@ setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) 
 #' @docType methods
 #' @rdname getObs-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' 
 #' ## For storm Niran
@@ -413,6 +435,7 @@ setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) 
 #' 
 #' ## Equivalent to 
 #' getObs(sts, name = "NIRAN")
+#' }
 setGeneric("getObs", function(s, ...) standardGeneric("getObs"))
 setMethod("getObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs.all)
 setMethod("getObs", signature("Storm"), function(s) s@obs.all)
@@ -437,6 +460,7 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 #' @docType methods
 #' @rdname getInObs-methods
 #' @examples
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' 
 #' ## For storm Niran
@@ -444,6 +468,7 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 #' 
 #' ## Equivalent to 
 #' getInObs(sts, name = "NIRAN")
+#' }
 setGeneric("getInObs", function(s, ...) standardGeneric("getInObs"))
 setMethod("getInObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs)
 setMethod("getInObs", signature("Storm"), function(s) s@obs)

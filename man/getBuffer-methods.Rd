@@ -18,6 +18,8 @@ object
 Get the Extended Location Of Interest from a StormsList object
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 buff <- getBuffer(sts)
+}
 }

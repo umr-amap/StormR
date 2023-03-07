@@ -23,6 +23,7 @@ Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storms
 available in a Storm/StormsList object
 }
 \examples{
+\dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 
 ## For storm Niran
@@ -30,4 +31,5 @@ getSSHS(getStorm(sts, name = "NIRAN"))
 
 ## For sts
 getSSHS(sts)
+}
 }
