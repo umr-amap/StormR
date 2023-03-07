@@ -149,6 +149,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
 
   #Checking fields input
   stopifnot("fields must be character" = identical(class(fields),"character"))
+  stopifnot("unit_conversion must be character" = identical(class(unit_conversion),"character"))
   
   #Mandatory fields
   stopifnot("No 'names' selection in fields" = "names" %in% names(fields))
@@ -188,7 +189,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
   #Checking basin input
   if(!is.null(basin)){
     stopifnot("basin must be character" = identical(class(basin),"character"))
-    stopifnot("basin must be length one" = length(length) == 1)
+    stopifnot("basin must be length one" = length(basin) == 1)
     stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
                 basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
   }
