@@ -503,11 +503,11 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
     stop("loi is missing")
   }
 
-
+  
   #Checking seasons input
-  stopifnot("seasons must be numeric" = identical(class(seasons), "numeric"))
+  stopifnot("seasons must be numeric" = identical(class(as.numeric(seasons)), "numeric"))
   stopifnot("seasons must be as integer" = all(round(seasons) == seasons))
-  stopifnot("lower bound of time range is not valid" = seasons >= 1980)
+  stopifnot("lower bound of time range is not valid" = seasons >= min(sds@database$seasons, na.rm = T))
   stopifnot("upper bound of time range is not valid" = seasons <= max(sds@database$seasons, na.rm = T))
 
   #Checking names input
@@ -626,6 +626,8 @@ makeBuffer <- function(loi, buffer){
 #' @return indices of storms in the database, that match the filter inputs
 retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 
+  print(filter_seasons)
+  
   if (length(filter_seasons) == 1) {
     #We are interested in only one cyclonic season
     indices <- which(database$seasons == filter_seasons)
@@ -886,13 +888,13 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' @importFrom methods as
 #' @export
 Storms <- function(sds = IBTRACS_SP,
-                      loi,
-                      seasons = c(1980, max(sds@database$seasons, na.rm = T)),
-                      names = NULL,
-                      max_dist = 300,
-                      remove_TD = TRUE,
-                      verbose = 2){
-
+                   loi,
+                   seasons = c(min(sds@database$seasons, na.rm = T), max(sds@database$seasons, na.rm = T)),
+                   names = NULL,
+                   max_dist = 300,
+                   remove_TD = TRUE,
+                   verbose = 2){
+  
   start_time <- Sys.time()
 
   checkInputsGs(sds, loi, seasons, names, max_dist, verbose, remove_TD)

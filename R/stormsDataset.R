@@ -144,6 +144,7 @@ StormsDataset <- methods::setClass(
 checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
 
   #Checking filename input
+  stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename),"character"))
   stopifnot("filename must be legnth one" = length(filename) == 1)
 
@@ -226,7 +227,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
 #' informations about the process
 #' @return An object of class StormsDataset
 #' @export
-defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
+defDatabase <- function(filename,
                         fields = c("basin" = "basin",
                                    "names" = "name",
                                    "seasons" = "season",

@@ -6,6 +6,24 @@ test_that("Test checkInputsIDb function", {
   
   
   #Checking filename input
+  expect_error(checkInputsIDb(fields = c("basin" = "basin",
+                                         "names" = "name",
+                                         "seasons" = "season",
+                                         "isoTime" = "iso_time",
+                                         "lon" = "usa_lon",
+                                         "lat" = "usa_lat",
+                                         "msw" = "usa_wind",
+                                         "sshs" = "usa_sshs",
+                                         "rmw" = "usa_rmw",
+                                         "pressure" = "usa_pres",
+                                         "poci" = "usa_poci"),
+                              basin = "SP",
+                              unit_conversion = c(msw = "knt_to_ms",
+                                                  rmw = "nm_to_km",
+                                                  pressure="mb_to_pa",
+                                                  poci="mb_to_pa"),
+                              verbose = TRUE))
+  
   expect_error(checkInputsIDb(filename = 1,
                               fields = c("basin" = "basin",
                                          "names" = "name",
