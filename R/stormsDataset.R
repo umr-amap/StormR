@@ -146,7 +146,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
   #Checking filename input
   stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename),"character"))
-  stopifnot("filename must be legnth one" = length(filename) == 1)
+  stopifnot("filename must be length one" = length(filename) == 1)
 
   #Checking fields input
   stopifnot("fields must be character" = identical(class(fields),"character"))
