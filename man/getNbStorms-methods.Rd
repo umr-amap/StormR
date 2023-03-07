@@ -20,8 +20,4 @@ Get the number of Storm available in a StormsList object
 \dontrun{
 sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 nb <- getNbStorms(sts)
-<<<<<<< HEAD
-=======
-}
->>>>>>> website
 }
