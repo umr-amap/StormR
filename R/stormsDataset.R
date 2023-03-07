@@ -8,7 +8,7 @@
 
 #For msw
 knt_to_ms = function(x){
-  return(x * kt2ms)
+  return(x * knt2ms)
 }
 
 kmh_to_ms = function(x){
@@ -126,7 +126,7 @@ StormsDataset <- methods::setClass(
 #' @param verbose logical
 #'
 #' @return NULL
-checkInputsIDb <- function(filename, fields, basin, verbose){
+checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
 
   #Checking filename input
   stopifnot("filename must be character" = identical(class(filename),"character"))
@@ -223,7 +223,10 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
                                    "pressure" = "usa_pres",
                                    "poci" = "usa_poci"),
                         basin = "SP",
-                        unit_conversion=c(msw = "kt_to_ms", rmw = "nm_to_km", pressure="mb_to_pa", poci="mb_to_pa"),
+                        unit_conversion = c(msw = "knt_to_ms",
+                                            rmw = "nm_to_km",
+                                            pressure="mb_to_pa",
+                                            poci="mb_to_pa"),
                         verbose = TRUE){
 
   checkInputsIDb(filename, fields, basin, unit_conversion, verbose)
@@ -252,14 +255,14 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
   }
   
   if(unit_conversion["msw"] == "knt_to_ms"){
-    msw <- array(ktn_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
-                 dim = c(row,len)))
+    msw <- array(knt_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
+                 dim = c(row,len))
   }else if(unit_conversion["msw"] == "kmh_to_ms"){
     msw <- array(kmh_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
-                 dim = c(row,len)))
+                 dim = c(row,len))
   }else{
     msw <- array(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind],
-                 dim = c(row,len)))
+                 dim = c(row,len))
   }
 
   #Collect data
