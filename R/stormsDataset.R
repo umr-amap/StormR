@@ -122,6 +122,7 @@ StormsDataset <- methods::setClass(
 #' @param filename character
 #' @param fields character vector
 #' @param basin character
+#' @param unit_conversion character vector
 #' @param verbose logical
 #'
 #' @return NULL
@@ -133,6 +134,7 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
 
   #Checking fields input
   stopifnot("fields must be character" = identical(class(fields),"character"))
+  
   #Mandatory fields
   stopifnot("No 'names' selection in fields" = "names" %in% names(fields))
   stopifnot("No 'seasons' selection in fields" = "seasons" %in% names(fields))
@@ -140,31 +142,46 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   stopifnot("No 'lon' selection in fields" = "lon" %in% names(fields))
   stopifnot("No 'lat' selection in fields" = "lat" %in% names(fields))
   stopifnot("No 'msw' selection in fields" = "msw" %in% names(fields))
+  stopifnot("No unit conversion directive for 'msw' selection in unit_conversion" = "msw" %in% names(unit_conversion))
+  stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["msw"] %in% c("None", "knt_to_ms", "kmh_to_ms"))
+  
   #Optional fields
   if(!("basin" %in% names(fields)))
     warning("No 'basin' selection in fields, Cannot use basin filtering when collecting data")
-  if(!("rmw" %in% names(fields)))
+  if(!("rmw" %in% names(fields))){
     warning("No 'rmw' selection in fields, use empirical_rmw = TRUE for the forthcoming computations")
-
-  if(!("pressure" %in% names(fields)))
+  }else{
+    stopifnot("No unit conversion directive for 'rmw' selection in unit_conversion" = "rmw" %in% names(unit_conversion))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["rmw"] %in% c("None", "nm_to_km"))
+  }
+   
+  if(!("pressure" %in% names(fields))){
     warning("No 'pressure' selection in fields, Cannot use Holland method for the forthcoming computations")
+  }else{
+    stopifnot("No unit conversion directive for 'pressure' selection in unit_conversion" = "pressure" %in% names(unit_conversion))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["pressure"] %in% c("None", "mb_to_pa"))
+  }
+   
 
-  if(!("poci" %in% names(fields)))
+  if(!("poci" %in% names(fields))){
     warning("No 'poci' selection in fields,  Cannot use Holland method for the forthcoming computations")
-
-
+  }else{
+    stopifnot("No unit conversion directive for 'poci' selection in unit_conversion" = "poci" %in% names(unit_conversion))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["poci"] %in% c("None", "mb_to_pa"))
+  }
+    
   #Checking basin input
   if(!is.null(basin)){
     stopifnot("basin must be character" = identical(class(basin),"character"))
     stopifnot("basin must be length one" = length(length) == 1)
     stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
                 basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
-    #Checking verbose input
-    stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
-
   }
 
-
+  
+  #Checking verbose input
+  stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
+  
 }
 
 
@@ -188,26 +205,28 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
 #'   \item "SI": South India
 #'   \item "NI": North India
 #' }
+#' @param unit_conversion
 #' @param verbose logical. Whether or not the function should display
 #' informations about the process
 #' @return An object of class StormsDataset
 #' @export
 defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
-                         fields = c("basin" = "basin",
-                                    "names" = "name",
-                                    "seasons" = "season",
-                                    "isoTime" = "iso_time",
-                                    "lon" = "usa_lon",
-                                    "lat" = "usa_lat",
-                                    "msw" = "usa_wind",
-                                    "sshs" = "usa_sshs",
-                                    "rmw" = "usa_rmw",
-                                    "pressure" = "usa_pres",
-                                    "poci" = "usa_poci"),
-                         basin = "SP",
-                         verbose = TRUE){
+                        fields = c("basin" = "basin",
+                                   "names" = "name",
+                                   "seasons" = "season",
+                                   "isoTime" = "iso_time",
+                                   "lon" = "usa_lon",
+                                   "lat" = "usa_lat",
+                                   "msw" = "usa_wind",
+                                   "sshs" = "usa_sshs",
+                                   "rmw" = "usa_rmw",
+                                   "pressure" = "usa_pres",
+                                   "poci" = "usa_poci"),
+                        basin = "SP",
+                        unit_conversion=c(msw = "kt_to_ms", rmw = "nm_to_km", pressure="mb_to_pa", poci="mb_to_pa"),
+                        verbose = TRUE){
 
-  checkInputsIDb(filename, fields, basin, verbose)
+  checkInputsIDb(filename, fields, basin, unit_conversion, verbose)
 
 
   if(verbose)
