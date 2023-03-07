@@ -205,7 +205,7 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
 #'   \item "SI": South India
 #'   \item "NI": North India
 #' }
-#' @param unit_conversion
+#' @param unit_conversion ...
 #' @param verbose logical. Whether or not the function should display
 #' informations about the process
 #' @return An object of class StormsDataset
@@ -250,6 +250,17 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
     ind <- which(basins[1,] == basin)
     len <- length(ind)
   }
+  
+  if(unit_conversion["msw"] == "knt_to_ms"){
+    msw <- array(ktn_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
+                 dim = c(row,len)))
+  }else if(unit_conversion["msw"] == "kmh_to_ms"){
+    msw <- array(kmh_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
+                 dim = c(row,len)))
+  }else{
+    msw <- array(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind],
+                 dim = c(row,len)))
+  }
 
   #Collect data
   data <- list(names  = ncdf4::ncvar_get(dataBase, fields["names"])[ind],
@@ -260,20 +271,37 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
                                  dim = c(row,len)),
                latitude = array(ncdf4::ncvar_get(dataBase, fields["lat"])[,ind],
                                 dim = c(row,len)),
-               msw = array(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind],
-                           dim = c(row,len)))
+               msw = msw)
 
   if("sshs" %in% names(fields))
     data$sshs <- array(ncdf4::ncvar_get(dataBase, fields["sshs"])[,ind], dim = c(row,len))
 
-  if("rmw" %in% names(fields))
-    data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind], dim = c(row,len))
+  if("rmw" %in% names(fields)){
+    if(unit_conversion["rmw"] == "nm_to_km"){
+      data$rmw <- array(nm_to_km(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind]), dim = c(row,len))
+    }else{
+      data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind], dim = c(row,len))
+    }
+  }
+    
 
-  if("pressure" %in% names(fields))
-    data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind], dim = c(row,len))
+  if("pressure" %in% names(fields)){
+    if(unit_conversion["pressure"] == "mb_to_pa"){
+      data$pressure <- array(mb_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
+    }else{
+      data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind], dim = c(row,len))
+    }
+  }
+    
 
-  if("poci" %in% names(fields))
-    data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind], dim = c(row,len))
+  if("poci" %in% names(fields)){
+    if(unit_conversion["poci"] == "mb_to_pa"){
+      data$poci <- array(mb_to_pa(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind]), dim = c(row,len))
+    }else{
+      data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind], dim = c(row,len))
+    }
+  }
+   
   ncdf4::nc_close(dataBase)
 
 
