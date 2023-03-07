@@ -1115,7 +1115,7 @@ spatialBehaviour <- function(sts,
     }
 
     cat("\nStorm(s):\n")
-    cat("  (",sts@nb.storms,") ",getNames(sts),"\n\n")
+    cat("  (",getNbStorms(sts),") ",getNames(sts),"\n\n")
 
   }
 
@@ -1138,7 +1138,7 @@ spatialBehaviour <- function(sts,
 
     if (verbose > 0) {
       step <- 1
-      cat(st@name," (", s, "/", sts@nb.storms, ")\n")
+      cat(st@name," (", s, "/", getNbStorms(sts), ")\n")
       pb <- utils::txtProgressBar(min = step, max = nb.step, style = 3)
     }
 
