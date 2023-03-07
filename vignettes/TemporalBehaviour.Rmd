@@ -75,7 +75,7 @@ PDI <- temporalBehaviour(st, points = df, product = "PDI", temp_res=0.5,)
 PDI
 ```
 
-### Getting time of exposure
+### Getting duration of exposure
 
 The duration of exposure is computed using the `product = "Exposure"` argument as follows:
 
