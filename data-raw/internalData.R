@@ -4,10 +4,14 @@
 
 #Data for routines
 resolutions = c("30sec" = 0.00833333, "2.5min" = 0.04166667, "5min" = 0.08333333, "10min" = 0.1666667)
+mph2ms <- 0.44704
 knt2ms <- 0.514
 kmh2ms <- 1/3.6
 nm2km <- 1.852
+b2pa <- 100000
 mb2pa <- 100
+psi2pa <- 6895
+atm2pa <- 101300
 km <- 1000
 wgs84 <- 4326
 sshs <- c(18, 33, 42, 49, 58, 70, 100)
@@ -47,7 +51,9 @@ world <- sf::st_as_sf(world)
 world <- sf::st_transform(world, crs = wgs84)
 
 
-usethis::use_data(resolutions, knt2ms, kmh2ms, nm2km, mb2pa, km, wgs84, Basins, sshs,
+usethis::use_data(resolutions,
+                  mph2ms, knt2ms, kmh2ms, nm2km, b2pa, mb2pa, psi2pa, atm2pa,
+                  km,wgs84, Basins, sshs,
                   oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
                   df_getDataInterpolate,
                   world,

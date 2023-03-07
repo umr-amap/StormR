@@ -7,6 +7,10 @@
 ###########################
 
 #For msw
+mph_to_ms = function(x){
+  return(x * mph2ms)
+}
+
 knt_to_ms = function(x){
   return(x * knt2ms)
 }
@@ -21,10 +25,21 @@ nm_to_km = function(x){
 }
 
 #For pressure
+b_to_pa = function(x){
+  return(x * b2pa)
+}
+
 mb_to_pa = function(x){
   return(x * mb2pa)
 }
 
+psi_to_pa = function(x){
+  return(x * psi2pa)
+}
+
+atm_to_pa = function(x){
+  return(x * atm2pa)
+}
 
 
 
@@ -143,7 +158,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
   stopifnot("No 'lat' selection in fields" = "lat" %in% names(fields))
   stopifnot("No 'msw' selection in fields" = "msw" %in% names(fields))
   stopifnot("No unit conversion directive for 'msw' selection in unit_conversion" = "msw" %in% names(unit_conversion))
-  stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["msw"] %in% c("None", "knt_to_ms", "kmh_to_ms"))
+  stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["msw"] %in% c("None", "mph_to_ms", "knt_to_ms", "kmh_to_ms"))
   
   #Optional fields
   if(!("basin" %in% names(fields)))
@@ -159,7 +174,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
     warning("No 'pressure' selection in fields, Cannot use Holland method for the forthcoming computations")
   }else{
     stopifnot("No unit conversion directive for 'pressure' selection in unit_conversion" = "pressure" %in% names(unit_conversion))
-    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["pressure"] %in% c("None", "mb_to_pa"))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["pressure"] %in% c("None", "b_to_pa" "mb_to_pa", "psi_to_pa", "atm_to_pa"))
   }
    
 
@@ -167,7 +182,7 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
     warning("No 'poci' selection in fields,  Cannot use Holland method for the forthcoming computations")
   }else{
     stopifnot("No unit conversion directive for 'poci' selection in unit_conversion" = "poci" %in% names(unit_conversion))
-    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["poci"] %in% c("None", "mb_to_pa"))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["poci"] %in% c("None", "b_to_pa" "mb_to_pa", "psi_to_pa", "atm_to_pa"))
   }
     
   #Checking basin input
@@ -254,7 +269,10 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
     len <- length(ind)
   }
   
-  if(unit_conversion["msw"] == "knt_to_ms"){
+  if(unit_conversion["msw"] == "mph_to_ms"){
+    msw <- array(mph_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
+                 dim = c(row,len))
+  }else if(unit_conversion["msw"] == "knt_to_ms"){
     msw <- array(knt_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
                  dim = c(row,len))
   }else if(unit_conversion["msw"] == "kmh_to_ms"){
@@ -291,6 +309,12 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
   if("pressure" %in% names(fields)){
     if(unit_conversion["pressure"] == "mb_to_pa"){
       data$pressure <- array(mb_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
+    }else if(unit_conversion["pressure"] == "b_to_pa"){
+      data$pressure <- array(b_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
+    }else if(unit_conversion["pressure"] == "psi_to_pa"){
+      data$pressure <- array(psi_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
+    }else if(unit_conversion["pressure"] == "atm_to_pa"){
+      data$pressure <- array(atm_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
     }else{
       data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind], dim = c(row,len))
     }
