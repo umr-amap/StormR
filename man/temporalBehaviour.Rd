@@ -20,7 +20,7 @@ temporalBehaviour(
 \item{sts}{StormsList object}
 
 \item{points}{data.frame. Contains longitude/latitude coordinates within
-column names "lon" and "lat", on which to compute the desired product}
+column names "x" and "y", on which to compute the desired product}
 
 \item{product}{character. Product to compute. Must be either:
 \itemize{
@@ -46,13 +46,13 @@ fitting according to cyclonic observations
 Default value is set to "Willoughby" (See Details)}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations. Must be either:
+the computations (see Details). Must be either:
 \itemize{
-\item "Miyazaki": ...
-\item "Chen": ...
+\item "Miyazaki": based on the formula derived in Miyazaki et al. (1962)
+\item "Chen":  based on the formula derived in Chen (1994)
 \item "None": no asymmetry is added
 }
-Default value is set to "Chen" (See Details)}
+Default value is set to "Chen". Ignored if method == Boose}
 
 \item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
 empirically or using the radius of maximum wind from the observations.
@@ -73,14 +73,15 @@ Allowed values are:
 Default value is set to 1}
 }
 \value{
-Computed product for each points are returned through data.frames
-contained in a named list. Each slot, named after the storm, is a data.frame
-that has the following dimensions:
+Computed product for each points are returned through lists of
+data.frame (one per points coordinates) contained in a named list. Then, each
+slot, named after the storm, is made of list(s) of data.frame that has the following
+dimensions:
 \itemize{
 \item If product == "TS": a data frame whose number of rows corresponds to
 the number of interpolated observations. The columns provides
 respectively the wind speed values (m/s), the wind directions
-(in degree), the indices and the ISO time of observation
+(in degree), the indices and the ISO time of observations
 \item If product == "PDI": a data.frame with one row and one column that
 contains PDI value for each point in points.
 \item If product == "Exposure": a data.frame with one row for each wind
