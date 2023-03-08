@@ -100,10 +100,10 @@ fitting according to cyclonic observations</p></li>
 
 <dt>asymmetry</dt>
 <dd><p>character. Indicates which version of asymmetry to use in
-the computations. Must be either:</p><ul><li><p>"Miyazaki": ...</p></li>
-<li><p>"Chen": ...</p></li>
+the computations (see Details). Must be either:</p><ul><li><p>"Miyazaki": based on the formula derived in Miyazaki et al. (1962)</p></li>
+<li><p>"Chen":  based on the formula derived in Chen (1994)</p></li>
 <li><p>"None": no asymmetry is added</p></li>
-</ul><p>Default value is set to "Chen" (See Details)</p></dd>
+</ul><p>Default value is set to "Chen". Ignored if method == Boose</p></dd>
 
 
 <dt>empirical_rmw</dt>
@@ -148,7 +148,7 @@ in wind_threshold input and for each storm. Name of layers are
 "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...</p></li>
 <li><p>"Profiles" produces two layers for each observations
 (real and interpolated) and each storm. Name of layers are
-"STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"</p></li>
+"STORMNAME_Speed_observation", "STORMNAME_Direction_observation"</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

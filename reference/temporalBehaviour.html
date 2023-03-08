@@ -72,7 +72,7 @@ and Exposure</p>
 
 <dt>points</dt>
 <dd><p>data.frame. Contains longitude/latitude coordinates within
-column names "lon" and "lat", on which to compute the desired product</p></dd>
+column names "x" and "y", on which to compute the desired product</p></dd>
 
 
 <dt>product</dt>
@@ -100,10 +100,10 @@ fitting according to cyclonic observations</p></li>
 
 <dt>asymmetry</dt>
 <dd><p>character. Indicates which version of asymmetry to use in
-the computations. Must be either:</p><ul><li><p>"Miyazaki": ...</p></li>
-<li><p>"Chen": ...</p></li>
+the computations (see Details). Must be either:</p><ul><li><p>"Miyazaki": based on the formula derived in Miyazaki et al. (1962)</p></li>
+<li><p>"Chen":  based on the formula derived in Chen (1994)</p></li>
 <li><p>"None": no asymmetry is added</p></li>
-</ul><p>Default value is set to "Chen" (See Details)</p></dd>
+</ul><p>Default value is set to "Chen". Ignored if method == Boose</p></dd>
 
 
 <dt>empirical_rmw</dt>
@@ -131,12 +131,13 @@ Allowed values are:</p><ul><li><p>0: Nothing is displayed</p></li>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Computed product for each points are returned through data.frames
-contained in a named list. Each slot, named after the storm, is a data.frame
-that has the following dimensions:</p><ul><li><p>If product == "TS": a data frame whose number of rows corresponds to
+<p>Computed product for each points are returned through lists of
+data.frame (one per points coordinates) contained in a named list. Then, each
+slot, named after the storm, is made of list(s) of data.frame that has the following
+dimensions:</p><ul><li><p>If product == "TS": a data frame whose number of rows corresponds to
 the number of interpolated observations. The columns provides
 respectively the wind speed values (m/s), the wind directions
-(in degree), the indices and the ISO time of observation</p></li>
+(in degree), the indices and the ISO time of observations</p></li>
 <li><p>If product == "PDI": a data.frame with one row and one column that
 contains PDI value for each point in points.</p></li>
 <li><p>If product == "Exposure": a data.frame with one row for each wind
