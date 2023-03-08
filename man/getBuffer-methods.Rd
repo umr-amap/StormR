@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getBuffer}
 \alias{getBuffer}
+\alias{getBuffer,StormsList-method}
 \title{Get the extended LOI from a Storms object}
 \usage{
 getBuffer(sts)
+
+\S4method{getBuffer}{StormsList}(sts)
 }
 \arguments{
 \item{sts}{StormsList object}

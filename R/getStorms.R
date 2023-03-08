@@ -97,7 +97,6 @@ StormsList <- methods::setClass("StormsList",
 #' @param object Storm/StormList object
 #'
 #' @return NULL
-#' @export
 #' @docType methods
 #' @rdname show-methods
 #' @examples
@@ -161,11 +160,12 @@ setMethod("show",
 #' @docType methods
 #' @rdname getStorm-methods
 #' @examples
-#' \dontrun
+#' \dontrun{
 #' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' st <- getStorm(sts, name = "NIRAN")
 #' }
 setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getStorm"))
+#' @rdname getStorm-methods
 setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL){
   if(!is.null(season)){
     w = which(getNames(sts) == name)
@@ -203,6 +203,7 @@ setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL
 #' nb <- getNbStorms(sts)
 #' }
 setGeneric("getNbStorms", function(sts) standardGeneric("getNbStorms"))
+#' @rdname getNbStorms-methods
 setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data))
 
 
@@ -225,6 +226,7 @@ setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data)
 #' loi <- getLOI(sts)
 #' }
 setGeneric("getLOI", function(sts) standardGeneric("getLOI"))
+#' @rdname getLOI-methods
 setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 
 
@@ -248,6 +250,7 @@ setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 #' buff <- getBuffer(sts)
 #' }
 setGeneric("getBuffer", function(sts) standardGeneric("getBuffer"))
+#' @rdname getBuffer-methods
 setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.buffer)
 
 
@@ -271,6 +274,7 @@ setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.bu
 #' buffsize <- getBufferSize(sts)
 #' }
 setGeneric("getBufferSize", function(sts) standardGeneric("getBufferSize"))
+#' @rdname getBufferSize-methods
 setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 
 
@@ -307,7 +311,9 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 #' getNames(sts)
 #' }
 setGeneric("getNames", function(s) standardGeneric("getNames"))
+#' @rdname getNames-methods
 setMethod("getNames", signature("Storm"), function(s) s@name)
+#' @rdname getNames-methods
 setMethod("getNames", signature("StormsList"), function(s) unlist(lapply(s@data, getNames)))
 
 
@@ -338,7 +344,9 @@ setMethod("getNames", signature("StormsList"), function(s) unlist(lapply(s@data,
 #' getSeasons(sts)
 #' }
 setGeneric("getSeasons", function(s) standardGeneric("getSeasons"))
+#' @rdname getSeasons-methods
 setMethod("getSeasons", signature("Storm"), function(s) s@season)
+#' @rdname getSeasons-methods
 setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@data, getSeasons)))
 
 
@@ -371,7 +379,9 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 #' getSSHS(sts)
 #' }
 setGeneric("getSSHS", function(s) standardGeneric("getSSHS"))
+#' @rdname getSSHS-methods
 setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
+#' @rdname getSSHS-methods
 setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, getSSHS)))
 
 
@@ -404,7 +414,9 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 #' getNbObs(sts, name = "NIRAN")
 #' }
 setGeneric("getNbObs", function(s, ...) standardGeneric("getNbObs"))
+#' @rdname getNbObs-methods
 setMethod("getNbObs", signature("Storm"), function(s) dim(s@obs.all)[1])
+#' @rdname getNbObs-methods
 setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) dim(getStorm(s, name, season)@obs.all)[1])
 
 
@@ -437,7 +449,9 @@ setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) 
 #' getObs(sts, name = "NIRAN")
 #' }
 setGeneric("getObs", function(s, ...) standardGeneric("getObs"))
+#' @rdname getObs-methods
 setMethod("getObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs.all)
+#' @rdname getObs-methods
 setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 
 
@@ -470,7 +484,9 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 #' getInObs(sts, name = "NIRAN")
 #' }
 setGeneric("getInObs", function(s, ...) standardGeneric("getInObs"))
+#' @rdname getInObs-methods
 setMethod("getInObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs)
+#' @rdname getInObs-methods
 setMethod("getInObs", signature("Storm"), function(s) s@obs)
 
 

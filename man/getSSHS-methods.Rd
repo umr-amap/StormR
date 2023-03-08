@@ -3,9 +3,15 @@
 \docType{methods}
 \name{getSSHS}
 \alias{getSSHS}
+\alias{getSSHS,Storm-method}
+\alias{getSSHS,StormsList-method}
 \title{Get maximum SSHS reached of storm(s)}
 \usage{
 getSSHS(s)
+
+\S4method{getSSHS}{Storm}(s)
+
+\S4method{getSSHS}{StormsList}(s)
 }
 \arguments{
 \item{s}{Storm/StormsList object}

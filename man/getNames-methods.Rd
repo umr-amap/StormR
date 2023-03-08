@@ -3,9 +3,15 @@
 \docType{methods}
 \name{getNames}
 \alias{getNames}
+\alias{getNames,Storm-method}
+\alias{getNames,StormsList-method}
 \title{Get name(s) of storm(s)}
 \usage{
 getNames(s)
+
+\S4method{getNames}{Storm}(s)
+
+\S4method{getNames}{StormsList}(s)
 }
 \arguments{
 \item{s}{Storm/StormsList object}

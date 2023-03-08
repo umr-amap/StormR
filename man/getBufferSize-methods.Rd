@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getBufferSize}
 \alias{getBufferSize}
+\alias{getBufferSize,StormsList-method}
 \title{Get buffer size from a Storms object}
 \usage{
 getBufferSize(sts)
+
+\S4method{getBufferSize}{StormsList}(sts)
 }
 \arguments{
 \item{sts}{StormsList object}

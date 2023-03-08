@@ -3,9 +3,15 @@
 \docType{methods}
 \name{getInObs}
 \alias{getInObs}
+\alias{getInObs,StormsList-method}
+\alias{getInObs,Storm-method}
 \title{Get indices of observations within the extended LOI}
 \usage{
 getInObs(s, ...)
+
+\S4method{getInObs}{StormsList}(s, name, season = NULL)
+
+\S4method{getInObs}{Storm}(s)
 }
 \arguments{
 \item{s}{Storm/StormsList object}
