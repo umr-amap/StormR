@@ -486,10 +486,11 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 #' each coordinate of the raster_template_model
 #' @param buffer numeric. Buffer size (in degree) for the storm
 #' @param loi sf. loi to intersect for Boose model
+#' @param world sf. world for Boose model
 #' @param ind_countries numeric vector. Indices of countries to intersect for Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_m, buffer, loi, ind_countries){
+computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_m, buffer, loi, world, ind_countries){
 
 
   #Computing wind speed according to the input model
@@ -509,8 +510,6 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
       lat = data$lat[index])
 
   }else if(method == "Boose"){
-
-    ###ERROR IF LOI IS NOT A LAND
 
     #Intersect points coordinates with land
     pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
@@ -535,14 +534,14 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
                   vh = data$storm.speed[index],
                   I = I,
                   lat = data$lat[index])
+    
+    direction <- computeDirectionBoose(x, y, data$lat[index], I)
   }
 
 
 
   #Compute wind direction
-  if(method == "Boose"){
-    direction <- computeDirectionBoose(x, y, data$lat[index], I)
-  }else{
+  if(method != "Boose"){
     direction <- computeDirection(x, y, data$lat[index])
   }
 
@@ -1082,6 +1081,11 @@ spatialBehaviour <- function(sts,
                 empirical_rmw, space_res, temp_res, verbose)
 
 
+  if(verbose >0){
+    cat("=== spatialBehaviour processing ... ===\n\n")
+    cat("Initializing data ...")
+  }
+  
   #Make raster template
   raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, resolutions[space_res])
   #Getting new extent
@@ -1094,6 +1098,10 @@ spatialBehaviour <- function(sts,
   final.stack.exp <- c()
 
   if(method == "Boose"){
+    #Map for intersection
+    world <- rworldmap::getMap(resolution = "high")
+    world <- sf::st_as_sf(world)
+    world <- sf::st_transform(world, crs = wgs84)
     ind_countries <- which(sf::st_intersects(sts@spatial.loi.buffer, world$geometry, sparse = FALSE) == TRUE)
     asymmetry = "None"
   }else{
@@ -1102,10 +1110,9 @@ spatialBehaviour <- function(sts,
 
   if(verbose > 0){
     s <- 1 #Initializing count of storms
-    cat("=== spatialBehaviour processing ... ===\n\n")
-
+    cat(" Done\n\n")
     cat("Computation settings:\n")
-    cat("  (*) Time interpolation: Every", switch(as.numeric(temp_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
+    cat("  (*) Temporal resolution: Every", switch(as.numeric(temp_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
     cat("  (*) Space resolution:",names(resolutions[space_res]),"\n")
     cat("  (*) Method used:", method ,"\n")
     cat("  (*) Product(s) to compute:", product ,"\n")
@@ -1172,7 +1179,8 @@ spatialBehaviour <- function(sts,
       #Computing wind speed/direction
       output <- computeWindProfile(dataTC, j, method, asymmetry,
                                    x, y, crds, dist.m, buffer,
-                                   sts@spatial.loi.buffer, ind_countries)
+                                   sts@spatial.loi.buffer,
+                                   world, ind_countries)
 
       terra::values(raster.wind) <- output$wind
       terra::values(raster.direction) <- output$direction
@@ -1296,9 +1304,10 @@ spatialBehaviour <- function(sts,
 #' @param asymmetry character
 #' @param empirical_rmw logical
 #' @param temp_res numeric
+#' @param verbose logical
 #' @return NULL
 checkInputsTempBehaviour <- function(sts, points, product, wind_threshold, method, asymmetry,
-                            empirical_rmw, temp_res){
+                            empirical_rmw, temp_res, verbose){
 
   #Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -1335,6 +1344,11 @@ checkInputsTempBehaviour <- function(sts, points, product, wind_threshold, metho
   stopifnot("temp_res must be numeric" = identical(class(temp_res), "numeric"))
   stopifnot("temp_res must be length 1" = length(temp_res) == 1)
   stopifnot("invalid temp_res: must be either 1, 0.75, 0.5 or 0.25" = temp_res %in% c(1, 0.75, 0.5, 0.25))
+  
+  #Checking verbose input
+  stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
+  stopifnot("verbose must length 1" = length(verbose) == 1)
+  stopifnot("verbose must be either 0, 1, 2 or 3" = verbose %in% c(0, 1))
 
 }
 
@@ -1533,6 +1547,14 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #' @param temp_res numeric. Period of time used to interpolate data.
 #' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 #' Default value is set to 1
+#' @param verbose numeric. Whether or not the function should display
+#' informations about the process and/or outputs and additional notes.
+#' Allowed values are:
+#' \itemize{
+#' \item 0: Nothing is displayed
+#' \item 1: Informations about the process are displayed
+#' }
+#' Default value is set to 1
 #'
 #' @returns Computed product for each points are returned through data.frames
 #' contained in a named list. Each slot, named after the storm, is a data.frame
@@ -1572,23 +1594,56 @@ temporalBehaviour <- function(sts,
                               method = "Willoughby",
                               asymmetry = "Chen",
                               empirical_rmw = FALSE,
-                              temp_res = 1){
+                              temp_res = 1,
+                              verbose = 1){
 
-  checkInputsTempBehaviour(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, temp_res)
+  checkInputsTempBehaviour(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, temp_res, verbose)
+  
+  if(verbose >0){
+    cat("=== spatialBehaviour processing ... ===\n\n")
+    cat("Initializing data ...")
+  }
+  
+  
+  if(method == "Boose"){
+    #Map for intersection
+    world <- rworldmap::getMap(resolution = "high")
+    world <- sf::st_as_sf(world)
+    world <- sf::st_transform(world, crs = wgs84)
+    ind_countries <- which(sf::st_intersects(sts@spatial.loi.buffer, world$geometry, sparse = FALSE) == TRUE)
+    asymmetry = "None"
+  }else{
+    ind_countries <- NULL
+  }
   
   points$x[points$x < 0] = points$x[points$x < 0] + 360
 
   buffer <- 2.5
   #Initializing final result
   final.result <- list()
-
-  if(method == "Boose"){
-    ind_countries <- which(sf::st_intersects(sts@spatial.loi.buffer, world$geometry, sparse = FALSE) == TRUE)
-    asymmetry = "None"
-  }else{
-    ind_countries <- NULL
+  
+  if(verbose > 0){
+    s <- 1 #Initializing count of storms
+    cat(" Done\n\n")
+    cat("Computation settings:\n")
+    cat("  (*) Temporal resolution: Every", switch(as.numeric(temp_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
+    cat("  (*) Method used:", method ,"\n")
+    cat("  (*) Product(s) to compute:", product ,"\n")
+    cat("  (*) Asymmetry used:", asymmetry ,"\n")
+    if(empirical_rmw){
+      cat("  (*) rmw computed according to the empirical formula (See Details section)")
+    }
+    cat("  (*) Points: lon-lat\n")
+    for(i in 1:dim(points)[1])
+      cat("      ",points$x[i], " ", points$y[i],"\n")
+    cat("\n")
+    
+    cat("\nStorm(s):\n")
+    cat("  (",getNbStorms(sts),") ",getNames(sts),"\n\n")
+    
   }
 
+  
   for(st in sts@data) {
 
     #Handling indices inside loi.buffer or not
@@ -1626,7 +1681,8 @@ temporalBehaviour <- function(sts,
       #Computing wind speed/direction
       dist2p <- dist.m[,i]
       output <- computeWindProfile(dataTC, i, method, asymmetry, x, y, pt, dist2p,
-                                   buffer, sts@spatial.loi.buffer, ind_countries)
+                                   buffer, sts@spatial.loi.buffer,
+                                   world, ind_countries)
 
       vr <- output$wind
       dir <- output$direction
@@ -1641,6 +1697,9 @@ temporalBehaviour <- function(sts,
                                    wind_threshold)
 
   }
+  
+  if(verbose > 0)
+    cat("\n=== DONE ===\n\n")
 
   return(final.result)
 }

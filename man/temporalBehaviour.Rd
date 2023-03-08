@@ -12,7 +12,8 @@ temporalBehaviour(
   method = "Willoughby",
   asymmetry = "Chen",
   empirical_rmw = FALSE,
-  temp_res = 1
+  temp_res = 1,
+  verbose = 1
 )
 }
 \arguments{
@@ -60,6 +61,15 @@ et al. 2006 is used to compute rmw}
 
 \item{temp_res}{numeric. Period of time used to interpolate data.
 Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
+Default value is set to 1}
+
+\item{verbose}{numeric. Whether or not the function should display
+informations about the process and/or outputs and additional notes.
+Allowed values are:
+\itemize{
+\item 0: Nothing is displayed
+\item 1: Informations about the process are displayed
+}
 Default value is set to 1}
 }
 \value{
