@@ -3,9 +3,15 @@
 \docType{methods}
 \name{getSeasons}
 \alias{getSeasons}
+\alias{getSeasons,Storm-method}
+\alias{getSeasons,StormsList-method}
 \title{Get the cyclonic seasons of storm(s)}
 \usage{
 getSeasons(s)
+
+\S4method{getSeasons}{Storm}(s)
+
+\S4method{getSeasons}{StormsList}(s)
 }
 \arguments{
 \item{s}{Storm/StormsList object}

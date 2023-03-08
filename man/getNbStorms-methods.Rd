@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getNbStorms}
 \alias{getNbStorms}
+\alias{getNbStorms,StormsList-method}
 \title{Get number of Storms in StormsList}
 \usage{
 getNbStorms(sts)
+
+\S4method{getNbStorms}{StormsList}(sts)
 }
 \arguments{
 \item{sts}{StormsList object}

@@ -3,9 +3,15 @@
 \docType{methods}
 \name{getNbObs}
 \alias{getNbObs}
+\alias{getNbObs,Storm-method}
+\alias{getNbObs,StormsList-method}
 \title{Get the number of observations available}
 \usage{
 getNbObs(s, ...)
+
+\S4method{getNbObs}{Storm}(s)
+
+\S4method{getNbObs}{StormsList}(s, name, season = NULL)
 }
 \arguments{
 \item{s}{Storm/StormsList object}

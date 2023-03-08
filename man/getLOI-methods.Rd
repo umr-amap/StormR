@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getLOI}
 \alias{getLOI}
+\alias{getLOI,StormsList-method}
 \title{Get LOI from a Storms object}
 \usage{
 getLOI(sts)
+
+\S4method{getLOI}{StormsList}(sts)
 }
 \arguments{
 \item{sts}{StormsList object}
