@@ -101,21 +101,17 @@ plotTrack <- function(st) {
 plotLabels <- function(st, by, pos) {
 
   cex <- 0.6
-  ind <- round(seq(1, st@numobs.all, by))
+  ind <- round(seq(1, getNbObs(st), by))
 
   for (i in ind) {
     lon <- st@obs.all$lon[i]
     lat <- st@obs.all$lat[i]
 
-    graphics::text(
-      lon,
-      lat,
-      labels = paste0(st@name,"\n",
-                     st@obs.all$iso.time[i],"\n",
-                     "(",i,")\n"),
-      pos = pos,
-      cex = cex
-    )
+    graphics::text(lon,
+                   lat,
+                   labels = paste0(st@name," (",i,")\n", st@obs.all$iso.time[i]),
+                   pos = pos,
+                   cex = cex)
   }
 
 }
@@ -391,5 +387,4 @@ plotStorms <- function(sts,
   if(reset_setting)
     on.exit(graphics::par(opar))
 
-  return(NULL)
 }
