@@ -1456,7 +1456,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
         i <- i + 1
       
       df <- data.frame(result[,i], result[,i:i+1], indices = indices, isoTimes = isoT)
-      colnames(df) <- c("wind", "direction", "indices", "isoTimes")
+      colnames(df) <- c("speed", "direction", "indices", "isoTimes")
       
       l <- append(l, list(df))
     }
