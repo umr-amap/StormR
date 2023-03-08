@@ -7,37 +7,37 @@
 ###########################
 
 #For msw
-mph_to_ms = function(x){
-  return(x * mph2ms)
-}
-
-knt_to_ms = function(x){
+knt_to_ms <- function(x){
   return(x * knt2ms)
 }
 
-kmh_to_ms = function(x){
+mph_to_ms <- function(x){
+  return(x * mph2ms)
+}
+
+kmh_to_ms <- function(x){
   return(x * kmh2ms)
 }
 
 #For rmw
-nm_to_km = function(x){
+nm_to_km <- function(x){
   return(x * nm2km)
 }
 
 #For pressure
-b_to_pa = function(x){
+b_to_pa <- function(x){
   return(x * b2pa)
 }
 
-mb_to_pa = function(x){
+mb_to_pa <- function(x){
   return(x * mb2pa)
 }
 
-psi_to_pa = function(x){
+psi_to_pa <- function(x){
   return(x * psi2pa)
 }
 
-atm_to_pa = function(x){
+atm_to_pa <- function(x){
   return(x * atm2pa)
 }
 

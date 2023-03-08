@@ -359,8 +359,6 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 #' available in a Storm/StormsList object 
 #'
 #' @param s Storm/StormsList object
-#' @param name character. Name of a storm in capital letters. Default value is
-#' set to NULL
 #'
 #' @return numeric vector. Maximum SSHS reached of each storms (or the selected
 #' one through name input) provided by the given StormsList object or maximum SSHS
@@ -393,6 +391,7 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 #'
 #' Get the number of observations available for a given storm
 #'
+#' @param ... extra argument depending on Storm/StormsList object
 #' @param s  Storm/StormsList object
 #' @param name character. Name of the storm to extract in capital letters
 #' @param season numeric. Cyclonic season of the storm to extract. Used only if
@@ -428,6 +427,7 @@ setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) 
 #'
 #' Get the observations available for a given storm
 #'
+#' @param ... extra argument depending on Storm/StormsList object
 #' @param s Storm/StormsList object
 #' @param name character. Name of the storm to extract in capital letters
 #' @param season numeric. Cyclonic season of the storm to extract. Used only if
@@ -463,6 +463,7 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 #' Get the indices of observations within the extended Location Of Interest for
 #' a given storm
 #'
+#' @param ... extra argument depending on Storm/StormsList object
 #' @param s  Storm/StormsList object
 #' @param name character. Name of the storm to extract in capital letters
 #' @param season numeric. Cyclonic season of the storm to extract. Used only if
@@ -555,10 +556,8 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
   if (!is.null(names)) {
     stopifnot("names must be a vector of character" = identical(class(names), "character"))
   } else{
-    stopifnot(
-      "Incompatible format for seasons (must be either length 1 or 2)" = length(seasons) == 1 ||
-        length(seasons) == 2
-    )
+    stopifnot("Incompatible format for seasons (must be either length 1 or 2)" = length(seasons) == 1 ||
+                length(seasons) == 2)
   }
 
   #Checking max_dist input
@@ -611,7 +610,7 @@ convertLoi <- function(loi){
 
     if(loi[1] < 0){
       loi[1] <- loi[1] + 360
-      warning("longitude coordinate for loi set between 0-360°")
+      warning("longitude coordinate for loi set between 0 and 360 degree")
     }
     loi.df <- data.frame(lon = loi[1], lat = loi[2])
     loi.sf <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))

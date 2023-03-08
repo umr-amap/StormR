@@ -53,7 +53,7 @@ world <- sf::st_transform(world, crs = wgs84)
 
 usethis::use_data(resolutions,
                   mph2ms, knt2ms, kmh2ms, nm2km, b2pa, mb2pa, psi2pa, atm2pa,
-                  km,wgs84, Basins, sshs,
+                  km, wgs84, Basins, sshs,
                   oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
                   df_getDataInterpolate,
                   world,

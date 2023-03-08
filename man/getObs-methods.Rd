@@ -16,6 +16,8 @@ getObs(s, ...)
 \arguments{
 \item{s}{Storm/StormsList object}
 
+\item{...}{extra argument depending on Storm/StormsList object}
+
 \item{name}{character. Name of the storm to extract in capital letters}
 
 \item{season}{numeric. Cyclonic season of the storm to extract. Used only if
