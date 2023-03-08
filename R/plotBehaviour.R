@@ -79,8 +79,8 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'    \item "PDI"
 #'    \item "Exposure_threshold" where "threshold" represents the wind threshold
 #'          used to compute Exposure raster
-#'    \item "Profiles_index" where index stands for the index of observation
-#'    \item "WindDirection_index" where index stands for the index of
+#'    \item "Speed_index" where index stands for the index of observation
+#'    \item "Direction_index" where index stands for the index of
 #'          observation
 #'
 #'  }
@@ -136,7 +136,7 @@ plotBehaviour <- function(sts,
   product <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
 
 
-  if (!(name %in% sts@names))
+  if (!(name %in% getNames(sts)))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
 
@@ -184,13 +184,13 @@ plotBehaviour <- function(sts,
     range <- c(0, max(terra::values(raster_product), na.rm = T))
     leg <- expression(paste("Time spent (h)"))
 
-  }else if(product == "Profiles"){
+  }else if(product == "Speed"){
 
     col <- mswSSHSPalette
     range <- c(17, 80)
     leg <- expression(paste("radial wind speed (m.s" ^ "-1",")"))
 
-  }else if(product == "WindDirection"){
+  }else if(product == "Direction"){
 
     col <- exposurePalette
     range <- c(0, 360)

@@ -144,7 +144,7 @@ checkInputsPs <- function(sts, names, category, labels, by,
   #Checking names input
   if (!is.null(names)) {
     stopifnot("names must be characters" = identical(class(names), "character"))
-    stopifnot("Invalid storm names (storm not found)" = names %in% sts@names)
+    stopifnot("Invalid storm names (storm not found)" = names %in% getNames(sts))
   }
 
   #Checking category input
@@ -301,7 +301,7 @@ plotStorms <- function(sts,
       if(!is.null(category))
         warning("category input ignored\n")
 
-      ind <- which(sts@names %in% names)
+      ind <- which(getNames(sts) %in% names)
       sts.aux <- unlist(sts@data)[ind]
 
     }else{

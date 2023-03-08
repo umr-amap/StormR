@@ -89,7 +89,7 @@ in wind_threshold input and for each storm. Name of layers are
 "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
 \item "Profiles" produces two layers for each observations
 (real and interpolated) and each storm. Name of layers are
-"STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
+"STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 }
 }
 \description{

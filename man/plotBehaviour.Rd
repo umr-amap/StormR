@@ -25,8 +25,8 @@ plotBehaviour(
 \item "PDI"
 \item "Exposure_threshold" where "threshold" represents the wind threshold
 used to compute Exposure raster
-\item "Profiles_index" where index stands for the index of observation
-\item "WindDirection_index" where index stands for the index of
+\item "Speed_index" where index stands for the index of observation
+\item "Direction_index" where index stands for the index of
 observation
 
 }}

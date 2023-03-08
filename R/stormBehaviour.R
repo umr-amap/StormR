@@ -847,12 +847,11 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
 #' @param space_res character. space_res input from spatialBehaviour
-#' @param product characher
 #' @param threshold numeric vector. Wind threshold
 #'
 #'
 #' @return list of SpatRaster
-rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, product, threshold){
+rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, threshold){
 
   nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
@@ -860,7 +859,7 @@ rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, product,
   prod <- sum(stack, na.rm = T) * temp_res
   #Applying focal function to smooth results
   prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = T, pad = T)
-  names(prod) <- paste0(name,"_",product)
+  names(prod) <- paste0(name,"_PDI")
 
 
   return(c(final_stack, prod))
@@ -880,12 +879,11 @@ rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, product,
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
 #' @param space_res character. space_res input from spatialBehaviour
-#' @param product characher
 #' @param threshold numeric vector. Wind threshold
 #'
 #'
 #' @return list of SpatRaster
-rasterizeExp <- function(final_stack, stack, temp_res, space_res, name, product, threshold){
+rasterizeExp <- function(final_stack, stack, temp_res, space_res, name, threshold){
 
   nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
@@ -896,7 +894,7 @@ rasterizeExp <- function(final_stack, stack, temp_res, space_res, name, product,
     prod <- sum(terra::subset(stack, ind), na.rm = T) * temp_res
     #Applying focal function to smooth results
     prod <- terra::focal(prod, w = matrix(1, nbg, nbg), max, na.rm = T, na.rm = T)
-    names(prod) <- paste0(name,"_",product,"_",threshold[l])
+    names(prod) <- paste0(name,"_Exposure_",threshold[l])
     final_stack <- c(final_stack, prod)
   }
 
@@ -930,11 +928,11 @@ rasterizeProduct <- function(product, final_stack, stack, temp_res, space_res, n
 
   }else if (product == "PDI") {
     #Computing PDI analytic raster
-    final_stack <- rasterizePDI(final_stack, stack, temp_res, space_res, name, "PDI", NULL)
+    final_stack <- rasterizePDI(final_stack, stack, temp_res, space_res, name, NULL)
 
   }else if (product == "Exposure") {
     #Computing Exposure analytic raster
-    final_stack <- rasterizeExp(final_stack, stack, temp_res, space_res, name,"Exposure", threshold)
+    final_stack <- rasterizeExp(final_stack, stack, temp_res, space_res, name, threshold)
 
   }
 
@@ -1045,7 +1043,7 @@ maskProduct <- function(final_stack, loi, template){
 #'           "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
 #'    \item "Profiles" produces two layers for each observations
 #'          (real and interpolated) and each storm. Name of layers are
-#'          "STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
+#'          "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 #' }
 #'
 #' @details Add details on Willoughy/Holland/Boose method, asymmetries and getRMW method ...
@@ -1193,8 +1191,8 @@ spatialBehaviour <- function(sts,
       if("Exposure" %in% product)
         aux.stack.exp <- stackProduct("Exposure", aux.stack.exp, raster.template, raster.wind, wind_threshold)
       if("Profiles" %in% product){
-        names(raster.wind) <- paste0(st@name,"_","Profiles","_",dataTC$indices[j])
-        names(raster.direction) <- paste0(st@name,"_","WindDirection","_",dataTC$indices[j])
+        names(raster.wind) <- paste0(st@name,"_","Speed","_",dataTC$indices[j])
+        names(raster.direction) <- paste0(st@name,"_","Direction","_",dataTC$indices[j])
         aux.stack.prof <- stackRaster(aux.stack.prof, raster.template, raster.wind)
         aux.stack.direction <- stackRaster(aux.stack.direction, raster.template, raster.direction)
       }
