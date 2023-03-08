@@ -1,5 +1,5 @@
 ---
-title: "TemporalBehaviour"
+title: "temporalBehaviour"
 output: html_document
 date: "2023-03-03"
 ---
@@ -40,12 +40,12 @@ We use the data frame to draw time series plots for wind speed and wind directio
 split.screen(c(1,2))
 screen(1)
 par(mar=c(10,4,4,2))
-plot(TS$PAM$Port_Vila$wind,type="b",ylim=c(0,60),xlab="",ylab="Wind speed (m/s)",axes=FALSE,main="Port Vila")
+plot(TS$PAM$Port_Vila$speed,type="b",ylim=c(0,60),xlab="",ylab="Wind speed (m/s)",axes=FALSE,main="Port Vila")
 axis(1,at=seq(1,length(TS$PAM$Port_Vila$wind)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
 axis(2,at=seq(0,60,10),labels=seq(0,60,10),las=2)
 screen(2)
 par(mar=c(10,4,4,2))
-plot(TS$PAM$Luganville$wind,type="b",ylim=c(0,60),xlab="",ylab="Wind speed (m/s)",axes=FALSE,main="Luganville")
+plot(TS$PAM$Luganville$speed,type="b",ylim=c(0,60),xlab="",ylab="Wind speed (m/s)",axes=FALSE,main="Luganville")
 axis(1,at=seq(1,length(TS$PAM$Luganville$wind)),labels=TS$PAM$Luganville$isoTimes,las=2)
 axis(2,at=seq(0,60,10),labels=seq(0,60,10),las=2)
 close.screen(all = TRUE)
@@ -64,6 +64,13 @@ plot(TS$PAM$Luganville$direction,type="b",xlab="",ylab="Wind direction (degree n
 axis(1,at=seq(1,length(TS$PAM$Luganville$direction)),labels=TS$PAM$Luganville$isoTimes,las=2)
 axis(2,at=seq(0,360,90),labels=seq(0,360,90),las=2)
 close.screen(all = TRUE)
+```
+
+Maximum sustained wind speed for Port Vila and Luganville can be computed as follows:
+
+``` {r}
+max(TS$PAM$Port_Vila$speed)
+max(TS$PAM$Luganville$speed)
 ```
 
 ### Getting power dissipation index

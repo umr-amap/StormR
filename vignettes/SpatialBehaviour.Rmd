@@ -1,12 +1,19 @@
 ---
-title: "SpatialBehaviour"
+title: "spatialBehaviour"
 output: html_document
 date: "2023-03-03"
 ---
 
-## Products
+The `spatialBehaviour` functions allows computing wind speed and direction for each cell of a regular grid (i.e., a raster) for a given tropical cyclone or set of tropical cyclones. The 
 
-Based on the computed wind fields, stormR allows to compute different products allowing to characterise the behaviour of winds across time and space at given specific locations (i.e., at given longitude/latitude coordinates) or for all cells of a regular grid (i.e., a raster). Three products are available:<br />
+
+
+It also allows to compute the associated maximum sustained wind speed, the power dissipation index and the duration of exposure to winds reaching defined speed thresholds along the life span of the cyclones.    
+
+
+
+
+Three products are available:<br />
 
 ```
 st <- Storms(loi = "Vanuatu", names = "PAM")
@@ -14,7 +21,7 @@ st <- Storms(loi = "Vanuatu", names = "PAM")
 
 ### Maximum Sustained Wind speed
 
-Maximum Sustained Wind speed (MSW, in $m.s^{-1}$) over the lifespan of a storm computed as follow:<br />
+Maximum Sustained Wind speed (MSW, in $m.s^{-1}$) over the lifespan of a storm computed as follows:
 
 $$
 \max(v(t) | t \in [0,T])
@@ -24,7 +31,8 @@ where
 $t$ is the time of the observation<br />
 $T$ is the lifespan of the storm<br />
 
-Exemple
+Example
+
 ```
 SpatialBehaviour()
 plotBehaviour()
