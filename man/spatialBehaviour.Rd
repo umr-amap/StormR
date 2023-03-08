@@ -45,13 +45,13 @@ fitting according to cyclonic observations
 Default value is set to "Willoughby" (See Details)}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations. Must be either:
+the computations (see Details). Must be either:
 \itemize{
-\item "Miyazaki": ...
-\item "Chen": ...
+\item "Miyazaki": based on the formula derived in Miyazaki et al. (1962)
+\item "Chen":  based on the formula derived in Chen (1994)
 \item "None": no asymmetry is added
 }
-Default value is set to "Chen" (See Details)}
+Default value is set to "Chen". Ignored if method == Boose}
 
 \item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
 empirically or using the radius of maximum wind from the observations.
