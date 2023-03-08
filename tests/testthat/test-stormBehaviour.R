@@ -290,10 +290,10 @@ test_that("Test computeDirection function", {
 
 
 
-test_that("Test checkInputsSbPt function", {
+test_that("Test checkInputsTempBehaviour function", {
 
   #Checking sts input
-  expect_error(checkInputsSbPt(points = data.frame(lon = 169, lat = -19),
+  expect_error(checkInputsTempBehaviour(points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
                                method = "Willougbhy",
@@ -302,7 +302,7 @@ test_that("Test checkInputsSbPt function", {
                                temp_res = 1))
 
   #Checking product input
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = 1,
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -311,7 +311,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "MSW",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -320,7 +320,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = c("TS", "PDI", "Exposure"),
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -330,7 +330,7 @@ test_that("Test checkInputsSbPt function", {
                                temp_res = 1))
 
   #Check wind_threshold input
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "Exposure",
                                wind_threshold = c("18",  "33",  "42",  "49",  "58",  "70"),
@@ -339,7 +339,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "Exposure",
                                wind_threshold = c(-3, -45),
@@ -349,7 +349,7 @@ test_that("Test checkInputsSbPt function", {
                                temp_res = 1))
 
   #Checking method input
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -358,7 +358,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -367,7 +367,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -376,7 +376,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -385,7 +385,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -395,7 +395,7 @@ test_that("Test checkInputsSbPt function", {
                                temp_res = 1))
 
   #Checking asymmetry input
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -404,7 +404,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -413,7 +413,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -422,7 +422,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -432,7 +432,7 @@ test_that("Test checkInputsSbPt function", {
                                temp_res = 1))
 
   #Checking empirical_rmw inputs
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -441,7 +441,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = "TRUE",
                                temp_res = 1))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -451,7 +451,7 @@ test_that("Test checkInputsSbPt function", {
                                temp_res = 1))
 
   #Checking temp_res input
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -460,7 +460,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = TRUE))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),
@@ -469,7 +469,7 @@ test_that("Test checkInputsSbPt function", {
                                empirical_rmw = FALSE,
                                temp_res = 2.3))
 
-  expect_error(checkInputsSbPt(sts = pam,
+  expect_error(checkInputsTempBehaviour(sts = pam,
                                points = data.frame(lon = 169, lat = -19),
                                product = "TS",
                                wind_threshold = c(18,  33,  42,  49,  58,  70),

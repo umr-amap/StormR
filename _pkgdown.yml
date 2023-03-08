@@ -34,7 +34,7 @@ reference:
   desc: Functions for computing products
   contents:
   - '`spatialBehaviour`'
-  - '`stormBehaviour_pt`'
+  - '`temporalBehaviour`'
   
   
 - title: Plot
