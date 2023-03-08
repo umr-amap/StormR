@@ -15,9 +15,6 @@ getSSHS(s)
 }
 \arguments{
 \item{s}{Storm/StormsList object}
-
-\item{name}{character. Name of a storm in capital letters. Default value is
-set to NULL}
 }
 \value{
 numeric vector. Maximum SSHS reached of each storms (or the selected
