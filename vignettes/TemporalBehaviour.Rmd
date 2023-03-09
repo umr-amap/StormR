@@ -18,14 +18,17 @@ In the following example we compute and plot time series of the speed and direct
 df<-data.frame(x=c(168.33,167.17),y=c(-17.73,-15.53))
 rownames(df)<-c("Port_Vila","Luganville")
 st<-Storms(loi = "Vanuatu", names = "PAM", verbose=0)
+plotStorms(st,reset_setting=FALSE)
+points(df$x,df$y,pch=3,col=c("blue","red"))
+text(df$x,df$y,labels = c("Port Vila","Luganville"),pos=2,col=c("blue","red"))
 ```
 
 By default the temporal resolution of the `temporalBehaviour` function is 1 hour but can be changed using the `temp_res` argument. Here we set the temporal resolution to 30 min with `temp_res=0.5`. Time series are computed using the `product = "TS"` argument as follows:
 
 ``` {r}
 TS<-temporalBehaviour(st, points = df, product = "TS",temp_res=0.5)
-TS$PAM$Port_Vila<-TS$PAM$Port_Vila[complete.cases(TS$PAM$Port_Vila),]
-TS$PAM$Luganville<-TS$PAM$Luganville[complete.cases(TS$PAM$Luganville),]
+#TS$PAM$Port_Vila<-TS$PAM$Port_Vila[complete.cases(TS$PAM$Port_Vila),]
+#TS$PAM$Luganville<-TS$PAM$Luganville[complete.cases(TS$PAM$Luganville),]
 ```
 
 With the above specification the the `temporalBehaviour` function returns a list of two data frames (i.e., one for each location) with the wind speed ("speed"), direction ("direction"), ID of the observations ("indices", interpolated observations are noted with a decimal), and the date and time of the observation ("isoTimes").
@@ -37,33 +40,27 @@ str(TS)
 We use the data frame to draw time series plots for wind speed and wind direction as follows:
 
 ``` {r}
-split.screen(c(1,2))
-screen(1)
 par(mar=c(10,4,4,2))
-plot(TS$PAM$Port_Vila$speed,type="b",ylim=c(0,60),xlab="",ylab="Wind speed (m/s)",axes=FALSE,main="Port Vila")
-axis(1,at=seq(1,length(TS$PAM$Port_Vila$wind)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
+plot(TS$PAM$Port_Vila$speed,type="l",ylim=c(0,60),xlab="",ylab="Wind speed (m/s)",axes=FALSE,col="blue")
+points(TS$PAM$Port_Vila$speed,col="blue",pch=3)
+lines(TS$PAM$Luganville$speed,col="red")
+points(TS$PAM$Luganville$speed,col="red",pch=3)
+legend("topleft",pch=3,col=c("blue","red"),legend=c("Port Vila","Luganville"),bty="n")
+axis(1,at=seq(1,length(TS$PAM$Port_Vila$speed)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
 axis(2,at=seq(0,60,10),labels=seq(0,60,10),las=2)
-screen(2)
-par(mar=c(10,4,4,2))
-plot(TS$PAM$Luganville$speed,type="b",ylim=c(0,60),xlab="",ylab="Wind speed (m/s)",axes=FALSE,main="Luganville")
-axis(1,at=seq(1,length(TS$PAM$Luganville$wind)),labels=TS$PAM$Luganville$isoTimes,las=2)
-axis(2,at=seq(0,60,10),labels=seq(0,60,10),las=2)
-close.screen(all = TRUE)
+dev.off()
 ```
 
 ``` {r}
-split.screen(c(1,2))
-screen(1)
 par(mar=c(10,4,4,2))
-plot(TS$PAM$Port_Vila$direction,type="b",xlab="",ylab="Wind direction (degree north)",axes=FALSE,main="Port Vila")
-axis(1,at=seq(1,length(TS$PAM$Port_Vila$direction)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
+plot(TS$PAM$Port_Vila$direction,type="l",ylim=c(0,360),xlab="",ylab="Wind direction (degree north)",axes=FALSE,col="blue")
+points(TS$PAM$Port_Vila$direction,col="blue",pch=3)
+lines(TS$PAM$Luganville$direction,col="red")
+points(TS$PAM$Luganville$direction,col="red",pch=3)
+legend("topleft",pch=3,col=c("blue","red"),legend=c("Port Vila","Luganville"),bty="n")
+axis(1,at=seq(1,length(TS$PAM$Port_Vila$speed)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
 axis(2,at=seq(0,360,90),labels=seq(0,360,90),las=2)
-screen(2)
-par(mar=c(10,4,4,2))
-plot(TS$PAM$Luganville$direction,type="b",xlab="",ylab="Wind direction (degree north)",axes=FALSE,main="Luganville")
-axis(1,at=seq(1,length(TS$PAM$Luganville$direction)),labels=TS$PAM$Luganville$isoTimes,las=2)
-axis(2,at=seq(0,360,90),labels=seq(0,360,90),las=2)
-close.screen(all = TRUE)
+dev.off()
 ```
 
 Maximum sustained wind speed for Port Vila and Luganville can be computed as follows:
