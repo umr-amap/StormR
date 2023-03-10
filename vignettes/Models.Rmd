@@ -1,7 +1,7 @@
 ---
 title: "Modeles"
 output: html_document
-date: "2023-03-03"
+date: "`r Sys.Date()`"
 ---
 
 # Reconstruction des champs de vent d'un cyclone
