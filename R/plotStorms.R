@@ -133,10 +133,9 @@ plotLabels <- function(st, by, pos) {
 #' @param loi logical
 #' @param xlim numeric vector
 #' @param ylim numeric vector
-#' @param reset_setting logical
 #' @return NULL
 checkInputsPs <- function(sts, names, category, labels, by,
-                          pos, legends, loi, xlim, ylim, reset_setting){
+                          pos, legends, loi, xlim, ylim){
 
   #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -173,7 +172,6 @@ checkInputsPs <- function(sts, names, category, labels, by,
   stopifnot("legends must be logical" = identical(class(legends), "logical"))
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
-  stopifnot("reset_setting must be logical" = identical(class(reset_setting), "logical"))
 
   #Checking by input
   stopifnot("by must be numeric" = identical(class(by), "numeric"))
@@ -255,7 +253,7 @@ plotStorms <- function(sts,
 
 
   checkInputsPs(sts, names, category, labels, by, pos, legends,
-                loi, xlim, ylim, reset_setting)
+                loi, xlim, ylim)
 
 
   #Handling spatial extent
