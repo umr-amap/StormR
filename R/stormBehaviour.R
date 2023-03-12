@@ -1046,7 +1046,19 @@ maskProduct <- function(final_stack, loi, template){
 #'          "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 #' }
 #'
-#' @details Add details on Willoughy/Holland/Boose method, asymmetries and getRMW method ...
+#' @details Add details on Willoughy/Holland/Boose method, asymmetries and
+#'   getRMW method ... 
+#'   The temp_res input will perform a linear interpolation of
+#'   observations to further compute each 2D wind speed structure at each
+#'   interpolated observations. For example, if temp_res == 1, it will generate
+#'   observations every 1hour between the available observations. Doing so, 2D
+#'   wind speed structure is computed and stacked for each observations
+#'   (available and interpolated) to compute the desired product(s) afterwards.
+#'   If product == "Profiles", nothing else is performed. Otherwise and
+#'   depending on the product(s) to compute, calculations are carried out on the
+#'   stack and terra::focal functions are applied to the final raster(s) to
+#'   smooth the result(s).
+#' 
 #' @examples
 #' \dontrun{
 #' #Compute MSW product for Pam 2015 in Vanuatu using default settings
@@ -1569,7 +1581,12 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'          threshold and one column that contains Exposure value for each point
 #'          in points.
 #'    }
-#'
+#'    
+#' @details The temp_res input will perform a linear interpolation of
+#' observations to further compute each 2D wind speed structure at each
+#' interpolated observations. For example, if temp_res == 1, it will generate
+#' observations every 1hour between the available observations.
+#' 
 #' @examples
 #' \dontrun{
 #' pts <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
