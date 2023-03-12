@@ -919,7 +919,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' sp <- sf::st_polygon(list(poly))
 #' sp <- sf::st_sfc(sp, crs = 4326)
 #' sp <- sf::st_as_sf(sp)
-#' sts_sp <- Storms(loi = sp, seasons = c(2010,2020))
+#' sts_sp <- Storms(loi = sp)
 #' }
 #'
 #'
