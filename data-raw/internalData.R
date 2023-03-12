@@ -30,10 +30,14 @@ sshsPalette <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20
 
 
 palette <- c("#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
-x <- seq(18,80)
+xsup <- 95
+xinf <- 18
+nb_c <- xsup - xinf
+x <- seq(xinf, xsup)
+
 y <- x
-color_range <- colorRampPalette(sshsPalette[2:7], bias = 0.8)
-mswSSHSPalette <- color_range(63)
+color_range <- colorRampPalette(sshsPalette[2:7], bias = 1)
+mswSSHSPalette <- color_range(nb_c)
 
 plot(x, y, col = mswSSHSPalette, lwd = 3)
 abline(v = sshs)

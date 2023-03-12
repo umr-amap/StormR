@@ -169,7 +169,7 @@ plotBehaviour <- function(sts,
   if(product == "MSW"){
 
     col <- mswSSHSPalette
-    range <- c(17, 80)
+    range <- c(17, 95)
     leg <- expression(paste("MSW (m.s" ^ "-1",")"))
 
   }else if(product == "PDI"){
@@ -187,7 +187,7 @@ plotBehaviour <- function(sts,
   }else if(product == "Speed"){
 
     col <- mswSSHSPalette
-    range <- c(17, 80)
+    range <- c(17, 95)
     leg <- expression(paste("radial wind speed (m.s" ^ "-1",")"))
 
   }else if(product == "Direction"){
