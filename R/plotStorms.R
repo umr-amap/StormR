@@ -226,9 +226,6 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #' to TRUE
 #' @param loi logical. Whether or not to plot the extended LOI on the map.
 #' Default value is set to TRUE
-#' @param reset_setting logical. Whether the graphical parameter should be reset
-#' on exit. Default value is set to TRUE. It is useful for the plotBehaviour
-#' function. We highly recommend not to change this input
 #' @returns NULL
 #' @import rworldxtra
 #'
@@ -310,9 +307,6 @@ plotStorms <- function(sts,
   }
 
   #Plotting base map
-  opar <- graphics::par(no.readonly = TRUE)
-  graphics::par(mar=c(4, 12, 4, 8))
-
   world <- rworldmap::getMap(resolution = "high")
   maps::map(world,
             fill = TRUE,
@@ -383,8 +377,5 @@ plotStorms <- function(sts,
                      cex = 0.8)
 
   }
-
-  if(reset_setting)
-    on.exit(graphics::par(opar))
-
+  
 }
