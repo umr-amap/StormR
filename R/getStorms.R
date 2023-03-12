@@ -314,7 +314,11 @@ setGeneric("getNames", function(s) standardGeneric("getNames"))
 #' @rdname getNames-methods
 setMethod("getNames", signature("Storm"), function(s) s@name)
 #' @rdname getNames-methods
-setMethod("getNames", signature("StormsList"), function(s) unlist(lapply(s@data, getNames)))
+setMethod("getNames", signature("StormsList"), function(s){
+  l <-unlist(lapply(s@data, getNames))
+  names(l) <- NULL
+  l
+})
 
 
 
