@@ -22,6 +22,9 @@ Basins <- data.frame(row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "AL
                     ymin = c(0, -60, 0, 0, -60, -60, 0, -60),
                     ymax = c(60, 0, 60, 60, 0, 0, 30, 60))
 
+#Margin
+margin <- c(4, 12, 4, 8)
+
 #Color Palettes
 oceanColor <- "white"
 groundColor <- "grey"
@@ -52,6 +55,8 @@ df_getDataInterpolate <-getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, 3, 
 usethis::use_data(resolutions,
                   mph2ms, knt2ms, kmh2ms, nm2km, b2pa, mb2pa, psi2pa, atm2pa,
                   km, wgs84, Basins, sshs,
+                  margin,
                   oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
                   df_getDataInterpolate,
                   internal = TRUE, overwrite = T)
+

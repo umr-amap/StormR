@@ -162,8 +162,7 @@ plotBehaviour <- function(sts,
   y.leg = ymin - size.map * 0.09
 
   #Plotting track
-  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
-             reset_setting = FALSE)
+  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax))
 
   #Adding raster_product on map
   if(product == "MSW"){
@@ -259,5 +258,5 @@ plotBehaviour <- function(sts,
                      cex = 0.6)
     }
   }
-
+  
 }
