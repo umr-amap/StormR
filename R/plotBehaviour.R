@@ -159,7 +159,7 @@ plotBehaviour <- function(sts,
 
   #Handling gap with legend
   size.map = ymax - ymin
-  y.leg = ymin - size.map * 0.09
+  y.leg = ymin - size.map * 0.2
 
   #Plotting track
   plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax))
@@ -203,6 +203,8 @@ plotBehaviour <- function(sts,
   #Adding title
   graphics::title(leg)
 
+  
+  
   plot(raster_product,
        col = col,
        type = "continuous",
@@ -213,7 +215,7 @@ plotBehaviour <- function(sts,
        range = range,
        legend = TRUE,
        plg = list(loc = "bottom",
-                  ext = c(xmin, xmax, y.leg, y.leg - size.map* 0.05),
+                  ext = c(xmin, xmax, y.leg - size.map* 0.05, y.leg),
                   cex = 0.7,
                   shrink = 0),
        add = T)
