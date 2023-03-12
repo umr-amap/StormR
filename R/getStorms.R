@@ -865,9 +865,8 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' This function returns a StormsList object that
 #' gathers all the storms specified by the user
 #'
-#' @param sds StormsDataset object. Default value is set to IBTRACS_SP which is
-#' a database provided by this package and based on the IBTrACS.SP.v04r00.nc
-#' file. (See StormsDataset class)
+#' @param sds StormsDataset object. Default value is set to test_dataset
+#' (See StormsDataset class)
 #' @param loi Location of Interest. Must be either:
 #' \itemize{
 #' \item a SpatialPolygon (shapefile)
@@ -929,7 +928,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #'
 #' @importFrom methods as
 #' @export
-Storms <- function(sds = IBTRACS_SP,
+Storms <- function(sds = test_dataset,
                    loi,
                    seasons = c(min(sds@database$seasons, na.rm = T), max(sds@database$seasons, na.rm = T)),
                    names = NULL,
