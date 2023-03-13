@@ -178,13 +178,13 @@ library(StormR)
 ##############################################
 
 #Load the data for the tropical cyclone Pam which hit the Vanuatu in 2015
-st <- getStorms(loi = "Vanuatu", names = "PAM")
+st <- Storms(loi = "Vanuatu", names = "PAM")
 
 #Plot the tropical cyclone track and observations over or around the location of interest
 plotStorms(st, labels = T, legends = T)
 
 #Compute maximum sustained wind speed (MSW), power dissipation index (PDI), and exposure time (EXP) with default settings (the analytic model from Willoughby et al. 2006 with asymmetry). The function returns a raster with a 2.5min spatial resolution by default.
-st_prod <- stormBehaviour_sp(st, product = c("MSW", "PDI", "Exposure"))
+st_prod <- spatialBehaviour(st, product = c("MSW", "PDI", "Exposure"))
 
 
 #Plot the MSW, PDI, and an Exposure rasters alongside with the track of the storm and the limit of the location of interest
@@ -207,7 +207,7 @@ writeRast(st_prod[["PAM_MSW"]], path = paste0(tempdir(),"/"))
 ################################################
 
 #Load all tropical cyclones that have passed nearby New Caledonia between 2019 and 2021
-sts <- getStorms(loi = "New Caledonia", seasons = c(2019, 2021))
+sts <- Storms(loi = "New Caledonia", seasons = c(2019, 2021))
 
 #Plot all tropical cyclone tracks and observations over or around the location of interest
 plotStorms(sts, labels = T, legends = T)
@@ -216,7 +216,7 @@ plotStorms(sts, labels = T, legends = T)
 plotStorms(sts, names = "NIRAN", labels = T)
 
 #Compute PDI rasters for all tropical cyclones with the default values
-sts_pdi <- stormBehaviour_sp(sts, product = "PDI")
+sts_pdi <- spatialBehaviour(sts, product = "PDI")
 
 #Plot the PDI for the tropical cyclone Niran alongside with the its track
 plotBehaviour(sts, sts_pdi[["NIRAN_PDI"]], labels = T)
@@ -228,7 +228,7 @@ plotBehaviour(sts, sts_pdi[["NIRAN_PDI"]], labels = T)
 ##################################################################
 
 #Load all tropical cyclones that have passed nearby the EEZ of New Caledonia between 1980 and 2022
-stsEEZnc <- getStorms(loi = eezNC)
+stsEEZnc <- Storms(loi = eezNC)
 
 #Plot category 3 tropical cyclones (Saffir-Simpson hurricane wind scale, SSHWS)
 plotStorms(stsEEZnc, category = 3)
@@ -241,7 +241,7 @@ plotStorms(stsEEZnc, category = 3)
 #Set point location coordinates, lat/long, in decimal degrees (WGS84)
 pt <- c(188.17,-13.92)
 #Get all tropical cyclones that had passed near the point (by default <= 300 km away)
-stsPt <- getStorms(loi = pt)
+stsPt <- Storms(loi = pt)
 
 #Plot all tropical cyclone tracks and observations around the point of interest
 plotStorms(stsPt)
@@ -256,7 +256,7 @@ plotStorms(stsPt, category = c(4,5), labels = T)
 
 #Compute time series of wind speed at given location using coordinates provided in a data frame
 df <- data.frame(lon = c(166.5, 166.7), lat = c(-22.1, - 22.3))
-wind_ts <- stormBehaviour_pt(sts, points = df)
+wind_ts <- temporalBehaviour(sts, points = df)
 
 plot(wind_ts$NIRAN[,2], type = "b", ylab = "maximum sustained wind speed (m/s)")
 
@@ -272,13 +272,13 @@ pol <- sf::st_sfc(sf::st_polygon(list(cbind(c(167,168,168,167,167),c(-16,-16,-13
 loi <- sf::st_sf(pol, crs = 4326)
 
 #Load the data for the tropical cyclone Harold which hit the Vanuatu in 2020
-harold <- getStorms(loi = loi, names= "HAROLD")
+harold <- Storms(loi = loi, names= "HAROLD")
 
 #Compute wind profiles using Willoughby model with asymmetry
-profWillV1 <- stormBehaviour_sp(harold, product = "Profiles")
+profWillV1 <- spatialBehaviour(harold, product = "Profiles")
 
 #Compute wind profiles using Holland model with asymmetry
-profHollV2 <- stormBehaviour_sp(harold, product = "Profiles", method = "Holland")
+profHollV2 <- spatialBehaviour(harold, product = "Profiles", method = "Holland")
 
 #Compare few profiles between the two above differents methods and asymmetries
 plotBehaviour(harold,profWillV1["HAROLD_Profiles_40"], labels = T, xlim = c(166,168), ylim = c(-16.5, -14))
