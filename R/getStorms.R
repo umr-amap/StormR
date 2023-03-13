@@ -19,9 +19,9 @@
 #' @slot  sshs numeric. Maximum category reached in the Saffir Simpson Hurricane Scale
 #' @slot numobs.all numeric. Total number of observations available
 #' @slot numobs numeric. Total number of observations available within the location of interest
-#' extented with its corresponding buffer (See Storms class)
+#' extented with its corresponding buffer (See StormsList class)
 #' @slot obs numeric vector. Indices of observations within the location of interest
-#' extented with its corresponding buffer (See Storms class)
+#' extented with its corresponding buffer (See StormsList class)
 #' @slot obs.all  data.frame. Contains all of the observations available.
 #' An observation is made up of several fields which are:
 #' \itemize{
@@ -60,7 +60,7 @@ Storm <- methods::setClass(
 
 
 ##############
-#Storms Class#
+#StormsList Class#
 ##############
 
 
@@ -68,7 +68,7 @@ Storm <- methods::setClass(
 
 
 setOldClass("sf")
-#' Storms object
+#' StormsList object
 #'
 #' Gather all the needed informations to model a set of storms
 #'
@@ -85,8 +85,8 @@ setOldClass("sf")
 #' @importFrom methods new
 #' @import sp
 #' @export
-Storms <- methods::setClass(
-  "Storms",
+StormsList <- methods::setClass(
+  "StormsList",
   slots = c(
     data = "list",
     nb.storms = "numeric",
@@ -104,7 +104,7 @@ Storms <- methods::setClass(
 
 
 ##########################
-#Getters for Storms class#
+#Getters for StormsList class#
 ##########################
 
 
@@ -113,12 +113,12 @@ Storms <- methods::setClass(
 
 #' getStorm
 #'
-#' Extract a Storm object from a Storms object
+#' Extract a Storm object from a StormsList object
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #' @param name character. Name of the storm to extract
 #' @param season numeric. Cyclonic season of the storm to extract. Used only if
-#'  several storms in the Storms object share the same name.
+#'  several storms in the StormsList object share the same name.
 #'  Default value is set de NULL
 #'
 #' @return Storm object
@@ -127,7 +127,7 @@ Storms <- methods::setClass(
 #' @rdname getStorm-methods
 setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getStorm"))
 #' @rdname getStorm-methods
-setMethod("getStorm", signature("Storms"), function(sts, name, season = NULL){
+setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL){
   if(!is.null(season)){
     w = which(sts@names == name)
     for(i in 1:length(w)){
@@ -150,17 +150,17 @@ setMethod("getStorm", signature("Storms"), function(sts, name, season = NULL){
 
 #' getNbStorms
 #'
-#' Get the number of storms available in a Storms object
+#' Get the number of storms available in a StormsList object
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #'
-#' @return numeric. Number of storms available in the given Storms object
+#' @return numeric. Number of storms available in the given StormsList object
 #' @export
 #' @docType methods
 #' @rdname getNbStorms-methods
 setGeneric("getNbStorms", function(sts) standardGeneric("getNbStorms"))
 #' @rdname getNbStorms-methods
-setMethod("getNbStorms", signature("Storms"), function(sts) sts@nb.storms)
+setMethod("getNbStorms", signature("StormsList"), function(sts) sts@nb.storms)
 
 
 
@@ -168,17 +168,17 @@ setMethod("getNbStorms", signature("Storms"), function(sts) sts@nb.storms)
 
 #' getLOI
 #'
-#' Get the Location Of Interest of a Storms object
+#' Get the Location Of Interest of a StormsList object
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #'
-#' @return sf object. Location Of Interest for the given Storms object
+#' @return sf object. Location Of Interest for the given StormsList object
 #' @export
 #' @docType methods
 #' @rdname getLOI-methods
 setGeneric("getLOI", function(sts) standardGeneric("getLOI"))
 #' @rdname getLOI-methods
-setMethod("getLOI", signature("Storms"), function(sts) sts@spatial.loi)
+setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 
 
 
@@ -186,17 +186,17 @@ setMethod("getLOI", signature("Storms"), function(sts) sts@spatial.loi)
 
 #' getBuffer
 #'
-#' Get the Extended location of interest of a Storms object
+#' Get the Extended location of interest of a StormsList object
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #'
-#' @return sf object. Extended location of interest for the given Storms object
+#' @return sf object. Extended location of interest for the given StormsList object
 #' @export
 #' @docType methods
 #' @rdname getBuffer-methods
 setGeneric("getBuffer", function(sts) standardGeneric("getBuffer"))
 #' @rdname getBuffer-methods
-setMethod("getBuffer", signature("Storms"), function(sts) sts@spatial.loi.buffer)
+setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.buffer)
 
 
 
@@ -204,25 +204,25 @@ setMethod("getBuffer", signature("Storms"), function(sts) sts@spatial.loi.buffer
 
 #' getBufferSize
 #'
-#' Get the buffer size for a Storms object
+#' Get the buffer size for a StormsList object
 #'
-#' @param sts Storms object
+#' @param sts StormsList object
 #'
 #' @return numeric. Buffer size (in km) used to generate the extended location
-#' of interest for the given Storms object
+#' of interest for the given StormsList object
 #' @export
 #' @docType methods
 #' @rdname getBufferSize-methods
 setGeneric("getBufferSize", function(sts) standardGeneric("getBufferSize"))
 #' @rdname getBufferSize-methods
-setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
+setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 
 
 
 
 
 ###########################################
-#Getters for both Storms and Storm classes#
+#Getters for both StormsList and Storm classes#
 ###########################################
 
 
@@ -231,19 +231,19 @@ setMethod("getBufferSize", signature("Storms"), function(sts) sts@buffer)
 
 #' getNames
 #'
-#' Get the names of storms available in a Storms object or the name of the storm
+#' Get the names of storms available in a StormsList object or the name of the storm
 #'  of a Storm object
 #'
-#' @param s Storms or Storm object
+#' @param s StormsList or Storm object
 #'
-#' @return character vector. Names of each storms provided by the given Storms
+#' @return character vector. Names of each storms provided by the given StormsList
 #' object or name of the storm of the given Storm object
 #' @export
 #' @docType methods
 #' @rdname getNames-methods
 setGeneric("getNames", function(s) standardGeneric("getNames"))
 #' @rdname getNames-methods
-setMethod("getNames", signature("Storms"), function(s) s@names)
+setMethod("getNames", signature("StormsList"), function(s) s@names)
 #' @rdname getNames-methods
 setMethod("getNames", signature("Storm"), function(s) s@name)
 
@@ -253,23 +253,23 @@ setMethod("getNames", signature("Storm"), function(s) s@name)
 
 #' getSeasons
 #'
-#' Get the cyclonic season of storms available in a Storms object or the
+#' Get the cyclonic season of storms available in a StormsList object or the
 #' cyclonic season of a Storm object
 #'
-#' @param s Storms or Storm object
+#' @param s StormsList or Storm object
 #' @param ... Additional argument
 #' @param name character. Name of a storm in capital letters. Default value is
 #' set to NULL
 #'
 #' @return numeric vector. Cyclonic seasons of each storms (or the selected one
-#' through name input) provided by the given Storms object or the cyclonic
+#' through name input) provided by the given StormsList object or the cyclonic
 #' season for the given Storm object
 #' @export
 #' @docType methods
 #' @rdname getSeasons-methods
 setGeneric("getSeasons", function(s, ...) standardGeneric("getSeasons"))
 #' @rdname getSeasons-methods
-setMethod("getSeasons", signature("Storms"), function(s, name = NULL){
+setMethod("getSeasons", signature("StormsList"), function(s, name = NULL){
   if(is.null(name)){
     s@seasons
   }else{
@@ -286,22 +286,22 @@ setMethod("getSeasons", signature("Storm"), function(s) s@season)
 #' getSSHS
 #'
 #' Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storms
-#' available in a Storms object or the maximum SSHS reached of a Storm object
+#' available in a StormsList object or the maximum SSHS reached of a Storm object
 #'
-#' @param s Storms or Storm object
+#' @param s StormsList or Storm object
 #' @param ... Additional argument
 #' @param name character. Name of a storm in capital letters. Default value is
 #' set to NULL
 #'
 #' @return numeric vector. Maximum SSHS reached of each storms (or the selected
-#' one through name input) provided by the given Storms object or maximum SSHS
+#' one through name input) provided by the given StormsList object or maximum SSHS
 #' reached for the given Storm object
 #' @export
 #' @docType methods
 #' @rdname getSSHS-methods
 setGeneric("getSSHS", function(s, ...) standardGeneric("getSSHS"))
 #' @rdname getSSHS-methods
-setMethod("getSSHS", signature("Storms"), function(s, name = NULL){
+setMethod("getSSHS", signature("StormsList"), function(s, name = NULL){
   if(is.null(name)){
     s@sshs
   }else{
@@ -319,11 +319,11 @@ setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
 #'
 #' Get the number of observations available for a given storm
 #'
-#' @param s  Storms or Storm object
+#' @param s  StormsList or Storm object
 #' @param ... Additional arguments
 #' @param name character. Name of the storm to extract in capital letters
 #' @param season numeric. Cyclonic season of the storm to extract. Used only if
-#' several storms in the Storms object share the same name. Default value is set
+#' several storms in the StormsList object share the same name. Default value is set
 #' to NULL
 #'
 #' @return numeric. Number of observations available for the given storm
@@ -332,7 +332,7 @@ setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
 #' @rdname getNbObs-methods
 setGeneric("getNbObs", function(s, ...) standardGeneric("getNbObs"))
 #' @rdname getNbObs-methods
-setMethod("getNbObs", signature("Storms"), function(s, name, season = NULL) getStorm(s, name, season)@numobs.all)
+setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@numobs.all)
 #' @rdname getNbObs-methods
 setMethod("getNbObs", signature("Storm"), function(s) s@numobs.all)
 
@@ -344,11 +344,11 @@ setMethod("getNbObs", signature("Storm"), function(s) s@numobs.all)
 #'
 #' Get the observations available for a given storm
 #'
-#' @param s Storms or Storm object
+#' @param s StoStormsListrms or Storm object
 #' @param ... Additional arguments
 #' @param name character. Name of the storm to extract in capital letters
 #' @param season numeric. Cyclonic season of the storm to extract. Used only if
-#' several storms in the Storms object share the same name. Default value is set
+#' several storms in the StormsList object share the same name. Default value is set
 #' to NULL
 #'
 #' @return data.frame. Observations of the given storm
@@ -357,7 +357,7 @@ setMethod("getNbObs", signature("Storm"), function(s) s@numobs.all)
 #' @rdname getObs-methods
 setGeneric("getObs", function(s, ...) standardGeneric("getObs"))
 #' @rdname getObs-methods
-setMethod("getObs", signature("Storms"), function(s, name, season = NULL) getStorm(s, name, season)@obs.all)
+setMethod("getObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs.all)
 #' @rdname getObs-methods
 setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 
@@ -370,11 +370,11 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 #' Get the indices of observations within th extended Location Of Interest for
 #' a given storm
 #'
-#' @param s  Storms or Storm object
+#' @param s  StormsList or Storm object
 #' @param ... Additional arguments
 #' @param name character. Name of the storm to extract in capital letters
 #' @param season numeric. Cyclonic season of the storm to extract. Used only if
-#' several storms in the Storms object share the same name. Default value is set
+#' several storms in the StormsList object share the same name. Default value is set
 #' to NULL
 #'
 #' @return numeric vector. Indices within the extended LOI for the given Storm object
@@ -383,7 +383,7 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 #' @rdname getInObs-methods
 setGeneric("getInObs", function(s, ...) standardGeneric("getInObs"))
 #' @rdname getInObs-methods
-setMethod("getInObs", signature("Storms"), function(s, name, season = NULL) getStorm(s, name, season)@obs)
+setMethod("getInObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs)
 #' @rdname getInObs-methods
 setMethod("getInObs", signature("Storm"), function(s) s@obs)
 
@@ -392,14 +392,14 @@ setMethod("getInObs", signature("Storm"), function(s) s@obs)
 
 
 ###########
-#GetStorms#
+#Storms#
 ###########
 
 
 
 
 
-#' Check inputs for getStorms function
+#' Check inputs for Storms function
 #'
 #' @noRd
 #' @param sds StormsDataset object
@@ -480,7 +480,7 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
 #' Convert loi into a sf object
 #'
 #' @noRd
-#' @param loi loi input from getStorms
+#' @param loi loi input from StormsList
 #'
 #' @return loi in a sf format
 convertLoi <- function(loi){
@@ -533,7 +533,7 @@ convertLoi <- function(loi){
 #' make loi buffer
 #'
 #' @noRd
-#' @param loi sf object. loi input from getStorms already converted into sf object
+#' @param loi sf object. loi input from StormsList already converted into sf object
 #' @param buffer numeric. Buffer size to use (in km)
 #'
 #' @return loi extended with buffer in a sf format
@@ -552,8 +552,8 @@ makeBuffer <- function(loi, buffer){
 #'
 #' @noRd
 #' @param database Storms database
-#' @param filter_names character vector. Contains names input from the getStorms
-#' @param filter_seasons numeric vector.  Contains seasons input from the getStorms
+#' @param filter_names character vector. Contains names input from the Storms
+#' @param filter_seasons numeric vector.  Contains seasons input from the Storms
 #' @param remove_TD logical. Whether or not to remove tropical depressions (< 18 m/s)
 #' and include cyclones only. Default value is set to TRUE.
 #'
@@ -651,12 +651,12 @@ computeSSHS <- function(msw){
 #' Whether or not to add a storm (with id index in database) in the upcoming Storms object
 #'
 #' @noRd
-#' @param storm_list list of Storm object. To further integrate in a Storms object
-#' @param storm_names list of storm names. To further integrate in a Storms object
-#' @param storm_seasons list of cyclonic seasons. To further integrate in a Storms object
-#' @param storm_sshs list of sshs categories. To further integrate in a Storms object
-#' @param nb_storms numeric. number of storm to further integrate in a Storms object
-#' @param sds StormsDataset object. sds input from getStorms
+#' @param storm_list list of Storm object. To further integrate in a StormsList object
+#' @param storm_names list of storm names. To further integrate in a StormsList object
+#' @param storm_seasons list of cyclonic seasons. To further integrate in a StormsList object
+#' @param storm_sshs list of sshs categories. To further integrate in a StormsList object
+#' @param nb_storms numeric. number of storm to further integrate in a StormsList object
+#' @param sds StormsDataset object. sds input from Storms
 #' @param index numeric, index of the storm in the database
 #' @param loi_sf_buffer sf object. Location of interest extended with buffer
 #'
@@ -764,9 +764,9 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 
 
 
-#' Initialize a Storms object
+#' Initialize a StormsList object
 #'
-#' This function returns a Storms object that
+#' This function returns a StormsList object that
 #' gathers all the storms specified by the user
 #'
 #' @param sds StormsDataset object. Default value is set to IBTRACS_SP which is
@@ -797,11 +797,11 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #' \item 0: Nothing is displayed
 #' \item 1: Informations about the process are displayed
 #' \item 2: Outputs are also displayed
-#' \item 3: Additional notes to manipulate Storms objects are also displayed
+#' \item 3: Additional notes to manipulate StormsList objects are also displayed
 #' }
 #' Default value is set to 2
 #'
-#' @returns a Storms object that gathers all storms that match the criteria
+#' @returns a StormsList object that gathers all storms that match the criteria
 #' given in the inputs
 #'
 #' @details Available countries for the loi input are those provided in the
@@ -813,27 +813,27 @@ writeStorm <- function(storm_list, storm_names, storm_seasons, storm_sshs, nb_st
 #' @examples
 #' \dontrun{
 #' #Get data for a single storm on a given country
-#' pam <- getStorms(loi = "Vanuatu", names = "PAM")
+#' pam <- Storms(loi = "Vanuatu", names = "PAM")
 #'
 #' #Get data for the above storm on a point coordinates (Eastern/Northern degree)
 #' pt <- c(169, -19)
-#' pam.pt <- getStorms(loi = pt, names = "PAM")
+#' pam.pt <- Storms(loi = pt, names = "PAM")
 #'
 #' #Get data for two storms over New Caledonia
-#' sts_nc <- getStorms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+#' sts_nc <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #'
 #' #Get data for every storms that occured in the SP basin between 2010 and 2020
 #' poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
 #' sp <- sf::st_polygon(list(poly))
 #' sp <- sf::st_sfc(sp, crs = 4326)
 #' sp <- sf::st_as_sf(sp)
-#' sts_sp <- getStorms(loi = sp, seasons = c(2010,2020))
+#' sts_sp <- Storms(loi = sp, seasons = c(2010,2020))
 #' }
 #'
 #'
 #' @importFrom methods as
 #' @export
-getStorms <- function(sds = IBTRACS_SP,
+Storms <- function(sds = IBTRACS_SP,
                       loi,
                       seasons = c(1980, max(sds@database$seasons, na.rm = T)),
                       names = NULL,
@@ -850,7 +850,7 @@ getStorms <- function(sds = IBTRACS_SP,
 
 
   if (verbose > 0)
-    cat("=== getStorms processing ... ===\n\n-> Making buffer: ")
+    cat("=== Storms processing ... ===\n\n-> Making buffer: ")
 
   #Converting loi
   loi.sf <- convertLoi(loi)
@@ -932,8 +932,8 @@ getStorms <- function(sds = IBTRACS_SP,
 
     stopifnot("No storms found. Please check compatibilities between inputs" = !is.null(unlist(storm.names)))
 
-    #Initializing Storms object
-    sts <- new(Class = "Storms",
+    #Initializing StormsList object
+    sts <- new(Class = "StormsList",
                nb.storms = nb.storms,
                names = unlist(storm.names),
                seasons = unlist(storm.seasons),

@@ -4,7 +4,7 @@
 
 test_that("Tests checkInputsWr function", {
 
-  msw <- stormBehaviour_sp(pam, verbose = 0)
+  msw <- spatialBehaviour(pam, verbose = 0)
 
   #Checking rast validity
   expect_error(writeRast(format = ".tiff",
