@@ -14,27 +14,66 @@ Using these data StormR computes radial wind speed $v_r$ (in $m.s^{-1}$) at the 
 ### Holland (1980)
 
 $$
-v_r = \sqrt{\frac{b}{\rho}\left(\frac{rmw}{r}\right)^b (poci - pc)e^{-\left(\frac{rmw}{r}\right)^b} + \left(\frac{rf}{2}\right)^2} - \left(\frac{rf}{2}\right)
+v_r = \sqrt{\frac{b}{\rho}\left(\frac{R_m}{r}\right)^b (p_{oci} - p_c)\exp\left(-\left(\frac{R_m}{r}\right)^b\right) + \left(\frac{rf}{2}\right)^2} - \left(\frac{rf}{2}\right)
 $$
 
 where <br />
 $v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
 $r$ is the distance to the eye of the storm (in $km$) <br />
-$msw$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
-$rmw$ is the radius of maximum sustained wind speed (in $km$) <br />
-$pc$ is the pressure at the center of the storm ($pressure$ in $mb$) <br />
-$poci$ is the pressure at outermost closed isobar of the storm (in $mb$) <br />
+$v_m$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
+$R_m$ is the radius of maximum sustained wind speed (in $km$) <br />
+$p_c$ is the pressure at the center of the storm ($pressure$ in $mb$) <br />
+$p_{oci}$ is the pressure at outermost closed isobar of the storm (in $mb$) <br />
 $\rho = 1.15$ is the air density (in $kg.m^{-3}$) <br />
 $f = 2 \times 7.29 \times10^{-5} \sin(\phi)$ is the Coriolis force (in $N.kg^{-1}$, with $\phi$ being the latitude) <br />
-$b = \frac{\rho e \times msw^2}{poci - pc}$ is the shape parameter <br />
+$b = \frac{\rho e \times v_m^2}{p_{oci} - p_c}$ is the shape parameter <br />
+
+
+
+### Boose et al. (2004)
+
+$$
+v_r = F\left[v_m - S(1 - \sin T)\frac{v_h}{2} \right] \times \sqrt{\left(\frac{R_m}{r}\right)^b \exp \left( 1 - \left(\frac{R_m}{r}\right)^b \right)}
+$$
+
+where <br />
+$v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
+$v_h$ is the storm velocity (in $m.s^{-1}$) <br />
+$r$ is the distance to the eye of the storm (in $km$) <br />
+$v_m$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
+$R_m$ is the radius of maximum sustained wind speed (in $km$) <br />
+$p_c$ is the pressure at the center of the storm ($pressure$ in $mb$) <br />
+$p_{oci}$ is the pressure at outermost closed isobar of the storm (in $mb$) <br />
+$\rho = 1.15$ is the air density (in $kg.m^{-3}$) <br />
+$b = \frac{\rho e \times v_m^2}{p_{oci} - p_c}$ is the shape parameter <br />
+$F$ is a scaling parameter for friction ($1.0$ in water, $0.8$ in land) <br /> 
+$S$ is a scaling parameter for asymmetry ($1.0$) <br /> 
+$T$ Oriented angle (clockwise/counterclockwise in Northern/Southern Hemisphere) between forward path of the storm and a radial line from the eye of the
+storm to point $r$ <br /> 
+
+
+### Direction
+Northern Hemisphere
+$$
+D = A_z - 90 - I
+$$
+Southern Hemisphere
+$$
+D = A_z + 90 + I
+$$
+where <br />
+$D$ is the direction of the radial wind <br />
+$A_z$ is the azimuth from point r to the eye of the storm <br />
+$I$ is the cross isobar inflow angle ($20$ in water, $40$ in land) <br />
+
 
 ### Willoughby et al. (2006)
 
 $$
 \left\{
 \begin{aligned}
-v_r &= msw\left(\frac{r}{rmw}\right)^{n} \quad if \quad r < rmw \\
-v_r &= msw\left((1-A)e^{-\frac{|r-rmw|}{X1}} + A e^{-\frac{|r-rmw|}{X2}}\right) \quad if \quad r \geq rmw \\
+v_r &= v_m\left(\frac{r}{R_m}\right)^{n} \quad if \quad r < R_m \\
+v_r &= v_m\left((1-A)e^{-\frac{|r-R_m|}{X1}} + A e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
 \end{aligned}
 \right.
 $$
@@ -42,22 +81,33 @@ $$
 where <br />
 $v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
 $r$ is the distance to the eye of the storm (in $km$) <br />
-$msw$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
-$rmw$ is the radius of maximum sustained wind speed (in $km$) <br />
-$X1 = 287.6 - 1.942msw + 7.799\ln(rmw) + 1.819|\phi|$<br />
+$v_m$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
+$R_m$ is the radius of maximum sustained wind speed (in $km$) <br />
+$X1 = 287.6 - 1.942v_m + 7.799\ln(R_m) + 1.819|\phi|$<br />
 $X2 = 25$ <br />
-$n = 2.1340 + 0.0077msw - 0.4522\ln(rmw) - 0.0038|\phi|$<br />
-$A = 0.5913 + 0.0029msw - 0.1361\ln(rmw) - 0.0042|\phi| (A\ge0)$<br />
+$n = 2.1340 + 0.0077v_m - 0.4522\ln(R_m) - 0.0038|\phi|$<br />
+$A = 0.5913 + 0.0029v_m - 0.1361\ln(R_m) - 0.0042|\phi| (A\ge0)$<br />
 $\phi$ is the latitude of the center of the storm 
 
-Note that for both models if $rmw$ is not provided then it is approximated using an empirical formula derived from Willoughby et al. (2006)<br />
-$rmw = 46.4e^{(-0.0155msw + 0.0169|\phi|)}$
+Note that for both models if $R_m$ is not provided then it is approximated using an empirical formula derived from Willoughby et al. (2006)<br />
+$R_m = 46.4e^{(-0.0155v_m + 0.0169|\phi|)}$
 
 ## Asymmetry
 
-The above models compute radial wind speeds that are symmetric around the center of the storm. However, winds are rarely symmetric around the center notably because of the translation movement of the storm (Yan and Zhang, 2022). It is therefore more realistic to add symmetry to the wind field generated by these models. For this we propose to use the model developed by Boose et al. (2001): <br />
+The above models compute radial wind speeds that are symmetric around the center of the storm. However, winds are rarely symmetric around the center notably because of the translation movement of the storm (Yan and Zhang, 2022). It is therefore more realistic to add symmetry to the wind field generated by these models: <br />
 
-$v_{r_{as}} = v_r - S(1-\sin(\alpha))\frac{v_h}{2}$
+
+### General formula
+$\vec{V} = \vec{V_c} = + C.\vec{V_t}$
+
+
+### Miyazaki et al. 1962
+$C = exp(-\frac{r}{500}\pi)$
+
+### Chen 1994
+$C = \frac{3R_m^{\frac{3}{2}}r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}}r^{\frac{3}{2}}}$
+
+
 
 where <br />
 $v_{r_{as}} \quad$ is the new radial wind speed with asymmetry $(m.s^{-1})$ <br />
@@ -68,15 +118,18 @@ $\alpha \quad$ is tha angle between the storm direction and the point where $v_{
 Clockwise in Nothern hemisphere, counterclokwise in Southern hemisphere. <br />
 
 ## Wind Direction
-Wind direction $D$ (in degree) at each point is computed according to the following formula: <br />
 
-$D = A_z - 90 - I \quad if \quad \phi > 0$ (North hemisphere)<br/>
-$D = A_z + 90 + I \quad if \quad \phi < 0$ (South hemisphere)<br/>
+### Boose 
+Northern Hemisphere
+$D = A_z - 90 - I$ Northern Hemisphere
+$D = A_z + 90 + I$ Southern Hemisphere
 
 where <br />
-$A_z\quad$ is the azimuth from the point to the storm center <br/>
-$I\quad$ is the cross isobar inflow angle which is either 20° on water or 40° on land <br/>
-$\phi\quad$ is the latitude of the center of the storm 
+$D$ is the direction of the radial wind <br />
+$A_z$ is the azimuth from point r to the eye of the storm <br />
+$I$ is the cross isobar inflow angle ($20$ in water, $40$ in land) <br />
+
+
 
 
 ## References
