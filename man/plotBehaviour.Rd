@@ -8,6 +8,7 @@ plotBehaviour(
   sts,
   raster_product,
   color_palette = NULL,
+  main = NULL,
   xlim = NULL,
   ylim = NULL,
   labels = FALSE,
@@ -34,6 +35,9 @@ observation
 \item{color_palette}{character vector. Represents the color palette used for
 the plot. Default value is set to NULL, which will automatically choose a
 color palette provided by this package and depending on the product}
+
+\item{main}{character. Title of the plot. Default value is set to NULL wich
+will set a title automatically depending on the product}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to NULL which will let

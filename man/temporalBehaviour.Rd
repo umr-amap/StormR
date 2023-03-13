@@ -94,6 +94,12 @@ This function is the pointwise version of spatialBehaviour. Available
 products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
 and Exposure
 }
+\details{
+The temp_res input will perform a linear interpolation of
+observations to further compute each 2D wind speed structure at each
+interpolated observations. For example, if temp_res == 1, it will generate
+observations every 1hour between the available observations.
+}
 \examples{
 \dontrun{
 pts <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
