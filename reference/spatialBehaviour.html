@@ -152,7 +152,18 @@ in wind_threshold input and for each storm. Name of layers are
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Add details on Willoughy/Holland/Boose method, asymmetries and getRMW method ...</p>
+    <p>Add details on Willoughy/Holland/Boose method, asymmetries and
+getRMW method ...
+The temp_res input will perform a linear interpolation of
+observations to further compute each 2D wind speed structure at each
+interpolated observations. For example, if temp_res == 1, it will generate
+observations every 1hour between the available observations. Doing so, 2D
+wind speed structure is computed and stacked for each observations
+(available and interpolated) to compute the desired product(s) afterwards.
+If product == "Profiles", nothing else is performed. Otherwise and
+depending on the product(s) to compute, calculations are carried out on the
+stack and terra::focal functions are applied to the final raster(s) to
+smooth the result(s).</p>
     </div>
 
     <div class="section level2">

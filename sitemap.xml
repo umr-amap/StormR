@@ -19,9 +19,6 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/IBTRACS_SP.html</loc>
-  </url>
-  <url>
     <loc>/reference/Storm-class.html</loc>
   </url>
   <url>
@@ -92,6 +89,9 @@
   </url>
   <url>
     <loc>/reference/temporalBehaviour.html</loc>
+  </url>
+  <url>
+    <loc>/reference/test_dataset.html</loc>
   </url>
   <url>
     <loc>/reference/writeRast.html</loc>
