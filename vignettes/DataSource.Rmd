@@ -1,6 +1,6 @@
 ---
 title: "DataSource"
-output: html_document
+output: rmarkdown::pdf_document
 date: "2023-03-03"
 ---
 
@@ -11,37 +11,119 @@ StormR vient avec un jeu de test minimal basé sur le même format qu'IBTRACKS d
 - Paramètres par défaut de StormR : pointent vers une extraction minimale de IBTRACKS_SP.
 
 ## Data sources
-StormR a été développé pour utilisation principalement avec IBTACKS mais peut utiliser d'autres bases de données tant que les champs suivant sont fournis
+To run StormR functions users have to provide a tropical cyclone storm track
+dataset in which the location and some characteristics of storms are given
+across their lifespan. This dataset must be contained in a netcdf file.We higlhy
+recommand using IBTrACS databases as they provide the most extensive and
+relevant data overall. Nevertheless, other databases can be used as long as the
+following fields are provided:
 
-To run StormR functions users have to provide a tropical cyclone storm track dataset in which the location and some characteristics of storms are given across their lifespan.  Other databases can be used as long as the following fields are provided:
+| **Field name** | **Description** | **Format/Units** | **Example** | **Type** |
+|:---:|:---:|:---:|:---:|:---:|
+| $basin$ | Name of the area where the storm originated. Traditionally divided into seven basins: <br/>NA (North Atlantic)<br/>EP (Eastern North Pacific)<br/>WP (Western North Pacific)<br/>NI (North Indian)<br/>SI (South Indian)<br/>SP (Southern Pacific)<br/>SA (South Atlantic) | IBTRaCS format| SP | Mandatory |
+| $name$ | Name of the storm | Capital letters | PAM | Mandatory |
+| $seasons$ | Year of observation | None | 2015 | Mandatory |
+| $isoTime$ | Date and time of observation | (YYYY-MM-DD HH:mm:ss) UTC | 13/03/2015 12:00 | Mandatory |
+| $lon$ | Longitude of the observation | Decimal degrees east) | 168.7 | Mandatory |
+| $lat$ | Latitude of the observation | Decimal degrees north) | -17.6 | Mandatory |
+| $msw$ | Maximum sustained wind speed | ($m.s^{-1}$) | 77 | Mandatory |
+| $sshs$ | Saffir-Simpson hurricane wind scale rating based on $msw$ (here in $kt$):<br/>$-1 =$ tropical depression ($msw < 34$)<br/>$0 =$ tropical storm ($34 < msw < 64$), $1 =$ category 1 ($64 \le msw < 83$)<br/>$2 =$ Category 2 ($83 \le msw < 96$)<br/>$3 =$ Category 3 ($96 \le msw < 113$)<br/>$4 =$ Category 4 ($113 \le msw < 137$)<br/>$5 =$ Category 5 ($msw \ge 137$)| None | 5 | Recommended |
+| $rmw$ | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles | ($km$) | 20 | Recommended |
+| $pressure$ | Central pressure | ($pa$) | 91100 | Optional |
+| $poci$ | Pressure of the last closed isobar | ($pa$) | 92200 | Optional |
 
-| **Field name** | **Description** | **Example** | **Type** |
-|:---|:---|:---:|:---:|
-| $basin$ | Name of the area where the storm originated. Traditionally divided into seven basins: <br/>NA (North Atlantic)<br/>EP (Eastern North Pacific)<br/>WP (Western North Pacific)<br/>NI (North Indian)<br/>SI (South Indian)<br/>SP (Southern Pacific)<br/>SA (South Atlantic) | SP | Mandatory |
-| $name$ | Name of the storm in capital letters | PAM | Mandatory |
-| $seasons$ | Year of observation | 2015 | Mandatory |
-| $isoTime$ | Date and time of observation (YYYY-MM-DD HH:mm:ss) | 13/03/2015 12:00 | Mandatory |
-| $lon$ | Longitude of the observation (decimal degrees east) | 168.7 | Mandatory |
-| $lat$ | Latitude of the observation (decimal degrees north) | -17.6 | Mandatory |
-| $msw$* | Maximum sustained wind speed in knots ($kt$) | 150 | Mandatory |
-| $sshs$* | Saffir-Simpson hurricane wind scale rating based on $msw$ (hre in $kt$):<br/>$-1 =$ tropical depression ($msw < 34$)<br/>$0 =$ tropical storm ($34 < msw < 64$), $1 =$ category 1 ($64 \le msw < 83$)<br/>$2 =$ Category 2 ($83 \le msw < 96$)<br/>$3 =$ Category 3 ($96 \le msw < 113$)<br/>$4 =$ Category 4 ($113 \le msw < 137$)<br/>$5 =$ Category 5 ($msw \ge 137$) | 5 | Recommended |
-| $rmw$* | Radius of maximum winds, distance between the center of the storm and its band of strongest winds in nautical miles ($nm$) | 12 | Recommended |
-| $pressure$* | Central pressure in millibar ($mb$) | 911 | Optional |
-| $poci$* | Pressure of the last closed isobar in millibar ($mb$) | 922 | Optional |
-
-*Units: before running the functions stormR converts nautical miles ($nm$) into kilometres ($km$), knots ($kt$) into meters per second ($m.s^{-1}$), and millibar ($mb$) into Pascal ($Pa$) 
+### Unit conversion
+It is important to pay attention to the formats and units of data provided by the database.
+If $msw$, $rmw$, $pressure$ and/or $poci$ fields units do not match the correct units (Cf Format/Units column), 
+it is possible to convert this data in the desired unit (See Define a StormsDataset section).
 
 ## Download a Data Source
-- Lien vers page téléchargement IBTraCKS
-- Lien vers page téléchargement autre BDD 
-- Code pour download
+- Lien vers page téléchargement IBTraCKS OKKK
+- Lien vers page téléchargement autre BDD ???
+- Code pour download OKKK
+
+In the following example, we will use the data from the IBTrACS that gather all storms that occured in the 
+South Pacific Basin (IBTrACS.SP.v04r00.nc). It is possible to download this file using:
+```{r chunk}
+download.file(url = "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.SP.v04r00.nc",
+              destfile = "./test_ibtracs.nc")
+
+```
 
 
-## Création d'un objet StormsDataset 
+## Define a StormsDataset 
 - iniDataBase sur les 2 BDD téléchargées
 - différence de gestion IBTRACKS car paramètres par défaut vs autre bdd ou il faut redéfinir les champs.
-- dire qu'on a déjà une BDD par défaut de test déjà existant (e.g. `?IBTRACKS_SP`), pas besoin de faire un `initDatabase`
-- Gestion des unités ?
+- dire qu'on a déjà une BDD par défaut de test déjà existant (e.g. `?IBTRACKS_SP`), pas besoin de faire un `initDatabase` OKKKK
+- Gestion des unités ? OKKKKKK
+
+The `defDatabase` function let the user define a new dataset. This function returns a `StormsDataset` object,
+especially designed to store all the informations needed for the dataset (See Data sources section).
+
+In what follows, we define a new `StormsDataset` based on the database we downloaded right above and the default settings of `defDatabase` function.
+```{r chunk2}
+
+sds <- defDatabase(filename = "./test_ibtracs.nc",
+                   fields = c("basin" = "basin",
+                              "names" = "name",
+                              "seasons" = "season",
+                              "isoTime" = "iso_time",
+                              "lon" = "usa_lon",
+                              "lat" = "usa_lat",
+                              "msw" = "usa_wind",
+                              "sshs" = "usa_sshs",
+                              "rmw" = "usa_rmw",
+                              "pressure" = "usa_pres",
+                              "poci" = "usa_poci"),
+                   basin = NULL,
+                   unit_conversion = c(msw = "knt_to_ms",
+                                       rmw = "nm_to_km",
+                                       pressure = "mb_to_pa",
+                                       poci = "mb_to_pa"),
+                   verbose = TRUE)
+
+```
+
+Note:
+If one is extracting data from IBTrACS databases, we strongly advise using the `usa_` fields as they are
+the most filled and relevant.
+
+
+### Unit conversion
+ 
+ In this example, IBRTrACS database provides maximum sustained wind ($msw$) in knot, radius of maximum wind ($rmw$) in nautical miles, pressure ($pressure$) and pressure at the outermost closed isobar ($poci$) in millibar. The unit_conversion argument is then used to precise how to convert units in the database. Here is a list of allowed arguments:
+
+For $msw$:
+\begin{itemize}
+\item knt_to_ms: converts knot in meter per second
+\item kmh_to_ms: converts kilometer per hour in meter per second
+\item mph_to_ms: converts miles per hour in meter per second
+\end{itemize}
+
+For $rmw$:
+\begin{itemize}
+\item nm_to_ms: converts nautical miles in kilometer
+\end{itemize}
+
+For both $pressure$ and $poci$:
+\begin{itemize}
+\item b_to_pa: converts bar in pascal
+\item mb_to_pa: converts millibar in pascal
+\item atm_to_pa: converts atmospher in pascal
+\item psi_to_pa: converts psi in pascal
+\end{itemize}
+
+These fields in `unit_conversion` input are mandatory if they are also contain in the fields of `fields` input. If a field does not required any conversion, the user must still specify `"None"`.
+
+### Dataset example
+
+This package provides a dataset `test_dataset` which gathers all the tropical
+cyclones that occured
+nearby Vanuatu from 2015 to 2016 and nearby New Caledonia from 2020 to 2021. It represents the default
+StormsDataset object used in the `Storms` function if none other StormsDataset object has been initialized 
+with the `defDatabase` function
+
+
 
 ## Visualisation du contenu du StormDataset 
 2-3 exemple :
