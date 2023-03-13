@@ -3,24 +3,34 @@
 \docType{methods}
 \name{getNames}
 \alias{getNames}
-\alias{getNames,Storms-method}
 \alias{getNames,Storm-method}
-\title{getNames}
+\alias{getNames,StormsList-method}
+\title{Get name(s) of storm(s)}
 \usage{
 getNames(s)
 
-\S4method{getNames}{Storms}(s)
-
 \S4method{getNames}{Storm}(s)
+
+\S4method{getNames}{StormsList}(s)
 }
 \arguments{
-\item{s}{Storms or Storm object}
+\item{s}{Storm/StormsList object}
 }
 \value{
-character vector. Names of each storms provided by the given Storms
-object or name of the storm of the given Storm object
+character vector. Names of each storms provided by the given Storm/StormsList
+object
 }
 \description{
-Get the names of storms available in a Storms object or the name of the storm
-of a Storm object
+Get the name(s) of storm(s) available in a Storm/StormsList object
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+
+## For storm Niran
+getNames(getStorm(sts, name = "NIRAN"))
+
+## For sts
+getNames(sts)
+}
 }

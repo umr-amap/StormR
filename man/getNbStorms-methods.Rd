@@ -3,19 +3,25 @@
 \docType{methods}
 \name{getNbStorms}
 \alias{getNbStorms}
-\alias{getNbStorms,Storms-method}
-\title{getNbStorms}
+\alias{getNbStorms,StormsList-method}
+\title{Get number of Storms in StormsList}
 \usage{
 getNbStorms(sts)
 
-\S4method{getNbStorms}{Storms}(sts)
+\S4method{getNbStorms}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{sts}{StormsList object}
 }
 \value{
-numeric. Number of storms available in the given Storms object
+numeric. Number of storms available in the given StormsList object
 }
 \description{
-Get the number of storms available in a Storms object
+Get the number of Storm available in a StormsList object
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+nb <- getNbStorms(sts)
+}
 }

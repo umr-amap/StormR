@@ -3,30 +3,35 @@
 \docType{methods}
 \name{getSeasons}
 \alias{getSeasons}
-\alias{getSeasons,Storms-method}
 \alias{getSeasons,Storm-method}
-\title{getSeasons}
+\alias{getSeasons,StormsList-method}
+\title{Get the cyclonic seasons of storm(s)}
 \usage{
-getSeasons(s, ...)
-
-\S4method{getSeasons}{Storms}(s, name = NULL)
+getSeasons(s)
 
 \S4method{getSeasons}{Storm}(s)
+
+\S4method{getSeasons}{StormsList}(s)
 }
 \arguments{
-\item{s}{Storms or Storm object}
-
-\item{...}{Additional argument}
-
-\item{name}{character. Name of a storm in capital letters. Default value is
-set to NULL}
+\item{s}{Storm/StormsList object}
 }
 \value{
 numeric vector. Cyclonic seasons of each storms (or the selected one
-through name input) provided by the given Storms object or the cyclonic
+through name input) provided by the given StormsList object or the cyclonic
 season for the given Storm object
 }
 \description{
-Get the cyclonic season of storms available in a Storms object or the
-cyclonic season of a Storm object
+Get the cyclonic season of storms available in a Storm/StormsList
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+
+## For storm Niran
+getSeasons(getStorm(sts, name = "NIRAN"))
+
+## For sts
+getSeasons(sts)
+}
 }

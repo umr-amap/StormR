@@ -3,31 +3,42 @@
 \docType{methods}
 \name{getInObs}
 \alias{getInObs}
-\alias{getInObs,Storms-method}
+\alias{getInObs,StormsList-method}
 \alias{getInObs,Storm-method}
-\title{getInObs}
+\title{Get indices of observations within the extended LOI}
 \usage{
 getInObs(s, ...)
 
-\S4method{getInObs}{Storms}(s, name, season = NULL)
+\S4method{getInObs}{StormsList}(s, name, season = NULL)
 
 \S4method{getInObs}{Storm}(s)
 }
 \arguments{
-\item{s}{Storms or Storm object}
+\item{s}{Storm/StormsList object}
 
-\item{...}{Additional arguments}
+\item{...}{extra argument depending on Storm/StormsList object}
 
 \item{name}{character. Name of the storm to extract in capital letters}
 
 \item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the Storms object share the same name. Default value is set
+several storms in the StormsList object share the same name. Default value is set
 to NULL}
 }
 \value{
 numeric vector. Indices within the extended LOI for the given Storm object
 }
 \description{
-Get the indices of observations within th extended Location Of Interest for
+Get the indices of observations within the extended Location Of Interest for
 a given storm
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+
+## For storm Niran
+getInObs(getStorm(sts, name = "NIRAN"))
+
+## Equivalent to 
+getInObs(sts, name = "NIRAN")
+}
 }

@@ -3,25 +3,31 @@
 \docType{methods}
 \name{getStorm}
 \alias{getStorm}
-\alias{getStorm,Storms-method}
-\title{getStorm}
+\alias{getStorm,StormsList-method}
+\title{Extract a Storm}
 \usage{
 getStorm(sts, name, season = NULL)
 
-\S4method{getStorm}{Storms}(sts, name, season = NULL)
+\S4method{getStorm}{StormsList}(sts, name, season = NULL)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{sts}{StormsList object}
 
 \item{name}{character. Name of the storm to extract}
 
 \item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the Storms object share the same name.
+several storms in the StormsList object share the same name.
 Default value is set de NULL}
 }
 \value{
 Storm object
 }
 \description{
-Extract a Storm object from a Storms object
+Extract a Storm object from a StormsList object
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+st <- getStorm(sts, name = "NIRAN")
+}
 }

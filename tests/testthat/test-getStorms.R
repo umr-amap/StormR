@@ -59,13 +59,6 @@ test_that("Tests invalid inputs", {
                              verbose = 2,
                              remove_TD = TRUE))
 
-  expect_error(checkInputsGs(sds = IBTRACS_SP,
-                             loi = c(-180,-15),
-                             seasons = c(1980, 2022),
-                             names = "PAM",
-                             max_dist = 300,
-                             verbose = 2,
-                             remove_TD = TRUE))
 
   #Checking seasons input
   expect_error(checkInputsGs(sds = IBTRACS_SP,
@@ -225,10 +218,10 @@ test_that("Tests invalid inputs", {
 
 test_that("Storm class getters", {
 
-  expect_identical(getNames(pam@data[["PAM"]]), pam@data[["PAM"]]@name)
-  expect_identical(getSeasons(pam@data[["PAM"]]), pam@data[["PAM"]]@season)
-  expect_identical(getSSHS(pam@data[["PAM"]]), pam@data[["PAM"]]@sshs)
-  expect_identical(getNbObs(pam@data[["PAM"]]), pam@data[["PAM"]]@numobs.all)
+  expect_identical(getNames(pam@data[["PAM"]]), "PAM")
+  expect_identical(getSeasons(pam@data[["PAM"]]), as.integer(2015))
+  expect_identical(getSSHS(pam@data[["PAM"]]), as.integer(5))
+  expect_identical(getNbObs(pam@data[["PAM"]]), as.integer(57))
   expect_identical(getObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs.all)
   expect_identical(getInObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs)
 
@@ -241,11 +234,9 @@ test_that("Storm class getters", {
 test_that("StormsList class getters", {
 
   expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
-  expect_identical(getNames(sts_nc), sts_nc@names)
-  expect_identical(getSeasons(sts_nc), sts_nc@seasons)
-  expect_identical(getSeasons(sts_nc, "NIRAN"), sts_nc@seasons[which(sts_nc@names == "NIRAN")])
-  expect_identical(getSSHS(sts_nc), sts_nc@sshs)
-  expect_identical(getSSHS(sts_nc, "NIRAN"), sts_nc@sshs[which(sts_nc@names == "NIRAN")])
+  expect_identical(getNames(sts_nc), c("PAM", "SOLO", "ULA", "UESI", "GRETEL", "LUCAS", "NIRAN"))
+  expect_identical(getSeasons(sts_nc), c("PAM" = as.integer(2015), "SOLO" = as.integer(2015), "ULA" =  as.integer(2016), "UESI" =  as.integer(2020), "GRETEL" = as.integer(2020), "LUCAS" = as.integer(2021), "NIRAN" = as.integer(2021)))
+  expect_identical(getSSHS(sts_nc), c("PAM" = as.integer(5), "SOLO" = as.integer(0), "ULA" =  as.integer(4), "UESI" = as.integer(1), "GRETEL" = as.integer(1), "LUCAS" = as.integer(1), "NIRAN" =  as.integer(5)))
   expect_identical(getBufferSize(sts_nc), sts_nc@buffer)
   expect_identical(getLOI(sts_nc), sts_nc@spatial.loi)
   expect_identical(getBuffer(sts_nc), sts_nc@spatial.loi.buffer)
@@ -291,7 +282,7 @@ test_that("Storms class getters for Storm class", {
 
 test_that("Test retrieveStorms function", {
 
-  expect_identical(retrieveStorms(IBTRACS_SP@database, "PAM", c(1980,2022), TRUE), as.integer(c(986, 1170)))
+  expect_identical(retrieveStorms(test_dataset@database, "PAM", c(2015,2021), TRUE), as.integer(1))
 
 })
 
@@ -301,8 +292,8 @@ test_that("Test retrieveStorms function", {
 
 test_that("Test writeStorm function", {
 
-  expect_identical(writeStorm(list(), list(), list(), list(), 0, IBTRACS_SP, 1170, getBuffer(pam)),
-                   list(list(getStorm(pam,"PAM")),list("PAM"), list(as.integer(2015)), list(as.integer(5)), 1))
+  expect_identical(writeStorm(list(), list(), test_dataset, 1, getBuffer(pam)),
+                   list(list(getStorm(pam,"PAM")),list("PAM")))
 
 })
 

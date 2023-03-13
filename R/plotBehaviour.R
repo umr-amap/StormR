@@ -14,8 +14,9 @@
 #' @param by numeric
 #' @param pos numeric
 #' @param color_palette character vector
+#' @param main character
 #' @return NULL
-checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, color_palette){
+checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, color_palette, main){
 
   #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -56,6 +57,12 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
   #Checking color_palette input
   if(!is.null(color_palette))
     stopifnot("color_palette must be character" = identical(class(color_palette),"character"))
+  
+  #Checking main input
+  if(!is.null(main)){
+    stopifnot("main must be character" = identical(class(main),"character"))
+    stopifnot("main must be length 1" = length(main) == 1)
+  }
 
 }
 
@@ -79,11 +86,16 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'    \item "PDI"
 #'    \item "Exposure_threshold" where "threshold" represents the wind threshold
 #'          used to compute Exposure raster
-#'    \item "Profiles_index" where index stands for the index of observation
-#'    \item "WindDirection_index" where index stands for the index of
+#'    \item "Speed_index" where index stands for the index of observation
+#'    \item "Direction_index" where index stands for the index of
 #'          observation
 #'
 #'  }
+#' @param color_palette character vector. Represents the color palette used for
+#' the plot. Default value is set to NULL, which will automatically choose a
+#' color palette provided by this package and depending on the product
+#' @param main character. Title of the plot. Default value is set to NULL wich
+#' will set a title automatically depending on the product
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
 #' longitude extent of the plot. Default value is set to NULL which will let
 #' the plot extends according to the longitude range of the extended LOI
@@ -99,9 +111,6 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #' @param pos numeric. Must be between 1 and 4. Correspond to the position of
 #' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
 #' Default value is set to 3. Ignored if labels == FALSE
-#' @param color_palette character vector. Represents the color palette used for
-#' the plot. Default value is set to NULL, which will automatically choose a
-#' color palette provided by this package and depending on the product
 #'
 #' @returns NULL
 #'
@@ -123,6 +132,7 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 plotBehaviour <- function(sts,
                           raster_product,
                           color_palette = NULL,
+                          main = NULL,
                           xlim = NULL,
                           ylim = NULL,
                           labels = FALSE,
@@ -130,13 +140,14 @@ plotBehaviour <- function(sts,
                           pos = 3){
 
 
-  checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos, color_palette)
+  checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos, color_palette,
+                main)
 
   name <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
   product <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
 
 
-  if (!(name %in% sts@names))
+  if (!(name %in% getNames(sts)))
     stop("Imcompatibility between raster_product and sts (name not found in sts)")
 
 
@@ -159,51 +170,55 @@ plotBehaviour <- function(sts,
 
   #Handling gap with legend
   size.map = ymax - ymin
-  y.leg = ymin - size.map * 0.09
+  y.leg = ymin - size.map * 0.2
 
   #Plotting track
-  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
-             reset_setting = FALSE)
+  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax))
 
   #Adding raster_product on map
   if(product == "MSW"){
 
     col <- mswSSHSPalette
-    range <- c(17, 80)
+    range <- c(17, 95)
     leg <- expression(paste("MSW (m.s" ^ "-1",")"))
 
   }else if(product == "PDI"){
 
     col <- pdiPalette
     range <- c(0, max(terra::values(raster_product), na.rm = T))
-    leg <- expression(paste("PDI"))
+    leg <- expression(paste("PDI (J.m" ^ "2",")"))
 
   }else if(product == "Exposure"){
 
     col <- exposurePalette
     range <- c(0, max(terra::values(raster_product), na.rm = T))
-    leg <- expression(paste("Time spent (h)"))
+    leg <- expression(paste("Duration of exposure (h)"))
 
-  }else if(product == "Profiles"){
+  }else if(product == "Speed"){
 
     col <- mswSSHSPalette
-    range <- c(17, 80)
-    leg <- expression(paste("radial wind speed (m.s" ^ "-1",")"))
+    range <- c(17, 95)
+    leg <- expression(paste("Radial wind speed (m.s" ^ "-1",")"))
 
-  }else if(product == "WindDirection"){
+  }else if(product == "Direction"){
 
     col <- exposurePalette
     range <- c(0, 360)
-    leg <- expression(paste("wind direction (degree)"))
+    leg <- expression(paste("Wind direction (degree)"))
 
   }
 
   if(!is.null(color_palette))
     col <- color_palette
+  
+  if(!is.null(main))
+    leg <- main
 
   #Adding title
   graphics::title(leg)
 
+  
+  
   plot(raster_product,
        col = col,
        type = "continuous",
@@ -214,7 +229,7 @@ plotBehaviour <- function(sts,
        range = range,
        legend = TRUE,
        plg = list(loc = "bottom",
-                  ext = c(xmin, xmax, y.leg, y.leg - size.map* 0.05),
+                  ext = c(xmin, xmax, y.leg - size.map* 0.05, y.leg),
                   cex = 0.7,
                   shrink = 0),
        add = T)
@@ -259,5 +274,5 @@ plotBehaviour <- function(sts,
                      cex = 0.6)
     }
   }
-
+  
 }

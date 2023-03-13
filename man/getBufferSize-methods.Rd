@@ -3,20 +3,26 @@
 \docType{methods}
 \name{getBufferSize}
 \alias{getBufferSize}
-\alias{getBufferSize,Storms-method}
-\title{getBufferSize}
+\alias{getBufferSize,StormsList-method}
+\title{Get buffer size from a Storms object}
 \usage{
 getBufferSize(sts)
 
-\S4method{getBufferSize}{Storms}(sts)
+\S4method{getBufferSize}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{sts}{StormsList object}
 }
 \value{
 numeric. Buffer size (in km) used to generate the extended location
-of interest for the given Storms object
+of interest for the given StormsList object
 }
 \description{
-Get the buffer size for a Storms object
+Get the buffer size for a StormsList object
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+buffsize <- getBufferSize(sts)
+}
 }
