@@ -14,8 +14,7 @@ plotStorms(
   by = 8,
   pos = 3,
   legends = TRUE,
-  loi = TRUE,
-  reset_setting = TRUE
+  loi = TRUE
 )
 }
 \arguments{
@@ -56,10 +55,6 @@ to TRUE}
 
 \item{loi}{logical. Whether or not to plot the extended LOI on the map.
 Default value is set to TRUE}
-
-\item{reset_setting}{logical. Whether the graphical parameter should be reset
-on exit. Default value is set to TRUE. It is useful for the plotBehaviour
-function. We highly recommend not to change this input}
 }
 \description{
 This function plots a set of storm tracks contained in a StormsList object

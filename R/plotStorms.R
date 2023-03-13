@@ -248,8 +248,7 @@ plotStorms <- function(sts,
                        by = 8,
                        pos = 3,
                        legends = TRUE,
-                       loi = TRUE,
-                       reset_setting = TRUE){
+                       loi = TRUE){
 
 
   checkInputsPs(sts, names, category, labels, by, pos, legends,

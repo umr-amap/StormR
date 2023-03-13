@@ -5,7 +5,7 @@
 \title{Initialize a StormsList object}
 \usage{
 Storms(
-  sds = IBTRACS_SP,
+  sds = test_dataset,
   loi,
   seasons = c(min(sds@database$seasons, na.rm = T), max(sds@database$seasons, na.rm = T)),
   names = NULL,
@@ -15,9 +15,8 @@ Storms(
 )
 }
 \arguments{
-\item{sds}{StormsDataset object. Default value is set to IBTRACS_SP which is
-a database provided by this package and based on the IBTrACS.SP.v04r00.nc
-file. (See StormsDataset class)}
+\item{sds}{StormsDataset object. Default value is set to test_dataset
+(See StormsDataset class)}
 
 \item{loi}{Location of Interest. Must be either:
 \itemize{
@@ -84,7 +83,7 @@ poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
 sp <- sf::st_polygon(list(poly))
 sp <- sf::st_sfc(sp, crs = 4326)
 sp <- sf::st_as_sf(sp)
-sts_sp <- Storms(loi = sp, seasons = c(2010,2020))
+sts_sp <- Storms(loi = sp)
 }
 
 

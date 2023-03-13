@@ -1,5 +1,5 @@
 ## code to prepare `test_dataset` dataset goes here
-test_dataset <- defDatabase()
+test_dataset <- defDatabase(filename = "/home/baptiste/Desktop/Travail/StormR/data/IBTrACS.SP.v04r00.nc")
 
 ind <- c(1170, 1173, 1179, 1182, 1185, 1219, 1223, 1233, 1235)
 

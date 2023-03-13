@@ -234,9 +234,9 @@ test_that("Storm class getters", {
 test_that("StormsList class getters", {
 
   expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
-  expect_identical(getNames(sts_nc), c("NIRAN" = "NIRAN"))
-  expect_identical(getSeasons(sts_nc), c("NIRAN" = as.integer(2021)))
-  expect_identical(getSSHS(sts_nc), c("NIRAN" = as.integer(5)))
+  expect_identical(getNames(sts_nc), c("PAM", "SOLO", "ULA", "UESI", "GRETEL", "LUCAS", "NIRAN"))
+  expect_identical(getSeasons(sts_nc), c("PAM" = as.integer(2015), "SOLO" = as.integer(2015), "ULA" =  as.integer(2016), "UESI" =  as.integer(2020), "GRETEL" = as.integer(2020), "LUCAS" = as.integer(2021), "NIRAN" = as.integer(2021)))
+  expect_identical(getSSHS(sts_nc), c("PAM" = as.integer(5), "SOLO" = as.integer(0), "ULA" =  as.integer(4), "UESI" = as.integer(1), "GRETEL" = as.integer(1), "LUCAS" = as.integer(1), "NIRAN" =  as.integer(5)))
   expect_identical(getBufferSize(sts_nc), sts_nc@buffer)
   expect_identical(getLOI(sts_nc), sts_nc@spatial.loi)
   expect_identical(getBuffer(sts_nc), sts_nc@spatial.loi.buffer)
@@ -282,7 +282,7 @@ test_that("Storms class getters for Storm class", {
 
 test_that("Test retrieveStorms function", {
 
-  expect_identical(retrieveStorms(IBTRACS_SP@database, "PAM", c(2015,2021), TRUE), as.integer(1))
+  expect_identical(retrieveStorms(test_dataset@database, "PAM", c(2015,2021), TRUE), as.integer(1))
 
 })
 
@@ -292,7 +292,7 @@ test_that("Test retrieveStorms function", {
 
 test_that("Test writeStorm function", {
 
-  expect_identical(writeStorm(list(), list(), IBTRACS_SP, 1, getBuffer(pam)),
+  expect_identical(writeStorm(list(), list(), test_dataset, 1, getBuffer(pam)),
                    list(list(getStorm(pam,"PAM")),list("PAM")))
 
 })
