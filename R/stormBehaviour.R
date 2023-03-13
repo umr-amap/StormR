@@ -3,6 +3,14 @@
 
 
 
+########
+#MODELS#
+########
+
+
+
+
+
 #' Compute the Radius of Maximum Wind
 #'
 #' It is an empirical formula extracted from Willoughby et al. 2006 model
@@ -19,9 +27,9 @@ getRmw <- function(msw, lat) {
 
 
 
-#' Willoughby et al. 2006 model
+#' Willoughby et al. (2006) model
 #'
-#' Compute radial wind speed according to Willoughby et al. 2006 model
+#' Compute radial wind speed according to Willoughby et al. (2006) model
 #'
 #' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
@@ -31,31 +39,28 @@ getRmw <- function(msw, lat) {
 #'
 #' @returns radial wind speed value (m/s) according to Willoughby model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Willoughby_profile <- function(r, rmw, msw, lat){
+Willoughby <- function(r, rmw, msw, lat){
 
-  if (r >= rmw) {
-    x1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
-    x2 <- 25
-    a <- 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
-    vr <- msw * ((1 - a) * exp(-abs((r - rmw) / x1)) + a * exp(-abs(r - rmw) / x2))
-  } else{
-    n <- 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
-    vr <- msw * abs((r / rmw) ^ n)
-  }
+  x1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
+  x2 <- 25
+  a <- 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
+  n <- 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
+
+  vr <- r
+  vr[r >= rmw] <- msw * ((1 - a) * exp(-abs((r[r >= rmw] - rmw) / x1)) + a * exp(-abs(r[r >= rmw] - rmw) / x2))
+  vr[r < rmw] <- msw * abs((r[r < rmw] / rmw) ^ n)
+
 
   return(round(vr,3))
 }
 
-#Vectorize version of the above model
-Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 
 
 
 
-
-#' Holland 1980 model
+#' Holland (1980) model
 #'
-#' Compute radial wind speed according to Holland  1980 model
+#' Compute radial wind speed according to Holland (1980) model
 #'
 #' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
@@ -66,51 +71,74 @@ Willoughby <- Vectorize(Willoughby_profile, vectorize.args = "r")
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #' @returns radial wind speed value (m/s) according to Holland 80 model at distance `r` to the
 #'  eye of the storm located in latitude `lat`
-Holland_profile <- function(r, rmw, msw, pc, poci, lat){
+Holland <- function(r, rmw, msw, pc, poci, lat){
 
   rho <- 1.15  #air densiy
   f <- 2 * 7.29 *10**(-5) * sin(lat) #Coriolis parameter
   b <- rho * exp(1) * msw**2 / (poci - pc)
 
+  vr <- r
   vr <- sqrt(b/rho * (rmw/r)**b * (poci - pc)*exp(-(rmw/r)**b) + (r*f/2)**2) - r*f/2
 
   return(round(vr,3))
 
 }
 
-#Vectorize version of the above model
-Holland <- Vectorize(Holland_profile, vectorize.args = "r")
 
 
 
 
-
-#' Parametrization of surface drag coefficient according to Wang, G. et al. 2022
+#' Boose et al. (2004) model
+#'
+#' Compute radial wind speed according to Boose et al. (2004) model
 #'
 #' @noRd
-#' @param vr numeric. Radial wind speed (m/s)
+#' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
+#' @param rmw numeric. Radius of Maximum Wind (km)
+#' @param msw numeric. Maximum Sustained Wind (m/s)
+#' @param pc numeric. Pressure at the center of the storm (hPa)
+#' @param poci Pressure at the Outermost Closed Isobar (hPa)
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
+#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
+#' @param vh numeric. Velociy of the storm (m/s)
+#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #'
-#' @return Associated surface drag coefficient
-compute_Cd <- function(vr){
+#' @returns radial wind speed value (m/s) according to Boose04 model at distance `r` to the
+#' eye of the storm located in latitude
+Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, lat){
 
-  if(is.na(vr)){
-    res <- NA
+  rho <- 1  #air densiy
+  b <- rho * exp(1) * msw**2 / (poci - pc)
 
-  }else if(vr <= 18){
-    res <- 0
+  vr <- r
+  vr <- sqrt((rmw/r)**b * exp(1 -(rmw/r)**b))
 
-  }else if(vr > 18 & vr <= 31.5){
-    res <- (0.8 + 0.06 * vr) * 0.001
 
-  }else if(vr > 31.5){
-    res <- (0.55 + 2.97 * vr/31.5 - 1.49 * (vr/ 31.5) ** 2) * 0.001
+  if(lat >= 0){
+    #Northern Hemisphere, t is clockwise
+    angle <- atan2(vy,vx) - atan2(y,x)
+  }else{
+    #Southern Hemisphere, t is counterclockwise
+    angle <- atan2(y,x) - atan2(vy,vx)
   }
 
-  return(round(res, 3))
+
+  vr[I == 1] <- 0.8 * (msw - (1 - sin(angle[I == 1])) * vh/2) * vr[I == 1]
+  vr[I == 0] <- (msw - (1 - sin(angle[I == 0])) * vh/2) * vr[I == 0]
+
+
+  return(round(vr,3))
 }
 
-#Vectorize version of the above function
-rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
+
+
+
+########################
+#Helper to check inputs#
+########################
 
 
 
@@ -126,11 +154,11 @@ rasterizeCd <- Vectorize(compute_Cd, vectorize.args = "vr")
 #' @param asymmetry character
 #' @param empirical_rmw logical
 #' @param space_res character
-#' @param time_res numeric
+#' @param temp_res numeric
 #' @param verbose numeric
 #' @return NULL
 checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
-                         empirical_rmw, space_res, time_res, verbose){
+                         empirical_rmw, space_res, temp_res, verbose){
 
   #Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -145,7 +173,7 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   }
 
   #Checking method input
-  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland", "Boose"))
   stopifnot("Only one method must be chosen" = length(method) == 1)
   if(method == "Holland"){
     stopifnot("Cannot perform Holland method (missing pressure input)" = "pres" %in% colnames(sts@data[[1]]@obs.all))
@@ -153,7 +181,7 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   }
 
   #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01"))
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen", "Miyazaki"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Checking empirical_rmw input
@@ -164,10 +192,10 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   stopifnot("space_res must be length 1" = length(space_res) == 1)
   stopifnot("invalid space_res: must be either 30s, 2.5min, 5min or 10min" = space_res %in% c("30sec", "2.5min", "5min", "10min"))
 
-  #Checking time_res input
-  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
-  stopifnot("time_res must be length 1" = length(time_res) == 1)
-  stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
+  #Checking temp_res input
+  stopifnot("temp_res must be numeric" = identical(class(temp_res), "numeric"))
+  stopifnot("temp_res must be length 1" = length(temp_res) == 1)
+  stopifnot("invalid temp_res: must be either 1, 0.75, 0.5 or 0.25" = temp_res %in% c(1, 0.75, 0.5, 0.25))
 
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -175,6 +203,14 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   stopifnot("verbose must be either 0, 1, 2 or 3" = verbose %in% c(0, 1, 2, 3))
 
 }
+
+
+
+
+
+#################################
+#Helpers to make template rasters#
+#################################
 
 
 
@@ -215,6 +251,41 @@ makeTemplateRaster <- function(buffer, res){
 
 
 
+#' Generate raster template to compute wind speed according to the different models
+#'
+#' @noRd
+#' @param raster_template SpatRaster. Raster generated with makeTemplateRaster function
+#' @param buffer numeric. Buffer size in degree
+#' @param data data.frame. Data generated with getInterpolatedData function
+#' @param index numeric. Index of interpolated observation in data to use to generate raster
+#'
+#' @return SpatRaster
+makeTemplateModel <- function(raster_template, buffer, data, index){
+
+  template <- terra::rast(xmin = data$lon[index] - buffer,
+                          xmax = data$lon[index] + buffer,
+                          ymin = data$lat[index] - buffer,
+                          ymax = data$lat[index] + buffer,
+                          resolution = terra::res(raster_template),
+                          vals = NA)
+  terra::origin(template) <- c(0,0)
+
+  return(template)
+
+}
+
+
+
+
+
+###############################
+#Helpers to get the right data#
+###############################
+
+
+
+
+
 #' Get indices for computations
 #'
 #' Whether to get only observations inside LOI + buffer extention (+ offset) or
@@ -239,8 +310,8 @@ getIndices <- function(st, offset, product){
       ind <- c(ind, st@obs[length(st@obs)] + o)
     }
 
-    #Remove negative values and values beyond st@numobs.all
-    ind <- ind[ind > 0 & ind <= st@numobs.all]
+    #Remove negative values and values beyond the number of observations
+    ind <- ind[ind > 0 & ind <= getNbObs(st)]
 
   }
 
@@ -370,7 +441,7 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
   }
 
 
-  if(method == "Holland"){
+  if(method == "Holland" | method == "Boose"){
     if(all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices])))
       stop("Missing pressure data to perform Holland model")
 
@@ -393,26 +464,106 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 
 
 
-#' Generate raster template to compute wind speed according to the different models
+##############################################
+#Helpers to handle Models/Asymmetry/Direction#
+##############################################
+
+
+
+
+
+#' Compute wind profile according to the selected method and asymmetry
 #'
 #' @noRd
-#' @param raster_template SpatRaster. Raster generated with makeTemplateRaster function
-#' @param buffer numeric. Buffer size in degree
 #' @param data data.frame. Data generated with getInterpolatedData function
-#' @param index numeric. Index of interpolated observation in data to use to generate raster
+#' @param index numeric. Index of interpolated observation in data to use for
+#' the computations
+#' @param method character. method input form stormBehaviour_sp
+#' @param asymmetry character. Asymmetry input form stormBehaviour
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param crds numeric array (1 column lon, 1 column lat). coordinates of raster
+#' @param dist_m numeric array. Distance in meter from the eye of the storm for
+#' each coordinate of the raster_template_model
+#' @param buffer numeric. Buffer size (in degree) for the storm
+#' @param loi sf. loi to intersect for Boose model
+#' @param world sf. world for Boose model
+#' @param ind_countries numeric vector. Indices of countries to intersect for Boose model
 #'
-#' @return SpatRaster
-makeTemplateModel <- function(raster_template, buffer, data, index){
+#' @return  numeric vector. Wind speed values (m/s)
+computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_m, buffer, loi, world, ind_countries){
 
-  template <- terra::rast(xmin = data$lon[index] - buffer,
-                         xmax = data$lon[index] + buffer,
-                         ymin = data$lat[index] - buffer,
-                         ymax = data$lat[index] + buffer,
-                         resolution = terra::res(raster_template),
-                         vals = NA)
-  terra::origin(template) <- c(0,0)
 
-  return(template)
+  #Computing wind speed according to the input model
+  if(method == "Willoughby"){
+    wind <- Willoughby(msw = data$msw[index],
+                       lat = data$lat[index],
+                       r = dist_m * 0.001,
+                       rmw = data$rmw[index])
+
+  }else if(method == "Holland"){
+    wind <- Holland(
+      r = dist_m * 0.001,
+      rmw = data$rmw[index],
+      msw = data$msw[index],
+      pc = data$pc[index],
+      poci = data$poci[index],
+      lat = data$lat[index])
+
+  }else if(method == "Boose"){
+
+    #Intersect points coordinates with land
+    pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
+    sf::st_crs(pts) <- wgs84
+
+    I <- rep(0,length(x))
+
+    for(i in ind_countries){
+      ind <- which(sf::st_intersects(pts, world$geometry[i], sparse = FALSE) == TRUE)
+      I[ind] <- 1
+    }
+
+    wind <- Boose(r = dist_m * 0.001,
+                  rmw = data$rmw[index],
+                  msw = data$msw[index],
+                  pc = data$pc[index],
+                  poci = data$poci[index],
+                  x = x,
+                  y = y,
+                  vx = data$vx.deg[index],
+                  vy = data$vy.deg[index],
+                  vh = data$storm.speed[index],
+                  I = I,
+                  lat = data$lat[index])
+
+    direction <- computeDirectionBoose(x, y, data$lat[index], I)
+  }
+
+
+
+  #Compute wind direction
+  if(method != "Boose"){
+    direction <- computeDirection(x, y, data$lat[index])
+  }
+
+
+
+  #Adding asymmetry
+  if(asymmetry != "None"){
+    output <- computeAsymmetry(asymmetry, wind, direction,x, y,
+                               data$vx.deg[index], data$vy.deg[index],
+                               data$storm.speed[index],
+                               dist_m * 0.001, data$rmw[index], data$lat[index])
+  }else{
+    output <- list(wind = round(wind,3), direction = round(direction,3))
+  }
+
+  #Remove cells outside of buffer
+  dist <- sqrt(x*x + y*y)
+  output$wind[dist > buffer] <- NA
+  output$direction[dist > buffer] <- NA
+
+  return(output)
 
 }
 
@@ -420,21 +571,87 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
 
 
 
-#' Compute wind direction
+#' Compute asymmetry
+#'
+#' @noRd
+#' @param asymmetry character. Asymmetry input form stormBehaviour
+#' @param wind numeric vector. Wind values
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
+#' @param vy numeric. Velocity of the storm in the y direction (deg/h)
+#' @param vh numeric. Velocity of the storm (m/s)
+#' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
+#' @param rmw numeric. Radius of Maximum Wind (km)
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
+#'
+#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at each (x,y) position
+computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rmw, lat){
+
+
+  #Circular symmetrical wind
+  dir <- -(atan2(y, x) - pi/2)
+
+  if(lat >= 0){
+    dir <- dir - pi/2
+  }else{
+    dir <- dir + pi/2
+  }
+
+  dir[dir < 0] <-  dir[dir < 0] + 2*pi
+  dir[dir > 2*pi] <- dir[dir > 360] - 2*pi
+
+  wind_x <- wind * cos(dir)
+  wind_y <- wind * sin(dir)
+
+  #Moving wind
+  stormDir <- -(atan2(vy, vx) - pi/2)
+  if(stormDir < 0)
+    stormDir <- stormDir +2*pi
+
+  m_wind_x <- vh * cos(stormDir)
+  m_wind_y <- vh * sin(stormDir)
+
+  #Formula for asymmetry
+  if(asymmetry == "Chen"){
+    formula <- 3 * rmw**(3/2) * r **(3/2) /(rmw**3 + r**3 + rmw**(3/2) * r**(3/2))
+  }else if(asymmetry == "Miyazaki"){
+    formula <- exp(-r/500 * pi)
+  }
+
+  #New total wind speed
+  t_wind_x <- wind_x + formula * m_wind_x
+  t_wind_y <- wind_y + formula * m_wind_y
+
+
+  wind <- sqrt(t_wind_x**2 + t_wind_y**2)
+
+  #New wind direction
+  direction <- atan2(t_wind_y, t_wind_x) * 180/pi
+  direction[direction < 0] = direction[direction < 0] + 360
+
+  return(list(wind = round(wind,3), direction = round(direction,3)))
+}
+
+
+
+
+
+#' Compute wind direction according to Boose et al. (2004) model
 #' @noRd
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param northenH logical. Whether it is northen hemisphere or not
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
 #'
 #' @return wind directions (rad) at each (x,y) position
-computeDirection <- function(x, y, I, northenH){
+computeDirectionBoose <- function(x, y, lat, I){
 
   azimuth <- -(atan2(y, x) - pi/2)
 
   azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
 
-  if(northenH){
+  if(lat >= 0){
     direction <- azimuth *180/pi - 90
     direction[I == 1] <- direction[I == 1] - 40
     direction[I == 0] <- direction[I == 0] - 20
@@ -454,144 +671,39 @@ computeDirection <- function(x, y, I, northenH){
 
 
 
-#' Compute asymmetry
-#'
+#' Compute symetrical wind direction
 #' @noRd
-#' @param asymmetry character. Asymmetry input form stormBehaviour
-#' @param wind numeric vector. Wind values
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param vx numeric. Velocity of the storm in the x direction (deg/h)
-#' @param vy numeric. Velociy of the storm in the y direction (deg/h)
-#' @param vh numeric. Velociy of the storm (m/s)
-#' @param northenH logical. Whether it is northen hemisphere or not
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
 #'
-#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at each (x,y) position
-computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, northenH){
+#' @return wind directions (rad) at each (x,y) position
+computeDirection <- function(x, y, lat){
 
-  if(asymmetry == "None"){
-    wind <- wind
-  }else if(asymmetry == "Boose01"){
+  azimuth <- -(atan2(y, x) - pi/2)
 
-    if(northenH){
-      #Northern Hemisphere, t is clockwise
-      angle <- atan2(vy,vx) - atan2(y,x)
-    }else{
-      #Southern Hemisphere, t is counterclockwise
-      angle <- atan2(y,x) - atan2(vy,vx)
-    }
+  azimuth[azimuth < 0] <-  azimuth[azimuth < 0] + 2*pi
 
-    wind <- wind - (1 - sin(angle)) * vh/2
+  if(lat >= 0){
+    direction <- azimuth *180/pi - 90
 
-  }
-
-  return(round(wind,3))
-}
-
-
-
-
-
-#' Compute wind profile according to the selected method and asymmetry
-#'
-#' @noRd
-#' @param data data.frame. Data generated with getInterpolatedData function
-#' @param index numeric. Index of interpolated observation in data to use for
-#' the computations
-#' @param dist_m numeric array. Distance in meter from the eye of the storm for
-#' each coordinate of the raster_template_model
-#' @param method character. method input form spatialBehaviour
-#' @param asymmetry character. asymmetry input from stormBehviour
-#' @param x numeric array. Distance in degree from the eye of storm in the x direction
-#' @param y numeric array. Distance in degree from the eye of storm in the y direction
-#' @param buffer numeric. Buffer size (in degree) for the storm
-#'
-#' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(data, index, dist_m, method, asymmetry, x, y, buffer){
-
-
-  #Computing sustained wind according to the input model
-  if (method == "Willoughby") {
-    wind <- Willoughby(
-      msw = data$msw[index],
-      lat = data$lat[index],
-      r = dist_m * 0.001,
-      rmw = data$rmw[index]
-    )
-
-  }else if (method == "Holland") {
-    wind <- Holland(
-      r = dist_m * 0.001,
-      rmw = data$rmw[index],
-      msw = data$msw[index],
-      pc = data$pc[index] * 100,
-      poci = data$poci[index] * 100,
-      lat = data$lat[index]
-    )
-  }
-
-
-  if(data$lat[index] > 0){
-    northenH = TRUE
   }else{
-    northenH = FALSE
+    direction <- azimuth *180/pi + 90
   }
 
-  #Adding asymmetry
-  wind <- computeAsymmetry(asymmetry, wind, x, y,
-                           data$vx.deg[index], data$vy.deg[index],
-                           data$storm.speed[index], northenH)
-
-  #Remove cells outside of buffer
-  dist <- sqrt(x*x + y*y)
-  wind[dist > buffer] <- NA
-
-  return(wind)
-
-}
-
-
-
-
-
-#' Compute wind direction according to the selected method and asymmetry
-#'
-#' @noRd
-#' @param data data.frame. Data generated with getInterpolatedData function
-#' @param index numeric. Index of interpolated observation in data to use for
-#' the computations
-#' @param x numeric array. Distance in degree from the eye of storm in the x direction
-#' @param y numeric array. Distance in degree from the eye of storm in the y direction
-#' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
-#' @param buffer numeric. Buffer size (in degree) for the storm
-#'
-#' @return  numeric vector. Wind directions (degree)
-computeWindDirection <- function(data, index, x, y, I, buffer){
-
-
-  if(data$lat[index] > 0){
-    northenH = TRUE
-  }else{
-    northenH = FALSE
-  }
-
-
-  #Computing wind direction
-  direction <- computeDirection(x, y, I, northenH)
-
-  #Remove cells outside of buffer
-  dist <- sqrt(x*x + y*y)
-  direction[dist > buffer] <- NA
+  direction[direction < 0] = direction[direction < 0] + 360
+  direction[direction > 360] = direction[direction > 360] - 360
 
   return(direction)
-
 }
 
 
 
 
 
-
+###########################
+#Helpers to stack products#
+###########################
 
 
 
@@ -629,14 +741,12 @@ stackRaster <- function(stack, raster_template, raster_wind){
 #' @return list of SpatRaster
 stackRasterPDI <- function(stack, raster_template, raster_wind){
 
-  raster.cd <- raster_wind
-  terra::values(raster.cd) <- rasterizeCd(terra::values(raster_wind))
-
-  rho <- 0.001
+  rho <- 1
+  Cd <- 0.002
   #Raising to power 3
   raster_wind <- raster_wind ** 3
   #Applying both rho and surface drag coefficient
-  raster_wind <- raster_wind * rho * raster.cd
+  raster_wind <- raster_wind * rho * Cd
 
   return(stackRaster(stack, raster_template, raster_wind))
 
@@ -732,26 +842,25 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #'
 #' @noRd
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
 #' @param space_res character. space_res input from spatialBehaviour
-#' @param product characher
 #' @param threshold numeric vector. Wind threshold
 #'
 #'
 #' @return list of SpatRaster
-rasterizePDI <- function(final_stack, stack, time_res, space_res, name, product, threshold){
+rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, threshold){
 
   nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
   #Integrating over the whole track
-  prod <- sum(stack, na.rm = T) * time_res
+  prod <- sum(stack, na.rm = T) * temp_res
   #Applying focal function to smooth results
   prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = T, pad = T)
-  names(prod) <- paste0(name,"_",product)
+  names(prod) <- paste0(name,"_PDI")
 
 
   return(c(final_stack, prod))
@@ -765,18 +874,17 @@ rasterizePDI <- function(final_stack, stack, time_res, space_res, name, product,
 #'
 #' @noRd
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
 #' in final_stack
 #' @param space_res character. space_res input from spatialBehaviour
-#' @param product characher
 #' @param threshold numeric vector. Wind threshold
 #'
 #'
 #' @return list of SpatRaster
-rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product, threshold){
+rasterizeExp <- function(final_stack, stack, temp_res, space_res, name, threshold){
 
   nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
 
@@ -784,10 +892,10 @@ rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product,
   for(l in 1:length(threshold)){
     ind <- seq(l,terra::nlyr(stack),length(threshold))
     #Integrating over the whole track
-    prod <- sum(terra::subset(stack, ind), na.rm = T) * time_res
+    prod <- sum(terra::subset(stack, ind), na.rm = T) * temp_res
     #Applying focal function to smooth results
     prod <- terra::focal(prod, w = matrix(1, nbg, nbg), max, na.rm = T, na.rm = T)
-    names(prod) <- paste0(name,"_",product,"_",threshold[l])
+    names(prod) <- paste0(name,"_Exposure_",threshold[l])
     final_stack <- c(final_stack, prod)
   }
 
@@ -804,7 +912,7 @@ rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product,
 #' @noRd
 #' @param product character. Product input from spatialBehaviour
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param stack SpatRaster stack. All the Exposure rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
@@ -813,7 +921,7 @@ rasterizeExp <- function(final_stack, stack, time_res, space_res, name, product,
 #' @param threshold numeric vector. Wind threshold
 #'
 #' @return list of SpatRaster
-rasterizeProduct <- function(product, final_stack, stack, time_res, space_res, name, threshold){
+rasterizeProduct <- function(product, final_stack, stack, temp_res, space_res, name, threshold){
 
   if(product == "MSW") {
     #Computing MSW analytic raster
@@ -821,11 +929,11 @@ rasterizeProduct <- function(product, final_stack, stack, time_res, space_res, n
 
   }else if (product == "PDI") {
     #Computing PDI analytic raster
-    final_stack <- rasterizePDI(final_stack, stack, time_res, space_res, name, "PDI", NULL)
+    final_stack <- rasterizePDI(final_stack, stack, temp_res, space_res, name, NULL)
 
   }else if (product == "Exposure") {
     #Computing Exposure analytic raster
-    final_stack <- rasterizeExp(final_stack, stack, time_res, space_res, name,"Exposure", threshold)
+    final_stack <- rasterizeExp(final_stack, stack, temp_res, space_res, name, threshold)
 
   }
 
@@ -859,6 +967,13 @@ maskProduct <- function(final_stack, loi, template){
 
 
 
+############################
+#stormBehaviour_sp function#
+############################
+
+
+
+
 
 #' Compute indicators of storm behaviour
 #'
@@ -887,24 +1002,24 @@ maskProduct <- function(final_stack, loi, template){
 #'   \item "Willoughby": model based on fits performed on cyclonic observations
 #'   \item "Holland": model based on both basic cyclonic Physics and parameters
 #'         fitting according to cyclonic observations
+#'   \item "Boose": asymmetric model based on Holland model
 #'   }
 #'  Default value is set to "Willoughby" (See Details)
 #' @param asymmetry character. Indicates which version of asymmetry to use in
-#' the computations. Must be either:
+#' the computations (see Details). Must be either:
 #'   \itemize{
-#'   \item "Boose01": formula that substract wind speed to the original wind
-#'         field depending on the position to the eye of the storm and its
-#'         velocity
+#'      \item "Miyazaki": based on the formula derived in Miyazaki et al. (1962)
+#'      \item "Chen":  based on the formula derived in Chen (1994)
 #'   \item "None": no asymmetry is added
 #'   }
-#'  Default value is set to "Boose01" (See Details)
+#'  Default value is set to "Chen". Ignored if method == Boose
 #' @param empirical_rmw logical. Whether to compute the radius of maximum wind
 #' empirically or using the radius of maximum wind from the observations.
 #' Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
 #' et al. 2006 is used to compute rmw
 #' @param space_res character. Space resolution for the raster(s) to compute.
 #' Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min
-#' @param time_res numeric. Period of time used to interpolate data.
+#' @param temp_res numeric. Period of time used to interpolate data.
 #' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 #' Default value is set to 1
 #' @param verbose numeric. Whether or not the function should display
@@ -920,7 +1035,7 @@ maskProduct <- function(final_stack, loi, template){
 #' @returns SpatRaster stack which provides the desired product computed,
 #' projected in WGS84 and spanning over the extented LOI of the StormsList object.
 #' Number of layers depends on the number of storm available in sts input and
-#' also product and time_res inputs:
+#' also product and temp_res inputs:
 #' \itemize{
 #'    \item "MSW" produces one layer per storm. Name of layer is "STORMNAME_MSW"
 #'    \item "PDI" produces one layer per storm. Name of layer is "STORMNAME_PDI"
@@ -929,10 +1044,22 @@ maskProduct <- function(final_stack, loi, template){
 #'           "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
 #'    \item "Profiles" produces two layers for each observations
 #'          (real and interpolated) and each storm. Name of layers are
-#'          "STORMNAME_Profile_observation", "STORMNAME_WindDirection_observation"
+#'          "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 #' }
 #'
-#' @details Add details on Willoughy/ Holland method Boose asymmetry and getRMW method ...
+#' @details Add details on Willoughy/Holland/Boose method, asymmetries and
+#'   getRMW method ...
+#'   The temp_res input will perform a linear interpolation of
+#'   observations to further compute each 2D wind speed structure at each
+#'   interpolated observations. For example, if temp_res == 1, it will generate
+#'   observations every 1hour between the available observations. Doing so, 2D
+#'   wind speed structure is computed and stacked for each observations
+#'   (available and interpolated) to compute the desired product(s) afterwards.
+#'   If product == "Profiles", nothing else is performed. Otherwise and
+#'   depending on the product(s) to compute, calculations are carried out on the
+#'   stack and terra::focal functions are applied to the final raster(s) to
+#'   smooth the result(s).
+#'
 #' @examples
 #' \dontrun{
 #' #Compute MSW product for Pam 2015 in Vanuatu using default settings
@@ -953,17 +1080,22 @@ spatialBehaviour <- function(sts,
                               product = "MSW",
                               wind_threshold = c(18, 33, 42, 49, 58, 70),
                               method = "Willoughby",
-                              asymmetry = "Boose01",
+                              asymmetry = "Chen",
                               empirical_rmw = FALSE,
                               space_res = "2.5min",
-                              time_res = 1,
+                              temp_res = 1,
                               verbose = 2){
 
   start_time <- Sys.time()
 
   checkInputsSb(sts, product, wind_threshold, method, asymmetry,
-                empirical_rmw, space_res, time_res, verbose)
+                empirical_rmw, space_res, temp_res, verbose)
 
+
+  if(verbose >0){
+    cat("=== spatialBehaviour processing ... ===\n\n")
+    cat("Initializing data ...")
+  }
 
   #Make raster template
   raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, resolutions[space_res])
@@ -976,13 +1108,22 @@ spatialBehaviour <- function(sts,
   final.stack.pdi <- c()
   final.stack.exp <- c()
 
+  if(method == "Boose"){
+    #Map for intersection
+    world <- rworldmap::getMap(resolution = "high")
+    world <- sf::st_as_sf(world)
+    world <- sf::st_transform(world, crs = wgs84)
+    ind_countries <- which(sf::st_intersects(sts@spatial.loi.buffer, world$geometry, sparse = FALSE) == TRUE)
+    asymmetry = "None"
+  }else{
+    ind_countries <- NULL
+  }
 
   if(verbose > 0){
     s <- 1 #Initializing count of storms
-    cat("=== spatialBehaviour processing ... ===\n\n")
-
+    cat(" Done\n\n")
     cat("Computation settings:\n")
-    cat("  (*) Time interpolation: Every", switch(as.numeric(time_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
+    cat("  (*) Temporal resolution: Every", switch(as.numeric(temp_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
     cat("  (*) Space resolution:",names(resolutions[space_res]),"\n")
     cat("  (*) Method used:", method ,"\n")
     cat("  (*) Product(s) to compute:", product ,"\n")
@@ -992,7 +1133,7 @@ spatialBehaviour <- function(sts,
     }
 
     cat("\nStorm(s):\n")
-    cat("  (",sts@nb.storms,") ",getNames(sts),"\n\n")
+    cat("  (",getNbStorms(sts),") ",getNames(sts),"\n\n")
 
   }
 
@@ -1006,7 +1147,7 @@ spatialBehaviour <- function(sts,
     it2 <- st@obs.all$iso.time[2]
     time.diff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
     #Interpolated time step dt, default value dt <- 4 --> 1h
-    dt <- 1 + (1 / time_res * time.diff) # + 1 for the limit values
+    dt <- 1 + (1 / temp_res * time.diff) # + 1 for the limit values
 
     #Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, dt, time.diff, empirical_rmw, method)
@@ -1015,7 +1156,7 @@ spatialBehaviour <- function(sts,
 
     if (verbose > 0) {
       step <- 1
-      cat(st@name," (", s, "/", sts@nb.storms, ")\n")
+      cat(st@name," (", s, "/", getNbStorms(sts), ")\n")
       pb <- utils::txtProgressBar(min = step, max = nb.step, style = 3)
     }
 
@@ -1032,6 +1173,7 @@ spatialBehaviour <- function(sts,
       #Making template to compute wind profiles
       raster.template.model <- makeTemplateModel(raster.template, buffer, dataTC, j)
       raster.wind <- raster.template.model
+      raster.direction <- raster.template.model
 
       #Computing coordinates of raster
       crds <- terra::crds(raster.wind, na.rm = FALSE)
@@ -1045,21 +1187,14 @@ spatialBehaviour <- function(sts,
                                 y = cbind(dataTC$lon[j], dataTC$lat[j]),
                                 lonlat = T)
 
-      #Computing wind profile
-      terra::values(raster.wind) <- computeWindProfile(dataTC, j, dist.m, method, asymmetry, x, y, buffer)
+      #Computing wind speed/direction
+      output <- computeWindProfile(dataTC, j, method, asymmetry,
+                                   x, y, crds, dist.m, buffer,
+                                   sts@spatial.loi.buffer,
+                                   world, ind_countries)
 
-      #Computing wind direction
-      if("Profiles" %in% product){
-        raster.direction <- raster.template.model
-        raster.I <- raster.template.model
-        #Intersect points coordinates with LOI
-        pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x","y"))
-        sf::st_crs(pts) <- wgs84
-        ind <- which(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE)
-        terra::values(raster.I) <- 0
-        terra::values(raster.I)[ind] <- 1
-        terra::values(raster.direction) <- computeWindDirection(dataTC, j, x, y, terra::values(raster.I), buffer)
-      }
+      terra::values(raster.wind) <- output$wind
+      terra::values(raster.direction) <- output$direction
 
       #Stacking products
       if("MSW" %in% product)
@@ -1069,8 +1204,8 @@ spatialBehaviour <- function(sts,
       if("Exposure" %in% product)
         aux.stack.exp <- stackProduct("Exposure", aux.stack.exp, raster.template, raster.wind, wind_threshold)
       if("Profiles" %in% product){
-        names(raster.wind) <- paste0(st@name,"_","Profiles","_",dataTC$indices[j])
-        names(raster.direction) <- paste0(st@name,"_","WindDirection","_",dataTC$indices[j])
+        names(raster.wind) <- paste0(st@name,"_","Speed","_",dataTC$indices[j])
+        names(raster.direction) <- paste0(st@name,"_","Direction","_",dataTC$indices[j])
         aux.stack.prof <- stackRaster(aux.stack.prof, raster.template, raster.wind)
         aux.stack.direction <- stackRaster(aux.stack.direction, raster.template, raster.direction)
       }
@@ -1092,17 +1227,17 @@ spatialBehaviour <- function(sts,
     if("MSW" %in% product){
       aux.stack.msw <- terra::rast(aux.stack.msw)
       final.stack.msw <- rasterizeProduct("MSW", final.stack.msw, aux.stack.msw,
-                                          time_res, space_res, st@name, NULL)
+                                          temp_res, space_res, st@name, NULL)
     }
     if("PDI" %in% product){
       aux.stack.pdi <- terra::rast(aux.stack.pdi)
       final.stack.pdi <- rasterizeProduct("PDI", final.stack.pdi, aux.stack.pdi,
-                                          time_res, space_res, st@name, NULL)
+                                          temp_res, space_res, st@name, NULL)
     }
     if("Exposure" %in% product){
       aux.stack.exp <- terra::rast(aux.stack.exp)
       final.stack.exp <- rasterizeProduct("Exposure", final.stack.exp, aux.stack.exp,
-                                          time_res, space_res, st@name, wind_threshold)
+                                          temp_res, space_res, st@name, wind_threshold)
     }
     if("Profiles" %in% product){
       aux.stack.prof <- terra::rast(aux.stack.prof)
@@ -1161,6 +1296,14 @@ spatialBehaviour <- function(sts,
 
 
 
+###############################
+#Helpers for temporalBehaviour#
+###############################
+
+
+
+
+
 #' Check inputs for temporalBehaviour function
 #'
 #' @noRd
@@ -1171,10 +1314,11 @@ spatialBehaviour <- function(sts,
 #' @param method character
 #' @param asymmetry character
 #' @param empirical_rmw logical
-#' @param time_res numeric
+#' @param temp_res numeric
+#' @param verbose logical
 #' @return NULL
-checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymmetry,
-                            empirical_rmw, time_res){
+checkInputsTempBehaviour <- function(sts, points, product, wind_threshold, method, asymmetry,
+                            empirical_rmw, temp_res, verbose){
 
   #Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -1182,9 +1326,9 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   #Checking points input
   stopifnot("no data found" = !missing(points))
   stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
-  stopifnot("colnames of points must be lon, lat" = colnames(points) == c("lon","lat"))
-  stopifnot("Invalid points coordinates" = points$lon >= 0 & points$lon <= 360 &
-              points$lat >= -90 & points$lat <= 90)
+  stopifnot("colnames of points must be \"x\" (Eastern degree), \"y\" (Northern degree)" = colnames(points) == c("x","y"))
+  stopifnot("Invalid points coordinates" = points$x >= 0 & points$x <= 360 &
+              points$y >= -90 & points$y <= 90)
 
   #Checking product input
   stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
@@ -1197,20 +1341,25 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
   }
 
   #Checking method input
-  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland"))
+  stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland", "Boose"))
   stopifnot("Only one method must be chosen" = length(method) == 1)
 
   #Checking asymmetry input
-  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Boose01"))
+  stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen", "Miyazaki"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
 
   #Checking empirical_rmw input
   stopifnot("empirical_rmw must be logical" = identical(class(empirical_rmw), "logical"))
 
-  #Checking time_res input
-  stopifnot("time_res must be numeric" = identical(class(time_res), "numeric"))
-  stopifnot("time_res must be length 1" = length(time_res) == 1)
-  stopifnot("invalid time_res: must be either 1, 0.75, 0.5 or 0.25" = time_res %in% c(1, 0.75, 0.5, 0.25))
+  #Checking temp_res input
+  stopifnot("temp_res must be numeric" = identical(class(temp_res), "numeric"))
+  stopifnot("temp_res must be length 1" = length(temp_res) == 1)
+  stopifnot("invalid temp_res: must be either 1, 0.75, 0.5 or 0.25" = temp_res %in% c(1, 0.75, 0.5, 0.25))
+
+  #Checking verbose input
+  stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
+  stopifnot("verbose must length 1" = length(verbose) == 1)
+  stopifnot("verbose must be either 0, 1, 2 or 3" = verbose %in% c(0, 1))
 
 }
 
@@ -1222,21 +1371,21 @@ checkInputsSbPt <- function(sts, points, product, wind_threshold, method, asymme
 #'
 #' @noRd
 #' @param wind numeric vector. Wind speed values
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #'
 #' @return numeric. PDI computed using the wind speed values in wind
-computePDI <- function(wind, time_res){
+computePDI <- function(wind, temp_res){
 
   #Computing surface drag coefficient
-  cd <- rasterizeCd(wind)
-  rho <- 0.001
+  rho <- 1
+  Cd <- 0.002
   #Raising to power 3
   pdi <- wind ** 3
   #Applying both rho and surface drag coefficient
-  pdi <- wind * rho * cd
+  pdi <- wind * rho * Cd
   #Integrating over the whole track
-  pdi <- sum(pdi, na.rm = T) * time_res
+  pdi <- sum(pdi, na.rm = T) * temp_res
 
   return(round(pdi,3))
 }
@@ -1249,20 +1398,20 @@ computePDI <- function(wind, time_res){
 #'
 #' @noRd
 #' @param wind numeric vector. Wind speed values
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param threshold numeric vector. Wind threshold
 #'
 #' @return numeric vector of length 5 (for each category).
 #'  Exposure computed using the wind speed values in wind
-computeExposure <- function(wind, time_res, threshold){
+computeExposure <- function(wind, temp_res, threshold){
 
   exposure = c()
   for(t in threshold){
     ind <- which(wind >= t)
     expo <- rep(0,length(wind))
     expo[ind] <- 1
-    exposure <- c(exposure, sum(expo, na.rm = T) * time_res)
+    exposure <- c(exposure, sum(expo, na.rm = T) * temp_res)
 }
 
   return(exposure)
@@ -1278,7 +1427,7 @@ computeExposure <- function(wind, time_res, threshold){
 #' @param product character. Product input from temporalBehaviour
 #' @param wind numeric vector. Wind speed values
 #' @param direction numeric vector. Wind direction
-#' @param time_res numeric. Time resolution, used for the numerical integration
+#' @param temp_res numeric. Time resolution, used for the numerical integration
 #' over the whole track
 #' @param result numeric array. Similar as final_stack, i.e where to add the
 #' computed product
@@ -1290,15 +1439,15 @@ computeExposure <- function(wind, time_res, threshold){
 #'   \item 1 : number of points. If product == "PDI"
 #'   \item 5 : number of points. If product == "Exposure"
 #' }
-computeProduct <- function(product, wind, direction, time_res, result, threshold){
+computeProduct <- function(product, wind, direction, temp_res, result, threshold){
 
   if(product == "TS"){
     prod <- cbind(wind, direction)
   }else if (product == "PDI") {
-    prod <- computePDI(wind, time_res)
+    prod <- computePDI(wind, temp_res)
 
   }else if (product == "Exposure") {
-    prod <- computeExposure(wind, time_res, threshold)
+    prod <- computeExposure(wind, temp_res, threshold)
 
   }
 
@@ -1325,27 +1474,41 @@ computeProduct <- function(product, wind, direction, time_res, result, threshold
 finalizeResult <- function(final_result, result, product, points, isoT, indices, st, threshold){
 
   if(product == "TS"){
-    df <- data.frame(result, indices = indices, isoTimes = isoT)
-    c <- c()
+    l <- list()
     for(i in 1:dim(points)[1]){
-      c <- c(c, paste0("(",points$lon[i],",",points$lat[i],")w"), paste0("(",points$lon[i],",",points$lat[i],")dir"))
+
+      if(i > 1)
+        i <- i + 1
+
+      df <- data.frame(result[,i], result[,i:i+1], indices = indices, isoTimes = isoT)
+      colnames(df) <- c("speed", "direction", "indices", "isoTimes")
+
+      l <- append(l, list(df))
     }
-    c <- c(c, "indices", "isoTimes")
-    colnames(df) <- c
+    names(l) <- rownames(points)
+
   }else if(product == "PDI"){
-    df <- data.frame(result, row.names = "PDI")
-    colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
+    l <- data.frame(result, row.names = "PDI")
+    colnames(l) <- rownames(points)
   }else{
-    df <- data.frame(result, row.names = paste("Min threshold:",threshold,"m/s"))
-    colnames(df) <- c(paste0("(",points$lon,",",points$lat,")"))
+    l <- data.frame(result, row.names = paste("Min threshold:",threshold,"m/s"))
+    colnames(l) <- rownames(points)
   }
 
-  dfn <- list(df)
+  dfn <- list(l)
   names(dfn) <- st@name
   final_result <- append(final_result, dfn)
 
   return(final_result)
 }
+
+
+
+
+
+############################
+#temporalBehaviour function#
+############################
 
 
 
@@ -1359,7 +1522,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'
 #' @param sts StormsList object
 #' @param points data.frame. Contains longitude/latitude coordinates within
-#' column names "lon" and "lat", on which to compute the desired product
+#' column names "x" and "y", on which to compute the desired product
 #' @param product character. Product to compute. Must be either:
 #'   \itemize{
 #'     \item "TS": Time Series of wind speed
@@ -1377,39 +1540,53 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'   \item "Willoughby": model based on fits performed on cyclonic observations
 #'   \item "Holland": model based on both basic cyclonic Physics and parameters
 #'         fitting according to cyclonic observations
+#'   \item "Boose": asymmetric model based on Holland model
 #'   }
 #'  Default value is set to "Willoughby" (See Details)
 #' @param asymmetry character. Indicates which version of asymmetry to use in
-#' the computations. Must be either:
+#' the computations (see Details). Must be either:
 #'   \itemize{
-#'   \item "Boose01": formula that substract wind speed to the original wind
-#'         field depending on the position to the eye of the storm and its
-#'         velocity
+#'      \item "Miyazaki": based on the formula derived in Miyazaki et al. (1962)
+#'      \item "Chen":  based on the formula derived in Chen (1994)
 #'   \item "None": no asymmetry is added
 #'   }
-#'  Default value is set to "Boose01" (See Details)
+#'  Default value is set to "Chen". Ignored if method == Boose
 #' @param empirical_rmw logical. Whether to compute the radius of maximum wind
 #' empirically or using the radius of maximum wind from the observations.
 #' Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
 #' et al. 2006 is used to compute rmw
-#' @param time_res numeric. Period of time used to interpolate data.
+#' @param temp_res numeric. Period of time used to interpolate data.
 #' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
 #' Default value is set to 1
+#' @param verbose numeric. Whether or not the function should display
+#' informations about the process and/or outputs and additional notes.
+#' Allowed values are:
+#' \itemize{
+#' \item 0: Nothing is displayed
+#' \item 1: Informations about the process are displayed
+#' }
+#' Default value is set to 1
 #'
-#' @returns Computed product for each points are returned through data.frames
-#' contained in a named list. Each slot, named after the storm, is a data.frame
-#' that has the following dimensions:
+#' @returns Computed product for each points are returned through lists of
+#'   data.frame (one per points coordinates) contained in a named list. Then, each
+#'   slot, named after the storm, is made of list(s) of data.frame that has the following
+#'   dimensions:
 #' \itemize{
 #'   \item If product == "TS": a data frame whose number of rows corresponds to
 #'         the number of interpolated observations. The columns provides
 #'         respectively the wind speed values (m/s), the wind directions
-#'         (in degree), the indices and the ISO time of observation
+#'         (in degree), the indices and the ISO time of observations
 #'    \item If product == "PDI": a data.frame with one row and one column that
 #'          contains PDI value for each point in points.
 #'    \item If product == "Exposure": a data.frame with one row for each wind
 #'          threshold and one column that contains Exposure value for each point
 #'          in points.
 #'    }
+#'
+#' @details The temp_res input will perform a linear interpolation of
+#' observations to further compute each 2D wind speed structure at each
+#' interpolated observations. For example, if temp_res == 1, it will generate
+#' observations every 1hour between the available observations.
 #'
 #' @examples
 #' \dontrun{
@@ -1432,15 +1609,57 @@ temporalBehaviour <- function(sts,
                               product = "TS",
                               wind_threshold = c(18, 33, 42, 49, 58, 70),
                               method = "Willoughby",
-                              asymmetry = "Boose01",
+                              asymmetry = "Chen",
                               empirical_rmw = FALSE,
-                              time_res = 1){
+                              temp_res = 1,
+                              verbose = 1){
 
-  checkInputsSbPt(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, time_res)
+  checkInputsTempBehaviour(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, temp_res, verbose)
+
+  if(verbose >0){
+    cat("=== spatialBehaviour processing ... ===\n\n")
+    cat("Initializing data ...")
+  }
+
+
+  if(method == "Boose"){
+    #Map for intersection
+    world <- rworldmap::getMap(resolution = "high")
+    world <- sf::st_as_sf(world)
+    world <- sf::st_transform(world, crs = wgs84)
+    ind_countries <- which(sf::st_intersects(sts@spatial.loi.buffer, world$geometry, sparse = FALSE) == TRUE)
+    asymmetry = "None"
+  }else{
+    ind_countries <- NULL
+  }
+
+  points$x[points$x < 0] = points$x[points$x < 0] + 360
 
   buffer <- 2.5
   #Initializing final result
   final.result <- list()
+
+  if(verbose > 0){
+    s <- 1 #Initializing count of storms
+    cat(" Done\n\n")
+    cat("Computation settings:\n")
+    cat("  (*) Temporal resolution: Every", switch(as.numeric(temp_res),"1" = 60, "0.75" = 45, "0.5" = 30, "0.25" = 15),"min\n")
+    cat("  (*) Method used:", method ,"\n")
+    cat("  (*) Product(s) to compute:", product ,"\n")
+    cat("  (*) Asymmetry used:", asymmetry ,"\n")
+    if(empirical_rmw){
+      cat("  (*) rmw computed according to the empirical formula (See Details section)")
+    }
+    cat("  (*) Points: lon-lat\n")
+    for(i in 1:dim(points)[1])
+      cat("      ",points$x[i], " ", points$y[i],"\n")
+    cat("\n")
+
+    cat("\nStorm(s):\n")
+    cat("  (",getNbStorms(sts),") ",getNames(sts),"\n\n")
+
+  }
+
 
   for(st in sts@data) {
 
@@ -1451,7 +1670,7 @@ temporalBehaviour <- function(sts,
     it2 <- st@obs.all$iso.time[2]
     time.diff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
     #Interpolated time step dt, default value dt <- 4 --> 1h
-    dt <- 1 + (1 / time_res * time.diff) # + 1 for the limit values
+    dt <- 1 + (1 / temp_res * time.diff) # + 1 for the limit values
 
     #Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, dt, time.diff, empirical_rmw, method)
@@ -1461,7 +1680,7 @@ temporalBehaviour <- function(sts,
     #every points y
     dist.m <- terra::distance(
       x <- cbind(dataTC$lon,dataTC$lat),
-      y <- cbind(points$lon, points$lat),
+      y <- cbind(points$x, points$y),
       lonlat <- T
     )
 
@@ -1469,32 +1688,24 @@ temporalBehaviour <- function(sts,
     #For each point
     for(i in 1:dim(points)[1]){
 
-
+      #Coordinates
       pt <- points[i,]
 
       #Computing distance between eye of storm and point P
-      x <- pt$lon - dataTC$lon
-      y <- pt$lat - dataTC$lat
+      x <- pt$x - dataTC$lon
+      y <- pt$y - dataTC$lat
 
-
-      #Intersect points coordinates with LOI
-      pts <- sf::st_as_sf(as.data.frame(pt), coords = c("lon","lat"))
-      sf::st_crs(pts) <- wgs84
-      if(sf::st_intersects(pts, sts@spatial.loi, sparse <- FALSE) == TRUE){
-        I <- 1
-      }else{
-        I <- 0
-      }
-
-      #Computing wind profiles
+      #Computing wind speed/direction
       dist2p <- dist.m[,i]
-      vr <- computeWindProfile(dataTC, i, dist2p, method, asymmetry, x, y, buffer)
+      output <- computeWindProfile(dataTC, i, method, asymmetry, x, y, pt, dist2p,
+                                   buffer, sts@spatial.loi.buffer,
+                                   world, ind_countries)
 
-      #Computing wind direction
-      dir <- computeWindDirection(dataTC, i, x, y, I, buffer)
+      vr <- output$wind
+      dir <- output$direction
 
       #Computing product
-      res <- computeProduct(product, vr, dir, time_res, res, wind_threshold)
+      res <- computeProduct(product, vr, dir, temp_res, res, wind_threshold)
 
     }
 
@@ -1503,6 +1714,9 @@ temporalBehaviour <- function(sts,
                                    wind_threshold)
 
   }
+
+  if(verbose > 0)
+    cat("\n=== DONE ===\n\n")
 
   return(final.result)
 }

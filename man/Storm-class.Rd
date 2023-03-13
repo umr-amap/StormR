@@ -17,13 +17,8 @@ Gather all the needed informations to model a single storm
 
 \item{\code{sshs}}{numeric. Maximum category reached in the Saffir Simpson Hurricane Scale}
 
-\item{\code{numobs.all}}{numeric. Total number of observations available}
-
-\item{\code{numobs}}{numeric. Total number of observations available within the location of interest
-extented with its corresponding buffer (See Storms class)}
-
 \item{\code{obs}}{numeric vector. Indices of observations within the location of interest
-extented with its corresponding buffer (See Storms class)}
+extented with its corresponding buffer (See StormsList class)}
 
 \item{\code{obs.all}}{data.frame. Contains all of the observations available.
 An observation is made up of several fields which are:

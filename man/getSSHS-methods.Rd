@@ -3,30 +3,36 @@
 \docType{methods}
 \name{getSSHS}
 \alias{getSSHS}
-\alias{getSSHS,Storms-method}
 \alias{getSSHS,Storm-method}
-\title{getSSHS}
+\alias{getSSHS,StormsList-method}
+\title{Get maximum SSHS reached of storm(s)}
 \usage{
-getSSHS(s, ...)
-
-\S4method{getSSHS}{Storms}(s, name = NULL)
+getSSHS(s)
 
 \S4method{getSSHS}{Storm}(s)
+
+\S4method{getSSHS}{StormsList}(s)
 }
 \arguments{
-\item{s}{Storms or Storm object}
-
-\item{...}{Additional argument}
-
-\item{name}{character. Name of a storm in capital letters. Default value is
-set to NULL}
+\item{s}{Storm/StormsList object}
 }
 \value{
 numeric vector. Maximum SSHS reached of each storms (or the selected
-one through name input) provided by the given Storms object or maximum SSHS
+one through name input) provided by the given StormsList object or maximum SSHS
 reached for the given Storm object
 }
 \description{
 Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storms
-available in a Storms object or the maximum SSHS reached of a Storm object
+available in a Storm/StormsList object
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+
+## For storm Niran
+getSSHS(getStorm(sts, name = "NIRAN"))
+
+## For sts
+getSSHS(sts)
+}
 }

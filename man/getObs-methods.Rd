@@ -3,25 +3,25 @@
 \docType{methods}
 \name{getObs}
 \alias{getObs}
-\alias{getObs,Storms-method}
+\alias{getObs,StormsList-method}
 \alias{getObs,Storm-method}
-\title{getObs}
+\title{Get observations available}
 \usage{
 getObs(s, ...)
 
-\S4method{getObs}{Storms}(s, name, season = NULL)
+\S4method{getObs}{StormsList}(s, name, season = NULL)
 
 \S4method{getObs}{Storm}(s)
 }
 \arguments{
-\item{s}{Storms or Storm object}
+\item{s}{Storm/StormsList object}
 
-\item{...}{Additional arguments}
+\item{...}{extra argument depending on Storm/StormsList object}
 
 \item{name}{character. Name of the storm to extract in capital letters}
 
 \item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the Storms object share the same name. Default value is set
+several storms in the StormsList object share the same name. Default value is set
 to NULL}
 }
 \value{
@@ -29,4 +29,15 @@ data.frame. Observations of the given storm
 }
 \description{
 Get the observations available for a given storm
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+
+## For storm Niran
+getObs(getStorm(sts, name = "NIRAN"))
+
+## Equivalent to 
+getObs(sts, name = "NIRAN")
+}
 }

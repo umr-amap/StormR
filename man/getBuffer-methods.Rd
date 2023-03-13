@@ -3,19 +3,26 @@
 \docType{methods}
 \name{getBuffer}
 \alias{getBuffer}
-\alias{getBuffer,Storms-method}
-\title{getBuffer}
+\alias{getBuffer,StormsList-method}
+\title{Get the extended LOI from a Storms object}
 \usage{
 getBuffer(sts)
 
-\S4method{getBuffer}{Storms}(sts)
+\S4method{getBuffer}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{Storms object}
+\item{sts}{StormsList object}
 }
 \value{
-sf object. Extended location of interest for the given Storms object
+sf object. Extended Location Of Interest for the given StormsList
+object
 }
 \description{
-Get the Extended location of interest of a Storms object
+Get the Extended Location Of Interest from a StormsList object
+}
+\examples{
+\dontrun{
+sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+buff <- getBuffer(sts)
+}
 }

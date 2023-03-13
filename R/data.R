@@ -29,11 +29,24 @@
 "eezNC"
 
 
-#' South Pacific storms database
+#' example of dataset
 #'
-#' Database extracted from the IBTrACS.SP.v04r00.nc file.
-#' It provides all the tropical cyclones that occured in the SP Basin from the 1867 to nowadays
-#'
-#' @format ## `IBTRACS_SP`
+#' Toy dataset extracted from the IBTrACS.SP.v04r00.nc file. Provides all the
+#' tropical cyclones that occured around Vanuatu from 2015 to 2016 and around
+#' New Caledonia from 2020 to 2021.
+#' References:
+#' * Knapp, K. R., M. C. Kruk, D. H.
+#' Levinson, H. J. Diamond, and C. J. Neumann, 2010: The International Best
+#' Track Archive for Climate Stewardship (IBTrACS): Unifying tropical cyclone
+#' best track data. Bulletin of the American Meteorological Society, 91,
+#' 363-376. doi:10.1175/2009BAMS2755.1
+#' 
+#' * Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck,
+#' 2018: International Best Track Archive for Climate Stewardship (IBTrACS)
+#' Project, Version 4. NOAA National Centers for Environmental Information.
+#' doi:10.25921/82ty-9e16
+#' 
+#' 
+#' @format ## `test_dataset`
 #' a StormsDataset object
-"IBTRACS_SP"
+"test_dataset"

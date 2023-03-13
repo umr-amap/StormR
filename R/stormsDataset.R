@@ -3,6 +3,47 @@
 
 
 
+###########################
+#Unit conversion functions#
+###########################
+
+#For msw
+knt_to_ms <- function(x){
+  return(x * knt2ms)
+}
+
+mph_to_ms <- function(x){
+  return(x * mph2ms)
+}
+
+kmh_to_ms <- function(x){
+  return(x * kmh2ms)
+}
+
+#For rmw
+nm_to_km <- function(x){
+  return(x * nm2km)
+}
+
+#For pressure
+b_to_pa <- function(x){
+  return(x * b2pa)
+}
+
+mb_to_pa <- function(x){
+  return(x * mb2pa)
+}
+
+psi_to_pa <- function(x){
+  return(x * psi2pa)
+}
+
+atm_to_pa <- function(x){
+  return(x * atm2pa)
+}
+
+
+
 #' StormsDataset object
 #'
 #' Choose the database to use within the package's functions
@@ -97,17 +138,21 @@ StormsDataset <- methods::setClass(
 #' @param filename character
 #' @param fields character vector
 #' @param basin character
+#' @param unit_conversion character vector
 #' @param verbose logical
 #'
 #' @return NULL
-checkInputsIDb <- function(filename, fields, basin, verbose){
+checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
 
   #Checking filename input
+  stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename),"character"))
-  stopifnot("filename must be legnth one" = length(filename) == 1)
+  stopifnot("filename must be length one" = length(filename) == 1)
 
   #Checking fields input
   stopifnot("fields must be character" = identical(class(fields),"character"))
+  stopifnot("unit_conversion must be character" = identical(class(unit_conversion),"character"))
+
   #Mandatory fields
   stopifnot("No 'names' selection in fields" = "names" %in% names(fields))
   stopifnot("No 'seasons' selection in fields" = "seasons" %in% names(fields))
@@ -115,27 +160,45 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
   stopifnot("No 'lon' selection in fields" = "lon" %in% names(fields))
   stopifnot("No 'lat' selection in fields" = "lat" %in% names(fields))
   stopifnot("No 'msw' selection in fields" = "msw" %in% names(fields))
+  stopifnot("No unit conversion directive for 'msw' selection in unit_conversion" = "msw" %in% names(unit_conversion))
+  stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["msw"] %in% c("None", "mph_to_ms", "knt_to_ms", "kmh_to_ms"))
+
   #Optional fields
   if(!("basin" %in% names(fields)))
     warning("No 'basin' selection in fields, Cannot use basin filtering when collecting data")
-  if(!("rmw" %in% names(fields)))
+  if(!("rmw" %in% names(fields))){
     warning("No 'rmw' selection in fields, use empirical_rmw = TRUE for the forthcoming computations")
+  }else{
+    stopifnot("No unit conversion directive for 'rmw' selection in unit_conversion" = "rmw" %in% names(unit_conversion))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["rmw"] %in% c("None", "nm_to_km"))
+  }
 
-  if(!("pressure" %in% names(fields)))
+  if(!("pressure" %in% names(fields))){
     warning("No 'pressure' selection in fields, Cannot use Holland method for the forthcoming computations")
+  }else{
+    stopifnot("No unit conversion directive for 'pressure' selection in unit_conversion" = "pressure" %in% names(unit_conversion))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["pressure"] %in% c("None", "b_to_pa", "mb_to_pa", "psi_to_pa", "atm_to_pa"))
+  }
 
-  if(!("poci" %in% names(fields)))
+
+  if(!("poci" %in% names(fields))){
     warning("No 'poci' selection in fields,  Cannot use Holland method for the forthcoming computations")
-
+  }else{
+    stopifnot("No unit conversion directive for 'poci' selection in unit_conversion" = "poci" %in% names(unit_conversion))
+    stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["poci"] %in% c("None", "b_to_pa", "mb_to_pa", "psi_to_pa", "atm_to_pa"))
+  }
 
   #Checking basin input
-  stopifnot("basin must be character" = identical(class(basin),"character"))
-  stopifnot("basin must be length one" = length(length) == 1)
-  stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
-              basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
+  if(!is.null(basin)){
+    stopifnot("basin must be character" = identical(class(basin),"character"))
+    stopifnot("basin must be length one" = length(basin) == 1)
+    stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
+                basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
+  }
+
+
   #Checking verbose input
   stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
-
 
 }
 
@@ -160,26 +223,31 @@ checkInputsIDb <- function(filename, fields, basin, verbose){
 #'   \item "SI": South India
 #'   \item "NI": North India
 #' }
+#' @param unit_conversion ...
 #' @param verbose logical. Whether or not the function should display
 #' informations about the process
 #' @return An object of class StormsDataset
 #' @export
-defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc", package = "StormR"),
-                         fields = c("basin" = "basin",
-                                    "names" = "name",
-                                    "seasons" = "season",
-                                    "isoTime" = "iso_time",
-                                    "lon" = "usa_lon",
-                                    "lat" = "usa_lat",
-                                    "msw" = "usa_wind",
-                                    "sshs" = "usa_sshs",
-                                    "rmw" = "usa_rmw",
-                                    "pressure" = "usa_pres",
-                                    "poci" = "usa_poci"),
-                         basin = NULL,
-                         verbose = TRUE){
+defDatabase <- function(filename,
+                        fields = c("basin" = "basin",
+                                   "names" = "name",
+                                   "seasons" = "season",
+                                   "isoTime" = "iso_time",
+                                   "lon" = "usa_lon",
+                                   "lat" = "usa_lat",
+                                   "msw" = "usa_wind",
+                                   "sshs" = "usa_sshs",
+                                   "rmw" = "usa_rmw",
+                                   "pressure" = "usa_pres",
+                                   "poci" = "usa_poci"),
+                        basin = "SP",
+                        unit_conversion = c(msw = "knt_to_ms",
+                                            rmw = "nm_to_km",
+                                            pressure="mb_to_pa",
+                                            poci="mb_to_pa"),
+                        verbose = TRUE){
 
-  checkInputsIDb(filename, fields, basin, verbose)
+  checkInputsIDb(filename, fields, basin, unit_conversion, verbose)
 
 
   if(verbose)
@@ -204,6 +272,20 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
     len <- length(ind)
   }
 
+  if(unit_conversion["msw"] == "mph_to_ms"){
+    msw <- array(mph_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
+                 dim = c(row,len))
+  }else if(unit_conversion["msw"] == "knt_to_ms"){
+    msw <- array(knt_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
+                 dim = c(row,len))
+  }else if(unit_conversion["msw"] == "kmh_to_ms"){
+    msw <- array(kmh_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
+                 dim = c(row,len))
+  }else{
+    msw <- array(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind],
+                 dim = c(row,len))
+  }
+
   #Collect data
   data <- list(names  = ncdf4::ncvar_get(dataBase, fields["names"])[ind],
                seasons = ncdf4::ncvar_get(dataBase, fields["seasons"])[ind],
@@ -213,26 +295,52 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
                                  dim = c(row,len)),
                latitude = array(ncdf4::ncvar_get(dataBase, fields["lat"])[,ind],
                                 dim = c(row,len)),
-               msw = array(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind],
-                           dim = c(row,len)))
+               msw = msw)
 
   if("sshs" %in% names(fields))
     data$sshs <- array(ncdf4::ncvar_get(dataBase, fields["sshs"])[,ind], dim = c(row,len))
 
-  if("rmw" %in% names(fields))
-    data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind], dim = c(row,len))
+  if("rmw" %in% names(fields)){
+    if(unit_conversion["rmw"] == "nm_to_km"){
+      data$rmw <- array(nm_to_km(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind]), dim = c(row,len))
+    }else{
+      data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind], dim = c(row,len))
+    }
+  }
 
-  if("pressure" %in% names(fields))
-    data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind], dim = c(row,len))
 
-  if("poci" %in% names(fields))
-    data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind], dim = c(row,len))
+  if("pressure" %in% names(fields)){
+    if(unit_conversion["pressure"] == "mb_to_pa"){
+      data$pressure <- array(mb_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
+    }else if(unit_conversion["pressure"] == "b_to_pa"){
+      data$pressure <- array(b_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
+    }else if(unit_conversion["pressure"] == "psi_to_pa"){
+      data$pressure <- array(psi_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
+    }else if(unit_conversion["pressure"] == "atm_to_pa"){
+      data$pressure <- array(atm_to_pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind]), dim = c(row,len))
+    }else{
+      data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind], dim = c(row,len))
+    }
+  }
+
+
+  if("poci" %in% names(fields)){
+    if(unit_conversion["poci"] == "mb_to_pa"){
+      data$poci <- array(mb_to_pa(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind]), dim = c(row,len))
+    }else{
+      data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind], dim = c(row,len))
+    }
+  }
+
   ncdf4::nc_close(dataBase)
 
 
 
   if(verbose)
     cat("=== DONE ===\n")
+
+  if(is.null(basin))
+    basin <- "None"
 
 
 
@@ -247,5 +355,3 @@ defDatabase <- function(filename = system.file("extdata", "IBTrACS.SP.v04r00.nc"
 
 
 }
-
-
