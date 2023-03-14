@@ -40,7 +40,7 @@
     </div>
 
     <div class="ref-description section level2">
-    <p>Get the name(s) of storm(s) available in a Storm/StormsList object</p>
+    <p>Get the name(s) of storm(s) available in a <code>Storm</code>/<code>StormsList</code> object</p>
     </div>
 
     <div class="section level2">
@@ -57,21 +57,21 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>s</dt>
-<dd><p>Storm/StormsList object</p></dd>
+<dd><p><code>Storm</code>/<code>StormsList</code> object</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>character vector. Names of each storms provided by the given Storm/StormsList
-object</p>
+<p>character vector. Names of each storms provided by the given
+<code>Storm</code>/<code>StormsList</code> object</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"New Caledonia"</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ERICA"</span>,<span class="st">"NIRAN"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"New Caledonia"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## For storm Niran</span></span></span>
 <span class="r-in"><span><span class="fu">getNames</span><span class="op">(</span><span class="fu"><a href="getStorm-methods.html">getStorm</a></span><span class="op">(</span><span class="va">sts</span>, name <span class="op">=</span> <span class="st">"NIRAN"</span><span class="op">)</span><span class="op">)</span></span></span>

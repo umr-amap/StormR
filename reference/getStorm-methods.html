@@ -34,13 +34,13 @@
 </nav><div class="container template-reference-topic">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Extract a Storm</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Extract a <code>Storm</code></h1>
       
       <div class="d-none name"><code>getStorm-methods.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Extract a Storm object from a StormsList object</p>
+    <p>Extract a <code>Storm</code> object from a <code>StormsList</code> object</p>
     </div>
 
     <div class="section level2">
@@ -54,7 +54,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>sts</dt>
-<dd><p>StormsList object</p></dd>
+<dd><p><code>StormsList</code> object</p></dd>
 
 
 <dt>name</dt>
@@ -63,21 +63,21 @@
 
 <dt>season</dt>
 <dd><p>numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the StormsList object share the same name.
-Default value is set de NULL</p></dd>
+several storms in the <code>StormsList</code> object share the same name. Default
+value is set de <code>NULL</code></p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Storm object</p>
+<p><code>Storm</code> object</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"New Caledonia"</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ERICA"</span>,<span class="st">"NIRAN"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"New Caledonia"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu">getStorm</span><span class="op">(</span><span class="va">sts</span>, name <span class="op">=</span> <span class="st">"NIRAN"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>

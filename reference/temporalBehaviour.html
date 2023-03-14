@@ -44,7 +44,7 @@ and Exposure"><meta property="og:image" content="/logo.png"><!-- mathjax --><scr
     </div>
 
     <div class="ref-description section level2">
-    <p>This function is the pointwise version of spatialBehaviour. Available
+    <p>This function is the pointwise version of <code>spatialBehaviour</code>. Available
 products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
 and Exposure</p>
     </div>
@@ -67,64 +67,67 @@ and Exposure</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>sts</dt>
-<dd><p>StormsList object</p></dd>
+<dd><p><code>StormsList</code> object</p></dd>
 
 
 <dt>points</dt>
 <dd><p>data.frame. Contains longitude/latitude coordinates within
-column names "x" and "y", on which to compute the desired product</p></dd>
+column names <code>x</code> and <code>y</code>, on which to compute the desired product</p></dd>
 
 
 <dt>product</dt>
-<dd><p>character. Product to compute. Must be either:</p><ul><li><p>"TS": Time Series of wind speed</p></li>
-<li><p>"PDI": Power Dissipation Index</p></li>
-<li><p>"Exposure": hour exposition for wind greater than wind_threshold
+<dd><p>character. Product to compute. Must be either:</p><ul><li><p><code>"TS"</code>: Time Series of wind speed</p></li>
+<li><p><code>"PDI"</code>: Power Dissipation Index</p></li>
+<li><p><code>"Exposure"</code>: hour exposition for wind greater than <code>wind_threshold</code>
 input</p></li>
-</ul><p>Default value is set to "TS"</p></dd>
+</ul><p>Default value is set to <code>"TS"</code></p></dd>
 
 
 <dt>wind_threshold</dt>
 <dd><p>numeric vector. Minimal wind threshold(s) (m/s) to
-compute Exposure product. Ignored if Exposure is not part of the products to
-compute. Default value is set to Saffir Simpson Hurricane Scale thresholds</p></dd>
+compute <code>"Exposure"</code> product. Ignored if <code>"Exposure"</code> is not part of the
+products to compute. Default value is set to Saffir Simpson Hurricane Scale
+thresholds</p></dd>
 
 
 <dt>method</dt>
 <dd><p>character. Cyclonic model used to compute product. Must be
-either:</p><ul><li><p>"Willoughby": model based on fits performed on cyclonic observations</p></li>
-<li><p>"Holland": model based on both basic cyclonic Physics and parameters
+either:</p><ul><li><p><code>"Willoughby"</code>: model based on fits performed on cyclonic observations</p></li>
+<li><p><code>"Holland"</code>: model based on both basic cyclonic Physics and parameters
 fitting according to cyclonic observations</p></li>
-<li><p>"Boose": asymmetric model based on Holland model</p></li>
-</ul><p>Default value is set to "Willoughby" (See Details)</p></dd>
+<li><p><code>"Boose"</code>: asymmetric model based on Holland model</p></li>
+</ul><p>Default value is set to <code>"Willoughby"</code> (See <code>Details</code>)</p></dd>
 
 
 <dt>asymmetry</dt>
 <dd><p>character. Indicates which version of asymmetry to use in
-the computations (see Details). Must be either:</p><ul><li><p>"Miyazaki": based on the formula derived in Miyazaki et al. (1962)</p></li>
-<li><p>"Chen":  based on the formula derived in Chen (1994)</p></li>
-<li><p>"None": no asymmetry is added</p></li>
-</ul><p>Default value is set to "Chen". Ignored if method == Boose</p></dd>
+the computations (see <code>Details</code>). Must be either:</p><ul><li><p><code>"Miyazaki"</code>: based on the formula derived in Miyazaki et al. (1962)</p></li>
+<li><p><code>"Chen"</code>:  based on the formula derived in Chen (1994)</p></li>
+<li><p><code>"None"</code>: no asymmetry is added</p></li>
+</ul><p>Default value is set to <code>"Chen"</code>. Ignored if <code>method == "Boose"</code></p></dd>
 
 
 <dt>empirical_rmw</dt>
 <dd><p>logical. Whether to compute the radius of maximum wind
 empirically or using the radius of maximum wind from the observations.
-Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
-et al. 2006 is used to compute rmw</p></dd>
+Default value is set to <code>FALSE</code>. If <code>TRUE</code>, a formula extracted from
+Willoughby et al. 2006 is used to compute rmw</p></dd>
 
 
 <dt>temp_res</dt>
-<dd><p>numeric. Period of time used to interpolate data.
-Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
-Default value is set to 1</p></dd>
+<dd><p>numeric. Period of time used to interpolate data. Allowed
+values are <code>1</code> (60min), <code>0.75</code> (45min), <code>0.5</code> (30min), and <code>0.25</code> (15min).
+Default value is set to <code>1</code></p></dd>
 
 
 <dt>verbose</dt>
 <dd><p>numeric. Whether or not the function should display
-informations about the process and/or outputs and additional notes.
-Allowed values are:</p><ul><li><p>0: Nothing is displayed</p></li>
-<li><p>1: Informations about the process are displayed</p></li>
-</ul><p>Default value is set to 1</p></dd>
+informations about the process and/or outputs and additional notes. Allowed
+values are:</p><ul><li><p><code>0</code>: Nothing is displayed</p></li>
+<li><p><code>1</code>: Informations about the process are displayed</p></li>
+<li><p><code>2</code>: Outputs are also displayed</p></li>
+<li><p><code>3</code>: Additional notes are also displayed</p></li>
+</ul><p>Default value is set to <code>2</code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -132,24 +135,24 @@ Allowed values are:</p><ul><li><p>0: Nothing is displayed</p></li>
     
 
 <p>Computed product for each points are returned through lists of
-data.frame (one per points coordinates) contained in a named list. Then, each
-slot, named after the storm, is made of list(s) of data.frame that has the following
-dimensions:</p><ul><li><p>If product == "TS": a data frame whose number of rows corresponds to
+data.frame (one per points coordinates) contained in a named list. Then,
+each slot, named after the storm, is made of list(s) of data.frame that has
+the following dimensions:</p><ul><li><p>If <code>product == "TS"</code>: a data frame whose number of rows corresponds to
 the number of interpolated observations. The columns provides
 respectively the wind speed values (m/s), the wind directions
 (in degree), the indices and the ISO time of observations</p></li>
-<li><p>If product == "PDI": a data.frame with one row and one column that
+<li><p>If <code>product == "PDI"</code>: a data.frame with one row and one column that
 contains PDI value for each point in points.</p></li>
-<li><p>If product == "Exposure": a data.frame with one row for each wind
+<li><p>If <code>product == "Exposure"</code>: a data.frame with one row for each wind
 threshold and one column that contains Exposure value for each point
 in points.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The temp_res input will perform a linear interpolation of
+    <p>The <code>temp_res</code> input will perform a linear interpolation of
 observations to further compute each 2D wind speed structure at each
-interpolated observations. For example, if temp_res == 1, it will generate
-observations every 1hour between the available observations.</p>
+interpolated observations. For example, if <code>temp_res == 1</code>, it will
+generate observations every 1hour between the available observations.</p>
     </div>
 
     <div class="section level2">

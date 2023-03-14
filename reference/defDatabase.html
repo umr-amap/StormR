@@ -66,23 +66,40 @@ file</p></dd>
 
 <dt>fields</dt>
 <dd><p>named character vector. Dictionary that provides all the name
-of dimension to extract from the netcdf database (See StormsDataSet class)</p></dd>
+of dimension to extract from the netcdf database (See <code>StormsDataSet</code>
+class)</p></dd>
 
 
 <dt>basin</dt>
 <dd><p>character. Basin name to filter the database within its
-boundaries. Default value is set to NULL. It must be either</p><ul><li><p>"NA": North Atlantic</p></li>
-<li><p>"SA": South Atlantic</p></li>
-<li><p>"EP": Eastern North Pacific</p></li>
-<li><p>"WP": Western North Pacific</p></li>
-<li><p>"SP": South Pacific</p></li>
-<li><p>"SI": South India</p></li>
-<li><p>"NI": North India</p></li>
+boundaries. Default value is set to <code>NULL</code>. It must be either</p><ul><li><p><code>"NA"</code>: North Atlantic</p></li>
+<li><p><code>"SA"</code>: South Atlantic</p></li>
+<li><p><code>"EP"</code>: Eastern North Pacific</p></li>
+<li><p><code>"WP"</code>: Western North Pacific</p></li>
+<li><p><code>"SP"</code>: South Pacific</p></li>
+<li><p><code>"SI"</code>: South India</p></li>
+<li><p><code>"NI"</code>: North India</p></li>
 </ul></dd>
 
 
 <dt>unit_conversion</dt>
-<dd><p>...</p></dd>
+<dd><p>named character vector. Dictionary that provides the
+instructions to convert <code>msw</code>, <code>rmw</code>, <code>pressure</code> and/or <code>poci</code> fields in
+the correct units. Default value is <code>c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")</code> according to the IBTrACS
+databases. This input is mandatory even if no conversion is needed. In this
+case use <code>"None"</code> in the corresponding fields. Allowed value are: For <code>msw</code>
+fields</p><ul><li><p><code>"knt_to_ms"</code>: converts knot in meter per second</p></li>
+<li><p><code>"kmh_to_ms"</code>: converts kilometer per hour in meter per second</p></li>
+<li><p>"<code>mph_to_ms"</code>: converts miles per hour in meter per second</p></li>
+<li><p><code>"None"</code>: No conversion needed</p></li>
+</ul><p>For <code>rmw</code> fields</p><ul><li><p><code>"nm_to_ms"</code>: converts nautical miles in kilometer</p></li>
+<li><p><code>"None"</code>: No conversion needed</p></li>
+</ul><p>For both <code>pressure</code> and <code>poci</code></p><ul><li><p><code>"b_to_pa"</code>: converts bar in pascal</p></li>
+<li><p>"<code>mb_to_pa"</code>: converts millibar in pascal</p></li>
+<li><p><code>"atm_to_pa"</code>: converts atmosphere in pascal</p></li>
+<li><p><code>"psi_to_pa"</code>: converts psi in pascal</p></li>
+<li><p><code>"None"</code>: No conversion needed</p></li>
+</ul></dd>
 
 
 <dt>verbose</dt>
@@ -94,7 +111,9 @@ informations about the process</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>An object of class StormsDataset</p>
+<p>An object of class <code>StormsDataset</code></p>
+
+
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -34,7 +34,7 @@
 </nav><div class="container template-reference-topic">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Storm  object</h1>
+      <img src="../logo.png" class="logo" alt=""><h1><code>Storm</code>  object</h1>
       
       <div class="d-none name"><code>Storm-class.Rd</code></div>
     </div>
@@ -57,24 +57,26 @@
 
 
 <dt><code>sshs</code></dt>
-<dd><p>numeric. Maximum category reached in the Saffir Simpson Hurricane Scale</p></dd>
+<dd><p>numeric. Maximum category reached in the Saffir Simpson Hurricane
+Scale</p></dd>
 
 
 <dt><code>obs</code></dt>
-<dd><p>numeric vector. Indices of observations within the location of interest
-extented with its corresponding buffer (See StormsList class)</p></dd>
+<dd><p>numeric vector. Indices of observations within the location of
+interest extented with its corresponding buffer (See <code>StormsList</code> class)</p></dd>
 
 
 <dt><code>obs.all</code></dt>
-<dd><p>data.frame. Contains all of the observations available.
-An observation is made up of several fields which are:</p><ul><li><p>iso.time, Date and hours of observations (UTC)</p></li>
-<li><p>lon, Longitude coordinate (deg)</p></li>
-<li><p>lat, Latitude coordinate (deg)</p></li>
-<li><p>msw, Maximum Sustained Wind (m/s)</p></li>
-<li><p>sshs, Category in the Saffir Simpson Hurricane Scale</p></li>
-</ul><p>The following field is not mandatory but highly recommand</p><ul><li><p>rmw, Radius of Maximum Wind (km)</p></li>
-</ul><p>Also, the following fields are only mandatory to perform Holland model (See Details)</p><ul><li><p>pres, Pressure at the center (mb)</p></li>
-<li><p>poci, Pressure of the Outermost Closed Isobar (mb)</p></li>
+<dd><p>data.frame. Contains all of the observations available. An
+observation is made up of several fields which are:</p><ul><li><p><code>iso.time</code>, Date and hours of observations (UTC)</p></li>
+<li><p><code>lon</code>, Longitude coordinate (Eastern degree)</p></li>
+<li><p><code>lat</code>, Latitude coordinate (Northern degree)</p></li>
+<li><p><code>msw</code>, Maximum Sustained Wind (m/s)</p></li>
+<li><p><code>sshs</code>, Category in the Saffir Simpson Hurricane Scale</p></li>
+</ul><p>The following field is not mandatory but highly recommended</p><ul><li><p><code>rmw</code>, Radius of Maximum Wind (km)</p></li>
+</ul><p>Also, the following fields are only mandatory to perform Holland and Boose
+models (See <code>Details</code>)</p><ul><li><p><code>pres</code>, Pressure at the center (pa)</p></li>
+<li><p><code>poci</code>, Pressure of the Outermost Closed Isobar (pa)</p></li>
 </ul></dd>
 
 

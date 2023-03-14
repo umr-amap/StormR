@@ -47,42 +47,40 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The fields input must provide at least 6 mandatory fields (and at most 11) in
-order to benefit from all the functionalities of this package:</p><ul><li><p>A field called "name": which dimension contains the names of storms
-in the netcdf database</p></li>
-<li><p>A field called "seasons": which dimension contains the cyclonic
-seasons of storms in the netcdf database</p></li>
-<li><p>A field called "isoTime": which dimension contains the ISO times of
-each (3 or 6 hourly) observations for all storms in the database</p></li>
-<li><p>A field called "lon": which dimension contains the longitude
-coordinates (Eastern degree) of each observations for all storms in
-the netcdf database</p></li>
-<li><p>A field called "lat": which dimension contains the latitude
-coordinates (Nothern degree) of each observations for all storms in
-the netcdf database</p></li>
-<li><p>A field called "msw": which dimension contains the maximum sustained
-wind speed (knt) of each observations for all storms in the netcdf
-database</p></li>
-</ul><p>The following fields are optional but highly recommanded:</p><ul><li><p>A field called "basin": which dimension contains the basin location of
+order to benefit from all the functionalities of this package:</p><ul><li><p>A field <code>basin</code>: which dimension contains the basin location of
 storms in the netcdf database. Used to filter the storms in the netcdf
 database</p></li>
-<li><p>A field called "rmw": which dimension contains the radius of maximum
-wind speed (nm) of each observations for all storms in the netcdf
+<li><p>A field <code>names</code>: which dimension contains the names of storms
+in the netcdf database</p></li>
+<li><p>A field <code>seasons</code>: which dimension contains the cyclonic
+seasons of storms in the netcdf database</p></li>
+<li><p>A field <code>isoTime</code>: which dimension contains the ISO times of
+each (3 or 6 hourly) observations for all storms in the database</p></li>
+<li><p>A field <code>lon</code>: which dimension contains the longitude
+coordinates of each observations for all storms in
+the netcdf database</p></li>
+<li><p>A field <code>lat</code>: which dimension contains the latitude
+coordinates of each observations for all storms in
+the netcdf database</p></li>
+<li><p>A field <code>msw</code>: which dimension contains the maximum sustained
+wind speed of each observations for all storms in the netcdf
+database</p></li>
+</ul><p>The following fields are optional but highly recommanded:</p><ul><li><p>A field <code>rmw</code>: which dimension contains the radius of maximum
+wind speed of each observations for all storms in the netcdf
 database (See spatialBehaviour, temporalBehaviour)</p></li>
-<li><p>A field called "sshs": which dimension contains the Saffir Simpson
+<li><p>A field <code>sshs</code>: which dimension contains the Saffir Simpson
 Hurricane Scale index of each observations for all storms in the
 netcdf database</p></li>
 </ul><p>Finally these following fields are optional but mandatory to perform Holland
-model (See spatialBehaviour, temporalBehaviour)</p><ul><li><p>A field called "pressure": which dimension contains the pressure (mb)
+model (See <code>spatialBehaviour</code>, <code>temporalBehaviour</code>)</p><ul><li><p>A field <code>pressure</code>: which dimension contains the pressure
 in the eye for of each observations for all storms in the netcdf
 database</p></li>
-<li><p>A field called "poci": which dimension contains the Pressure at the
-Outermost Closed Isobar (mb) for of each observations for all storms
+<li><p>A field <code>poci</code>: which dimension contains the Pressure at the
+Outermost Closed Isobar for of each observations for all storms
 in the nectdf database</p></li>
-</ul><p>Default value is set according to the most relevant dimensions of IBTraCS
-databases: fields = fields = c("basin" = "basin", "names" = "name",
-"seasons" = "season", "isoTime" = "iso_time", "lon" = "usa_lon",
-"lat" = "usa_lat", "msw" = "usa_wind", "rmw" = "usa_rmw",
-"pressure" = "usa_pres", "poci" = "usa_poci", "sshs" = "usa_sshs")</p>
+</ul><p>Default value is set according to the most relevant dimensions of IBTrACS
+databases:
+<code>fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres", poci = "usa_poci", sshs = "usa_sshs")</code></p>
     </div>
     <div class="section level2">
     <h2 id="slots">Slots<a class="anchor" aria-label="anchor" href="#slots"></a></h2>
@@ -94,27 +92,27 @@ databases: fields = fields = c("basin" = "basin", "names" = "name",
 
 <dt><code>fields</code></dt>
 <dd><p>named character vector. Dictionary that provides all the name of
-dimensions to extract from the netcdf database (See Details)</p></dd>
+dimensions to extract from the netcdf database (See <code>Details</code>)</p></dd>
 
 
 <dt><code>basin</code></dt>
 <dd><p>character. Basin name to filter the database within its
-boundaries. Default value is set to NULL. It must be either</p><ul><li><p>"NA": North Atlantic</p></li>
-<li><p>"SA": South Atlantic</p></li>
-<li><p>"EP": Eastern North Pacific</p></li>
-<li><p>"WP": Western North Pacific</p></li>
-<li><p>"SP": South Pacific</p></li>
-<li><p>"SI": South India</p></li>
-<li><p>"NI": North India</p></li>
+boundaries. Default value is set to <code>NULL</code>. It must be either</p><ul><li><p><code>"NA"</code>: North Atlantic</p></li>
+<li><p><code>"SA"</code>: South Atlantic</p></li>
+<li><p><code>"EP"</code>: Eastern North Pacific</p></li>
+<li><p><code>"WP"</code>: Western North Pacific</p></li>
+<li><p><code>"SP"</code>: South Pacific</p></li>
+<li><p><code>"SI"</code>: South India</p></li>
+<li><p><code>"NI"</code>: North India</p></li>
 </ul></dd>
 
 
 <dt><code>database</code></dt>
 <dd><p>list of 6 to 10 slots depending on the fields input. Each slot
-is either a 1D array of dimension (number of storms), for "names" and
-"seasons" fields, or a 2D array of dimension
+is either a 1D array of dimension (number of storms) for <code>names</code> and
+<code>seasons</code> fields, or a 2D array of dimension
 (Maximum number of observations:number of storms), for the remaining fields
-which are "isoTime", "lon", "lat", "msw", "rmw", "pressure", "poci", "sshs"</p></dd>
+which are <code>isoTime</code>, <code>lon</code>, <code>lat</code>, <code>msw</code>, <code>rmw</code>, <code>pressure</code>, <code>poci</code>, <code>sshs</code></p></dd>
 
 
 </dl></div>

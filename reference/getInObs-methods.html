@@ -60,11 +60,11 @@ a given storm</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>s</dt>
-<dd><p>Storm/StormsList object</p></dd>
+<dd><p><code>Storm</code>/<code>StormsList</code> object</p></dd>
 
 
 <dt>...</dt>
-<dd><p>extra argument depending on Storm/StormsList object</p></dd>
+<dd><p>extra argument depending on <code>Storm</code>/<code>StormsList</code> object</p></dd>
 
 
 <dt>name</dt>
@@ -73,26 +73,29 @@ a given storm</p>
 
 <dt>season</dt>
 <dd><p>numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the StormsList object share the same name. Default value is set
-to NULL</p></dd>
+several storms in the <code>StormsList</code> object share the same name. Default
+value is set to NULL</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>numeric vector. Indices within the extended LOI for the given Storm object</p>
+<p>numeric vector. Indices within the extended LOI for the given <code>Storm</code></p>
+
+
+<p>object</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"New Caledonia"</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ERICA"</span>,<span class="st">"NIRAN"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"New Caledonia"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## For storm Niran</span></span></span>
 <span class="r-in"><span><span class="fu">getInObs</span><span class="op">(</span><span class="fu"><a href="getStorm-methods.html">getStorm</a></span><span class="op">(</span><span class="va">sts</span>, name <span class="op">=</span> <span class="st">"NIRAN"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Equivalent to </span></span></span>
+<span class="r-in"><span><span class="co">## Equivalent to</span></span></span>
 <span class="r-in"><span><span class="fu">getInObs</span><span class="op">(</span><span class="va">sts</span>, name <span class="op">=</span> <span class="st">"NIRAN"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
