@@ -111,5 +111,5 @@ getSSHS(st)
 We can only plot category 4 and 5 tropical cyclones using the `category` argument of the `plotStorms()` function as follows:
 
 ``` {r chunk12}
-plotStorms(st, category = c(4,5), labels=TRUE)
+plotStorms(st, category = c(4,5), labels=FALSE)
 ```
