@@ -4,7 +4,7 @@ output: html_document
 date: "`r Sys.Date()`"
 ---
 
-``` {r}
+``` {r setup, include = FALSE}
 library(StormR)
 ```
 
@@ -25,7 +25,7 @@ The track data for PAM nearby Vanuatu are extracted as follows:
 
 ``` {r}
 st<-Storms(loi = "Vanuatu", names = "PAM", verbose=0)
-plotStorms(st,reset_setting=FALSE)
+plotStorms(st)
 points(df$x,df$y,pch=3,col=c("blue","red"))
 text(df$x,df$y,labels = c("Port Vila","Luganville"),pos=2,col=c("blue","red"))
 ```
@@ -33,7 +33,7 @@ text(df$x,df$y,labels = c("Port Vila","Luganville"),pos=2,col=c("blue","red"))
 Then the `temporalBehaviour()` function with the `product = "TS"` argument is used to compute time series. By default the temporal resolution of is set to 1 hour but can be changed using the `temp_res` argument. Here we set the temporal resolution to 30 min with `temp_res=0.5` as follows:
 
 ``` {r}
-TS<-temporalBehaviour(st, points = df, product = "TS",temp_res=0.5)
+TS<-temporalBehaviour(st, points = df, product = "TS",temp_res=0.5,verbose=0)
 ```
 
 With the above specification the `temporalBehaviour()` function returns a list of two data frames (i.e., one for each location) with the wind speed ("speed"), direction ("direction"), indices of the observations and the date and time of the observation ("isoTimes"). 
@@ -53,6 +53,9 @@ points(TS$PAM$Luganville$speed,col="red",pch=3)
 legend("topleft",pch=3,col=c("blue","red"),legend=c("Port Vila","Luganville"),bty="n")
 axis(1,at=seq(1,length(TS$PAM$Port_Vila$speed)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
 axis(2,at=seq(0,60,10),labels=seq(0,60,10),las=2)
+```
+
+``` {r , include = FALSE}
 dev.off()
 ```
 
@@ -65,6 +68,9 @@ points(TS$PAM$Luganville$direction,col="red",pch=3)
 legend("topleft",pch=3,col=c("blue","red"),legend=c("Port Vila","Luganville"),bty="n")
 axis(1,at=seq(1,length(TS$PAM$Port_Vila$speed)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
 axis(2,at=seq(0,360,90),labels=seq(0,360,90),las=2)
+```
+
+``` {r , include = FALSE}
 dev.off()
 ```
 
@@ -80,7 +86,7 @@ max(TS$PAM$Luganville$speed,na.rm=TRUE)
 The power dissipation index is computed using the `product = "PDI"` argument as follows:
 
 ``` {r}
-PDI <- temporalBehaviour(st, points = df, product = "PDI", temp_res=0.5,)
+PDI <- temporalBehaviour(st, points = df, product = "PDI", temp_res=0.5,verbose=0)
 PDI
 ```
 
@@ -89,7 +95,7 @@ PDI
 The duration of exposure is computed using the `product = "Exposure"` argument as follows:
 
 ``` {r}
-exposure_SS <- temporalBehaviour(st, points = df, product = "Exposure", temp_res=0.5,)
+exposure_SS <- temporalBehaviour(st, points = df, product = "Exposure", temp_res=0.5,verbose=0)
 exposure_SS
 ```
 
@@ -97,6 +103,6 @@ By default, the function returns the duration of exposure (in hours) to wind spe
 
 ``` {r}
 wt <- c(17.2,24.4,32.5,44.2,55.0)
-exposure_BOM<- temporalBehaviour(st, points = df, product = "Exposure", temp_res=0.5, wind_threshold=wt)
+exposure_BOM<- temporalBehaviour(st, points = df, product = "Exposure", temp_res=0.5, wind_threshold=wt, verbose=0)
 exposure_BOM
 ```
