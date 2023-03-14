@@ -10,7 +10,7 @@ library(StormR)
 
 The `temporalBehaviour()` function allows computing wind speed and direction for a given location or set of locations along the lifespan of a tropical cyclone. It also allows to compute to compute three associated summary statistics: the maximum sustained wind speed (`product="MSW"`), the power dissipation index (`product="PDI"`) and the duration of exposure to winds reaching defined speed thresholds along the life span of the cyclones (`product="Exposure"`).
 
-In the following example we use a `test` dataset provided with the package. 
+In the following example we use the `test_dataset` provided with the package to illustrate how cyclone track data can be used to compute and plot time series of wind speed and direction and how to compute summary statistics for specific locations, as described below.
 
 ### Computing and plotting time series of wind speed and direction
 

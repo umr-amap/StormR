@@ -18,15 +18,18 @@ options(knitr.table.format = "latex")
 
 ``` {r setup, include = FALSE}
 library(StormR)
+library(terra)
+library(rworldxtra)
+data("countriesHigh")
 ```
 
-The `Storms()` function allows to extract tropical cyclone track data for a given tropical cyclone or set of tropical cyclones nearby a given location of interest (`loi`). The `loi` can be defined using a country name, a specific point (defined by its longitude and latitude coordinates), or any user imported or defined spatial polygon shapefiles. By default only observations located within 300 km around the `loi` are extracted but this can be changed using the `max_dist` argument. Users can also extract tropical cyclones using the `name` of the storm or the `season` during which it occurred. If the `name` and the `season` arguments are not filled then the `Storms()` function get all tropical cyclone since the first cyclonic season of the database. Once the data are extracted the `plotStorms()` function can be used to visualize the trajectories and points of observation of tropical cyclones on a map.
+The `Storms()` function allows to extract tropical cyclone track data for a given tropical cyclone or set of tropical cyclones nearby a given location of interest (`loi`). The `loi` can be defined using a country name, a specific point (defined by its longitude and latitude coordinates), or any user imported or defined spatial polygon shapefiles. By default only observations located within 300 km around the `loi` are extracted but this can be changed using the `max_dist` argument. Users can also extract tropical cyclones using the `name` of the storm or the `season` during which it occurred. If both the `name` and the `season` arguments are not filled then the `Storms()` function extracts all tropical cyclones since the first cyclonic season in the database. Once the data are extracted, the `plotStorms()` function can be used to visualize the trajectories and points of observation of extracted tropical cyclones on a map.
 
-In the following example we use the `test_dataset` dataset provided with the package. 
+In the following example we use the `test_dataset` provided with the package to illustrate how cyclone track data can be extracted and visualised using country and cyclone names, specific point locations, and polygon shapefiles, as described below.   
 
 ### Getting and ploting tropical cyclone track data
 
-#### Nearby a country
+#### Using country names
 
 We extract data on the tropical cyclone PAM (2015) nearby Vanuatu as follows:  
 
@@ -34,7 +37,7 @@ We extract data on the tropical cyclone PAM (2015) nearby Vanuatu as follows:
 st <- Storms(loi = "Vanuatu", names = "PAM",verbose=0)
 ```
 
-The `Storms()` function returns a `StormsList` object in which the first slot `@data` contain a list of `Storm` objects. With the above specification the `StormsList` contain only one `Storm` object corresponding to PAM and the track data can be obtained using the `getObs()` function as follows:
+The `Storms()` function returns a `StormsList` object in which the first slot `@data` contains a list of `Storm` objects. With the above specification the `StormsList` contains only one `Storm` object corresponding to cyclone PAM and the track data can be obtained using the `getObs()` function as follows:
 
 ``` {r chunk2}
 head(getObs(st,name="PAM"))
@@ -53,9 +56,9 @@ The data can be visualised on a map as follows:
 plotStorms(st, labels=TRUE)
 ```
 
-#### Nearby a point
+#### Using a specified point location
 
-We extract all tropical cyclones nearby Nouméa (longitude = 166.45, latitude = -22.27) between 2015 and 2021 as follows:
+We can extract all tropical cyclones near Nouméa (longitude = 166.45, latitude = -22.27) between 2015 and 2021 as follows:
 
 ``` {r chunk5}
 pt <- c(166.45,-22.27)
@@ -70,7 +73,7 @@ getNames(st)
 getSeasons(st)
 ```
 
-We choose to plot track data only for the topical cyclone Niran using the `names` argument of the `plotStorms()` function as follows:
+We can plot track data for the topical cyclone Niran only using the `names` argument of the `plotStorms()` function as follows:
 
 ``` {r chunk7}
 plotStorms(st, names="NIRAN", labels=TRUE)
@@ -83,9 +86,9 @@ NIRAN<-getStorm(st,name="NIRAN")
 getNames(NIRAN)
 ```
 
-#### Nearby a user defined spatial polygon shapefiles 
+#### Using a user defined spatial polygon shapefile 
 
-We extract all tropical cyclones occurring between 2015 and 2021 nearby the New Caledonia exclusive economic zone using the `eezNC` shapefile provided with the `StormR` package as follows:
+We can extract all tropical cyclones that occurred between 2015 and 2021 near the New Caledonia exclusive economic zone using the `eezNC` shapefile provided with the `StormR` package as follows:
 
 ``` {r chunk9}
 sp <- eezNC
@@ -98,8 +101,9 @@ Information about the spatial extent of the track data exaction can be obtained 
 LOI<-getLOI(st)
 Buffer<-getBuffer(st)
 BufferSize<-getBufferSize(st)
-plot(Buffer,lty=3,main=paste(BufferSize,"km buffer arround New Caledonian EEZ",sep=" "))
-plot(LOI,add=TRUE)
+terra::plot(Buffer,lty=3,main=paste(BufferSize,"km buffer arround New Caledonian EEZ",sep=" "))
+terra::plot(LOI,add=TRUE)
+terra::plot(countriesHigh,add=TRUE)
 ```
 
 The maximum category of each cyclone on the Saffir-Simpson hurricane wind scale can be obtained using the `getSSHS()` function as follows:
