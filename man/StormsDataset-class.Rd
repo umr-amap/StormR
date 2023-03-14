@@ -75,6 +75,10 @@ boundaries. Default value is set to \code{NULL}. It must be either
 \item \code{"NI"}: North India
 }}
 
+\item{\code{seasons}}{numeric vector. Range of calendar years to filter storms. For
+cyclones that formed in one year and dissipated in the following year, the
+latter should be used}
+
 \item{\code{database}}{list of 6 to 10 slots depending on the fields input. Each slot
 is either a 1D array of dimension (number of storms) for \code{names} and
 \code{seasons} fields, or a 2D array of dimension

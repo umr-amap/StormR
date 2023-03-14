@@ -7,7 +7,7 @@
 Storms(
   sds = test_dataset,
   loi,
-  seasons = c(min(sds@database$seasons, na.rm = T), max(sds@database$seasons, na.rm = T)),
+  seasons = c(sds@seasons["min"], sds@seasons["max"]),
   names = NULL,
   max_dist = 300,
   remove_TD = TRUE,
@@ -30,7 +30,7 @@ Storms(
 years. For cyclones that formed in one year and dissipated in the following
 year, the latter should be used. Default values will allow searching for
 storms between the minimum and the maximum cyclonic season available in the
-\code{StormsDataSet} object}
+\code{sds}}
 
 \item{names}{character vector. Names of storms in capital letters. Default
 value is set to \code{NULL}.}

@@ -63,6 +63,9 @@ atm_to_pa <- function(x){
 #'   \item `"SI"`: South India
 #'   \item `"NI"`: North India
 #' }
+#' @slot seasons numeric vector. Range of calendar years to filter storms. For
+#'   cyclones that formed in one year and dissipated in the following year, the
+#'   latter should be used
 #' @slot database list of 6 to 10 slots depending on the fields input. Each slot
 #' is either a 1D array of dimension (number of storms) for `names` and
 #' `seasons` fields, or a 2D array of dimension
@@ -123,6 +126,7 @@ StormsDataset <- methods::setClass(
     filename = "character",
     fields = "character",
     basin = "character",
+    seasons = "numeric",
     database = "list"
   )
 )
@@ -137,11 +141,12 @@ StormsDataset <- methods::setClass(
 #' @param filename character
 #' @param fields character vector
 #' @param basin character
+#' @param seasons numeric vector
 #' @param unit_conversion character vector
 #' @param verbose logical
 #'
 #' @return NULL
-checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
+checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, verbose){
 
   #Checking filename input
   stopifnot("filename is missing" = !missing(filename))
@@ -194,6 +199,12 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
     stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
                 basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
   }
+  
+  
+  
+  #Checking seasons input
+  stopifnot("seasons must be numeric" = identical(class(seasons),"numeric"))
+  stopifnot("seasons must be a range of calendar year" = length(seasons) == 2 & seasons[1] <= seasons[2])
 
   
   #Checking verbose input
@@ -223,6 +234,10 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
 #'   \item `"SI"`: South India
 #'   \item `"NI"`: North India
 #' }
+#' @param seasons numeric vector. Range of calendar years to filter storms. For
+#'   cyclones that formed in one year and dissipated in the following year, the
+#'   latter should be used. Default value is set to between `1980` and the
+#'   current year
 #' @param unit_conversion named character vector. Dictionary that provides the
 #'   instructions to convert `msw`, `rmw`, `pressure` and/or `poci` fields in
 #'   the correct units. Default value is `c(msw = "knt_to_ms", rmw = "nm_to_km",
@@ -269,13 +284,14 @@ defDatabase <- function(filename,
                                    pressure = "usa_pres",
                                    poci = "usa_poci"),
                         basin = "SP",
+                        seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
                         unit_conversion = c(msw = "knt_to_ms",
                                             rmw = "nm_to_km",
                                             pressure = "mb_to_pa",
                                             poci = "mb_to_pa"),
                         verbose = TRUE){
 
-  checkInputsIDb(filename, fields, basin, unit_conversion, verbose)
+  checkInputsIDb(filename, fields, basin, seasons, unit_conversion, verbose)
 
 
   if(verbose)
@@ -289,16 +305,22 @@ defDatabase <- function(filename,
 
   #Filter by basin ID
   basins <- ncdf4::ncvar_get(dataBase, fields["basin"])
+  season <- ncdf4::ncvar_get(dataBase, fields["seasons"])
 
   #Get dimensions
   row <- dim(basins)[1]
   len <- dim(basins)[2]
   ind <- seq(1,len)
 
+  ind <- which(season %in% seq(seasons[1], seasons[2], 1))
+  len <- length(ind)
+  
   if(!is.null(basin)){
-    ind <- which(basins[1,] == basin)
+    indB <- which(basins[1,] == basin)
+    ind <- intersect(ind,indB)
     len <- length(ind)
   }
+  
   
   if(unit_conversion["msw"] == "mph_to_ms"){
     msw <- array(mph_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
@@ -316,7 +338,7 @@ defDatabase <- function(filename,
 
   #Collect data
   data <- list(names  = ncdf4::ncvar_get(dataBase, fields["names"])[ind],
-               seasons = ncdf4::ncvar_get(dataBase, fields["seasons"])[ind],
+               seasons = season[ind],
                isotimes = array(ncdf4::ncvar_get(dataBase, fields["isoTime"])[,ind],
                                 dim = c(row,len)),
                longitude = array(ncdf4::ncvar_get(dataBase, fields["lon"])[,ind],
@@ -376,7 +398,8 @@ defDatabase <- function(filename,
              filename = filename,
              fields = fields,
              database = data,
-             basin = basin)
+             basin = basin,
+             seasons = c(min = seasons[1], max = seasons[2]))
 
 
   return(sds)

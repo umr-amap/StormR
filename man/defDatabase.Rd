@@ -10,6 +10,7 @@ defDatabase(
     lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", sshs = "usa_sshs", rmw =
     "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
   basin = "SP",
+  seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unit_conversion = c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci =
     "mb_to_pa"),
   verbose = TRUE
@@ -34,6 +35,11 @@ boundaries. Default value is set to \code{NULL}. It must be either
 \item \code{"SI"}: South India
 \item \code{"NI"}: North India
 }}
+
+\item{seasons}{numeric vector. Range of calendar years to filter storms. For
+cyclones that formed in one year and dissipated in the following year, the
+latter should be used. Default value is set to between \code{1980} and the
+current year}
 
 \item{unit_conversion}{named character vector. Dictionary that provides the
 instructions to convert \code{msw}, \code{rmw}, \code{pressure} and/or \code{poci} fields in
