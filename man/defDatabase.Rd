@@ -20,27 +20,54 @@ defDatabase(
 file}
 
 \item{fields}{named character vector. Dictionary that provides all the name
-of dimension to extract from the netcdf database (See StormsDataSet class)}
+of dimension to extract from the netcdf database (See \code{StormsDataSet}
+class)}
 
 \item{basin}{character. Basin name to filter the database within its
-boundaries. Default value is set to NULL. It must be either
+boundaries. Default value is set to \code{NULL}. It must be either
 \itemize{
-\item "NA": North Atlantic
-\item "SA": South Atlantic
-\item "EP": Eastern North Pacific
-\item "WP": Western North Pacific
-\item "SP": South Pacific
-\item "SI": South India
-\item "NI": North India
+\item \code{"NA"}: North Atlantic
+\item \code{"SA"}: South Atlantic
+\item \code{"EP"}: Eastern North Pacific
+\item \code{"WP"}: Western North Pacific
+\item \code{"SP"}: South Pacific
+\item \code{"SI"}: South India
+\item \code{"NI"}: North India
 }}
 
-\item{unit_conversion}{...}
+\item{unit_conversion}{named character vector. Dictionary that provides the
+instructions to convert \code{msw}, \code{rmw}, \code{pressure} and/or \code{poci} fields in
+the correct units. Default value is \code{c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")} according to the IBTrACS
+databases. This input is mandatory even if no conversion is needed. In this
+case use \code{"None"} in the corresponding fields. Allowed value are: For \code{msw}
+fields
+\itemize{
+\item \code{"knt_to_ms"}: converts knot in meter per second
+\item \code{"kmh_to_ms"}: converts kilometer per hour in meter per second
+\item "\verb{mph_to_ms"}: converts miles per hour in meter per second
+\item \code{"None"}: No conversion needed
+}
+
+For \code{rmw} fields
+\itemize{
+\item \code{"nm_to_ms"}: converts nautical miles in kilometer
+\item \code{"None"}: No conversion needed
+}
+
+For both \code{pressure} and \code{poci}
+\itemize{
+\item \code{"b_to_pa"}: converts bar in pascal
+\item "\verb{mb_to_pa"}: converts millibar in pascal
+\item \code{"atm_to_pa"}: converts atmosphere in pascal
+\item \code{"psi_to_pa"}: converts psi in pascal
+\item \code{"None"}: No conversion needed
+}}
 
 \item{verbose}{logical. Whether or not the function should display
 informations about the process}
 }
 \value{
-An object of class StormsDataset
+An object of class \code{StormsDataset}
 }
 \description{
 Initialize a StormsDataset object

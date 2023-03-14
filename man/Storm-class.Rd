@@ -4,7 +4,7 @@
 \name{Storm-class}
 \alias{Storm-class}
 \alias{Storm}
-\title{Storm  object}
+\title{\code{Storm}  object}
 \description{
 Gather all the needed informations to model a single storm
 }
@@ -15,28 +15,30 @@ Gather all the needed informations to model a single storm
 
 \item{\code{season}}{numeric. Cyclonic season in which the storm has occured}
 
-\item{\code{sshs}}{numeric. Maximum category reached in the Saffir Simpson Hurricane Scale}
+\item{\code{sshs}}{numeric. Maximum category reached in the Saffir Simpson Hurricane
+Scale}
 
-\item{\code{obs}}{numeric vector. Indices of observations within the location of interest
-extented with its corresponding buffer (See StormsList class)}
+\item{\code{obs}}{numeric vector. Indices of observations within the location of
+interest extented with its corresponding buffer (See \code{StormsList} class)}
 
-\item{\code{obs.all}}{data.frame. Contains all of the observations available.
-An observation is made up of several fields which are:
+\item{\code{obs.all}}{data.frame. Contains all of the observations available. An
+observation is made up of several fields which are:
 \itemize{
-\item iso.time, Date and hours of observations (UTC)
-\item lon, Longitude coordinate (deg)
-\item lat, Latitude coordinate (deg)
-\item msw, Maximum Sustained Wind (m/s)
-\item sshs, Category in the Saffir Simpson Hurricane Scale
+\item \code{iso.time}, Date and hours of observations (UTC)
+\item \code{lon}, Longitude coordinate (Eastern degree)
+\item \code{lat}, Latitude coordinate (Northern degree)
+\item \code{msw}, Maximum Sustained Wind (m/s)
+\item \code{sshs}, Category in the Saffir Simpson Hurricane Scale
 }
-The following field is not mandatory but highly recommand
+The following field is not mandatory but highly recommended
 \itemize{
-\item rmw, Radius of Maximum Wind (km)
+\item \code{rmw}, Radius of Maximum Wind (km)
 }
-Also, the following fields are only mandatory to perform Holland model (See Details)
+Also, the following fields are only mandatory to perform Holland and Boose
+models (See \code{Details})
 \itemize{
-\item pres, Pressure at the center (mb)
-\item poci, Pressure of the Outermost Closed Isobar (mb)
+\item \code{pres}, Pressure at the center (pa)
+\item \code{poci}, Pressure of the Outermost Closed Isobar (pa)
 }}
 }}
 

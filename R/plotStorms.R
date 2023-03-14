@@ -48,7 +48,8 @@ getColors <- function(msw) {
 
 #' Plot track of a storm
 #'
-#' This function plots the track of a storm on a map that should be previously plotted
+#' This function plots the track of a storm on a map that should be previously
+#' plotted
 #'
 #' @noRd
 #' @param st Storm object
@@ -88,14 +89,14 @@ plotTrack <- function(st) {
 
 #' Add labels on plot
 #'
-#' Add names labels, indices of observations and ISO Times for a given storm on a map that should be
-#' previsouly plotted
+#' Add names labels, indices of observations and ISO Times for a given storm on
+#' a map that should be previsouly plotted
 #'
 #' @noRd
 #' @param st Storm object
 #' @param by numeric. Increment of the sequence for the labels to plot
 #' @param pos numeric. Must be between 1 and 4. Corresponds to the position of
-#' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)
+#'   labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)
 #'
 #' @return NULL
 plotLabels <- function(st, by, pos) {
@@ -192,39 +193,39 @@ checkInputsPs <- function(sts, names, category, labels, by,
 
 #' Plot storm track(s)
 #'
-#' This function plots a set of storm tracks contained in a StormsList object
-#' (See “Storms” function). Depending on the inputs, the user can choose to
-#' plot only a desired set of storms extracted from the StormsList object
+#' This function plots a set of storm tracks contained in a `StormsList` object
+#' (See `Storms` function). Depending on the inputs, the user can choose to plot
+#' only a desired set of storms extracted from the `StormsList` object
 #'
-#' @param sts StormsList object
+#' @param sts `StormsList` object
 #' @param names character vector. Name(s) of the storm(s) in capital letters to
-#' plot on the map. Default value is set to NULL, which will plot every storm
-#' provided in sts. To see which storms are included in a StormsList object,
-#' you can use the getter "getNames()"
+#'   plot on the map. Default value is set to `NULL`, which will plot every
+#'   storm provided in `sts`. To see which storms are included in a `StormsList`
+#'   object, you can use the `getNames` function
 #' @param category numeric vector. Should be either a category or a range of
-#' categories in the Saffir Simpson scale (-1 to 5). Default value is set to
-#' NULL which will consider every storm in sts. Otherwise it will consider only
-#' storms that reached category input
+#'   categories in the Saffir Simpson scale (-1 to 5). Default value is set to
+#'   `NULL` which will consider every storm in `sts`. Otherwise it will consider
+#'   only storms that reached `category` input
 #' @param xlim numeric vector. A set of longitude coordinates that controls the
-#' longitude extent of the plot. Default value is set to NULL which will let
-#' the plot extends according to the longitude range of the extended LOI
+#'   longitude extent of the plot. Default value is set to `NULL` which will let
+#'   the plot extends according to the longitude range of the extended LOI
 #' @param ylim numeric vector. A set of latitude coordinates that controls the
-#' latitude extent of the plot. Default value is set to NULL which will let
-#' the plot extends according to the the latitude range of the extended LOI
+#'   latitude extent of the plot. Default value is set to `NULL` which will let
+#'   the plot extends according to the the latitude range of the extended LOI
 #' @param labels logical. Whether or not to plot names labels with the
-#' corresponding indices of observations and ISO Times along the track(s)
+#'   corresponding indices of observations and ISO Times along the track(s).
+#'   Default value is set to `NULL`
 #' @param by numeric. Defines the frequency at which labels are plotted for the
-#' 3 (or 6) hourly records. Default value is set to 8 which represents a 24h
-#' (or 48h) time interval between each labeled observations. Ignored if
-#' labels == FALSE
-#' @param pos numeric. Must be between 1 and 4. Correspond to the position of
-#' labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right).
-#' Default value is set to 3. Ignored if labels == FALSE
+#'   3 (or 6) hourly records. Default value is set to `8` which represents a 24h
+#'   (or 48h) time interval between each labeled observations. Ignored if
+#'   `labels == FALSE`
+#' @param pos numeric. Must be between `1` and `4`. Correspond to the position
+#'   of labels according to the observation: `1` (up), `2` (left), `3` (down),
+#'   `4` (right). Default value is set to 3. Ignored if labels == FALSE
 #' @param legends logical. Whether or not to plot legends. Default value is set
-#' to TRUE
+#'   to `TRUE`
 #' @param loi logical. Whether or not to plot the extended LOI on the map.
-#' Default value is set to TRUE
-#' @returns NULL
+#'   Default value is set to `TRUE`
 #' @import rworldxtra
 #'
 #' @examples
@@ -236,7 +237,7 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #' plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
 #'
 #' }
-#'
+#' 
 #'
 #' @export
 plotStorms <- function(sts,
