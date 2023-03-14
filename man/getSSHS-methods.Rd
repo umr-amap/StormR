@@ -14,20 +14,20 @@ getSSHS(s)
 \S4method{getSSHS}{StormsList}(s)
 }
 \arguments{
-\item{s}{Storm/StormsList object}
+\item{s}{\code{Storm}/\code{StormsList} object}
 }
 \value{
 numeric vector. Maximum SSHS reached of each storms (or the selected
-one through name input) provided by the given StormsList object or maximum SSHS
-reached for the given Storm object
+one through \code{name} input) provided by the given \code{StormsList} object or
+maximum SSHS reached for the given \code{Storm} object
 }
 \description{
 Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storms
-available in a Storm/StormsList object
+available in a \code{Storm}/\code{StormsList} object
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 
 ## For storm Niran
 getSSHS(getStorm(sts, name = "NIRAN"))

@@ -14,15 +14,15 @@ getObs(s, ...)
 \S4method{getObs}{Storm}(s)
 }
 \arguments{
-\item{s}{Storm/StormsList object}
+\item{s}{\code{Storm}/\code{StormsList} object}
 
-\item{...}{extra argument depending on Storm/StormsList object}
+\item{...}{extra argument depending on \code{Storm}/\code{StormsList} object}
 
 \item{name}{character. Name of the storm to extract in capital letters}
 
 \item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the StormsList object share the same name. Default value is set
-to NULL}
+several storms in the \code{StormsList} object share the same name. Default
+value is set to \code{NULL}}
 }
 \value{
 data.frame. Observations of the given storm
@@ -32,12 +32,12 @@ Get the observations available for a given storm
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 
 ## For storm Niran
 getObs(getStorm(sts, name = "NIRAN"))
 
-## Equivalent to 
+## Equivalent to
 getObs(sts, name = "NIRAN")
 }
 }

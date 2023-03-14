@@ -11,18 +11,18 @@ getBufferSize(sts)
 \S4method{getBufferSize}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{StormsList object}
+\item{sts}{\code{StormsList} object}
 }
 \value{
 numeric. Buffer size (in km) used to generate the extended location
-of interest for the given StormsList object
+of interest for the given \code{StormsList} object
 }
 \description{
-Get the buffer size for a StormsList object
+Get the buffer size for a \code{StormsList} object
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 buffsize <- getBufferSize(sts)
 }
 }

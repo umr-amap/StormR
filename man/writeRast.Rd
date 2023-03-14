@@ -9,13 +9,16 @@ writeRast(rast, format = ".tiff", filename = NULL, path = "./")
 \arguments{
 \item{rast}{SpatRaster object}
 
-\item{format}{character. Format of the file to export. Either ".tiff"
-or ".nc". Default value is set to ".tiff"}
+\item{format}{character. Format of the file to export. Either \code{".tiff"} or
+\code{".nc"}. Default value is set to \code{".tiff"}}
 
-\item{filename}{character. Name of the file. Default value is set to NULL,
-in this case it will be set to names(rast)}
+\item{filename}{character. Name of the file. Default value is set to NULL, in
+this case it will be set to \code{names(rast)}}
 
 \item{path}{character. Relative path where the file should be written}
+}
+\value{
+\code{NULL}
 }
 \description{
 This function writes SpatRaster(s) in the given format among Geotiff or

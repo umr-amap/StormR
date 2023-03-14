@@ -4,30 +4,30 @@
 \name{getStorm}
 \alias{getStorm}
 \alias{getStorm,StormsList-method}
-\title{Extract a Storm}
+\title{Extract a \code{Storm}}
 \usage{
 getStorm(sts, name, season = NULL)
 
 \S4method{getStorm}{StormsList}(sts, name, season = NULL)
 }
 \arguments{
-\item{sts}{StormsList object}
+\item{sts}{\code{StormsList} object}
 
 \item{name}{character. Name of the storm to extract}
 
 \item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the StormsList object share the same name.
-Default value is set de NULL}
+several storms in the \code{StormsList} object share the same name. Default
+value is set de \code{NULL}}
 }
 \value{
-Storm object
+\code{Storm} object
 }
 \description{
-Extract a Storm object from a StormsList object
+Extract a \code{Storm} object from a \code{StormsList} object
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 st <- getStorm(sts, name = "NIRAN")
 }
 }
