@@ -51,7 +51,7 @@ specified by the user</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Storms</span><span class="op">(</span></span>
 <span>  sds <span class="op">=</span> <span class="va">test_dataset</span>,</span>
 <span>  <span class="va">loi</span>,</span>
-<span>  seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">seasons</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">seasons</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">seasons</span><span class="op">[</span><span class="st">"min"</span><span class="op">]</span>, <span class="va">sds</span><span class="op">@</span><span class="va">seasons</span><span class="op">[</span><span class="st">"max"</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  names <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_dist <span class="op">=</span> <span class="fl">300</span>,</span>
 <span>  remove_TD <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -79,7 +79,7 @@ specified by the user</p>
 years. For cyclones that formed in one year and dissipated in the following
 year, the latter should be used. Default values will allow searching for
 storms between the minimum and the maximum cyclonic season available in the
-<code>StormsDataSet</code> object</p></dd>
+<code>sds</code></p></dd>
 
 
 <dt>names</dt>
