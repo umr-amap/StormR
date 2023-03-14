@@ -43,78 +43,78 @@ atm_to_pa <- function(x){
 
 
 
+
+
 #' StormsDataset object
 #'
 #' Choose the database to use within the package's functions
 #'
 #' @slot filename character. Name of the database to load. Must be a netcdf file
 #' @slot fields named character vector. Dictionary that provides all the name of
-#' dimensions to extract from the netcdf database (See Details)
+#' dimensions to extract from the netcdf database (See `Details`)
 #' @slot basin character. Basin name to filter the database within its
-#' boundaries. Default value is set to NULL. It must be either
+#' boundaries. Default value is set to `NULL`. It must be either
 #' \itemize{
-#'   \item "NA": North Atlantic
-#'   \item "SA": South Atlantic
-#'   \item "EP": Eastern North Pacific
-#'   \item "WP": Western North Pacific
-#'   \item "SP": South Pacific
-#'   \item "SI": South India
-#'   \item "NI": North India
+#'   \item `"NA"`: North Atlantic
+#'   \item `"SA"`: South Atlantic
+#'   \item `"EP"`: Eastern North Pacific
+#'   \item `"WP"`: Western North Pacific
+#'   \item `"SP"`: South Pacific
+#'   \item `"SI"`: South India
+#'   \item `"NI"`: North India
 #' }
 #' @slot database list of 6 to 10 slots depending on the fields input. Each slot
-#' is either a 1D array of dimension (number of storms), for "names" and
-#' "seasons" fields, or a 2D array of dimension
+#' is either a 1D array of dimension (number of storms) for `names` and
+#' `seasons` fields, or a 2D array of dimension
 #' (Maximum number of observations:number of storms), for the remaining fields
-#' which are "isoTime", "lon", "lat", "msw", "rmw", "pressure", "poci", "sshs"
+#' which are `isoTime`, `lon`, `lat`, `msw`, `rmw`, `pressure`, `poci`, `sshs`
 #'
 #' @details
 #' The fields input must provide at least 6 mandatory fields (and at most 11) in
 #' order to benefit from all the functionalities of this package:
 #' \itemize{
-#'   \item A field called "name": which dimension contains the names of storms
+#'   \item A field `basin`: which dimension contains the basin location of
+#'        storms in the netcdf database. Used to filter the storms in the netcdf
+#'        database
+#'   \item A field `names`: which dimension contains the names of storms
 #'         in the netcdf database
-#'   \item A field called "seasons": which dimension contains the cyclonic
+#'   \item A field `seasons`: which dimension contains the cyclonic
 #'         seasons of storms in the netcdf database
-#'   \item A field called "isoTime": which dimension contains the ISO times of
+#'   \item A field `isoTime`: which dimension contains the ISO times of
 #'         each (3 or 6 hourly) observations for all storms in the database
-#'   \item A field called "lon": which dimension contains the longitude
-#'         coordinates (Eastern degree) of each observations for all storms in
+#'   \item A field `lon`: which dimension contains the longitude
+#'         coordinates of each observations for all storms in
 #'         the netcdf database
-#'   \item A field called "lat": which dimension contains the latitude
-#'         coordinates (Nothern degree) of each observations for all storms in
+#'   \item A field `lat`: which dimension contains the latitude
+#'         coordinates of each observations for all storms in
 #'         the netcdf database
-#'   \item A field called "msw": which dimension contains the maximum sustained
-#'         wind speed (knt) of each observations for all storms in the netcdf
+#'   \item A field `msw`: which dimension contains the maximum sustained
+#'         wind speed of each observations for all storms in the netcdf
 #'         database
 #' }
 #' The following fields are optional but highly recommanded:
 #' \itemize{
-#'  \item A field called "basin": which dimension contains the basin location of
-#'        storms in the netcdf database. Used to filter the storms in the netcdf
-#'        database
-#'  \item A field called "rmw": which dimension contains the radius of maximum
-#'        wind speed (nm) of each observations for all storms in the netcdf
+#'  \item A field `rmw`: which dimension contains the radius of maximum
+#'        wind speed of each observations for all storms in the netcdf
 #'        database (See spatialBehaviour, temporalBehaviour)
-#'  \item A field called "sshs": which dimension contains the Saffir Simpson
+#'  \item A field `sshs`: which dimension contains the Saffir Simpson
 #'        Hurricane Scale index of each observations for all storms in the
 #'        netcdf database
 #' }
 #' Finally these following fields are optional but mandatory to perform Holland
-#' model (See spatialBehaviour, temporalBehaviour)
+#' model (See `spatialBehaviour`, `temporalBehaviour`)
 #' \itemize{
-#'   \item A field called "pressure": which dimension contains the pressure (mb)
+#'   \item A field `pressure`: which dimension contains the pressure
 #'         in the eye for of each observations for all storms in the netcdf
 #'         database
-#'   \item A field called "poci": which dimension contains the Pressure at the
-#'         Outermost Closed Isobar (mb) for of each observations for all storms
+#'   \item A field `poci`: which dimension contains the Pressure at the
+#'         Outermost Closed Isobar for of each observations for all storms
 #'         in the nectdf database
 #' }
 #'
-#' Default value is set according to the most relevant dimensions of IBTraCS
-#' databases: fields = fields = c("basin" = "basin", "names" = "name",
-#' "seasons" = "season", "isoTime" = "iso_time", "lon" = "usa_lon",
-#' "lat" = "usa_lat", "msw" = "usa_wind", "rmw" = "usa_rmw",
-#' "pressure" = "usa_pres", "poci" = "usa_poci", "sshs" = "usa_sshs")
+#' Default value is set according to the most relevant dimensions of IBTrACS
+#' databases: 
+#' `fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres", poci = "usa_poci", sshs = "usa_sshs")`
 #'
 #' @export
 StormsDataset <- methods::setClass(
@@ -208,42 +208,71 @@ checkInputsIDb <- function(filename, fields, basin, unit_conversion, verbose){
 #' Initialize a StormsDataset object
 #'
 #' @param filename character. Name of the database to load. Must be a netcdf
-#' file
+#'   file
 #' @param fields named character vector. Dictionary that provides all the name
-#' of dimension to extract from the netcdf database (See StormsDataSet class)
+#'   of dimension to extract from the netcdf database (See `StormsDataSet`
+#'   class)
 #' @param basin character. Basin name to filter the database within its
-#' boundaries. Default value is set to NULL. It must be either
+#'   boundaries. Default value is set to `NULL`. It must be either
 #' \itemize{
-#'   \item "NA": North Atlantic
-#'   \item "SA": South Atlantic
-#'   \item "EP": Eastern North Pacific
-#'   \item "WP": Western North Pacific
-#'   \item "SP": South Pacific
-#'   \item "SI": South India
-#'   \item "NI": North India
+#'   \item `"NA"`: North Atlantic
+#'   \item `"SA"`: South Atlantic
+#'   \item `"EP"`: Eastern North Pacific
+#'   \item `"WP"`: Western North Pacific
+#'   \item `"SP"`: South Pacific
+#'   \item `"SI"`: South India
+#'   \item `"NI"`: North India
 #' }
-#' @param unit_conversion ...
+#' @param unit_conversion named character vector. Dictionary that provides the
+#'   instructions to convert `msw`, `rmw`, `pressure` and/or `poci` fields in
+#'   the correct units. Default value is `c(msw = "knt_to_ms", rmw = "nm_to_km",
+#'   pressure = "mb_to_pa", poci = "mb_to_pa")` according to the IBTrACS
+#'   databases. This input is mandatory even if no conversion is needed. In this
+#'   case use `"None"` in the corresponding fields. Allowed value are: For `msw`
+#'   fields
+#' \itemize{
+#'   \item `"knt_to_ms"`: converts knot in meter per second
+#'   \item `"kmh_to_ms"`: converts kilometer per hour in meter per second
+#'   \item "`mph_to_ms"`: converts miles per hour in meter per second
+#'   \item `"None"`: No conversion needed
+#' }
+#'
+#'   For `rmw` fields
+#' \itemize{
+#'   \item `"nm_to_ms"`: converts nautical miles in kilometer
+#'   \item `"None"`: No conversion needed
+#'  }
+#'
+#'   For both `pressure` and `poci`
+#'  \itemize{
+#'    \item `"b_to_pa"`: converts bar in pascal
+#'    \item "`mb_to_pa"`: converts millibar in pascal
+#'    \item `"atm_to_pa"`: converts atmosphere in pascal
+#'    \item `"psi_to_pa"`: converts psi in pascal
+#'    \item `"None"`: No conversion needed
+#'  }
+#'
 #' @param verbose logical. Whether or not the function should display
-#' informations about the process
-#' @return An object of class StormsDataset
+#'   informations about the process
+#' @return An object of class `StormsDataset`
 #' @export
 defDatabase <- function(filename,
-                        fields = c("basin" = "basin",
-                                   "names" = "name",
-                                   "seasons" = "season",
-                                   "isoTime" = "iso_time",
-                                   "lon" = "usa_lon",
-                                   "lat" = "usa_lat",
-                                   "msw" = "usa_wind",
-                                   "sshs" = "usa_sshs",
-                                   "rmw" = "usa_rmw",
-                                   "pressure" = "usa_pres",
-                                   "poci" = "usa_poci"),
+                        fields = c(basin = "basin",
+                                   names = "name",
+                                   seasons = "season",
+                                   isoTime = "iso_time",
+                                   lon = "usa_lon",
+                                   lat = "usa_lat",
+                                   msw = "usa_wind",
+                                   sshs = "usa_sshs",
+                                   rmw = "usa_rmw",
+                                   pressure = "usa_pres",
+                                   poci = "usa_poci"),
                         basin = "SP",
                         unit_conversion = c(msw = "knt_to_ms",
                                             rmw = "nm_to_km",
-                                            pressure="mb_to_pa",
-                                            poci="mb_to_pa"),
+                                            pressure = "mb_to_pa",
+                                            poci = "mb_to_pa"),
                         verbose = TRUE){
 
   checkInputsIDb(filename, fields, basin, unit_conversion, verbose)

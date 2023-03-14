@@ -4,19 +4,20 @@
 \name{StormsList-class}
 \alias{StormsList-class}
 \alias{StormsList}
-\title{StormsList object}
+\title{\code{StormsList} object}
 \description{
 Gather all the needed informations to model a set of storms
 }
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{A list of Storm objects (See Storm class)}
+\item{\code{data}}{A list of \code{Storm} (See \code{Storm} class)}
 
-\item{\code{buffer}}{numeric. Buffer used to extent spatial.loi (km)}
+\item{\code{buffer}}{numeric. Buffer used to extent \code{spatial.loi} (km)}
 
-\item{\code{spatial.loi}}{sf object. Represents the location of interest. Projection is EPSG:4326}
+\item{\code{spatial.loi}}{sf object. Represents the location of interest. Projection
+is EPSG:4326}
 
-\item{\code{spatial.loi.buffer}}{sf object. Buffer extension of spatial.loi}
+\item{\code{spatial.loi.buffer}}{sf object. Buffer extension of \code{spatial.loi}}
 }}
 

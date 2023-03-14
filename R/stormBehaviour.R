@@ -15,7 +15,8 @@
 #' It is an empirical formula extracted from Willoughby et al. 2006 model
 #' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
-#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
+#'   storm
 #'
 #' @returns Radius of Maximum Wind (km)
 getRmw <- function(msw, lat) {
@@ -31,13 +32,15 @@ getRmw <- function(msw, lat) {
 #' Compute radial wind speed according to Willoughby et al. (2006) model
 #'
 #' @noRd
-#' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
+#' @param r numeric. Distance to the eye of the storm (km) where the value must
+#'   be computed
 #' @param rmw numeric. Radius of Maximum Wind (km)
 #' @param msw numeric. Maximum Sustained Wind (m/s)
-#' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the storm
+#' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the
+#'   storm
 #'
-#' @returns radial wind speed value (m/s) according to Willoughby model at distance `r` to the
-#'  eye of the storm located in latitude `lat`
+#' @returns radial wind speed value (m/s) according to Willoughby model at
+#'   distance `r` to the eye of the storm located in latitude `lat`
 Willoughby <- function(r, rmw, msw, lat){
 
   x1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
@@ -62,14 +65,16 @@ Willoughby <- function(r, rmw, msw, lat){
 #' Compute radial wind speed according to Holland (1980) model
 #'
 #' @noRd
-#' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
+#' @param r numeric. Distance to the eye of the storm (km) where the value must
+#'   be computed
 #' @param rmw numeric. Radius of Maximum Wind (km)
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param pc numeric. Pressure at the center of the storm (hPa)
 #' @param poci Pressure at the Outermost Closed Isobar (hPa)
-#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
-#' @returns radial wind speed value (m/s) according to Holland 80 model at distance `r` to the
-#'  eye of the storm located in latitude `lat`
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
+#'   storm
+#' @returns radial wind speed value (m/s) according to Holland 80 model at
+#'   distance `r` to the eye of the storm located in latitude `lat`
 Holland <- function(r, rmw, msw, pc, poci, lat){
 
   rho <- 1.15  #air densiy
@@ -92,21 +97,25 @@ Holland <- function(r, rmw, msw, pc, poci, lat){
 #' Compute radial wind speed according to Boose et al. (2004) model
 #'
 #' @noRd
-#' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
+#' @param r numeric. Distance to the eye of the storm (km) where the value must
+#'   be computed
 #' @param rmw numeric. Radius of Maximum Wind (km)
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param pc numeric. Pressure at the center of the storm (hPa)
 #' @param poci Pressure at the Outermost Closed Isobar (hPa)
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x
+#'   direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y
+#'   direction (deg)
 #' @param vx numeric. Velocity of the storm in the x direction (deg/h)
 #' @param vy numeric. Velociy of the storm in the y direction (deg/h)
 #' @param vh numeric. Velociy of the storm (m/s)
 #' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
-#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
+#'   storm
 #'
-#' @returns radial wind speed value (m/s) according to Boose04 model at distance `r` to the
-#' eye of the storm located in latitude
+#' @returns radial wind speed value (m/s) according to Boose04 model at distance
+#'   `r` to the eye of the storm located in latitude
 Boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, I, lat){
 
   rho <- 1  #air densiy
@@ -250,13 +259,16 @@ makeTemplateRaster <- function(buffer, res){
 
 
 
-#' Generate raster template to compute wind speed according to the different models
+#' Generate raster template to compute wind speed according to the different
+#' models
 #'
 #' @noRd
-#' @param raster_template SpatRaster. Raster generated with makeTemplateRaster function
+#' @param raster_template SpatRaster. Raster generated with makeTemplateRaster
+#'   function
 #' @param buffer numeric. Buffer size in degree
 #' @param data data.frame. Data generated with getInterpolatedData function
-#' @param index numeric. Index of interpolated observation in data to use to generate raster
+#' @param index numeric. Index of interpolated observation in data to use to
+#'   generate raster
 #'
 #' @return SpatRaster
 makeTemplateModel <- function(raster_template, buffer, data, index){
@@ -296,7 +308,7 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
 #' @param product character. product input from spatialBehaviour
 #'
 #' @return numeric vector gathering the indices of observation to use to perform
-#' the further computations
+#'   the further computations
 getIndices <- function(st, offset, product){
 
   #Use observations within the loi for the computations
@@ -328,8 +340,8 @@ getIndices <- function(st, offset, product){
 #' @param indices numeric vector extracted from getIndices
 #' @param dt numeric. time step
 #' @param time_diff numeric. Time diff in database
-#' @param empirical_rmw logical. Whether to use rmw from the data or to compute them
-#' according to getRmw function
+#' @param empirical_rmw logical. Whether to use rmw from the data or to compute
+#'   them according to getRmw function
 #' @param method character. method input from spatialBehaviour
 #'
 #' @return a data.frame of dimension length(indices) : 9. Columns are
@@ -476,18 +488,21 @@ getDataInterpolate <- function(st, indices, dt, time_diff, empirical_rmw, method
 #' @noRd
 #' @param data data.frame. Data generated with getInterpolatedData function
 #' @param index numeric. Index of interpolated observation in data to use for
-#' the computations
+#'   the computations
 #' @param method character. method input form stormBehaviour_sp
 #' @param asymmetry character. Asymmetry input form stormBehaviour
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x
+#'   direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y
+#'   direction (deg)
 #' @param crds numeric array (1 column lon, 1 column lat). coordinates of raster
 #' @param dist_m numeric array. Distance in meter from the eye of the storm for
-#' each coordinate of the raster_template_model
+#'   each coordinate of the raster_template_model
 #' @param buffer numeric. Buffer size (in degree) for the storm
 #' @param loi sf. loi to intersect for Boose model
 #' @param world sf. world for Boose model
-#' @param ind_countries numeric vector. Indices of countries to intersect for Boose model
+#' @param ind_countries numeric vector. Indices of countries to intersect for
+#'   Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
 computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_m, buffer, loi, world, ind_countries){
@@ -575,16 +590,21 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
 #' @noRd
 #' @param asymmetry character. Asymmetry input form stormBehaviour
 #' @param wind numeric vector. Wind values
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x
+#'   direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y
+#'   direction (deg)
 #' @param vx numeric. Velocity of the storm in the x direction (deg/h)
 #' @param vy numeric. Velocity of the storm in the y direction (deg/h)
 #' @param vh numeric. Velocity of the storm (m/s)
-#' @param r numeric. Distance to the eye of the storm (km) where the value must be computed
+#' @param r numeric. Distance to the eye of the storm (km) where the value must
+#'   be computed
 #' @param rmw numeric. Radius of Maximum Wind (km)
-#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
+#'   storm
 #'
-#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at each (x,y) position
+#' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at
+#'   each (x,y) position
 computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rmw, lat){
 
 
@@ -638,9 +658,12 @@ computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rm
 
 #' Compute wind direction according to Boose et al. (2004) model
 #' @noRd
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x
+#'   direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y
+#'   direction (deg)
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
+#'   storm
 #' @param I numeric array. 1 if coordinates intersect with land, 0 otherwise
 #'
 #' @return wind directions (rad) at each (x,y) position
@@ -672,9 +695,12 @@ computeDirectionBoose <- function(x, y, lat, I){
 
 #' Compute symetrical wind direction
 #' @noRd
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y direction (deg)
-#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the storm
+#' @param x numeric vector. Distance(s) to the eye of the storm in the x
+#'   direction (deg)
+#' @param y numeric vector. Distance(s) to the eye of the storm in the y
+#'   direction (deg)
+#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
+#'   storm
 #'
 #' @return wind directions (rad) at each (x,y) position
 computeDirection <- function(x, y, lat){
@@ -712,7 +738,8 @@ computeDirection <- function(x, y, lat){
 #'
 #' @noRd
 #' @param stack list of SpatRaster. where to stack the layer
-#' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
+#' @param raster_template SpatRaster. Raster template generated with
+#'   makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
 #'
 #' @return list of SpatRaster
@@ -734,7 +761,8 @@ stackRaster <- function(stack, raster_template, raster_wind){
 #'
 #' @noRd
 #' @param stack list of SpatRaster. where to stack the layer
-#' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
+#' @param raster_template SpatRaster. Raster template generated with
+#'   makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
 #'
 #' @return list of SpatRaster
@@ -759,7 +787,8 @@ stackRasterPDI <- function(stack, raster_template, raster_wind){
 #'
 #' @noRd
 #' @param stack list of SpatRaster. where to stack the layer
-#' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
+#' @param raster_template SpatRaster. Raster template generated with
+#'   makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
 #' @param threshold numeric. Wind threshold
 #'
@@ -786,7 +815,8 @@ stackRasterExposure <- function(stack, raster_template, raster_wind, threshold){
 #' @noRd
 #' @param product character. Product input from spatialBehaviour
 #' @param stack list of SpatRaster. where to stack the layer
-#' @param raster_template SpatRaster. Raster template generated with makeTemplateRaster function
+#' @param raster_template SpatRaster. Raster template generated with
+#'   makeTemplateRaster function
 #' @param raster_wind SpatRaster. Layer to add to the stack
 #' @param threshold numeric vector. Wind threshold
 #'
@@ -816,7 +846,7 @@ stackProduct <- function(product, stack, raster_template, raster_wind, threshold
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
 #' @param stack SpatRaster stack. All the wind speed rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
-#' in final_stack
+#'   in final_stack
 #' @param space_res character. space_res input from spatialBehaviour
 #'
 #' @return list of SpatRaster
@@ -842,10 +872,10 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #' @noRd
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
 #' @param temp_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
+#'   over the whole track
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
-#' in final_stack
+#'   in final_stack
 #' @param space_res character. space_res input from spatialBehaviour
 #' @param threshold numeric vector. Wind threshold
 #'
@@ -874,10 +904,10 @@ rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, threshol
 #' @noRd
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
 #' @param temp_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
+#'   over the whole track
 #' @param stack SpatRaster stack. All the PDI rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
-#' in final_stack
+#'   in final_stack
 #' @param space_res character. space_res input from spatialBehaviour
 #' @param threshold numeric vector. Wind threshold
 #'
@@ -912,10 +942,10 @@ rasterizeExp <- function(final_stack, stack, temp_res, space_res, name, threshol
 #' @param product character. Product input from spatialBehaviour
 #' @param final_stack list of SpatRaster. Where to add the computed MSW raster
 #' @param temp_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
+#'   over the whole track
 #' @param stack SpatRaster stack. All the Exposure rasters used to compute MSW
 #' @param name character. Name of the storm. Used to give the correct layer name
-#' in final_stack
+#'   in final_stack
 #' @param space_res character. space_res input from spatialBehaviour
 #' @param threshold numeric vector. Wind threshold
 #'
@@ -947,11 +977,11 @@ rasterizeProduct <- function(product, final_stack, stack, temp_res, space_res, n
 #' Whether or not to mask final computed products
 #'
 #' @noRd
-#' @param final_stack SpatRaster stack. Where all final computed products
-#' are gathered
+#' @param final_stack SpatRaster stack. Where all final computed products are
+#'   gathered
 #' @param loi sf object. loi used as template to rasterize the mask
 #' @param template SpatRaster. raster.template generated with makeTemplateRaster
-#' function, used as a template to rasterize the mask
+#'   function, used as a template to rasterize the mask
 #'
 #' @return final_stack masked or not
 maskProduct <- function(final_stack, loi, template){
@@ -976,89 +1006,90 @@ maskProduct <- function(final_stack, loi, template){
 
 #' Compute indicators of storm behaviour
 #'
-#' This function computes/rasterizes analytic products for each storm of a
-#' StormsList object, including Maximum Sustained Wind, Power Dissipation Index,
-#' Category exposure and 2D wind speed structures/direction of wind speed for
-#' every observations
+#' This function computes/rasterizes products for each storm of a `StormsList`
+#' object, including Maximum Sustained Wind, Power Dissipation Index, Category
+#' exposure and 2D wind speed structures/direction of wind speed for every
+#' observations
 #'
-#' @param sts StormsList object
+#' @param sts `StormsList` object
 #' @param product character. Product to compute among:
 #'   \itemize{
-#'     \item "MSW": Maximum Sustained Wind
-#'     \item "PDI": Power Dissipation Index
-#'     \item "Exposure": hour exposition for wind greater than wind_threshold
+#'     \item `"MSW"`: Maximum Sustained Wind
+#'     \item `"PDI"`: Power Dissipation Index
+#'     \item `"Exposure"`: hour exposition for wind greater than `wind_threshold`
 #'           input
-#'     \item "Profiles", 2D wind speed structures of wind speed with wind
+#'     \item `"Profiles"`, 2D wind speed structures of wind speed with wind
 #'           direction for each observation
 #'   }
-#'   Default value is set to "MSW"
+#'   Default value is set to `"MSW"`
 #' @param wind_threshold numeric vector. Minimal wind threshold(s) (m/s) to
-#' compute Exposure product. Ignored if Exposure is not part of the products to
-#' compute. Default value is set to Saffir Simpson Hurricane Scale thresholds
+#'   compute `"Exposure"` product. Ignored if `"Exposure"` is not part of the
+#'   products to compute. Default value is set to Saffir Simpson Hurricane Scale
+#'   thresholds
 #' @param method character. Cyclonic model used to compute product. Must be
-#' either:
+#'   either:
 #'   \itemize{
-#'   \item "Willoughby": model based on fits performed on cyclonic observations
-#'   \item "Holland": model based on both basic cyclonic Physics and parameters
+#'   \item `"Willoughby"`: model based on fits performed on cyclonic observations
+#'   \item `"Holland"`: model based on both basic cyclonic Physics and parameters
 #'         fitting according to cyclonic observations
-#'   \item "Boose": asymmetric model based on Holland model
+#'   \item `"Boose"`: asymmetric model based on Holland model
 #'   }
-#'  Default value is set to "Willoughby" (See Details)
+#'   Default value is set to `"Willoughby"` (See `Details`)
 #' @param asymmetry character. Indicates which version of asymmetry to use in
-#' the computations (see Details). Must be either:
+#'   the computations (see `Details`). Must be either:
 #'   \itemize{
-#'      \item "Miyazaki": based on the formula derived in Miyazaki et al. (1962)
-#'      \item "Chen":  based on the formula derived in Chen (1994)
-#'   \item "None": no asymmetry is added
+#'      \item `"Miyazaki"`: based on the formula derived in Miyazaki et al. (1962)
+#'      \item `"Chen"`:  based on the formula derived in Chen (1994)
+#'   \item `"None"`: no asymmetry is added
 #'   }
-#'  Default value is set to "Chen". Ignored if method == Boose
+#'   Default value is set to `"Chen"`. Ignored if `method == "Boose"`
 #' @param empirical_rmw logical. Whether to compute the radius of maximum wind
-#' empirically or using the radius of maximum wind from the observations.
-#' Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
-#' et al. 2006 is used to compute rmw
+#'   empirically or using the radius of maximum wind from the observations.
+#'   Default value is set to `FALSE`. If `TRUE`, a formula extracted from
+#'   Willoughby et al. 2006 is used to compute rmw
 #' @param space_res character. Space resolution for the raster(s) to compute.
-#' Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min
-#' @param temp_res numeric. Period of time used to interpolate data.
-#' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
-#' Default value is set to 1
+#'   Either `"30sec"`, `"2.5min"`, `"5min"` or `"10min"`. Default value is set
+#'   to `"2.5min"`
+#' @param temp_res numeric. Period of time used to interpolate data. Allowed
+#'   values are `1` (60min), `0.75` (45min), `0.5` (30min), and `0.25` (15min).
+#'   Default value is set to `1`
 #' @param verbose numeric. Whether or not the function should display
-#' informations about the process and/or outputs and additional notes.
-#' Allowed values are:
+#'   informations about the process and/or outputs and additional notes. Allowed
+#'   values are:
 #' \itemize{
-#' \item 0: Nothing is displayed
-#' \item 1: Informations about the process are displayed
-#' \item 2: Outputs are also displayed
-#' \item 3: Additional notes are also displayed
+#' \item `0`: Nothing is displayed
+#' \item `1`: Informations about the process are displayed
+#' \item `2`: Outputs are also displayed
+#' \item `3`: Additional notes are also displayed
 #' }
-#' Default value is set to 2
+#'   Default value is set to `2`
 #' @returns SpatRaster stack which provides the desired product computed,
-#' projected in WGS84 and spanning over the extented LOI of the StormsList object.
-#' Number of layers depends on the number of storm available in sts input and
-#' also product and temp_res inputs:
+#'   projected in WGS84 and spanning over the extented LOI of the `StormsList`
+#'   object. Number of layers depends on the number of storm available in `sts`
+#'   input and also `product` and `temp_res` inputs:
 #' \itemize{
-#'    \item "MSW" produces one layer per storm. Name of layer is "STORMNAME_MSW"
-#'    \item "PDI" produces one layer per storm. Name of layer is "STORMNAME_PDI"
-#'    \item "Exposure" produces one layer for each wind values available
-#'           in wind_threshold input and for each storm. Name of layers are
+#'    \item `"MSW"` produces one layer per storm. Name of layer is "STORMNAME_MSW"
+#'    \item `"PDI"` produces one layer per storm. Name of layer is "STORMNAME_PDI"
+#'    \item `"Exposure"` produces one layer for each wind values available
+#'           in `wind_threshold` input and for each storm. Name of layers are
 #'           "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
-#'    \item "Profiles" produces two layers for each observations
+#'    \item `"Profiles"` produces two layers for each observations
 #'          (real and interpolated) and each storm. Name of layers are
 #'          "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 #' }
 #'
 #' @details Add details on Willoughy/Holland/Boose method, asymmetries and
-#'   getRMW method ... 
-#'   The temp_res input will perform a linear interpolation of
-#'   observations to further compute each 2D wind speed structure at each
-#'   interpolated observations. For example, if temp_res == 1, it will generate
-#'   observations every 1hour between the available observations. Doing so, 2D
-#'   wind speed structure is computed and stacked for each observations
+#'   getRMW method ... The `temp_res` input will perform a linear interpolation
+#'   of observations to further compute each 2D wind speed structure at each
+#'   interpolated observations. For example, if `temp_res == 1`, it will
+#'   generate observations every 1hour between the available observations. Doing
+#'   so, 2D wind speed structure is computed and stacked for each observations
 #'   (available and interpolated) to compute the desired product(s) afterwards.
-#'   If product == "Profiles", nothing else is performed. Otherwise and
+#'   If `product == "Profiles"`, nothing else is performed. Otherwise and
 #'   depending on the product(s) to compute, calculations are carried out on the
-#'   stack and terra::focal functions are applied to the final raster(s) to
+#'   stack and `terra::focal` functions are applied to the final raster(s) to
 #'   smooth the result(s).
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' #Compute MSW product for Pam 2015 in Vanuatu using default settings
@@ -1371,7 +1402,7 @@ checkInputsTempBehaviour <- function(sts, points, product, wind_threshold, metho
 #' @noRd
 #' @param wind numeric vector. Wind speed values
 #' @param temp_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
+#'   over the whole track
 #'
 #' @return numeric. PDI computed using the wind speed values in wind
 computePDI <- function(wind, temp_res){
@@ -1398,11 +1429,11 @@ computePDI <- function(wind, temp_res){
 #' @noRd
 #' @param wind numeric vector. Wind speed values
 #' @param temp_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
+#'   over the whole track
 #' @param threshold numeric vector. Wind threshold
 #'
-#' @return numeric vector of length 5 (for each category).
-#'  Exposure computed using the wind speed values in wind
+#' @return numeric vector of length 5 (for each category). Exposure computed
+#'   using the wind speed values in wind
 computeExposure <- function(wind, temp_res, threshold){
 
   exposure = c()
@@ -1427,9 +1458,9 @@ computeExposure <- function(wind, temp_res, threshold){
 #' @param wind numeric vector. Wind speed values
 #' @param direction numeric vector. Wind direction
 #' @param temp_res numeric. Time resolution, used for the numerical integration
-#' over the whole track
+#'   over the whole track
 #' @param result numeric array. Similar as final_stack, i.e where to add the
-#' computed product
+#'   computed product
 #' @param threshold numeric vector. Wind threshold
 #'
 #' @return numeric array of dimension:
@@ -1515,78 +1546,80 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 
 #' Compute indicators of storm behaviour
 #'
-#' This function is the pointwise version of spatialBehaviour. Available
+#' This function is the pointwise version of `spatialBehaviour`. Available
 #' products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
 #' and Exposure
 #'
-#' @param sts StormsList object
+#' @param sts `StormsList` object
 #' @param points data.frame. Contains longitude/latitude coordinates within
-#' column names "x" and "y", on which to compute the desired product
+#'   column names `x` and `y`, on which to compute the desired product
 #' @param product character. Product to compute. Must be either:
 #'   \itemize{
-#'     \item "TS": Time Series of wind speed
-#'     \item "PDI": Power Dissipation Index
-#'     \item "Exposure": hour exposition for wind greater than wind_threshold
+#'     \item `"TS"`: Time Series of wind speed
+#'     \item `"PDI"`: Power Dissipation Index
+#'     \item `"Exposure"`: hour exposition for wind greater than `wind_threshold`
 #'           input
 #'   }
-#'  Default value is set to "TS"
+#'   Default value is set to `"TS"`
 #' @param wind_threshold numeric vector. Minimal wind threshold(s) (m/s) to
-#' compute Exposure product. Ignored if Exposure is not part of the products to
-#' compute. Default value is set to Saffir Simpson Hurricane Scale thresholds
+#'   compute `"Exposure"` product. Ignored if `"Exposure"` is not part of the
+#'   products to compute. Default value is set to Saffir Simpson Hurricane Scale
+#'   thresholds
 #' @param method character. Cyclonic model used to compute product. Must be
-#' either:
+#'   either:
 #'   \itemize{
-#'   \item "Willoughby": model based on fits performed on cyclonic observations
-#'   \item "Holland": model based on both basic cyclonic Physics and parameters
+#'   \item `"Willoughby"`: model based on fits performed on cyclonic observations
+#'   \item `"Holland"`: model based on both basic cyclonic Physics and parameters
 #'         fitting according to cyclonic observations
-#'   \item "Boose": asymmetric model based on Holland model
+#'   \item `"Boose"`: asymmetric model based on Holland model
 #'   }
-#'  Default value is set to "Willoughby" (See Details)
+#'   Default value is set to `"Willoughby"` (See `Details`)
 #' @param asymmetry character. Indicates which version of asymmetry to use in
-#' the computations (see Details). Must be either:
+#'   the computations (see `Details`). Must be either:
 #'   \itemize{
-#'      \item "Miyazaki": based on the formula derived in Miyazaki et al. (1962)
-#'      \item "Chen":  based on the formula derived in Chen (1994)
-#'   \item "None": no asymmetry is added
+#'      \item `"Miyazaki"`: based on the formula derived in Miyazaki et al. (1962)
+#'      \item `"Chen"`:  based on the formula derived in Chen (1994)
+#'   \item `"None"`: no asymmetry is added
 #'   }
-#'  Default value is set to "Chen". Ignored if method == Boose
+#'   Default value is set to `"Chen"`. Ignored if `method == "Boose"`
 #' @param empirical_rmw logical. Whether to compute the radius of maximum wind
-#' empirically or using the radius of maximum wind from the observations.
-#' Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
-#' et al. 2006 is used to compute rmw
-#' @param temp_res numeric. Period of time used to interpolate data.
-#' Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
-#' Default value is set to 1
+#'   empirically or using the radius of maximum wind from the observations.
+#'   Default value is set to `FALSE`. If `TRUE`, a formula extracted from
+#'   Willoughby et al. 2006 is used to compute rmw
+#' @param temp_res numeric. Period of time used to interpolate data. Allowed
+#'   values are `1` (60min), `0.75` (45min), `0.5` (30min), and `0.25` (15min).
+#'   Default value is set to `1`
 #' @param verbose numeric. Whether or not the function should display
-#' informations about the process and/or outputs and additional notes.
-#' Allowed values are:
+#'   informations about the process and/or outputs and additional notes. Allowed
+#'   values are:
 #' \itemize{
-#' \item 0: Nothing is displayed
-#' \item 1: Informations about the process are displayed
+#' \item `0`: Nothing is displayed
+#' \item `1`: Informations about the process are displayed
+#' \item `2`: Outputs are also displayed
+#' \item `3`: Additional notes are also displayed
 #' }
-#' Default value is set to 1
-#'
+#'   Default value is set to `2`
 #' @returns Computed product for each points are returned through lists of
-#'   data.frame (one per points coordinates) contained in a named list. Then, each
-#'   slot, named after the storm, is made of list(s) of data.frame that has the following
-#'   dimensions:
+#'   data.frame (one per points coordinates) contained in a named list. Then,
+#'   each slot, named after the storm, is made of list(s) of data.frame that has
+#'   the following dimensions:
 #' \itemize{
-#'   \item If product == "TS": a data frame whose number of rows corresponds to
+#'   \item If `product == "TS"`: a data frame whose number of rows corresponds to
 #'         the number of interpolated observations. The columns provides
 #'         respectively the wind speed values (m/s), the wind directions
 #'         (in degree), the indices and the ISO time of observations
-#'    \item If product == "PDI": a data.frame with one row and one column that
+#'    \item If `product == "PDI"`: a data.frame with one row and one column that
 #'          contains PDI value for each point in points.
-#'    \item If product == "Exposure": a data.frame with one row for each wind
+#'    \item If `product == "Exposure"`: a data.frame with one row for each wind
 #'          threshold and one column that contains Exposure value for each point
 #'          in points.
 #'    }
-#'    
-#' @details The temp_res input will perform a linear interpolation of
-#' observations to further compute each 2D wind speed structure at each
-#' interpolated observations. For example, if temp_res == 1, it will generate
-#' observations every 1hour between the available observations.
-#' 
+#'
+#' @details The `temp_res` input will perform a linear interpolation of
+#'   observations to further compute each 2D wind speed structure at each
+#'   interpolated observations. For example, if `temp_res == 1`, it will
+#'   generate observations every 1hour between the available observations.
+#'
 #' @examples
 #' \dontrun{
 #' pts <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))

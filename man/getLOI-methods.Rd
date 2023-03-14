@@ -11,17 +11,17 @@ getLOI(sts)
 \S4method{getLOI}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{StormsList object}
+\item{sts}{\code{StormsList} object}
 }
 \value{
-sf object. Location Of Interest for the given StormsList object
+sf object. Location Of Interest for the given \code{StormsList} object
 }
 \description{
-Get the Location Of Interest from a StormsList object
+Get the Location Of Interest from a \code{StormsList} object
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 loi <- getLOI(sts)
 }
 }

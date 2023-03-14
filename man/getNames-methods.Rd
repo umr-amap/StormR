@@ -14,18 +14,18 @@ getNames(s)
 \S4method{getNames}{StormsList}(s)
 }
 \arguments{
-\item{s}{Storm/StormsList object}
+\item{s}{\code{Storm}/\code{StormsList} object}
 }
 \value{
-character vector. Names of each storms provided by the given Storm/StormsList
-object
+character vector. Names of each storms provided by the given
+\code{Storm}/\code{StormsList} object
 }
 \description{
-Get the name(s) of storm(s) available in a Storm/StormsList object
+Get the name(s) of storm(s) available in a \code{Storm}/\code{StormsList} object
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 
 ## For storm Niran
 getNames(getStorm(sts, name = "NIRAN"))

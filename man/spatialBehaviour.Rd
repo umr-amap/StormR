@@ -17,99 +17,100 @@ spatialBehaviour(
 )
 }
 \arguments{
-\item{sts}{StormsList object}
+\item{sts}{\code{StormsList} object}
 
 \item{product}{character. Product to compute among:
 \itemize{
-\item "MSW": Maximum Sustained Wind
-\item "PDI": Power Dissipation Index
-\item "Exposure": hour exposition for wind greater than wind_threshold
+\item \code{"MSW"}: Maximum Sustained Wind
+\item \code{"PDI"}: Power Dissipation Index
+\item \code{"Exposure"}: hour exposition for wind greater than \code{wind_threshold}
 input
-\item "Profiles", 2D wind speed structures of wind speed with wind
+\item \code{"Profiles"}, 2D wind speed structures of wind speed with wind
 direction for each observation
 }
-Default value is set to "MSW"}
+Default value is set to \code{"MSW"}}
 
 \item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to
-compute Exposure product. Ignored if Exposure is not part of the products to
-compute. Default value is set to Saffir Simpson Hurricane Scale thresholds}
+compute \code{"Exposure"} product. Ignored if \code{"Exposure"} is not part of the
+products to compute. Default value is set to Saffir Simpson Hurricane Scale
+thresholds}
 
 \item{method}{character. Cyclonic model used to compute product. Must be
 either:
 \itemize{
-\item "Willoughby": model based on fits performed on cyclonic observations
-\item "Holland": model based on both basic cyclonic Physics and parameters
+\item \code{"Willoughby"}: model based on fits performed on cyclonic observations
+\item \code{"Holland"}: model based on both basic cyclonic Physics and parameters
 fitting according to cyclonic observations
-\item "Boose": asymmetric model based on Holland model
+\item \code{"Boose"}: asymmetric model based on Holland model
 }
-Default value is set to "Willoughby" (See Details)}
+Default value is set to \code{"Willoughby"} (See \code{Details})}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations (see Details). Must be either:
+the computations (see \code{Details}). Must be either:
 \itemize{
-\item "Miyazaki": based on the formula derived in Miyazaki et al. (1962)
-\item "Chen":  based on the formula derived in Chen (1994)
-\item "None": no asymmetry is added
+\item \code{"Miyazaki"}: based on the formula derived in Miyazaki et al. (1962)
+\item \code{"Chen"}:  based on the formula derived in Chen (1994)
+\item \code{"None"}: no asymmetry is added
 }
-Default value is set to "Chen". Ignored if method == Boose}
+Default value is set to \code{"Chen"}. Ignored if \code{method == "Boose"}}
 
 \item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
 empirically or using the radius of maximum wind from the observations.
-Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
-et al. 2006 is used to compute rmw}
+Default value is set to \code{FALSE}. If \code{TRUE}, a formula extracted from
+Willoughby et al. 2006 is used to compute rmw}
 
 \item{space_res}{character. Space resolution for the raster(s) to compute.
-Either 30sec, 2.5min, 5min or 10min. Default value is set to 2.5min}
+Either \code{"30sec"}, \code{"2.5min"}, \code{"5min"} or \code{"10min"}. Default value is set
+to \code{"2.5min"}}
 
-\item{temp_res}{numeric. Period of time used to interpolate data.
-Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
-Default value is set to 1}
+\item{temp_res}{numeric. Period of time used to interpolate data. Allowed
+values are \code{1} (60min), \code{0.75} (45min), \code{0.5} (30min), and \code{0.25} (15min).
+Default value is set to \code{1}}
 
 \item{verbose}{numeric. Whether or not the function should display
-informations about the process and/or outputs and additional notes.
-Allowed values are:
+informations about the process and/or outputs and additional notes. Allowed
+values are:
 \itemize{
-\item 0: Nothing is displayed
-\item 1: Informations about the process are displayed
-\item 2: Outputs are also displayed
-\item 3: Additional notes are also displayed
+\item \code{0}: Nothing is displayed
+\item \code{1}: Informations about the process are displayed
+\item \code{2}: Outputs are also displayed
+\item \code{3}: Additional notes are also displayed
 }
-Default value is set to 2}
+Default value is set to \code{2}}
 }
 \value{
 SpatRaster stack which provides the desired product computed,
-projected in WGS84 and spanning over the extented LOI of the StormsList object.
-Number of layers depends on the number of storm available in sts input and
-also product and temp_res inputs:
+projected in WGS84 and spanning over the extented LOI of the \code{StormsList}
+object. Number of layers depends on the number of storm available in \code{sts}
+input and also \code{product} and \code{temp_res} inputs:
 \itemize{
-\item "MSW" produces one layer per storm. Name of layer is "STORMNAME_MSW"
-\item "PDI" produces one layer per storm. Name of layer is "STORMNAME_PDI"
-\item "Exposure" produces one layer for each wind values available
-in wind_threshold input and for each storm. Name of layers are
+\item \code{"MSW"} produces one layer per storm. Name of layer is "STORMNAME_MSW"
+\item \code{"PDI"} produces one layer per storm. Name of layer is "STORMNAME_PDI"
+\item \code{"Exposure"} produces one layer for each wind values available
+in \code{wind_threshold} input and for each storm. Name of layers are
 "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
-\item "Profiles" produces two layers for each observations
+\item \code{"Profiles"} produces two layers for each observations
 (real and interpolated) and each storm. Name of layers are
 "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 }
 }
 \description{
-This function computes/rasterizes analytic products for each storm of a
-StormsList object, including Maximum Sustained Wind, Power Dissipation Index,
-Category exposure and 2D wind speed structures/direction of wind speed for
-every observations
+This function computes/rasterizes products for each storm of a \code{StormsList}
+object, including Maximum Sustained Wind, Power Dissipation Index, Category
+exposure and 2D wind speed structures/direction of wind speed for every
+observations
 }
 \details{
 Add details on Willoughy/Holland/Boose method, asymmetries and
-getRMW method ...
-The temp_res input will perform a linear interpolation of
-observations to further compute each 2D wind speed structure at each
-interpolated observations. For example, if temp_res == 1, it will generate
-observations every 1hour between the available observations. Doing so, 2D
-wind speed structure is computed and stacked for each observations
+getRMW method ... The \code{temp_res} input will perform a linear interpolation
+of observations to further compute each 2D wind speed structure at each
+interpolated observations. For example, if \code{temp_res == 1}, it will
+generate observations every 1hour between the available observations. Doing
+so, 2D wind speed structure is computed and stacked for each observations
 (available and interpolated) to compute the desired product(s) afterwards.
-If product == "Profiles", nothing else is performed. Otherwise and
+If \code{product == "Profiles"}, nothing else is performed. Otherwise and
 depending on the product(s) to compute, calculations are carried out on the
-stack and terra::focal functions are applied to the final raster(s) to
+stack and \code{terra::focal} functions are applied to the final raster(s) to
 smooth the result(s).
 }
 \examples{

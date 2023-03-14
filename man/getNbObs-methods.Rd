@@ -14,15 +14,15 @@ getNbObs(s, ...)
 \S4method{getNbObs}{StormsList}(s, name, season = NULL)
 }
 \arguments{
-\item{s}{Storm/StormsList object}
+\item{s}{\code{Storm}/\code{StormsList} object}
 
-\item{...}{extra argument depending on Storm/StormsList object}
+\item{...}{extra argument depending on \code{Storm}/\code{StormsList} object}
 
 \item{name}{character. Name of the storm to extract in capital letters}
 
 \item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the StormsList object share the same name. Default value is set
-to NULL}
+several storms in the \code{StormsList} object share the same name. Default
+value is set to \code{NULL}}
 }
 \value{
 numeric. Number of observations available for the given storm
@@ -32,12 +32,12 @@ Get the number of observations available for a given storm
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 
 ## For storm Niran
 getNbObs(getStorm(sts, name = "NIRAN"))
 
-## Equivalent to 
+## Equivalent to
 getNbObs(sts, name = "NIRAN")
 }
 }
