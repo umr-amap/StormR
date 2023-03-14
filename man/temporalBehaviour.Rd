@@ -17,88 +17,91 @@ temporalBehaviour(
 )
 }
 \arguments{
-\item{sts}{StormsList object}
+\item{sts}{\code{StormsList} object}
 
 \item{points}{data.frame. Contains longitude/latitude coordinates within
-column names "x" and "y", on which to compute the desired product}
+column names \code{x} and \code{y}, on which to compute the desired product}
 
 \item{product}{character. Product to compute. Must be either:
 \itemize{
-\item "TS": Time Series of wind speed
-\item "PDI": Power Dissipation Index
-\item "Exposure": hour exposition for wind greater than wind_threshold
+\item \code{"TS"}: Time Series of wind speed
+\item \code{"PDI"}: Power Dissipation Index
+\item \code{"Exposure"}: hour exposition for wind greater than \code{wind_threshold}
 input
 }
-Default value is set to "TS"}
+Default value is set to \code{"TS"}}
 
 \item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to
-compute Exposure product. Ignored if Exposure is not part of the products to
-compute. Default value is set to Saffir Simpson Hurricane Scale thresholds}
+compute \code{"Exposure"} product. Ignored if \code{"Exposure"} is not part of the
+products to compute. Default value is set to Saffir Simpson Hurricane Scale
+thresholds}
 
 \item{method}{character. Cyclonic model used to compute product. Must be
 either:
 \itemize{
-\item "Willoughby": model based on fits performed on cyclonic observations
-\item "Holland": model based on both basic cyclonic Physics and parameters
+\item \code{"Willoughby"}: model based on fits performed on cyclonic observations
+\item \code{"Holland"}: model based on both basic cyclonic Physics and parameters
 fitting according to cyclonic observations
-\item "Boose": asymmetric model based on Holland model
+\item \code{"Boose"}: asymmetric model based on Holland model
 }
-Default value is set to "Willoughby" (See Details)}
+Default value is set to \code{"Willoughby"} (See \code{Details})}
 
 \item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations (see Details). Must be either:
+the computations (see \code{Details}). Must be either:
 \itemize{
-\item "Miyazaki": based on the formula derived in Miyazaki et al. (1962)
-\item "Chen":  based on the formula derived in Chen (1994)
-\item "None": no asymmetry is added
+\item \code{"Miyazaki"}: based on the formula derived in Miyazaki et al. (1962)
+\item \code{"Chen"}:  based on the formula derived in Chen (1994)
+\item \code{"None"}: no asymmetry is added
 }
-Default value is set to "Chen". Ignored if method == Boose}
+Default value is set to \code{"Chen"}. Ignored if \code{method == "Boose"}}
 
 \item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
 empirically or using the radius of maximum wind from the observations.
-Default value is set to FALSE. If TRUE, a formula extracted from Willoughby
-et al. 2006 is used to compute rmw}
+Default value is set to \code{FALSE}. If \code{TRUE}, a formula extracted from
+Willoughby et al. 2006 is used to compute rmw}
 
-\item{temp_res}{numeric. Period of time used to interpolate data.
-Allowed values are 1 (60min), 0.75 (45min), 0.5 (30min), and 0.25 (15min).
-Default value is set to 1}
+\item{temp_res}{numeric. Period of time used to interpolate data. Allowed
+values are \code{1} (60min), \code{0.75} (45min), \code{0.5} (30min), and \code{0.25} (15min).
+Default value is set to \code{1}}
 
 \item{verbose}{numeric. Whether or not the function should display
-informations about the process and/or outputs and additional notes.
-Allowed values are:
+informations about the process and/or outputs and additional notes. Allowed
+values are:
 \itemize{
-\item 0: Nothing is displayed
-\item 1: Informations about the process are displayed
+\item \code{0}: Nothing is displayed
+\item \code{1}: Informations about the process are displayed
+\item \code{2}: Outputs are also displayed
+\item \code{3}: Additional notes are also displayed
 }
-Default value is set to 1}
+Default value is set to \code{2}}
 }
 \value{
 Computed product for each points are returned through lists of
-data.frame (one per points coordinates) contained in a named list. Then, each
-slot, named after the storm, is made of list(s) of data.frame that has the following
-dimensions:
+data.frame (one per points coordinates) contained in a named list. Then,
+each slot, named after the storm, is made of list(s) of data.frame that has
+the following dimensions:
 \itemize{
-\item If product == "TS": a data frame whose number of rows corresponds to
+\item If \code{product == "TS"}: a data frame whose number of rows corresponds to
 the number of interpolated observations. The columns provides
 respectively the wind speed values (m/s), the wind directions
 (in degree), the indices and the ISO time of observations
-\item If product == "PDI": a data.frame with one row and one column that
+\item If \code{product == "PDI"}: a data.frame with one row and one column that
 contains PDI value for each point in points.
-\item If product == "Exposure": a data.frame with one row for each wind
+\item If \code{product == "Exposure"}: a data.frame with one row for each wind
 threshold and one column that contains Exposure value for each point
 in points.
 }
 }
 \description{
-This function is the pointwise version of spatialBehaviour. Available
+This function is the pointwise version of \code{spatialBehaviour}. Available
 products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
 and Exposure
 }
 \details{
-The temp_res input will perform a linear interpolation of
+The \code{temp_res} input will perform a linear interpolation of
 observations to further compute each 2D wind speed structure at each
-interpolated observations. For example, if temp_res == 1, it will generate
-observations every 1hour between the available observations.
+interpolated observations. For example, if \code{temp_res == 1}, it will
+generate observations every 1hour between the available observations.
 }
 \examples{
 \dontrun{

@@ -14,19 +14,19 @@ getSeasons(s)
 \S4method{getSeasons}{StormsList}(s)
 }
 \arguments{
-\item{s}{Storm/StormsList object}
+\item{s}{\code{Storm}/\code{StormsList} object}
 }
 \value{
 numeric vector. Cyclonic seasons of each storms (or the selected one
-through name input) provided by the given StormsList object or the cyclonic
-season for the given Storm object
+through \code{name} input) provided by the given \code{StormsList} object or the cyclonic
+season for the given \code{Storm} object
 }
 \description{
-Get the cyclonic season of storms available in a Storm/StormsList
+Get the cyclonic season of storms available in a \code{Storm}/\code{StormsList}
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 
 ## For storm Niran
 getSeasons(getStorm(sts, name = "NIRAN"))

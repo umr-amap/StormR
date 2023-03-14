@@ -2,12 +2,12 @@
 % Please edit documentation in R/getStorms.R
 \name{Storms}
 \alias{Storms}
-\title{Initialize a StormsList object}
+\title{Initialize a \code{StormsList} object}
 \usage{
 Storms(
   sds = test_dataset,
   loi,
-  seasons = c(min(sds@database$seasons, na.rm = T), max(sds@database$seasons, na.rm = T)),
+  seasons = c(sds@seasons["min"], sds@seasons["max"]),
   names = NULL,
   max_dist = 300,
   remove_TD = TRUE,
@@ -15,55 +15,55 @@ Storms(
 )
 }
 \arguments{
-\item{sds}{StormsDataset object. Default value is set to test_dataset
-(See StormsDataset class)}
+\item{sds}{\code{StormsDataset} object. Default value is set to \code{test_dataset}
+(See \code{StormsDataset} class)}
 
 \item{loi}{Location of Interest. Must be either:
 \itemize{
 \item a SpatialPolygon (shapefile)
 \item a sf object
 \item a point of longitude/latitude coordinates provided in a numeric vector
-\item a character representing a country (See Details section)
+\item a character representing a country (See \code{Details} section)
 }}
 
 \item{seasons}{numeric vector. Should be either one or a range of calendar
 years. For cyclones that formed in one year and dissipated in the following
 year, the latter should be used. Default values will allow searching for
-storms between 1980 and the maximum cyclonic season available in the
-StormsDataSet object}
+storms between the minimum and the maximum cyclonic season available in the
+\code{sds}}
 
 \item{names}{character vector. Names of storms in capital letters. Default
-value is set to NULL.}
+value is set to \code{NULL}.}
 
 \item{max_dist}{numeric. Indicates the buffer distance (in km) used to extend
 the location of interest. Default value is set to 300km}
 
-\item{remove_TD}{logical. Whether or not to remove tropical depressions
-(< 18 m/s) and include cyclones only. Default value is set to TRUE}
+\item{remove_TD}{logical. Whether or not to remove tropical depressions (< 18
+m/s) and include cyclones only. Default value is set to \code{TRUE}}
 
 \item{verbose}{numeric. Whether or not the function should display
-informations about the process, outputs, and additional notes. Allowed values
-are:
+informations about the process, outputs, and additional notes. Allowed
+values are:
 \itemize{
-\item 0: Nothing is displayed
-\item 1: Informations about the process are displayed
-\item 2: Outputs are also displayed
-\item 3: Additional notes to manipulate StormsList objects are also displayed
+\item \code{0}: Nothing is displayed
+\item \code{1}: Informations about the process are displayed
+\item \code{2}: Outputs are also displayed
+\item \code{3}: Additional notes to manipulate \code{StormsList} objects are also displayed
 }
 Default value is set to 2}
 }
 \value{
-a StormsList object that gathers all storms that match the criteria
-given in the inputs
+a \code{StormsList} object that gathers all storms that match the
+criteria given in the inputs
 }
 \description{
-This function returns a StormsList object that
-gathers all the storms specified by the user
+This function returns a \code{StormsList} object that gathers all the storms
+specified by the user
 }
 \details{
-Available countries for the loi input are those provided in the
-rwolrdxtra package, derived from the newest version of Natural Earth Data.
-Check the following link for more informations:
+Available countries for the \code{loi} input are those provided in the
+\code{rwolrdxtra} package, derived from the newest version of Natural Earth
+Data. Check the following link for more informations:
 http://www.naturalearthdata.com/downloads/10m-cultural-vectors/
 }
 \examples{

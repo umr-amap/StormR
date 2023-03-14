@@ -11,18 +11,18 @@ getBuffer(sts)
 \S4method{getBuffer}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{StormsList object}
+\item{sts}{\code{StormsList} object}
 }
 \value{
-sf object. Extended Location Of Interest for the given StormsList
+sf object. Extended Location Of Interest for the given \code{StormsList}
 object
 }
 \description{
-Get the Extended Location Of Interest from a StormsList object
+Get the Extended Location Of Interest from a \code{StormsList} object
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+sts <- Storms(loi = "New Caledonia")
 buff <- getBuffer(sts)
 }
 }

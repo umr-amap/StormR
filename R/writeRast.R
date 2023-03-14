@@ -41,12 +41,12 @@ checkInputsWr <- function(rast, format, filename, path){
 #' netcdf
 #'
 #' @param rast SpatRaster object
-#' @param format character. Format of the file to export. Either ".tiff"
-#' or ".nc". Default value is set to ".tiff"
-#' @param filename character. Name of the file. Default value is set to NULL,
-#' in this case it will be set to names(rast)
+#' @param format character. Format of the file to export. Either `".tiff"` or
+#'   `".nc"`. Default value is set to `".tiff"`
+#' @param filename character. Name of the file. Default value is set to NULL, in
+#'   this case it will be set to `names(rast)`
 #' @param path character. Relative path where the file should be written
-#' @returns NULL
+#' @returns `NULL`
 #' @examples
 #' \dontrun{
 #' #Save MSW raster in Geotiff file for Pam 2015 over Vanuatu
