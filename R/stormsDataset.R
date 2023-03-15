@@ -46,7 +46,7 @@ atm_to_pa <- function(x){
 
 
 
-#' StormsDataset object
+#' StormsDataset 
 #'
 #' Choose the database to use within the package's functions
 #'
@@ -54,7 +54,7 @@ atm_to_pa <- function(x){
 #' @slot fields named character vector. Dictionary that provides all the name of
 #' dimensions to extract from the netcdf database (See `Details`)
 #' @slot basin character. Basin name to filter the database within its
-#' boundaries. Default value is set to `NULL`. It must be either
+#' boundaries. It must be either
 #' \itemize{
 #'   \item `"NA"`: North Atlantic
 #'   \item `"SA"`: South Atlantic
@@ -63,6 +63,7 @@ atm_to_pa <- function(x){
 #'   \item `"SP"`: South Pacific
 #'   \item `"SI"`: South India
 #'   \item `"NI"`: North India
+#'   \item `"None"`: No particular basin
 #' }
 #' @slot seasons numeric vector. Range of calendar years to filter storms. For
 #'   cyclones that formed in one year and dissipated in the following year, the
@@ -77,9 +78,6 @@ atm_to_pa <- function(x){
 #' The fields input must provide at least 6 mandatory fields (and at most 11) in
 #' order to benefit from all the functionalities of this package:
 #' \itemize{
-#'   \item A field `basin`: which dimension contains the basin location of
-#'        storms in the netcdf database. Used to filter the storms in the netcdf
-#'        database
 #'   \item A field `names`: which dimension contains the names of storms
 #'         in the netcdf database
 #'   \item A field `seasons`: which dimension contains the cyclonic
@@ -96,8 +94,11 @@ atm_to_pa <- function(x){
 #'         wind speed of each observations for all storms in the netcdf
 #'         database
 #' }
-#' The following fields are optional but highly recommanded:
+#' The following fields are optional but highly recommended:
 #' \itemize{
+#' \item A field `basin`: which dimension contains the basin location of
+#'        storms in the netcdf database. Used to filter the storms in the netcdf
+#'        database
 #'  \item A field `rmw`: which dimension contains the radius of maximum
 #'        wind speed of each observations for all storms in the netcdf
 #'        database (See spatialBehaviour, temporalBehaviour)
@@ -169,8 +170,14 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
   stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["msw"] %in% c("None", "mph_to_ms", "knt_to_ms", "kmh_to_ms"))
 
   #Optional fields
-  if(!("basin" %in% names(fields)))
+  if(!("basin" %in% names(fields))){
     warning("No 'basin' selection in fields, Cannot use basin filtering when collecting data")
+  }else{
+    if(is.null(basin))
+      stop("No basin input, Cannot filter data")
+  }
+   
+  
   if(!("rmw" %in% names(fields))){
     warning("No 'rmw' selection in fields, use empirical_rmw = TRUE for the forthcoming computations")
   }else{
@@ -217,7 +224,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 
 
 
-#' Initialize a StormsDataset object
+#' Initialize a StormsDataset 
 #'
 #' @param filename character. Name of the database to load. Must be a netcdf
 #'   file
@@ -225,7 +232,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #'   of dimension to extract from the netcdf database (See `StormsDataSet`
 #'   class)
 #' @param basin character. Basin name to filter the database within its
-#'   boundaries. Default value is set to `NULL`. It must be either
+#'   boundaries. Default value is set to `NULL`. Otherwise, it must be either
 #' \itemize{
 #'   \item `"NA"`: North Atlantic
 #'   \item `"SA"`: South Atlantic
@@ -273,18 +280,18 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' @return An object of class `StormsDataset`
 #' @export
 defDatabase <- function(filename,
-                        fields = c(basin = "basin",
-                                   names = "name",
+                        fields = c(names = "name",
                                    seasons = "season",
                                    isoTime = "iso_time",
                                    lon = "usa_lon",
                                    lat = "usa_lat",
                                    msw = "usa_wind",
+                                   basin = "basin",
                                    sshs = "usa_sshs",
                                    rmw = "usa_rmw",
                                    pressure = "usa_pres",
                                    poci = "usa_poci"),
-                        basin = "SP",
+                        basin = NULL,
                         seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
                         unit_conversion = c(msw = "knt_to_ms",
                                             rmw = "nm_to_km",
@@ -304,19 +311,21 @@ defDatabase <- function(filename,
   if(verbose)
     cat(filename,"opened\nCollecting data ...\n")
 
-  #Filter by basin ID
-  basins <- ncdf4::ncvar_get(dataBase, fields["basin"])
+  lon <- ncdf4::ncvar_get(dataBase, fields["lon"])
   season <- ncdf4::ncvar_get(dataBase, fields["seasons"])
 
   #Get dimensions
-  row <- dim(basins)[1]
-  len <- dim(basins)[2]
+  row <- dim(lon)[1]
+  len <- dim(lon)[2]
   ind <- seq(1,len)
 
+  #Filter by season
   ind <- which(season %in% seq(seasons[1], seasons[2], 1))
   len <- length(ind)
 
   if(!is.null(basin)){
+    #Filter by basin ID
+    basins <- ncdf4::ncvar_get(dataBase, fields["basin"])
     indB <- which(basins[1,] == basin)
     ind <- intersect(ind,indB)
     len <- length(ind)

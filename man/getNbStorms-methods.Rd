@@ -11,13 +11,13 @@ getNbStorms(sts)
 \S4method{getNbStorms}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{StormsList}}
 }
 \value{
-numeric. Number of storms available in the given \code{StormsList} object
+numeric. Number of \code{Storm} available in the given \code{StormsList}
 }
 \description{
-Get the number of \code{Storm} available in a \code{StormsList} object
+Get the number of \code{Storm} available in a \code{StormsList}
 }
 \examples{
 \dontrun{

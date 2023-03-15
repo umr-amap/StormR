@@ -18,17 +18,17 @@ plotStorms(
 )
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{StormsList}}
 
 \item{names}{character vector. Name(s) of the storm(s) in capital letters to
 plot on the map. Default value is set to \code{NULL}, which will plot every
-storm provided in \code{sts}. To see which storms are included in a \code{StormsList}
-object, you can use the \code{getNames} function}
+storm provided in \code{sts}. To see which \code{Storm} are included in a \code{StormsList}
+, use the \code{getNames} function}
 
 \item{category}{numeric vector. Should be either a category or a range of
 categories in the Saffir Simpson scale (-1 to 5). Default value is set to
-\code{NULL} which will consider every storm in \code{sts}. Otherwise it will consider
-only storms that reached \code{category} input}
+\code{NULL} which will consider every \code{Storm} in \code{sts}. Otherwise it will consider
+only \code{Storm} that reached \code{category} input}
 
 \item{xlim}{numeric vector. A set of longitude coordinates that controls the
 longitude extent of the plot. Default value is set to \code{NULL} which will let
@@ -49,7 +49,7 @@ Default value is set to \code{NULL}}
 
 \item{pos}{numeric. Must be between \code{1} and \code{4}. Correspond to the position
 of labels according to the observation: \code{1} (up), \code{2} (left), \code{3} (down),
-\code{4} (right). Default value is set to 3. Ignored if labels == FALSE}
+\code{4} (right). Default value is set to 3. Ignored if \code{labels == FALSE}}
 
 \item{legends}{logical. Whether or not to plot legends. Default value is set
 to \code{TRUE}}
@@ -58,9 +58,9 @@ to \code{TRUE}}
 Default value is set to \code{TRUE}}
 }
 \description{
-This function plots a set of storm tracks contained in a \code{StormsList} object
+This function plots a set of storm tracks contained in a \code{StormsList}
 (See \code{Storms} function). Depending on the inputs, the user can choose to plot
-only a desired set of storms extracted from the \code{StormsList} object
+only a desired set of \code{Storm} extracted from the \code{StormsList}
 }
 \examples{
 \dontrun{

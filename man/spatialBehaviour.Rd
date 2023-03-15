@@ -17,14 +17,13 @@ spatialBehaviour(
 )
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{StormsList}}
 
 \item{product}{character. Product to compute among:
 \itemize{
 \item \code{"MSW"}: Maximum Sustained Wind
 \item \code{"PDI"}: Power Dissipation Index
 \item \code{"Exposure"}: hour exposition for wind greater than \code{wind_threshold}
-input
 \item \code{"Profiles"}, 2D wind speed structures of wind speed with wind
 direction for each observation
 }
@@ -35,7 +34,7 @@ compute \code{"Exposure"} product. Ignored if \code{"Exposure"} is not part of t
 products to compute. Default value is set to Saffir Simpson Hurricane Scale
 thresholds}
 
-\item{method}{character. Cyclonic model used to compute product. Must be
+\item{method}{character. Cyclonic model used to compute \code{product}. Must be
 either:
 \itemize{
 \item \code{"Willoughby"}: model based on fits performed on cyclonic observations
@@ -68,35 +67,33 @@ values are \code{1} (60min), \code{0.75} (45min), \code{0.5} (30min), and \code{
 Default value is set to \code{1}}
 
 \item{verbose}{numeric. Whether or not the function should display
-informations about the process and/or outputs and additional notes. Allowed
-values are:
+informations about the process and/or outputs. Allowed values are:
 \itemize{
 \item \code{0}: Nothing is displayed
 \item \code{1}: Informations about the process are displayed
 \item \code{2}: Outputs are also displayed
-\item \code{3}: Additional notes are also displayed
 }
 Default value is set to \code{2}}
 }
 \value{
 SpatRaster stack which provides the desired product computed,
-projected in WGS84 and spanning over the extented LOI of the \code{StormsList}
-object. Number of layers depends on the number of storm available in \code{sts}
-input and also \code{product} and \code{temp_res} inputs:
+projected in WGS84 and spanning over the extented LOI of the \code{StormsList} .
+Number of layers depends on the number of \code{Storm} available in \code{sts} and
+also \code{product} and \code{temp_res} inputs:
 \itemize{
-\item \code{"MSW"} produces one layer per storm. Name of layer is "STORMNAME_MSW"
-\item \code{"PDI"} produces one layer per storm. Name of layer is "STORMNAME_PDI"
+\item \code{"MSW"} produces one layer per \code{Storm}. Name of layer is "STORMNAME_MSW"
+\item \code{"PDI"} produces one layer per \code{Storm}. Name of layer is "STORMNAME_PDI"
 \item \code{"Exposure"} produces one layer for each wind values available
-in \code{wind_threshold} input and for each storm. Name of layers are
+in \code{wind_threshold} and for each \code{Storm}. Name of layers are
 "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
 \item \code{"Profiles"} produces two layers for each observations
-(real and interpolated) and each storm. Name of layers are
+(real and interpolated) and each  \code{Storm}. Name of layers are
 "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 }
 }
 \description{
-This function computes/rasterizes products for each storm of a \code{StormsList}
-object, including Maximum Sustained Wind, Power Dissipation Index, Category
+This function computes/rasterizes products for each \code{Storm} included in a
+\code{StormsList}, among Maximum Sustained Wind, Power Dissipation Index, Category
 exposure and 2D wind speed structures/direction of wind speed for every
 observations
 }

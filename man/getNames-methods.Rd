@@ -14,14 +14,14 @@ getNames(s)
 \S4method{getNames}{StormsList}(s)
 }
 \arguments{
-\item{s}{\code{Storm}/\code{StormsList} object}
+\item{s}{\code{Storm} / \code{StormsList}}
 }
 \value{
-character vector. Names of each storms provided by the given
-\code{Storm}/\code{StormsList} object
+character vector. Names of each storms provided by the given \code{Storm}
+/ \code{StormsList}
 }
 \description{
-Get the name(s) of storm(s) available in a \code{Storm}/\code{StormsList} object
+Get the name(s) of storm(s) available in a \code{Storm} / \code{StormsList}
 }
 \examples{
 \dontrun{
