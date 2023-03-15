@@ -147,6 +147,9 @@ str(StormTestVanuatu)
 unique(StormTestVanuatu@database$names))
 ```
 
+if $R_m$ is not provided then it is approximated using an empirical formula derived from Willoughby et al. (2006)<br />
+$R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times |\phi|)}$
+
 
 ## Reference
  * Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
