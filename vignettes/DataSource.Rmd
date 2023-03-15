@@ -25,17 +25,18 @@ following fields are provided:
 
 | **Field name** | **Description** | **Format/Units** | **Example** | **Type** |
 |:--:|:----:|:-----------:|:-----:|:--:|
-| `basin` | Name of the area where the storm originated. Traditionally divided into seven basins | IBTRaCS format \newline NA (North Atlantic) \newline EP (Eastern North Pacific) \newline WP (Western North Pacific) \newline NI (North Indian) \newline SI (South Indian) \newline SP (Southern Pacific) \newline SA (South Atlantic)| SP | Mandatory |
 | `names` | Names of the storms | Capital letters | PAM | Mandatory |
 | `seasons` | Years of observations | Calendar year | 2015 | Mandatory |
 | `isoTime` | Date and time of observations | YYYY-MM-DD HH:mm:ss UTC | 2015-03-13 12:00:00 | Mandatory |
 | `lon` | Longitude of the observations | Eastern Decimal degrees | 168.7 | Mandatory |
 | `lat` | Latitude of the observations | Northern Decimal degrees | -17.6 | Mandatory |
 | `msw` | Maximum sustained wind speed | $m.s^{-1}$ | 77 | Mandatory |
+| `basin` | Name of the area where the storm originated. Traditionally divided into seven basins | IBTRaCS format \newline NA (North Atlantic) \newline EP (Eastern North Pacific) \newline WP (Western North Pacific) \newline NI (North Indian) \newline SI (South Indian) \newline SP (Southern Pacific) \newline SA (South Atlantic)| SP | Recommended |
 | `rmw` | Radius of maximum winds: distance between the center of the storm and its band of strongest winds | $km$ | 20 | Recommended |
 | `pressure` | Central pressure | $pa$ | 91100 | Recommended |
 | `poci` | Pressure of the last closed isobar | $pa$ | 92200 | Recommended |
 | `sshs` | Saffir-Simpson hurricane wind scale rating based on `msw` (here in $m.s^{-1}$) | $-1 =$ Tropical depression (`msw` $< 18$) \newline $0 =$ Tropical storm ($18 \leq$ `msw` $< 33$) \newline $1 =$ Category 1 ($33  \leq$ `msw` $< 42$) \newline $2 =$ Category 2 ($42 \leq$ `msw` $< 49$) \newline $3 =$ Category 3 ($49 \leq$ `msw` $< 58$) \newline $4 =$ Category 4 ($58 \leq$ `msw` $< 70$) \newline $5 =$ Category 5 (`msw` $\ge 70$)| 5 | Optional |
+
 
 ### Unit conversion
 It is important to pay attention to the formats and units of data provided by the database.
