@@ -67,7 +67,7 @@ and Exposure</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>sts</dt>
-<dd><p><code>StormsList</code> object</p></dd>
+<dd><p><code>StormsList</code></p></dd>
 
 
 <dt>points</dt>
@@ -78,8 +78,7 @@ column names <code>x</code> and <code>y</code>, on which to compute the desired 
 <dt>product</dt>
 <dd><p>character. Product to compute. Must be either:</p><ul><li><p><code>"TS"</code>: Time Series of wind speed</p></li>
 <li><p><code>"PDI"</code>: Power Dissipation Index</p></li>
-<li><p><code>"Exposure"</code>: hour exposition for wind greater than <code>wind_threshold</code>
-input</p></li>
+<li><p><code>"Exposure"</code>: hour exposition for wind greater than <code>wind_threshold</code></p></li>
 </ul><p>Default value is set to <code>"TS"</code></p></dd>
 
 
@@ -122,11 +121,9 @@ Default value is set to <code>1</code></p></dd>
 
 <dt>verbose</dt>
 <dd><p>numeric. Whether or not the function should display
-informations about the process and/or outputs and additional notes. Allowed
-values are:</p><ul><li><p><code>0</code>: Nothing is displayed</p></li>
+informations about the process and/or outputs. Allowed values are:</p><ul><li><p><code>0</code>: Nothing is displayed</p></li>
 <li><p><code>1</code>: Informations about the process are displayed</p></li>
 <li><p><code>2</code>: Outputs are also displayed</p></li>
-<li><p><code>3</code>: Additional notes are also displayed</p></li>
 </ul><p>Default value is set to <code>2</code></p></dd>
 
 </dl></div>
