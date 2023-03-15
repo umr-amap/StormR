@@ -75,10 +75,10 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'
 #'This function plots a rasterized product (among maximum sustained wind, power
 #'dissipation index, category exposure, or 2D wind speed structure/wind
-#'direction at a given observation) associated with a storm provided in a
-#'`StormsList` object alongside with its track
+#'direction at a given observation) associated with a `Storm` provided in a
+#'`StormsList` alongside with its track
 #'
-#'@param sts `StormsList` object
+#'@param sts `StormsList`
 #'@param raster_product SpatRaster object. Name of the layer must be
 #'  "STORMNAME_product" where product is either:
 #'  \itemize{

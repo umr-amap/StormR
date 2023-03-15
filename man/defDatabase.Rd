@@ -2,14 +2,14 @@
 % Please edit documentation in R/stormsDataset.R
 \name{defDatabase}
 \alias{defDatabase}
-\title{Initialize a StormsDataset object}
+\title{Initialize a StormsDataset}
 \usage{
 defDatabase(
   filename,
-  fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time",
-    lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", sshs = "usa_sshs", rmw =
+  fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
+    lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw =
     "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
-  basin = "SP",
+  basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unit_conversion = c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci =
     "mb_to_pa"),
@@ -25,7 +25,7 @@ of dimension to extract from the netcdf database (See \code{StormsDataSet}
 class)}
 
 \item{basin}{character. Basin name to filter the database within its
-boundaries. Default value is set to \code{NULL}. It must be either
+boundaries. Default value is set to \code{NULL}. Otherwise, it must be either
 \itemize{
 \item \code{"NA"}: North Atlantic
 \item \code{"SA"}: South Atlantic
@@ -76,5 +76,5 @@ informations about the process}
 An object of class \code{StormsDataset}
 }
 \description{
-Initialize a StormsDataset object
+Initialize a StormsDataset
 }

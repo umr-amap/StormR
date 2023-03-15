@@ -4,7 +4,7 @@
 \name{StormsDataset-class}
 \alias{StormsDataset-class}
 \alias{StormsDataset}
-\title{StormsDataset object}
+\title{StormsDataset}
 \description{
 Choose the database to use within the package's functions
 }
@@ -12,9 +12,6 @@ Choose the database to use within the package's functions
 The fields input must provide at least 6 mandatory fields (and at most 11) in
 order to benefit from all the functionalities of this package:
 \itemize{
-\item A field \code{basin}: which dimension contains the basin location of
-storms in the netcdf database. Used to filter the storms in the netcdf
-database
 \item A field \code{names}: which dimension contains the names of storms
 in the netcdf database
 \item A field \code{seasons}: which dimension contains the cyclonic
@@ -31,8 +28,11 @@ the netcdf database
 wind speed of each observations for all storms in the netcdf
 database
 }
-The following fields are optional but highly recommanded:
+The following fields are optional but highly recommended:
 \itemize{
+\item A field \code{basin}: which dimension contains the basin location of
+storms in the netcdf database. Used to filter the storms in the netcdf
+database
 \item A field \code{rmw}: which dimension contains the radius of maximum
 wind speed of each observations for all storms in the netcdf
 database (See spatialBehaviour, temporalBehaviour)
@@ -64,7 +64,7 @@ databases:
 dimensions to extract from the netcdf database (See \code{Details})}
 
 \item{\code{basin}}{character. Basin name to filter the database within its
-boundaries. Default value is set to \code{NULL}. It must be either
+boundaries. It must be either
 \itemize{
 \item \code{"NA"}: North Atlantic
 \item \code{"SA"}: South Atlantic
@@ -73,6 +73,7 @@ boundaries. Default value is set to \code{NULL}. It must be either
 \item \code{"SP"}: South Pacific
 \item \code{"SI"}: South India
 \item \code{"NI"}: North India
+\item \code{"None"}: No particular basin
 }}
 
 \item{\code{seasons}}{numeric vector. Range of calendar years to filter storms. For

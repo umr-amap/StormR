@@ -4,21 +4,21 @@
 \name{getBufferSize}
 \alias{getBufferSize}
 \alias{getBufferSize,StormsList-method}
-\title{Get buffer size from a Storms object}
+\title{Get buffer size from a \code{StormsList}}
 \usage{
 getBufferSize(sts)
 
 \S4method{getBufferSize}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{StormsList}}
 }
 \value{
-numeric. Buffer size (in km) used to generate the extended location
-of interest for the given \code{StormsList} object
+numeric. Buffer size (in km) used to generate the extended Location
+Of Interest for the given \code{StormsList}
 }
 \description{
-Get the buffer size for a \code{StormsList} object
+Get the buffer size for a \code{StormsList}
 }
 \examples{
 \dontrun{
