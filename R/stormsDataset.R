@@ -286,7 +286,6 @@ defDatabase <- function(filename,
                                    lon = "usa_lon",
                                    lat = "usa_lat",
                                    msw = "usa_wind",
-                                   basin = "basin",
                                    sshs = "usa_sshs",
                                    rmw = "usa_rmw",
                                    pressure = "usa_pres",
@@ -401,8 +400,7 @@ defDatabase <- function(filename,
 
   if(is.null(basin))
     basin <- "None"
-
-
+  
 
   sds <- new(Class = "StormsDataset",
              filename = filename,
