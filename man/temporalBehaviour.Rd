@@ -64,13 +64,11 @@ values are \code{1} (60min), \code{0.75} (45min), \code{0.5} (30min), and \code{
 Default value is set to \code{1}}
 
 \item{verbose}{numeric. Whether or not the function should display
-informations about the process and/or outputs and additional notes. Allowed
-values are:
+informations about the process and/or outputs. Allowed values are:
 \itemize{
 \item \code{0}: Nothing is displayed
 \item \code{1}: Informations about the process are displayed
 \item \code{2}: Outputs are also displayed
-\item \code{3}: Additional notes are also displayed
 }
 Default value is set to \code{2}}
 }
