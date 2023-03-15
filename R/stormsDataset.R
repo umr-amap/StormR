@@ -169,8 +169,14 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
   stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["msw"] %in% c("None", "mph_to_ms", "knt_to_ms", "kmh_to_ms"))
   
   #Optional fields
-  if(!("basin" %in% names(fields)))
+  if(!("basin" %in% names(fields))){
     warning("No 'basin' selection in fields, Cannot use basin filtering when collecting data")
+  }else{
+    if(is.null(basin))
+      stop("No basin input, Cannot filter data")
+  }
+   
+  
   if(!("rmw" %in% names(fields))){
     warning("No 'rmw' selection in fields, use empirical_rmw = TRUE for the forthcoming computations")
   }else{
