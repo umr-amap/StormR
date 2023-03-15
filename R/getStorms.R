@@ -574,7 +574,7 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
-  stopifnot("verbose must be either 0, 1, 2 or 3" = verbose %in% c(0, 1, 2, 3))
+  stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 
   #Checking remove_TD input
   stopifnot("remove_TD must be logical" = identical(class(remove_TD), "logical"))
@@ -892,13 +892,11 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' @param remove_TD logical. Whether or not to remove tropical depressions (< 18
 #'   m/s) and include cyclones only. Default value is set to `TRUE`
 #' @param verbose numeric. Whether or not the function should display
-#'   informations about the process, outputs, and additional notes. Allowed
-#'   values are:
+#'   informations about the process and/or outputs. Allowed values are:
 #' \itemize{
 #' \item `0`: Nothing is displayed
 #' \item `1`: Informations about the process are displayed
 #' \item `2`: Outputs are also displayed
-#' \item `3`: Additional notes to manipulate `StormsList` are also displayed
 #' }
 #'   Default value is set to 2
 #'
@@ -1066,18 +1064,6 @@ Storms <- function(sds = test_dataset,
         }
         cat("\n")
       }
-      if(verbose > 2){
-        cat("SHORTCUTS:\n")
-        cat("    - Use getNames function to access all storms names\n")
-        cat("    - Use getSeasons function to access all or one particular season(s)\n")
-        cat("    - Use getLOI function to access LOI\n")
-        cat("    - Use getBufferSize function to access buffer size\n")
-        cat("    - Use getBuffer function to access buffer\n")
-        cat("    - Use getStorm function to access all informations about one particular storm\n")
-        cat("    - Use getNbobs function to access all number of all observations for one particular storm\n")
-        cat("    - Use getObs function to access all observations about of one particular storm\n")
-        cat("    - Use getInObs function to access observations labels within the buffer for one particular storm")
-        }
     }
 
     return(sts)

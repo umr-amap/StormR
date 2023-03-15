@@ -42,13 +42,11 @@ the location of interest. Default value is set to 300km}
 m/s) and include cyclones only. Default value is set to \code{TRUE}}
 
 \item{verbose}{numeric. Whether or not the function should display
-informations about the process, outputs, and additional notes. Allowed
-values are:
+informations about the process and/or outputs. Allowed values are:
 \itemize{
 \item \code{0}: Nothing is displayed
 \item \code{1}: Informations about the process are displayed
 \item \code{2}: Outputs are also displayed
-\item \code{3}: Additional notes to manipulate \code{StormsList} are also displayed
 }
 Default value is set to 2}
 }

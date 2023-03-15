@@ -208,7 +208,7 @@ checkInputsSb <- function(sts, product, wind_threshold, method, asymmetry,
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
-  stopifnot("verbose must be either 0, 1, 2 or 3" = verbose %in% c(0, 1, 2, 3))
+  stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 
 }
 
@@ -1053,13 +1053,11 @@ maskProduct <- function(final_stack, loi, template){
 #'   values are `1` (60min), `0.75` (45min), `0.5` (30min), and `0.25` (15min).
 #'   Default value is set to `1`
 #' @param verbose numeric. Whether or not the function should display
-#'   informations about the process and/or outputs and additional notes. Allowed
-#'   values are:
+#'   informations about the process and/or outputs. Allowed values are:
 #' \itemize{
 #' \item `0`: Nothing is displayed
 #' \item `1`: Informations about the process are displayed
 #' \item `2`: Outputs are also displayed
-#' \item `3`: Additional notes are also displayed
 #' }
 #'   Default value is set to `2`
 #' @returns SpatRaster stack which provides the desired product computed,
@@ -1306,16 +1304,6 @@ spatialBehaviour <- function(sts,
         cat(" ",names(n[i]),"   ",n[i],"\n")
       cat("\n")
     }
-
-    if(verbose > 2){
-      cat("\nAdditional notes:\n")
-      cat("  (*) You can access each layer using:\n")
-      cat("       1 - terra::subset function (See terra documentation)\n")
-      cat("       2 - the accessor syntax output[[\"nameOfLayer\"]].\n")
-      cat("       3 - the accessor syntax output[[index]].\n")
-      cat("  (*) If any layers share the same name (e.g: same storm name), please use method 1 or 2.")
-    }
-
   }
 
   return(final.stack)
@@ -1388,7 +1376,7 @@ checkInputsTempBehaviour <- function(sts, points, product, wind_threshold, metho
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
-  stopifnot("verbose must be either 0, 1, 2 or 3" = verbose %in% c(0, 1))
+  stopifnot("verbose must be either 0 or 1" = verbose %in% c(0, 1))
 
 }
 
@@ -1588,13 +1576,11 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'   values are `1` (60min), `0.75` (45min), `0.5` (30min), and `0.25` (15min).
 #'   Default value is set to `1`
 #' @param verbose numeric. Whether or not the function should display
-#'   informations about the process and/or outputs and additional notes. Allowed
-#'   values are:
+#'   informations about the process and/or outputs. Allowed values are:
 #' \itemize{
 #' \item `0`: Nothing is displayed
 #' \item `1`: Informations about the process are displayed
 #' \item `2`: Outputs are also displayed
-#' \item `3`: Additional notes are also displayed
 #' }
 #'   Default value is set to `2`
 #' @returns Computed product for each points are returned through lists of
