@@ -14,21 +14,21 @@ getObs(s, ...)
 \S4method{getObs}{Storm}(s)
 }
 \arguments{
-\item{s}{\code{Storm}/\code{StormsList} object}
+\item{s}{\code{Storm}/\code{StormsList}}
 
-\item{...}{extra argument depending on \code{Storm}/\code{StormsList} object}
+\item{...}{extra argument for \code{StormsList}}
 
 \item{name}{character. Name of the storm to extract in capital letters}
 
-\item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the \code{StormsList} object share the same name. Default
-value is set to \code{NULL}}
+\item{season}{numeric. Cyclonic season of the \code{Storm} to extract. Used only
+if several \code{Storm} in \code{s} object share the same name. Default value is set
+to \code{NULL}}
 }
 \value{
 data.frame. Observations of the given storm
 }
 \description{
-Get the observations available for a given storm
+Get the observations available for a given \code{Storm}
 }
 \examples{
 \dontrun{

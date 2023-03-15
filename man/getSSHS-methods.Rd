@@ -14,16 +14,15 @@ getSSHS(s)
 \S4method{getSSHS}{StormsList}(s)
 }
 \arguments{
-\item{s}{\code{Storm}/\code{StormsList} object}
+\item{s}{\code{Storm} / \code{StormsList}}
 }
 \value{
-numeric vector. Maximum SSHS reached of each storms (or the selected
-one through \code{name} input) provided by the given \code{StormsList} object or
-maximum SSHS reached for the given \code{Storm} object
+numeric vector. Maximum SSHS reached for each storm provided by the
+given \code{Storm} / \code{StormsList}
 }
 \description{
-Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storms
-available in a \code{Storm}/\code{StormsList} object
+Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storm(s)
+available in a \code{Storm} / \code{StormsList}
 }
 \examples{
 \dontrun{

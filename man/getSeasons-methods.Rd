@@ -5,7 +5,7 @@
 \alias{getSeasons}
 \alias{getSeasons,Storm-method}
 \alias{getSeasons,StormsList-method}
-\title{Get the cyclonic seasons of storm(s)}
+\title{Get the cyclonic season(s) of storm(s)}
 \usage{
 getSeasons(s)
 
@@ -14,15 +14,14 @@ getSeasons(s)
 \S4method{getSeasons}{StormsList}(s)
 }
 \arguments{
-\item{s}{\code{Storm}/\code{StormsList} object}
+\item{s}{\code{Storm}/\code{StormsList}}
 }
 \value{
-numeric vector. Cyclonic seasons of each storms (or the selected one
-through \code{name} input) provided by the given \code{StormsList} object or the cyclonic
-season for the given \code{Storm} object
+numeric vector. Cyclonic season(s) of each storms provided by the given \code{Storm}
+/ \code{StormsList}
 }
 \description{
-Get the cyclonic season of storms available in a \code{Storm}/\code{StormsList}
+Get the cyclonic season(s) of storm(s) available in a \code{Storm} / \code{StormsList}
 }
 \examples{
 \dontrun{

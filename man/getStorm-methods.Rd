@@ -11,19 +11,19 @@ getStorm(sts, name, season = NULL)
 \S4method{getStorm}{StormsList}(sts, name, season = NULL)
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{StormsList}}
 
 \item{name}{character. Name of the storm to extract}
 
-\item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the \code{StormsList} object share the same name. Default
-value is set de \code{NULL}}
+\item{season}{numeric. Cyclonic season of the \code{Storm} to extract. Used only
+if several \code{Storm} in the \code{sts} share the same name. Default value is set
+de \code{NULL}}
 }
 \value{
-\code{Storm} object
+\code{Storm}
 }
 \description{
-Extract a \code{Storm} object from a \code{StormsList} object
+Extract a \code{Storm} from a \code{StormsList}
 }
 \examples{
 \dontrun{

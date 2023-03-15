@@ -17,7 +17,7 @@ temporalBehaviour(
 )
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{StormsList}}
 
 \item{points}{data.frame. Contains longitude/latitude coordinates within
 column names \code{x} and \code{y}, on which to compute the desired product}
@@ -27,7 +27,6 @@ column names \code{x} and \code{y}, on which to compute the desired product}
 \item \code{"TS"}: Time Series of wind speed
 \item \code{"PDI"}: Power Dissipation Index
 \item \code{"Exposure"}: hour exposition for wind greater than \code{wind_threshold}
-input
 }
 Default value is set to \code{"TS"}}
 
