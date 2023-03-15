@@ -85,7 +85,7 @@ plotBehaviour(st,ss$PAM_MSW)
 
 ### Exporting spatialBehaviour products
 
-The `spatialBehaviour()` function returns rasters stored in a `SpatRaster` object than can be exported either in ".tiff" of ".nc" (NetCDF) formats using the `writeRast()` function. Here, we export the maximum sustained wind speed in the working directory as follows:
+The `spatialBehaviour()` function returns rasters stored in a `SpatRaster` object than can be exported either in ".tiff" or ".nc" (NetCDF) formats using the `writeRast()` function. Here, we export the maximum sustained wind speed in the working directory as follows:
 
 ``` r
 writeRast(ss$PAM_MSW, format=".tiff")

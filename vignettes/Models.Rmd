@@ -1,8 +1,6 @@
 ---
 title: "Models"
-output:
-  html_document: default
-  pdf_document: default
+output: html_document
 date: "`r Sys.Date()`"
 ---
 
