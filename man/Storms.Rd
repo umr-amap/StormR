@@ -2,7 +2,7 @@
 % Please edit documentation in R/getStorms.R
 \name{Storms}
 \alias{Storms}
-\title{Initialize a \code{StormsList} object}
+\title{Initialize a \code{StormsList}}
 \usage{
 Storms(
   sds = test_dataset,
@@ -15,7 +15,7 @@ Storms(
 )
 }
 \arguments{
-\item{sds}{\code{StormsDataset} object. Default value is set to \code{test_dataset}
+\item{sds}{\code{StormsDataset}. Default value is set to \code{test_dataset}
 (See \code{StormsDataset} class)}
 
 \item{loi}{Location of Interest. Must be either:
@@ -48,16 +48,16 @@ values are:
 \item \code{0}: Nothing is displayed
 \item \code{1}: Informations about the process are displayed
 \item \code{2}: Outputs are also displayed
-\item \code{3}: Additional notes to manipulate \code{StormsList} objects are also displayed
+\item \code{3}: Additional notes to manipulate \code{StormsList} are also displayed
 }
 Default value is set to 2}
 }
 \value{
-a \code{StormsList} object that gathers all storms that match the
+\code{StormsList} that gathers all \code{Storms} that match the
 criteria given in the inputs
 }
 \description{
-This function returns a \code{StormsList} object that gathers all the storms
+This function returns a \code{StormsList} that gathers all the storms
 specified by the user
 }
 \details{

@@ -4,21 +4,20 @@
 \name{getBuffer}
 \alias{getBuffer}
 \alias{getBuffer,StormsList-method}
-\title{Get the extended LOI from a Storms object}
+\title{Get the extended LOI from a \code{StormsList}}
 \usage{
 getBuffer(sts)
 
 \S4method{getBuffer}{StormsList}(sts)
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{StormsList}}
 }
 \value{
 sf object. Extended Location Of Interest for the given \code{StormsList}
-object
 }
 \description{
-Get the Extended Location Of Interest from a \code{StormsList} object
+Get the extended Location Of Interest from a \code{StormsList}
 }
 \examples{
 \dontrun{

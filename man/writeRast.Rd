@@ -12,8 +12,8 @@ writeRast(rast, format = ".tiff", filename = NULL, path = "./")
 \item{format}{character. Format of the file to export. Either \code{".tiff"} or
 \code{".nc"}. Default value is set to \code{".tiff"}}
 
-\item{filename}{character. Name of the file. Default value is set to NULL, in
-this case it will be set to \code{names(rast)}}
+\item{filename}{character. Name of the file. Default value is set to \code{NULL},
+in this case it will be set to \code{names(rast)}}
 
 \item{path}{character. Relative path where the file should be written}
 }

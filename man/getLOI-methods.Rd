@@ -4,7 +4,7 @@
 \name{getLOI}
 \alias{getLOI}
 \alias{getLOI,StormsList-method}
-\title{Get LOI from a Storms object}
+\title{Get LOI from a \code{StormsList}}
 \usage{
 getLOI(sts)
 
@@ -14,10 +14,10 @@ getLOI(sts)
 \item{sts}{\code{StormsList} object}
 }
 \value{
-sf object. Location Of Interest for the given \code{StormsList} object
+sf object. Location Of Interest for the given \code{StormsList}
 }
 \description{
-Get the Location Of Interest from a \code{StormsList} object
+Get the Location Of Interest from a \code{StormsList}
 }
 \examples{
 \dontrun{

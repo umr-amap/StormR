@@ -14,21 +14,21 @@ getNbObs(s, ...)
 \S4method{getNbObs}{StormsList}(s, name, season = NULL)
 }
 \arguments{
-\item{s}{\code{Storm}/\code{StormsList} object}
+\item{s}{\code{Storm}/\code{StormsList}}
 
-\item{...}{extra argument depending on \code{Storm}/\code{StormsList} object}
+\item{...}{extra arguments for \code{StormsList}}
 
 \item{name}{character. Name of the storm to extract in capital letters}
 
-\item{season}{numeric. Cyclonic season of the storm to extract. Used only if
-several storms in the \code{StormsList} object share the same name. Default
-value is set to \code{NULL}}
+\item{season}{numeric. Cyclonic season of the \code{Storm} to extract. Used only
+if several \code{Storm} in \code{s} share the same name. Default value is set to
+\code{NULL}}
 }
 \value{
-numeric. Number of observations available for the given storm
+numeric. Number of observations available for the given \code{Storm}
 }
 \description{
-Get the number of observations available for a given storm
+Get the number of observations available for a given \code{Storm}
 }
 \examples{
 \dontrun{

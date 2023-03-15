@@ -1006,18 +1006,17 @@ maskProduct <- function(final_stack, loi, template){
 
 #' Compute indicators of storm behaviour
 #'
-#' This function computes/rasterizes products for each storm of a `StormsList`
-#' object, including Maximum Sustained Wind, Power Dissipation Index, Category
+#' This function computes/rasterizes products for each `Storm` included in a
+#' `StormsList`, among Maximum Sustained Wind, Power Dissipation Index, Category
 #' exposure and 2D wind speed structures/direction of wind speed for every
 #' observations
 #'
-#' @param sts `StormsList` object
+#' @param sts `StormsList`
 #' @param product character. Product to compute among:
 #'   \itemize{
 #'     \item `"MSW"`: Maximum Sustained Wind
 #'     \item `"PDI"`: Power Dissipation Index
 #'     \item `"Exposure"`: hour exposition for wind greater than `wind_threshold`
-#'           input
 #'     \item `"Profiles"`, 2D wind speed structures of wind speed with wind
 #'           direction for each observation
 #'   }
@@ -1026,7 +1025,7 @@ maskProduct <- function(final_stack, loi, template){
 #'   compute `"Exposure"` product. Ignored if `"Exposure"` is not part of the
 #'   products to compute. Default value is set to Saffir Simpson Hurricane Scale
 #'   thresholds
-#' @param method character. Cyclonic model used to compute product. Must be
+#' @param method character. Cyclonic model used to compute `product`. Must be
 #'   either:
 #'   \itemize{
 #'   \item `"Willoughby"`: model based on fits performed on cyclonic observations
@@ -1064,17 +1063,17 @@ maskProduct <- function(final_stack, loi, template){
 #' }
 #'   Default value is set to `2`
 #' @returns SpatRaster stack which provides the desired product computed,
-#'   projected in WGS84 and spanning over the extented LOI of the `StormsList`
-#'   object. Number of layers depends on the number of storm available in `sts`
-#'   input and also `product` and `temp_res` inputs:
+#'   projected in WGS84 and spanning over the extented LOI of the `StormsList` .
+#'   Number of layers depends on the number of `Storm` available in `sts` and
+#'   also `product` and `temp_res` inputs:
 #' \itemize{
-#'    \item `"MSW"` produces one layer per storm. Name of layer is "STORMNAME_MSW"
-#'    \item `"PDI"` produces one layer per storm. Name of layer is "STORMNAME_PDI"
+#'    \item `"MSW"` produces one layer per `Storm`. Name of layer is "STORMNAME_MSW"
+#'    \item `"PDI"` produces one layer per `Storm`. Name of layer is "STORMNAME_PDI"
 #'    \item `"Exposure"` produces one layer for each wind values available
-#'           in `wind_threshold` input and for each storm. Name of layers are
+#'           in `wind_threshold` and for each `Storm`. Name of layers are
 #'           "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
 #'    \item `"Profiles"` produces two layers for each observations
-#'          (real and interpolated) and each storm. Name of layers are
+#'          (real and interpolated) and each  `Storm`. Name of layers are
 #'          "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 #' }
 #'
@@ -1550,7 +1549,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #' products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
 #' and Exposure
 #'
-#' @param sts `StormsList` object
+#' @param sts `StormsList` 
 #' @param points data.frame. Contains longitude/latitude coordinates within
 #'   column names `x` and `y`, on which to compute the desired product
 #' @param product character. Product to compute. Must be either:
@@ -1558,7 +1557,6 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'     \item `"TS"`: Time Series of wind speed
 #'     \item `"PDI"`: Power Dissipation Index
 #'     \item `"Exposure"`: hour exposition for wind greater than `wind_threshold`
-#'           input
 #'   }
 #'   Default value is set to `"TS"`
 #' @param wind_threshold numeric vector. Minimal wind threshold(s) (m/s) to

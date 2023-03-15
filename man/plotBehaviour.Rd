@@ -17,7 +17,7 @@ plotBehaviour(
 )
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{StormsList}}
 
 \item{raster_product}{SpatRaster object. Name of the layer must be
 "STORMNAME_product" where product is either:
@@ -61,8 +61,8 @@ labels according to the observation: \code{1} (up), \code{2} (left), \code{3} (d
 \description{
 This function plots a rasterized product (among maximum sustained wind, power
 dissipation index, category exposure, or 2D wind speed structure/wind
-direction at a given observation) associated with a storm provided in a
-\code{StormsList} object alongside with its track
+direction at a given observation) associated with a \code{Storm} provided in a
+\code{StormsList} alongside with its track
 }
 \examples{
 \dontrun{
