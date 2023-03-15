@@ -74,32 +74,31 @@ Once a storm track data set is available a `StormsDataset` object can be created
 using the `defDatabase` function as follows,
 
 ```{r, eval=F}
-sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", basin=NULL,verbose = FALSE)
+sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", verbose = FALSE)
 str(sds)
 length(sds@database$names)
 ```
 
-This `StormsDataset` object contains track data for 270 storms. When using an IBTrACKS storm track data set, default arguments can be used. By default, field provided by USA agencies (starting with "usa_") are used, but other fields can be selected. For example, for the South Pacific basin ("SP"), we can choose to use data provided by the Australian bureau of meteorology (starting with "bom_") as follows,
+This `StormsDataset` object contains track data for 344 storms. When using an IBTrACKS storm track data set, default arguments can be used. By default, field provided by USA agencies (starting with "usa_") are used, but other fields can be selected. For example, for the South Pacific basin ("SP"), we can choose to use data provided by the Australian bureau of meteorology (starting with "bom_") as follows,
 
 ```{r, eval = F}
-sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc",
-                   basin="SP",
-                   fields = c(basin = "basin",
-                              names = "name",
-                              seasons = "season",
-                              isoTime = "iso_time",
-                              lon = "bom_lon",
-                              lat = "bom_lat",
-                              msw = "bom_wind",
-                              sshs = NULL,
-                              rmw = "bom_rmw",
-                              pressure = "bom_pres",
-                              poci = "bom_poci"),
-                   verbose = FALSE)
+sds <-defDatabase(filename = "IBTrACS_ALL_3yrs.nc",
+                  fields = c(names = "name",
+                             seasons = "season",
+                             isoTime = "iso_time",
+                             basin = "basin",
+                             lon = "bom_lon",
+                             lat = "bom_lat",
+                             msw = "bom_wind",
+                             rmw = "bom_rmw",
+                             pressure = "bom_pres",
+                             poci = "bom_poci"),
+                  basin = "SP",
+                  verbose = FALSE)
 length(sds@database$names)
 ```
 
-This `StormsDataset` object contains track data for 27 storms in the South
+This `StormsDataset` object contains track data for 38 storms in the South
 Pacific basin.
 
 ### Unit conversion
