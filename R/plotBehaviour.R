@@ -168,9 +168,6 @@ plotBehaviour <- function(sts,
     ymax <- ylim[2]
   }
 
-  #Handling gap with legend
-  size.map = ymax - ymin
-  y.leg = ymin - size.map * 0.2
 
   #Plotting track
   plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax))
@@ -228,10 +225,6 @@ plotBehaviour <- function(sts,
        axes = FALSE,
        range = range,
        legend = TRUE,
-       plg = list(loc = "bottom",
-                  ext = c(xmin, xmax, y.leg - size.map* 0.05, y.leg),
-                  cex = 0.7,
-                  shrink = 0),
        add = T)
 
 

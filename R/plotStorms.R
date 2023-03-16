@@ -57,7 +57,8 @@ getColors <- function(msw) {
 #' @return NULL
 plotTrack <- function(st) {
 
-  cex <- 1
+  cex.l <- 1
+  cex.p <- 0.6
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
@@ -69,7 +70,7 @@ plotTrack <- function(st) {
     col = "black",
     lty = 2,
     lwd = 1,
-    cex = cex
+    cex = cex.l
   )
 
   graphics::points(
@@ -78,7 +79,7 @@ plotTrack <- function(st) {
     col = colors,
     pch = 19,
     lwd = 1,
-    cex = cex
+    cex = cex.p
   )
 
 }
@@ -101,7 +102,7 @@ plotTrack <- function(st) {
 #' @return NULL
 plotLabels <- function(st, by, pos) {
 
-  cex <- 0.6
+  cex <- 0.5
   ind <- round(seq(1, getNbObs(st), by))
 
   for (i in ind) {
@@ -330,49 +331,22 @@ plotStorms <- function(sts,
   #Adding legends
   if(legends) {
 
-    leg <- c(expression(paste("TD (< 18 m.s" ^ "-1",")")),
-             expression(paste("TS (18 to 32 m.s" ^ "-1",")")),
-             expression(paste("Cat. 1 (33 to 42 m.s" ^ "-1",")")),
-             expression(paste("Cat. 2 (43 to 49 m.s" ^ "-1",")")),
-             expression(paste("Cat. 3 (50 to 58 m.s" ^ "-1",")")),
-             expression(paste("Cat. 4 (58 to 70 m.s" ^ "-1",")")),
-             expression(paste("Cat. 5 ( >= 70 m.s" ^ "-1",")")))
-
+    leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
     col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 
     lty <- rep(0,7)
     pch <- rep(19,7)
     lwd <- rep(1,7)
 
-    if (loi){
-      if(loi & as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT"){
-        leg <- c(leg, "LOI")
-        col <- c(col, "blue")
-        lty <- c(lty, 0)
-        pch <- c(pch,4)
-        lwd <- c(lwd, 2)
-      }
-      leg <- c(leg, "LOI buffer")
-      col <- c(col, "blue")
-      lty <- c(lty, 1)
-      pch <- c(pch, NA)
-      lwd <- c(lwd, 1)
-    }
-
-    #Handling inset
-    coord <- graphics::par("usr")
-    inset <- (coord[2] - coord[1]) * 0.05
-
-
-    graphics::legend(x = coord[2] + inset,
-                     y = coord[4],
-                     xpd = T,
+    graphics::legend("topleft",
+                     title = "SSHS",
                      legend = leg,
                      col = col,
                      lty = lty,
                      pch = pch,
                      lwd = lwd,
-                     cex = 0.8)
+                     cex = 0.6,
+                     bty = "n")
 
   }
   
