@@ -48,8 +48,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">defDatabase</span><span class="op">(</span></span>
 <span>  <span class="va">filename</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>names <span class="op">=</span> <span class="st">"name"</span>, seasons <span class="op">=</span> <span class="st">"season"</span>, isoTime <span class="op">=</span> <span class="st">"iso_time"</span>, lon <span class="op">=</span> <span class="st">"usa_lon"</span>,</span>
-<span>    lat <span class="op">=</span> <span class="st">"usa_lat"</span>, msw <span class="op">=</span> <span class="st">"usa_wind"</span>, basin <span class="op">=</span> <span class="st">"basin"</span>, sshs <span class="op">=</span> <span class="st">"usa_sshs"</span>, rmw <span class="op">=</span></span>
-<span>    <span class="st">"usa_rmw"</span>, pressure <span class="op">=</span> <span class="st">"usa_pres"</span>, poci <span class="op">=</span> <span class="st">"usa_poci"</span><span class="op">)</span>,</span>
+<span>    lat <span class="op">=</span> <span class="st">"usa_lat"</span>, msw <span class="op">=</span> <span class="st">"usa_wind"</span>, sshs <span class="op">=</span> <span class="st">"usa_sshs"</span>, rmw <span class="op">=</span> <span class="st">"usa_rmw"</span>, pressure <span class="op">=</span></span>
+<span>    <span class="st">"usa_pres"</span>, poci <span class="op">=</span> <span class="st">"usa_poci"</span><span class="op">)</span>,</span>
 <span>  basin <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1980</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%Y"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  unit_conversion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>msw <span class="op">=</span> <span class="st">"knt_to_ms"</span>, rmw <span class="op">=</span> <span class="st">"nm_to_km"</span>, pressure <span class="op">=</span> <span class="st">"mb_to_pa"</span>, poci <span class="op">=</span></span>
@@ -73,14 +73,15 @@ class)</p></dd>
 
 <dt>basin</dt>
 <dd><p>character. Basin name to filter the database within its
-boundaries. Default value is set to <code>NULL</code>. Otherwise, it must be either</p><ul><li><p><code>"NA"</code>: North Atlantic</p></li>
+boundaries. Default value is set to <code>NULL</code> which will not perform any filter.
+Otherwise, it must be either</p><ul><li><p><code>"NA"</code>: North Atlantic</p></li>
 <li><p><code>"SA"</code>: South Atlantic</p></li>
 <li><p><code>"EP"</code>: Eastern North Pacific</p></li>
 <li><p><code>"WP"</code>: Western North Pacific</p></li>
 <li><p><code>"SP"</code>: South Pacific</p></li>
 <li><p><code>"SI"</code>: South India</p></li>
 <li><p><code>"NI"</code>: North India</p></li>
-</ul></dd>
+</ul><p>Should be filled if <code>basin</code> is part of the <code>fields</code> argument.</p></dd>
 
 
 <dt>seasons</dt>
