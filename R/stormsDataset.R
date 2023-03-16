@@ -398,13 +398,12 @@ defDatabase <- function(filename,
     basin <- "None"
 
 
-
   sds <- new(Class = "StormsDataset",
              filename = filename,
              fields = fields,
              database = data,
              basin = basin,
-             seasons = c(min = seasons[1], max = seasons[2]))
+             seasons = c(min = min(data$seasons, na.rm = T), max =  max(data$seasons, na.rm = T)))
 
 
   return(sds)
