@@ -222,62 +222,58 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 
 
 
-#' Initialize a StormsDataset 
+#' The `defDatabase()` function creates a `StormsDataset` object from a NetCDF file  
 #'
-#' @param filename character. Name of the database to load. Must be a netcdf
-#'   file
-#' @param fields named character vector. Dictionary that provides all the name
-#'   of dimension to extract from the netcdf database (See `StormsDataSet`
-#'   class)
-#' @param basin character. Basin name to filter the database within its
-#'   boundaries. Default value is set to `NULL` which will not perform any filter.
-#'   Otherwise, it must be either
+#' @param filename Name of the NetCDF (.nc) file (character)
+#' @param fields Named character vector providing the correspondence between the fields
+#'  in the output `StormsDataset` object and the variable names in the input NetCDF file.
+#' @param basin Name of the basin (character) for which storm track data are extracted. 
+#' By default `basin=NULL`, meaning that all stars regardless the basin in which they 
+#' originated are extracted. Seven basins can be used to filter the data set:
 #' \itemize{
-#'   \item `"NA"`: North Atlantic
-#'   \item `"SA"`: South Atlantic
-#'   \item `"EP"`: Eastern North Pacific
-#'   \item `"WP"`: Western North Pacific
-#'   \item `"SP"`: South Pacific
-#'   \item `"SI"`: South India
-#'   \item `"NI"`: North India
+#'   \item `"NA"` for North Atlantic basin
+#'   \item `"SA"` for South Atlantic basin
+#'   \item `"EP"` for Eastern North Pacific basin
+#'   \item `"WP"` for Western North Pacific basin
+#'   \item `"SP"` for South Pacific basin
+#'   \item `"SI"` for South India basin
+#'   \item `"NI"` for North India basin
 #' }
-#' Should be filled if `basin` is part of the `fields` argument.
-#' @param seasons numeric vector. Range of calendar years to filter storms. For
-#'   cyclones that formed in one year and dissipated in the following year, the
-#'   latter should be used. Default value is set to between `1980` and the
-#'   current year
-#' @param unit_conversion named character vector. Dictionary that provides the
-#'   instructions to convert `msw`, `rmw`, `pressure` and/or `poci` fields in
-#'   the correct units. Default value is `c(msw = "knt_to_ms", rmw = "nm_to_km",
-#'   pressure = "mb_to_pa", poci = "mb_to_pa")` according to the IBTrACS
-#'   databases. This input is mandatory even if no conversion is needed. In this
-#'   case use `"None"` in the corresponding fields. Allowed value are: For `msw`
-#'   fields
+#' @param seasons Seasons of occurrence of the storms (numeric vector, e.g., c(2020,2022)).
+#' By default all storms occurring since 1980 are extracted.
+#' @param unit_conversion Required unit conversions (named character vector), `msw` has 
+#' to be provided in $m.s^{-1}$, `rmw` in $km$, `pressure` and `poci` in $Pa$. By default 
+#' `unit_conversion=c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")`
+#' to meet the conversion requirement when importing a NetCDF file from the IBTrACS database. 
+#' This argument is mandatory even if no conversion is needed. If no conversion is needed then
+#' use `"None"` in the corresponding fields. The following unit conversions are implemented:
+#' 
+#'   For `msw`,
 #' \itemize{
-#'   \item `"knt_to_ms"`: converts knot in meter per second
-#'   \item `"kmh_to_ms"`: converts kilometer per hour in meter per second
-#'   \item "`mph_to_ms"`: converts miles per hour in meter per second
-#'   \item `"None"`: No conversion needed
+#'   \item `"knt_to_ms"` to convert knot to meter per second (default setting)
+#'   \item `"kmh_to_ms"` to convert kilometre per hour to meter per second
+#'   \item "`mph_to_ms"` to convert miles per hour to meter per second
+#'   \item `"None"`if no conversion is needed
 #' }
 #'
-#'   For `rmw` fields
+#'   For `rmw`,
 #' \itemize{
-#'   \item `"nm_to_ms"`: converts nautical miles in kilometer
-#'   \item `"None"`: No conversion needed
+#'   \item `"nm_to_ms"`to convert nautical miles to kilometre (default setting)
+#'   \item `"None"`if no conversion is needed
 #'  }
 #'
-#'   For both `pressure` and `poci`
+#'   For `pressure` and `poci`,
 #'  \itemize{
-#'    \item `"b_to_pa"`: converts bar in pascal
-#'    \item "`mb_to_pa"`: converts millibar in pascal
-#'    \item `"atm_to_pa"`: converts atmosphere in pascal
-#'    \item `"psi_to_pa"`: converts psi in pascal
-#'    \item `"None"`: No conversion needed
+#'    \item "`mb_to_pa"` to convert  millibar to Pascal  (default setting)
+#'    \item `"b_to_pa"` to convert bar to Pascal
+#'    \item `"atm_to_pa"` to convert  atmosphere to Pascal
+#'    \item `"psi_to_pa"` to convert  psi to Pascal
+#'    \item `"None"`if no conversion is needed
 #'  }
 #'
-#' @param verbose logical. Whether or not the function should display
-#'   informations about the process
-#' @return An object of class `StormsDataset`
+#' @param verbose Whether (TRUE) or not (FALSE) the function should display
+#'   information about the processes
+#' @return The `defDatabase()` function returns a `StormsDataset` object.
 #' @export
 defDatabase <- function(filename,
                         fields = c(names = "name",
