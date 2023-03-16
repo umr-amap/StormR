@@ -1,0 +1,402 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={DataSource},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{DataSource}
+\author{}
+\date{\vspace{-2.5em}2023-03-16}
+
+\begin{document}
+\maketitle
+
+Before running \texttt{StormR} functions users have to provide a
+tropical storm track dataset as a ``.nc'' (NetCDF) file in which the
+location and some characteristics of storms are given across their
+lifespan. This file is used to create a \texttt{StormsDataset} object
+using the \texttt{defDatabase} function. By default, the arguments of
+\texttt{defDatabase} function are set up to create a
+\texttt{StormsDataset} object using the fields provided by USA agencies
+in the IBTrACS database
+\href{https://www.ncei.noaa.gov/products/international-best-track-archive}{International
+Best Track Archive for Climate Stewardship} (Knapp et al., 2010). This
+database provides a fairly comprehensive record of worldwide tropical
+storms and cyclones with a 3-hours temporal resolution since 1841. Other
+databases can be used as long as the following fields are provided:
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1176}}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1765}}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.3824}}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2059}}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1176}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\centering
+\textbf{Field name}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Description}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Format/Units}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Example}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Type}
+\end{minipage} \\
+\midrule()
+\endhead
+\texttt{names} & Names of the storms & Capital letters & PAM &
+Mandatory \\
+\texttt{seasons} & Years of observations & Calendar year & 2015 &
+Mandatory \\
+\texttt{isoTime} & Date and time of observations & YYYY-MM-DD HH:mm:ss
+UTC & 2015-03-13 12:00:00 & Mandatory \\
+\texttt{lon} & Longitude of the observations & Eastern Decimal degrees &
+168.7 & Mandatory \\
+\texttt{lat} & Latitude of the observations & Northern Decimal degrees &
+-17.6 & Mandatory \\
+\texttt{msw} & Maximum sustained wind speed & \(m.s^{-1}\) & 77 &
+Mandatory \\
+\texttt{basin} & Name of the area where the storm originated.
+Traditionally divided into seven basins & IBTRaCS format \newline NA
+(North Atlantic) \newline EP (Eastern North Pacific) \newline WP
+(Western North Pacific) \newline NI (North Indian) \newline SI (South
+Indian) \newline SP (Southern Pacific) \newline SA (South Atlantic) & SP
+& Recommended\(^{1}\) \\
+\texttt{rmw} & Radius of maximum winds: distance between the center of
+the storm and its band of strongest winds & \(km\) & 20 &
+Recommended\(^{2}\) \\
+\texttt{pressure} & Central pressure & \(pa\) & 91100 &
+Recommended\(^{3}\) \\
+\texttt{poci} & Pressure of the last closed isobar & \(pa\) & 92200 &
+Recommended\(^{3}\) \\
+\texttt{sshs} & Saffir-Simpson hurricane wind scale rating based on
+\texttt{msw} (here in \(m.s^{-1}\)) & \(-1 =\) Tropical depression
+(\texttt{msw} \(< 18\)) \newline \(0 =\) Tropical storm (\(18 \leq\)
+\texttt{msw} \(< 33\)) \newline \(1 =\) Category 1 (\(33 \leq\)
+\texttt{msw} \(< 42\)) \newline \(2 =\) Category 2 (\(42 \leq\)
+\texttt{msw} \(< 49\)) \newline \(3 =\) Category 3 (\(49 \leq\)
+\texttt{msw} \(< 58\)) \newline \(4 =\) Category 4 (\(58 \leq\)
+\texttt{msw} \(< 70\)) \newline \(5 =\) Category 5 (\texttt{msw}
+\(\ge 70\)) & 5 & Optional\(^{4}\) \\
+\bottomrule()
+\end{longtable}
+
+\(^{1}\) This field let the user filter storms on a particular area. It
+can be very usefull for large dataset if one is interested only in a
+specific basin. If not provided, this filtering operation cannot be
+achieved.
+
+\(^{2}\) Providing \texttt{rmw} allows better estimates of wind speed
+and direction. If not provided \texttt{rmw} is approximated using an
+empirical formula derived from Willoughby et al.~(2006) :
+\(R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times |\phi|)}\).
+
+\(^{3}\) If these fields are not filled, both Holland and Boose models
+cannot be performed (See Behaviour vignette)
+
+\(^{4}\) The \texttt{sshs} field is optional, if not provided this field
+is automatically filled using the \texttt{msw} field.
+
+\hypertarget{downloading-a-data-source}{%
+\subsubsection{Downloading a data
+source}\label{downloading-a-data-source}}
+
+If not available, a storm track data set has to be downloaded. In the
+following example we illustrate how a storm track data set can be
+downloaded on the IBTrACKS website. Different ``.nc'' (NetCDF) files
+containing storm track data sets can be downloaded here:
+\url{https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/}.
+Please, follow the IBTrACS citation recommendations when using these
+datasets (including citing Knapp et al., 2010 and Knapp et al., 2018,
+and providing the access date for the later). For example, track data
+for all the storms that occurred over the last three years over the
+different basin world wide can be download on the working directory as
+follows,
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{download.file}\NormalTok{(}\AttributeTok{url =} \StringTok{"https://www.ncei.noaa.gov/data/international{-}best{-}track{-}archive{-}for{-}climate{-}stewardship{-}ibtracs/v04r00/access/netcdf/IBTrACS.last3years.v04r00.nc"}\NormalTok{, }\AttributeTok{destfile =} \StringTok{"./IBTrACS\_ALL\_3yrs.nc"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{creating-a-stormsdataset}{%
+\subsubsection{\texorpdfstring{Creating a
+\texttt{StormsDataset}}{Creating a StormsDataset}}\label{creating-a-stormsdataset}}
+
+Once a storm track data set is available a \texttt{StormsDataset} object
+can be created using the \texttt{defDatabase} function as follows,
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sds }\OtherTok{\textless{}{-}} \FunctionTok{defDatabase}\NormalTok{(}\AttributeTok{filename =} \StringTok{"IBTrACS\_ALL\_3yrs.nc"}\NormalTok{, }\AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{str}\NormalTok{(sds)}
+\FunctionTok{length}\NormalTok{(sds}\SpecialCharTok{@}\NormalTok{database}\SpecialCharTok{$}\NormalTok{names)}
+\end{Highlighting}
+\end{Shaded}
+
+This \texttt{StormsDataset} object contains track data for 344 storms.
+When using an IBTrACKS storm track data set, default arguments can be
+used. By default, field provided by USA agencies (starting with
+``usa\_'') are used, but other fields can be selected. For example, for
+the South Pacific basin (``SP''), we can choose to use data provided by
+the Australian bureau of meteorology (starting with ``bom\_'') as
+follows,
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sds }\OtherTok{\textless{}{-}}\FunctionTok{defDatabase}\NormalTok{(}\AttributeTok{filename =} \StringTok{"IBTrACS\_ALL\_3yrs.nc"}\NormalTok{,}
+                  \AttributeTok{fields =} \FunctionTok{c}\NormalTok{(}\AttributeTok{names =} \StringTok{"name"}\NormalTok{,}
+                             \AttributeTok{seasons =} \StringTok{"season"}\NormalTok{,}
+                             \AttributeTok{isoTime =} \StringTok{"iso\_time"}\NormalTok{,}
+                             \AttributeTok{basin =} \StringTok{"basin"}\NormalTok{,}
+                             \AttributeTok{lon =} \StringTok{"bom\_lon"}\NormalTok{,}
+                             \AttributeTok{lat =} \StringTok{"bom\_lat"}\NormalTok{,}
+                             \AttributeTok{msw =} \StringTok{"bom\_wind"}\NormalTok{,}
+                             \AttributeTok{rmw =} \StringTok{"bom\_rmw"}\NormalTok{,}
+                             \AttributeTok{pressure =} \StringTok{"bom\_pres"}\NormalTok{,}
+                             \AttributeTok{poci =} \StringTok{"bom\_poci"}\NormalTok{),}
+                  \AttributeTok{basin =} \StringTok{"SP"}\NormalTok{,}
+                  \AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{length}\NormalTok{(sds}\SpecialCharTok{@}\NormalTok{database}\SpecialCharTok{$}\NormalTok{names)}
+\end{Highlighting}
+\end{Shaded}
+
+This \texttt{StormsDataset} object contains track data for 38 storms in
+the South Pacific basin.
+
+\hypertarget{unit-conversion}{%
+\subsubsection{Unit conversion}\label{unit-conversion}}
+
+In the IBTrACS data sets speeds are given in knots (\(knt\)), distances
+in nautical miles (\(nm\)), and pressure in millibar (\(mb\)) but the
+models implemented in the \texttt{temporalBehaviour} and
+\texttt{spatialBehaviour} functions to compute wind speed, wind
+direction, and summary statistics require data following the
+international system of units (SI) or SI-derived units. Therefore, by
+default, when using IBTrACS data sets, the \texttt{defDatabase} function
+converts knots (\(knt\)) to meter per second (\(m.s^{-1}\)), nautical
+miles (\(nm\)) to kilometres (\(km\)), and millibar (\(mb\)) to Pascal
+(\(pa\)). When using another source of data than IBTrACS, the
+\texttt{unit\_conversion} argument can be used to convert the data to
+the desire units.The following lists the allowed conversions available
+when using the \texttt{unit\_conversion} argument
+
+For \texttt{msw}: \newline \texttt{knt\_to\_ms}: converts knot in meter
+per second (Default) \newline \texttt{kmh\_to\_ms}: converts kilometer
+per hour in meter per second \newline \texttt{mph\_to\_ms}: converts
+miles per hour in meter per second \newline \texttt{None}: No conversion
+needed \newline
+
+For \texttt{rmw}: \newline \texttt{nm\_to\_ms}: converts nautical miles
+in kilometer (Default) \newline \texttt{None}: No conversion needed
+\newline
+
+For both \texttt{pressure} and \texttt{poci}: \newline
+\texttt{b\_to\_pa}: converts bar in Pascal \newline \texttt{mb\_to\_pa}:
+converts millibar in Pascal (Default) \newline \texttt{atm\_to\_pa}:
+converts atmosphere in Pascal \newline \texttt{psi\_to\_pa}: converts
+psi in Pascal \newline \texttt{None}: No conversion needed \newline
+
+These fields in \texttt{unit\_conversion} argument are mandatory if they
+are also contained in the fields of \texttt{fields} argument. If a field
+does not required any conversion, the user must still specify
+\texttt{"None"}.
+
+\hypertarget{dataset-example}{%
+\subsubsection{Dataset example}\label{dataset-example}}
+
+This package provides a dataset \texttt{test\_dataset} which gathers all
+the tropical cyclones that occured nearby Vanuatu (resp. New Caledonia)
+from 2015 to 2016 (resp. 2020 to 2021 ). It represents the default
+\texttt{StormsDataset} used in the \texttt{Storms} function if no other
+\texttt{StormsDataset} has been initialized with the
+\texttt{defDatabase} function.
+
+\hypertarget{reference}{%
+\subsection{Reference}\label{reference}}
+
+\begin{itemize}
+\item
+  Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., \&
+  Neumann, C. J. (2010). The International Best Track Archive for
+  Climate Stewardship (IBTrACS). Bulletin of the American Meteorological
+  Society, 91(3), Article 3.
+  \url{https://doi.org/10.1175/2009bams2755.1}
+\item
+  Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, \& Schreck, C.
+  J. (2018) International Best Track Archive for Climate Stewardship
+  (IBTrACS) Project, Version 4. {[}indicate subset used{]}. NOAA
+  National Centers for Environmental Information.
+  \url{https://doi:10.25921/82ty-9e16} {[}2023-03-15{]}
+\end{itemize}
+
+\textbf{- Lien vers page téléchargement IBTraCKS OKKK}
+\textbf{- Lien vers page téléchargement autre BDD ???}
+\textbf{- Code pour download OKKK}
+
+In the following example, we will use the data from the IBTrACS that
+gather all storms that occurred in the South Pacific Basin
+(IBTrACS.SP.v04r00.nc). It is possible to download this file using:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{download.file}\NormalTok{(}\AttributeTok{url =} \StringTok{"https://www.ncei.noaa.gov/data/international{-}best{-}track{-}archive{-}for{-}climate{-}stewardship{-}ibtracs/v04r00/access/netcdf/IBTrACS.SP.v04r00.nc"}\NormalTok{,}\AttributeTok{destfile=}\StringTok{"IBTrACS\_ALL\_3yrs.nc"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{define-a-stormsdataset}{%
+\subsection{Define a StormsDataset}\label{define-a-stormsdataset}}
+
+\textbf{- iniDataBase sur les 2 BDD téléchargées}
+\textbf{- différence de gestion IBTRACKS car paramètres par défaut vs autre bdd ou il faut redéfinir les champs.}
+\textbf{- dire qu'on a déjà une BDD par défaut de test déjà existant (e.g. ?IBTRACKS\_SP), pas besoin de faire un initDatabase OKKKK}
+\textbf{- Gestion des unités ? OKKKKKK}
+
+The \texttt{defDatabase} function let the user define a new dataset.
+This function returns a \texttt{StormsDataset} object, especially
+designed to store all the informations needed for the dataset (See Data
+sources section). In what follows, we define a new
+\texttt{StormsDataset} based on the database we downloaded right above
+and the default settings of \texttt{defDatabase} function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sds }\OtherTok{\textless{}{-}} \FunctionTok{defDatabase}\NormalTok{(}\AttributeTok{filename =} \StringTok{"./test\_ibtracs.nc"}\NormalTok{,}
+                   \AttributeTok{fields =} \FunctionTok{c}\NormalTok{(}\AttributeTok{basin =} \StringTok{"basin"}\NormalTok{,}
+                              \AttributeTok{names =} \StringTok{"name"}\NormalTok{,}
+                              \AttributeTok{seasons =} \StringTok{"season"}\NormalTok{,}
+                              \AttributeTok{isoTime =} \StringTok{"iso\_time"}\NormalTok{,}
+                              \AttributeTok{lon =} \StringTok{"usa\_lon"}\NormalTok{,}
+                              \AttributeTok{lat =} \StringTok{"usa\_lat"}\NormalTok{,}
+                              \AttributeTok{msw =} \StringTok{"usa\_wind"}\NormalTok{,}
+                              \AttributeTok{sshs =} \StringTok{"usa\_sshs"}\NormalTok{,}
+                              \AttributeTok{rmw =} \StringTok{"usa\_rmw"}\NormalTok{,}
+                              \AttributeTok{pressure =} \StringTok{"usa\_pres"}\NormalTok{,}
+                              \AttributeTok{poci =} \StringTok{"usa\_poci"}\NormalTok{),}
+                   \AttributeTok{basin =} \StringTok{"SP"}\NormalTok{,}
+                   \AttributeTok{seasons =} \FunctionTok{c}\NormalTok{(}\DecValTok{1980}\NormalTok{, }\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{format}\NormalTok{(}\FunctionTok{Sys.time}\NormalTok{(), }\StringTok{"\%Y"}\NormalTok{))),}
+                   \AttributeTok{unit\_conversion =} \FunctionTok{c}\NormalTok{(}\AttributeTok{msw =} \StringTok{"knt\_to\_ms"}\NormalTok{,}
+                                       \AttributeTok{rmw =} \StringTok{"nm\_to\_km"}\NormalTok{,}
+                                       \AttributeTok{pressure =} \StringTok{"mb\_to\_pa"}\NormalTok{,}
+                                       \AttributeTok{poci =} \StringTok{"mb\_to\_pa"}\NormalTok{),}
+                   \AttributeTok{verbose =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Note: If one is extracting data from IBTrACS databases, we strongly
+advise using the \texttt{usa\_} fields as they are the most filled and
+relevant. The field \texttt{basin} here, will allow searching for storms
+that occurred only in the South Pacific Basin. The field
+\texttt{seasons} here, will allow searching for storms that occurred
+between 1980 and the current year.
+
+\end{document}
