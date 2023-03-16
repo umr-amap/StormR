@@ -555,8 +555,8 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
   #Checking seasons input
   stopifnot("seasons must be numeric" = identical(class(as.numeric(seasons)), "numeric"))
   stopifnot("seasons must be as integer" = all(round(seasons) == seasons))
-  stopifnot("lower bound of time range is not valid" = seasons >= min(sds@database$seasons, na.rm = T))
-  stopifnot("upper bound of time range is not valid" = seasons <= max(sds@database$seasons, na.rm = T))
+  stopifnot("lower bound of time range is not valid" = seasons >= sds@seasons["min"])
+  stopifnot("upper bound of time range is not valid" = seasons <= sds@seasons["max"])
 
   #Checking names input
   if (!is.null(names)) {
@@ -904,14 +904,14 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' @examples
 #' \dontrun{
 #' #Getting data using country names
-#' pam <- Storms(loi = "Vanuatu", names = "PAM")
+#' vanuatu.st <- Storms(loi = "Vanuatu")
 #'
 #' #Getting data using a specific point location
 #' pt <- c(169, -19)
 #' pam.pt <- Storms(loi = pt, names = "PAM")
 #'
 #' #Getting data using country and storm names 
-#' sts_nc <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+#' niran.nc <- Storms(loi = "New Caledonia", names = c("NIRAN"))
 #'
 #' #Getting data using a user defined spatial polygon
 #' poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
