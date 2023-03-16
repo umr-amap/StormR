@@ -76,10 +76,10 @@ using the `defDatabase` function as follows,
 ```{r, eval=F}
 sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", basin=NULL, verbose = FALSE)
 str(sds)
-length(sds@database$names)
+length(unique(paste(sds@database$names,sds@database$seasons," ")))
 ```
 
-This `StormsDataset` object contains track data for 344 storms. When using an IBTrACKS storm track data set, default arguments can be used. By default, field provided by USA agencies (starting with "usa_") are used, but other fields can be selected. For example, for the South Pacific basin ("SP"), we can choose to use data provided by the Australian bureau of meteorology (starting with "bom_") as follows,
+This `StormsDataset` object contains track data for 275 storms. When using an IBTrACKS storm track data set, default arguments can be used. By default, field provided by USA agencies (starting with "usa_") are used, but other fields can be selected. For example, for the South Pacific basin ("SP"), we can choose to use data provided by the Australian bureau of meteorology (starting with "bom_") as follows,
 
 ```{r, eval = F}
 sds <-defDatabase(filename = "IBTrACS_ALL_3yrs.nc",
