@@ -169,11 +169,10 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
   stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["msw"] %in% c("None", "mph_to_ms", "knt_to_ms", "kmh_to_ms"))
   
   #Optional fields
-  if(!("basin" %in% names(fields))){
-    warning("No 'basin' selection in fields, Cannot use basin filtering when collecting data")
-  }else{
-    if(is.null(basin))
-      stop("No basin input, Cannot filter data")
+  if(("basin" %in% names(fields)) & is.null(basin)){
+    warning("No basin specified, Cannot use basin filtering when collecting data")
+  }else if(!("basin" %in% names(fields)) & !is.null(basin)){
+    stop("No basin field in `fields` input specified, Cannot use basin filtering when collecting data")
   }
    
   
@@ -231,7 +230,8 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #'   of dimension to extract from the netcdf database (See `StormsDataSet`
 #'   class)
 #' @param basin character. Basin name to filter the database within its
-#'   boundaries. Default value is set to `NULL`. Otherwise, it must be either
+#'   boundaries. Default value is set to `NULL` which will not perform any filter.
+#'   Otherwise, it must be either
 #' \itemize{
 #'   \item `"NA"`: North Atlantic
 #'   \item `"SA"`: South Atlantic
@@ -241,6 +241,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #'   \item `"SI"`: South India
 #'   \item `"NI"`: North India
 #' }
+#' Should be filled if `basin` is part of the `fields` argument.
 #' @param seasons numeric vector. Range of calendar years to filter storms. For
 #'   cyclones that formed in one year and dissipated in the following year, the
 #'   latter should be used. Default value is set to between `1980` and the
@@ -285,7 +286,6 @@ defDatabase <- function(filename,
                                    lon = "usa_lon",
                                    lat = "usa_lat",
                                    msw = "usa_wind",
-                                   basin = "basin",
                                    sshs = "usa_sshs",
                                    rmw = "usa_rmw",
                                    pressure = "usa_pres",
