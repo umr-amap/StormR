@@ -38,7 +38,7 @@ $C_d$ is the drag coefficient of the storm fixed to $2$ X $10^{-3}$ as in Emanue
 
 ### Duration of exposure
 
-The duration of exposure (in $hours$) exposure to winds reaching defined speed thresholds is computed as follows:
+The duration of exposure (in $hours$) to winds reaching defined speed thresholds is computed as follows:
 
 $$
 \int_T c(v_t) dt
