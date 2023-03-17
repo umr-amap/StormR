@@ -98,8 +98,7 @@ exposure and 2D wind speed structures/direction of wind speed for every
 observations
 }
 \details{
-Add details on Willoughy/Holland/Boose method, asymmetries and
-getRMW method ... The \code{temp_res} input will perform a linear interpolation
+The \code{temp_res} input will perform a linear interpolation
 of observations to further compute each 2D wind speed structure at each
 interpolated observations. For example, if \code{temp_res == 1}, it will
 generate observations every 1hour between the available observations. Doing
@@ -115,13 +114,13 @@ smooth the result(s).
 #Compute MSW product for Pam 2015 in Vanuatu using default settings
 msw.pam <- spatialBehaviour(pam)
 
-#Compute PDI product for Erica and Niran in New Caledonia using Holland model without asymmetry
+#Compute PDI product for Storms in sts_nc using Holland model without asymmetry
 pdi.nc <- spatialBehaviour(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 
 #Compute Exposure for Pam 2015 in Vanuatu using default settings
 exp.pam <- spatialBehaviour(pam, product = "Exposure")
 
-#Compute profiles wind speed for Erica and Niran in New Caledonia using default settings
+#Compute profiles for Storms in sts_nc using default settings
 prof.nc <- spatialBehaviour(sts_nc, product = "Profiles")
 }
 

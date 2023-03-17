@@ -2,6 +2,10 @@
 title: "spatialBehaviour"
 output: html_document
 date: "`r Sys.Date()`"
+vignette: >
+   %\VignetteIndexEntry{"spatialBehaviour"}
+   %\VignetteEngine{knitr::rmarkdown}
+   %\VignetteEncoding{UTF-8}
 ---
 
 ``` {r setup, include = FALSE}
