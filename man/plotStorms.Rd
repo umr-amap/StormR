@@ -13,7 +13,7 @@ plotStorms(
   labels = FALSE,
   by = 8,
   pos = 3,
-  legends = TRUE,
+  legends = "topleft",
   loi = TRUE
 )
 }
@@ -51,8 +51,9 @@ Default value is set to \code{NULL}}
 of labels according to the observation: \code{1} (up), \code{2} (left), \code{3} (down),
 \code{4} (right). Default value is set to 3. Ignored if \code{labels == FALSE}}
 
-\item{legends}{logical. Whether or not to plot legends. Default value is set
-to \code{TRUE}}
+\item{legends}{character. Indicates the where the legend should be plotted.
+Must be either \code{"topright"}, \code{"topleft"},  (default setting),
+\code{"bottomleft"}, \code{"bottomright"} or \code{"none"} (no legend)}
 
 \item{loi}{logical. Whether or not to plot the extended LOI on the map.
 Default value is set to \code{TRUE}}
@@ -64,11 +65,11 @@ only a desired set of \code{Storm} extracted from the \code{StormsList}
 }
 \examples{
 \dontrun{
-#Plot Erica over New Caledonia with labels every 24h
-plotStorms(sts_nc, names = "ERICA", labels = TRUE)
+#Plot Niran over New Caledonia with labels every 24h
+plotStorms(sts_nc, names = "NIRAN", labels = TRUE)
 
-#Plot Erica, with labels every 6h on the right side of observations
-plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
+#Plot Niran, with labels every 6h on the right side of observations
+plotStorms(sts_nc, names = "NIRAN", labels = TRUE, by = 2, pos = 4)
 
 }
 

@@ -4,6 +4,10 @@ output:
   html_document: default
   pdf_document: default
 date: "`r Sys.Date()`"
+vignette: >
+   %\VignetteIndexEntry{"Data source"}
+   %\VignetteEngine{knitr::rmarkdown}
+   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r step up, include = FALSE}

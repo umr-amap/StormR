@@ -15,8 +15,9 @@
 #' @param pos numeric
 #' @param color_palette character vector
 #' @param main character
+#' @param legends character
 #' @return NULL
-checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, color_palette, main){
+checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, color_palette, main, legends){
 
   #Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -63,6 +64,13 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
     stopifnot("main must be character" = identical(class(main),"character"))
     stopifnot("main must be length 1" = length(main) == 1)
   }
+  
+  #Checking legend
+  stopifnot("legends must be character" = identical(class(legends), "character"))
+  stopifnot("legends must be length 1" = length(legends) == 1)
+  stopifnot("legends must be either topright, topleft, bottomleft, bottomright, or none" = legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none"))
+  
+  
 
 }
 
@@ -111,20 +119,23 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'@param pos numeric. Must be between `1` and `4`. Correspond to the position of
 #'  labels according to the observation: `1` (up), `2` (left), `3` (down), `4`
 #'  (right). Default value is set to `3`. Ignored if `labels == FALSE`
+#' @param legends character. Indicates the where the legend should be plotted.
+#'   Must be either `"topright"`, `"topleft"`,  (default setting),
+#'   `"bottomleft"`, `"bottomright"` or `"none"` (no legend)
 #'
 #'@returns NULL
 #'
 #' @examples
 #' \dontrun{
-#' #Plot MSW raster for Pam (2015) in Vanuatu
 #' pam <- Storms(loi = "Vanuatu", names = "PAM")
-#' pam_msw <- spatialBehaviour(pam, verbose = 0)
-#' plotBehaviour(pam, pam_msw)
+#' 
+#' #Plot MSW raster for Pam (2015) in Vanuatu
+#' pam.msw <- spatialBehaviour(pam, verbose = 0)
+#' plotBehaviour(pam, pam.msw)
 #'
 #' #Plot a 2D windspeed structure  for Pam (2015) in Vanuatu
-#' pam <- Storms(loi = "Vanuatu", names = "PAM")
-#' pam_prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-#' plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
+#' pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
+#' plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 #' }
 #'
 #'
@@ -137,11 +148,12 @@ plotBehaviour <- function(sts,
                           ylim = NULL,
                           labels = FALSE,
                           by = 8,
-                          pos = 3){
+                          pos = 3,
+                          legends = "topleft"){
 
 
   checkInputsPb(sts, raster_product, xlim, ylim, labels, by, pos, color_palette,
-                main)
+                main, legends)
 
   name <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][1]
   product <- strsplit(names(raster_product), split = "_", fixed = TRUE)[[1]][2]
@@ -168,12 +180,10 @@ plotBehaviour <- function(sts,
     ymax <- ylim[2]
   }
 
-  #Handling gap with legend
-  size.map = ymax - ymin
-  y.leg = ymin - size.map * 0.2
 
   #Plotting track
-  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax))
+  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
+             legends = legends)
 
   #Adding raster_product on map
   if(product == "MSW"){
@@ -228,10 +238,6 @@ plotBehaviour <- function(sts,
        axes = FALSE,
        range = range,
        legend = TRUE,
-       plg = list(loc = "bottom",
-                  ext = c(xmin, xmax, y.leg - size.map* 0.05, y.leg),
-                  cex = 0.7,
-                  shrink = 0),
        add = T)
 
 
