@@ -63,7 +63,8 @@ direction at a given observation) associated with a <code>Storm</code> provided 
 <span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  labels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  by <span class="op">=</span> <span class="fl">8</span>,</span>
-<span>  pos <span class="op">=</span> <span class="fl">3</span></span>
+<span>  pos <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  legends <span class="op">=</span> <span class="st">"topleft"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -125,20 +126,26 @@ value is set to <code>NULL</code></p></dd>
 labels according to the observation: <code>1</code> (up), <code>2</code> (left), <code>3</code> (down), <code>4</code>
 (right). Default value is set to <code>3</code>. Ignored if <code>labels == FALSE</code></p></dd>
 
+
+<dt>legends</dt>
+<dd><p>character. Indicates the where the legend should be plotted.
+Must be either <code>"topright"</code>, <code>"topleft"</code>,  (default setting),
+<code>"bottomleft"</code>, <code>"bottomright"</code> or <code>"none"</code> (no legend)</p></dd>
+
 </dl></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co">#Plot MSW raster for Pam (2015) in Vanuatu</span></span></span>
 <span class="r-in"><span><span class="va">pam</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">pam_msw</span> <span class="op">&lt;-</span> <span class="fu"><a href="spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">pam</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">plotBehaviour</span><span class="op">(</span><span class="va">pam</span>, <span class="va">pam_msw</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Plot MSW raster for Pam (2015) in Vanuatu</span></span></span>
+<span class="r-in"><span><span class="va">pam.msw</span> <span class="op">&lt;-</span> <span class="fu"><a href="spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">pam</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plotBehaviour</span><span class="op">(</span><span class="va">pam</span>, <span class="va">pam.msw</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Plot a 2D windspeed structure  for Pam (2015) in Vanuatu</span></span></span>
-<span class="r-in"><span><span class="va">pam</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">pam_prof</span> <span class="op">&lt;-</span> <span class="fu"><a href="spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">pam</span>, product <span class="op">=</span> <span class="st">"Profiles"</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">plotBehaviour</span><span class="op">(</span><span class="va">pam</span>, <span class="va">pam_prof</span><span class="op">[[</span><span class="st">"PAM_Profiles_37"</span><span class="op">]</span><span class="op">]</span>, labels <span class="op">=</span> <span class="cn">TRUE</span>, pos <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pam.prof</span> <span class="op">&lt;-</span> <span class="fu"><a href="spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">pam</span>, product <span class="op">=</span> <span class="st">"Profiles"</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plotBehaviour</span><span class="op">(</span><span class="va">pam</span>, <span class="va">pam.prof</span><span class="op">$</span><span class="va">PAM_Speed_37</span>, labels <span class="op">=</span> <span class="cn">TRUE</span>, pos <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

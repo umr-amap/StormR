@@ -151,8 +151,7 @@ in <code>wind_threshold</code> and for each <code>Storm</code>. Name of layers a
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Add details on Willoughy/Holland/Boose method, asymmetries and
-getRMW method ... The <code>temp_res</code> input will perform a linear interpolation
+    <p>The <code>temp_res</code> input will perform a linear interpolation
 of observations to further compute each 2D wind speed structure at each
 interpolated observations. For example, if <code>temp_res == 1</code>, it will
 generate observations every 1hour between the available observations. Doing
@@ -170,13 +169,13 @@ smooth the result(s).</p>
 <span class="r-in"><span><span class="co">#Compute MSW product for Pam 2015 in Vanuatu using default settings</span></span></span>
 <span class="r-in"><span><span class="va">msw.pam</span> <span class="op">&lt;-</span> <span class="fu">spatialBehaviour</span><span class="op">(</span><span class="va">pam</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Compute PDI product for Erica and Niran in New Caledonia using Holland model without asymmetry</span></span></span>
+<span class="r-in"><span><span class="co">#Compute PDI product for Storms in sts_nc using Holland model without asymmetry</span></span></span>
 <span class="r-in"><span><span class="va">pdi.nc</span> <span class="op">&lt;-</span> <span class="fu">spatialBehaviour</span><span class="op">(</span><span class="va">sts_nc</span>, method <span class="op">=</span> <span class="st">"Holland"</span>, product <span class="op">=</span> <span class="st">"PDI"</span>, asymmetry <span class="op">=</span> <span class="st">"None"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Compute Exposure for Pam 2015 in Vanuatu using default settings</span></span></span>
 <span class="r-in"><span><span class="va">exp.pam</span> <span class="op">&lt;-</span> <span class="fu">spatialBehaviour</span><span class="op">(</span><span class="va">pam</span>, product <span class="op">=</span> <span class="st">"Exposure"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Compute profiles wind speed for Erica and Niran in New Caledonia using default settings</span></span></span>
+<span class="r-in"><span><span class="co">#Compute profiles for Storms in sts_nc using default settings</span></span></span>
 <span class="r-in"><span><span class="va">prof.nc</span> <span class="op">&lt;-</span> <span class="fu">spatialBehaviour</span><span class="op">(</span><span class="va">sts_nc</span>, product <span class="op">=</span> <span class="st">"Profiles"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>

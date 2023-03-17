@@ -60,7 +60,7 @@ only a desired set of <code>Storm</code> extracted from the <code>StormsList</co
 <span>  labels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  by <span class="op">=</span> <span class="fl">8</span>,</span>
 <span>  pos <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  legends <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  legends <span class="op">=</span> <span class="st">"topleft"</span>,</span>
 <span>  loi <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -117,8 +117,9 @@ of labels according to the observation: <code>1</code> (up), <code>2</code> (lef
 
 
 <dt>legends</dt>
-<dd><p>logical. Whether or not to plot legends. Default value is set
-to <code>TRUE</code></p></dd>
+<dd><p>character. Indicates the where the legend should be plotted.
+Must be either <code>"topright"</code>, <code>"topleft"</code>,  (default setting),
+<code>"bottomleft"</code>, <code>"bottomright"</code> or <code>"none"</code> (no legend)</p></dd>
 
 
 <dt>loi</dt>
@@ -130,11 +131,11 @@ Default value is set to <code>TRUE</code></p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co">#Plot Erica over New Caledonia with labels every 24h</span></span></span>
-<span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span><span class="va">sts_nc</span>, names <span class="op">=</span> <span class="st">"ERICA"</span>, labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#Plot Niran over New Caledonia with labels every 24h</span></span></span>
+<span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span><span class="va">sts_nc</span>, names <span class="op">=</span> <span class="st">"NIRAN"</span>, labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Plot Erica, with labels every 6h on the right side of observations</span></span></span>
-<span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span><span class="va">sts_nc</span>, names <span class="op">=</span> <span class="st">"ERICA"</span>, labels <span class="op">=</span> <span class="cn">TRUE</span>, by <span class="op">=</span> <span class="fl">2</span>, pos <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#Plot Niran, with labels every 6h on the right side of observations</span></span></span>
+<span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span><span class="va">sts_nc</span>, names <span class="op">=</span> <span class="st">"NIRAN"</span>, labels <span class="op">=</span> <span class="cn">TRUE</span>, by <span class="op">=</span> <span class="fl">2</span>, pos <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
