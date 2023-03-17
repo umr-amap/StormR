@@ -224,24 +224,24 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 
 #' The `defDatabase()` function creates a `StormsDataset` object from a NetCDF file  
 #'
-#' @param filename Name of the NetCDF (.nc) file (character)
-#' @param fields Named character vector providing the correspondence between the fields
+#' @param filename character. Name of the NetCDF (.nc) file.
+#' @param fields named character vector. Correspondence between the fields
 #'  in the output `StormsDataset` object and the variable names in the input NetCDF file.
-#' @param basin Name of the basin (character) for which storm track data are extracted. 
+#' @param basin character. Name of the basin for which storm track data are extracted. 
 #' By default `basin=NULL`, meaning that all stars regardless the basin in which they 
 #' originated are extracted. Seven basins can be used to filter the data set:
 #' \itemize{
-#'   \item `"NA"` for North Atlantic basin
-#'   \item `"SA"` for South Atlantic basin
-#'   \item `"EP"` for Eastern North Pacific basin
-#'   \item `"WP"` for Western North Pacific basin
-#'   \item `"SP"` for South Pacific basin
-#'   \item `"SI"` for South India basin
-#'   \item `"NI"` for North India basin
+#'   \item `"NA"` for North Atlantic basin.
+#'   \item `"SA"` for South Atlantic basin.
+#'   \item `"EP"` for Eastern North Pacific basin.
+#'   \item `"WP"` for Western North Pacific basin.
+#'   \item `"SP"` for South Pacific basin.
+#'   \item `"SI"` for South India basin.
+#'   \item `"NI"` for North India basin.
 #' }
-#' @param seasons Seasons of occurrence of the storms (numeric vector, e.g., c(2020,2022)).
+#' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
 #' By default all storms occurring since 1980 are extracted.
-#' @param unit_conversion Required unit conversions (named character vector), `msw` has 
+#' @param unit_conversion named character vector. Required unit conversions, `msw` has 
 #' to be provided in $m.s^{-1}$, `rmw` in $km$, `pressure` and `poci` in $Pa$. By default 
 #' `unit_conversion=c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")`
 #' to meet the conversion requirement when importing a NetCDF file from the IBTrACS database. 
@@ -250,28 +250,25 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' 
 #'   For `msw`,
 #' \itemize{
-#'   \item `"knt_to_ms"` to convert knot to meter per second (default setting)
-#'   \item `"kmh_to_ms"` to convert kilometre per hour to meter per second
-#'   \item "`mph_to_ms"` to convert miles per hour to meter per second
-#'   \item `"None"`if no conversion is needed
+#'   \item `"knt_to_ms"` to convert knot to meter per second (default setting).
+#'   \item `"kmh_to_ms"` to convert kilometre per hour to meter per second.
+#'   \item "`mph_to_ms"` to convert miles per hour to meter per second.
+#'   \item `"None"`if no conversion is needed.
 #' }
 #'
 #'   For `rmw`,
 #' \itemize{
-#'   \item `"nm_to_ms"`to convert nautical miles to kilometre (default setting)
-#'   \item `"None"`if no conversion is needed
-#'  }
-#'
-#'   For `pressure` and `poci`,
+#'   \item `"nm_to_ms"`to convert nautical miles to kilometre (default setting).
+#'   \item `"None"`if no conversion is needed.
 #'  \itemize{
-#'    \item "`mb_to_pa"` to convert  millibar to Pascal  (default setting)
-#'    \item `"b_to_pa"` to convert bar to Pascal
-#'    \item `"atm_to_pa"` to convert  atmosphere to Pascal
-#'    \item `"psi_to_pa"` to convert  psi to Pascal
-#'    \item `"None"`if no conversion is needed
+#'    \item "`mb_to_pa"` to convert  millibar to Pascal  (default setting).
+#'    \item `"b_to_pa"` to convert bar to Pascal.
+#'    \item `"atm_to_pa"` to convert  atmosphere to Pascal.
+#'    \item `"psi_to_pa"` to convert  psi to Pascal.
+#'    \item `"None"`if no conversion is needed.
 #'  }
 #'
-#' @param verbose Whether (TRUE) or not (FALSE) the function should display
+#' @param verbose logical. Whether (TRUE) or not (FALSE) the function should display
 #'   information about the processes
 #' @return The `defDatabase()` function returns a `StormsDataset` object.
 #' @export
