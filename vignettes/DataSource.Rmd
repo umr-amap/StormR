@@ -2,12 +2,24 @@
 title: "Data source"
 output:
   html_document: default
-  pdf_document: default
 date: "`r Sys.Date()`"
+vignette: >
+   %\VignetteIndexEntry{"Data source"}
+   %\VignetteEngine{knitr::rmarkdown}
+   %\VignetteEncoding{UTF-8}
 ---
 
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(fig.align = 'center',
+                      fig.pos = 't',
+                      cache = FALSE,
+                      eval = TRUE)
+options(knitr.table.format = "latex")
+```
+
+
 ```{r step up, include = FALSE}
-#library(StormR)
+library(StormR)
 ```
 
 Before running `StormR` functions users have to provide a tropical storm track
@@ -62,7 +74,7 @@ access date for the later). For example, track data for all the storms that
 occurred over the last three years over the different basins world wide can be
 download to the working directory as follows,
 
-```{r, eval = F}
+```{r download}
 download.file(url = "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.last3years.v04r00.nc", destfile = "./IBTrACS_ALL_3yrs.nc")
 ```
 
@@ -71,7 +83,7 @@ download.file(url = "https://www.ncei.noaa.gov/data/international-best-track-arc
 Once a storm track data set is available a `StormsDataset` object can be created
 using the `defDatabase` function as follows,
 
-```{r, eval=F}
+```{r defDatabase}
 sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", basin=NULL, verbose = FALSE)
 str(sds)
 length(unique(paste(sds@database$names,sds@database$seasons," ")))
@@ -79,7 +91,7 @@ length(unique(paste(sds@database$names,sds@database$seasons," ")))
 
 This `StormsDataset` object contains track data for 275 storms. When using an IBTrACKS storm track data set, default arguments can be used. By default, data provided by USA agencies (starting with "usa_") are used, but other data can be selected. For example, for the South Pacific basin ("SP"), we can choose to use data provided by the Australian Bureau of Meteorology (starting with "bom_") in the IBTrACKS data set as follows,
 
-```{r, eval = F}
+```{r DefDatabase 2}
 sds <-defDatabase(filename = "IBTrACS_ALL_3yrs.nc",
                   fields = c(names = "name",
                              seasons = "season",
