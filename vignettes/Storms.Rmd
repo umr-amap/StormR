@@ -12,8 +12,6 @@ vignette: >
 ```{r global_options, include = FALSE}
 knitr::opts_chunk$set(fig.align = 'center',
                       fig.pos = 't',
-                      fig.width = 6,
-                      fig.asp = 0.6,
                       cache = FALSE,
                       eval = TRUE)
 options(knitr.table.format = "latex")
