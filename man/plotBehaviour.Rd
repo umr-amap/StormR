@@ -71,15 +71,15 @@ direction at a given observation) associated with a \code{Storm} provided in a
 }
 \examples{
 \dontrun{
-#Plot MSW raster for Pam (2015) in Vanuatu
 pam <- Storms(loi = "Vanuatu", names = "PAM")
+
+#Plot MSW raster for Pam (2015) in Vanuatu
 pam.msw <- spatialBehaviour(pam, verbose = 0)
 plotBehaviour(pam, pam.msw)
 
 #Plot a 2D windspeed structure  for Pam (2015) in Vanuatu
-pam <- Storms(loi = "Vanuatu", names = "PAM")
-pam_prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
+pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
+plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 }
 
 
