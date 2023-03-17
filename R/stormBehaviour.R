@@ -1075,8 +1075,7 @@ maskProduct <- function(final_stack, loi, template){
 #'          "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
 #' }
 #'
-#' @details Add details on Willoughy/Holland/Boose method, asymmetries and
-#'   getRMW method ... The `temp_res` input will perform a linear interpolation
+#' @details The `temp_res` input will perform a linear interpolation
 #'   of observations to further compute each 2D wind speed structure at each
 #'   interpolated observations. For example, if `temp_res == 1`, it will
 #'   generate observations every 1hour between the available observations. Doing
@@ -1092,13 +1091,13 @@ maskProduct <- function(final_stack, loi, template){
 #' #Compute MSW product for Pam 2015 in Vanuatu using default settings
 #' msw.pam <- spatialBehaviour(pam)
 #'
-#' #Compute PDI product for Erica and Niran in New Caledonia using Holland model without asymmetry
+#' #Compute PDI product for Storms in sts_nc using Holland model without asymmetry
 #' pdi.nc <- spatialBehaviour(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 #'
 #' #Compute Exposure for Pam 2015 in Vanuatu using default settings
 #' exp.pam <- spatialBehaviour(pam, product = "Exposure")
 #'
-#' #Compute profiles wind speed for Erica and Niran in New Caledonia using default settings
+#' #Compute profiles for Storms in sts_nc using default settings
 #' prof.nc <- spatialBehaviour(sts_nc, product = "Profiles")
 #' }
 #'
@@ -1134,6 +1133,7 @@ spatialBehaviour <- function(sts,
   final.stack.msw <- c()
   final.stack.pdi <- c()
   final.stack.exp <- c()
+  final.stack.prof <- c()
 
   if(method == "Boose"){
     #Map for intersection
@@ -1269,6 +1269,7 @@ spatialBehaviour <- function(sts,
     if("Profiles" %in% product){
       aux.stack.prof <- terra::rast(aux.stack.prof)
       aux.stack.direction <- terra::rast(aux.stack.direction)
+      final.stack.prof <- c(final.stack.prof, aux.stack.prof, aux.stack.direction)
     }
 
     if(verbose > 0)
@@ -1284,7 +1285,7 @@ spatialBehaviour <- function(sts,
   if("Exposure" %in% product)
     final.stack <- c(final.stack, final.stack.exp)
   if("Profiles" %in% product)
-    final.stack <- c(final.stack, aux.stack.prof, aux.stack.direction)
+    final.stack <- c(final.stack, final.stack.prof)
 
   final.stack <- terra::rast(final.stack)
   final.stack <- maskProduct(final.stack, sts@spatial.loi.buffer, raster.template)
