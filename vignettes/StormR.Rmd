@@ -1,10 +1,7 @@
 ---
 title: "StormR"
-output: rmarkdown::pdf_document
-vignette: >
-  %\VignetteIndexEntry{StormR}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: html_document
+date: "`r Sys.Date()`"
 ---
 
 ```{r global_options, include = FALSE}
