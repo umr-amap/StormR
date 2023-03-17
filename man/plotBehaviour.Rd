@@ -13,7 +13,8 @@ plotBehaviour(
   ylim = NULL,
   labels = FALSE,
   by = 8,
-  pos = 3
+  pos = 3,
+  legends = "topleft"
 )
 }
 \arguments{
@@ -57,6 +58,10 @@ value is set to \code{NULL}}
 \item{pos}{numeric. Must be between \code{1} and \code{4}. Correspond to the position of
 labels according to the observation: \code{1} (up), \code{2} (left), \code{3} (down), \code{4}
 (right). Default value is set to \code{3}. Ignored if \code{labels == FALSE}}
+
+\item{legends}{character. Indicates the where the legend should be plotted.
+Must be either \code{"topright"}, \code{"topleft"},  (default setting),
+\code{"bottomleft"}, \code{"bottomright"} or \code{"none"} (no legend)}
 }
 \description{
 This function plots a rasterized product (among maximum sustained wind, power
@@ -66,15 +71,15 @@ direction at a given observation) associated with a \code{Storm} provided in a
 }
 \examples{
 \dontrun{
-#Plot MSW raster for Pam (2015) in Vanuatu
 pam <- Storms(loi = "Vanuatu", names = "PAM")
-pam_msw <- spatialBehaviour(pam, verbose = 0)
-plotBehaviour(pam, pam_msw)
+
+#Plot MSW raster for Pam (2015) in Vanuatu
+pam.msw <- spatialBehaviour(pam, verbose = 0)
+plotBehaviour(pam, pam.msw)
 
 #Plot a 2D windspeed structure  for Pam (2015) in Vanuatu
-pam <- Storms(loi = "Vanuatu", names = "PAM")
-pam_prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-plotBehaviour(pam, pam_prof[["PAM_Profiles_37"]], labels = TRUE, pos = 2)
+pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
+plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 }
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getStorms.R
 \name{Storms}
 \alias{Storms}
-\title{Initialize a \code{StormsList}}
+\title{Creating a \code{StormsList} object}
 \usage{
 Storms(
   sds = test_dataset,
@@ -15,68 +15,61 @@ Storms(
 )
 }
 \arguments{
-\item{sds}{\code{StormsDataset}. Default value is set to \code{test_dataset}
-(See \code{StormsDataset} class)}
+\item{sds}{A \code{StormsDataset} object. By default the \code{test_dataset} object is used}
 
-\item{loi}{Location of Interest. Must be either:
+\item{loi}{Location of interest. Can be defined using:
 \itemize{
-\item a SpatialPolygon (shapefile)
-\item a sf object
-\item a point of longitude/latitude coordinates provided in a numeric vector
-\item a character representing a country (See \code{Details} section)
+\item A country name (a character object, e.g., "Vanuatu").
+\item A point coordinate (a numeric vector with lon, lat in decimal degrees, e.g., c(169.5, -19.2)).
+\item A sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
 }}
 
-\item{seasons}{numeric vector. Should be either one or a range of calendar
-years. For cyclones that formed in one year and dissipated in the following
-year, the latter should be used. Default values will allow searching for
-storms between the minimum and the maximum cyclonic season available in the
-\code{sds}}
+\item{seasons}{Season(s) of occurrence of the storms. A numeric vector of one (e.g., 2020)
+or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or
+during several consecutive seasons, respectively. By default all storms occurring since 1980 are extracted.}
 
-\item{names}{character vector. Names of storms in capital letters. Default
-value is set to \code{NULL}.}
+\item{names}{Names of specific storms (in capital letters, character vector) to extract.}
 
-\item{max_dist}{numeric. Indicates the buffer distance (in km) used to extend
-the location of interest. Default value is set to 300km}
+\item{max_dist}{Maximum distance between the location of interest and the storm for which track data are extracted (numeric).
+Default \code{max_dist} is set to 300 km.}
 
-\item{remove_TD}{logical. Whether or not to remove tropical depressions (< 18
-m/s) and include cyclones only. Default value is set to \code{TRUE}}
+\item{remove_TD}{Whether (TRUE) or not (FALSE) removing tropical depressions (msw < 18
+m/s). Default value is set to \code{TRUE}.}
 
-\item{verbose}{numeric. Whether or not the function should display
-informations about the process and/or outputs. Allowed values are:
+\item{verbose}{Type of information the function displays (numeric):
 \itemize{
-\item \code{0}: Nothing is displayed
-\item \code{1}: Informations about the process are displayed
-\item \code{2}: Outputs are also displayed
-}
-Default value is set to 2}
+\item \code{0}: Nothing is displayed.
+\item \code{1}: Only information about the processes are displayed.
+\item \code{2}: Information about both the processes and the outputs are displayed (default value).
+}}
 }
 \value{
-\code{StormsList} that gathers all \code{Storms} that match the
-criteria given in the inputs
+The \code{Storms()} function a \code{StormsList} object containing track data for all storms
+meeting the specified criteria (name, season, location, ...).
 }
 \description{
-This function returns a \code{StormsList} that gathers all the storms
-specified by the user
+The \code{Storms()} function extracts storm track data from a \code{StormsDataset}
+and creates a \code{StormsList} object.
 }
 \details{
-Available countries for the \code{loi} input are those provided in the
-\code{rwolrdxtra} package, derived from the newest version of Natural Earth
-Data. Check the following link for more informations:
-http://www.naturalearthdata.com/downloads/10m-cultural-vectors/
+The available countries for the \code{loi} are those provided in the
+\code{rwolrdxtra} package. This package provide high resolution vector country
+boundaries derived from Natural Earth data. More informations on the Natural Earth data
+here: http://www.naturalearthdata.com/downloads/10m-cultural-vectors/.
 }
 \examples{
 \dontrun{
-#Get data for a single storm on a given country
-pam <- Storms(loi = "Vanuatu", names = "PAM")
+#Getting data using country names
+vanuatu.st <- Storms(loi = "Vanuatu")
 
-#Get data for the above storm on a point coordinates (Eastern/Northern degree)
+#Getting data using a specific point location
 pt <- c(169, -19)
 pam.pt <- Storms(loi = pt, names = "PAM")
 
-#Get data for two storms over New Caledonia
-sts_nc <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+#Getting data using country and storm names 
+niran.nc <- Storms(loi = "New Caledonia", names = c("NIRAN"))
 
-#Get data for every storms that occured in the SP basin between 2010 and 2020
+#Getting data using a user defined spatial polygon
 poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
 sp <- sf::st_polygon(list(poly))
 sp <- sf::st_sfc(sp, crs = 4326)
