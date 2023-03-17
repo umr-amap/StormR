@@ -171,7 +171,6 @@ checkInputsPs <- function(sts, names, category, labels, by,
   }
 
   #Checking logical inputs
-  stopifnot("legends must be logical" = identical(class(legends), "logical"))
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
 
@@ -184,6 +183,11 @@ checkInputsPs <- function(sts, names, category, labels, by,
   stopifnot("pos must be numeric" = identical(class(pos), "numeric"))
   stopifnot("pos must length 1" = length(pos) == 1)
   stopifnot("pos must be between either 1, 2, 3 or 4" = pos %in% c(1, 2, 3, 4))
+  
+  #Checking legend
+  stopifnot("legends must be character" = identical(class(legends), "character"))
+  stopifnot("legends must be length 1" = length(legends) == 1)
+  stopifnot("legends must be either topright, topleft, bottomleft, bottomright, or none" = legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none"))
 
 
 }
@@ -223,19 +227,20 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #' @param pos numeric. Must be between `1` and `4`. Correspond to the position
 #'   of labels according to the observation: `1` (up), `2` (left), `3` (down),
 #'   `4` (right). Default value is set to 3. Ignored if `labels == FALSE`
-#' @param legends logical. Whether or not to plot legends. Default value is set
-#'   to `TRUE`
+#' @param legends character. Indicates the where the legend should be plotted.
+#'   Must be either `"topright"`, `"topleft"`,  (default setting),
+#'   `"bottomleft"`, `"bottomright"` or `"none"` (no legend)
 #' @param loi logical. Whether or not to plot the extended LOI on the map.
 #'   Default value is set to `TRUE`
 #' @import rworldxtra
 #'
 #' @examples
 #' \dontrun{
-#' #Plot Erica over New Caledonia with labels every 24h
-#' plotStorms(sts_nc, names = "ERICA", labels = TRUE)
+#' #Plot Niran over New Caledonia with labels every 24h
+#' plotStorms(sts_nc, names = "NIRAN", labels = TRUE)
 #'
-#' #Plot Erica, with labels every 6h on the right side of observations
-#' plotStorms(sts_nc, names = "ERICA", labels = TRUE, by = 2, pos = 4)
+#' #Plot Niran, with labels every 6h on the right side of observations
+#' plotStorms(sts_nc, names = "NIRAN", labels = TRUE, by = 2, pos = 4)
 #'
 #' }
 #' 
@@ -249,7 +254,7 @@ plotStorms <- function(sts,
                        labels = FALSE,
                        by = 8,
                        pos = 3,
-                       legends = TRUE,
+                       legends = "topleft",
                        loi = TRUE){
 
 
@@ -329,7 +334,7 @@ plotStorms <- function(sts,
     lapply(sts.aux, plotLabels, by, pos)
 
   #Adding legends
-  if(legends) {
+  if(legends != "none") {
 
     leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
     col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
@@ -338,7 +343,7 @@ plotStorms <- function(sts,
     pch <- rep(19,7)
     lwd <- rep(1,7)
 
-    graphics::legend("topleft",
+    graphics::legend(legends,
                      title = "SSHS",
                      legend = leg,
                      col = col,
