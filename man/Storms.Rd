@@ -66,7 +66,7 @@ vanuatu.st <- Storms(loi = "Vanuatu")
 pt <- c(169, -19)
 pam.pt <- Storms(loi = pt, names = "PAM")
 
-#Getting data using country and storm names 
+#Getting data using country and storm names
 niran.nc <- Storms(loi = "New Caledonia", names = c("NIRAN"))
 
 #Getting data using a user defined spatial polygon
