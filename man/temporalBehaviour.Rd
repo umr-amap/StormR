@@ -95,13 +95,16 @@ generate observations every 1 hour between the available observations.
 pts <- data.frame(x = c(166.5, 163), y = c(-22, -19))
 row.names(pts)<-c("point_1","point_2")
 
-#Computing time series of wind speed and direction for Erica and Niran over points 1 and 2 defined above
+#Computing time series of wind speed and direction for Erica and Niran
+#over points 1 and 2 defined above
 ts_nc <- temporalBehaviour(sts_nc, points = pts)
 
 #Computing PDI for Erica and Niran over points 1 and 2 defined above
 pdiPt_nc <- temporalBehaviour(sts_nc, points = pts, product = "PDI")
 
-#Computing the duration of exposure to wind speeds above the thresholds used by the Saffir-Simpson hurricane wind scale for Erica and Niran over points 1 and 2 defined above
+#Computing the duration of exposure to wind speeds above the thresholds
+#used by the Saffir-Simpson hurricane wind scale for Erica and Niran
+#over points 1 and 2 defined above
 expPt_nc <- temporalBehaviour(sts_nc, points = pts, product = "Exposure", wind_threshold = c(20,30))
 }
 
