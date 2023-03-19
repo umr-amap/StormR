@@ -72,55 +72,34 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>filename</dt>
-<dd><p>Name of the NetCDF (.nc) file (character)</p></dd>
+<dd><p>character. Name of the NetCDF (.nc) file.</p></dd>
 
 
 <dt>fields</dt>
-<dd><p>Named character vector providing the correspondence between the fields
+<dd><p>named character vector. Correspondence between the fields
 in the output <code>StormsDataset</code> object and the variable names in the input NetCDF file.</p></dd>
 
 
 <dt>basin</dt>
-<dd><p>Name of the basin (character) for which storm track data are extracted.
+<dd><p>character. Name of the basin for which storm track data are extracted.
 By default <code>basin=NULL</code>, meaning that all stars regardless the basin in which they
-originated are extracted. Seven basins can be used to filter the data set:</p><ul><li><p><code>"NA"</code> for North Atlantic basin</p></li>
-<li><p><code>"SA"</code> for South Atlantic basin</p></li>
-<li><p><code>"EP"</code> for Eastern North Pacific basin</p></li>
-<li><p><code>"WP"</code> for Western North Pacific basin</p></li>
-<li><p><code>"SP"</code> for South Pacific basin</p></li>
-<li><p><code>"SI"</code> for South India basin</p></li>
-<li><p><code>"NI"</code> for North India basin</p></li>
+originated are extracted. Seven basins can be used to filter the data set:</p><ul><li><p><code>"NA"</code> for North Atlantic basin.</p></li>
+<li><p><code>"SA"</code> for South Atlantic basin.</p></li>
+<li><p><code>"EP"</code> for Eastern North Pacific basin.</p></li>
+<li><p><code>"WP"</code> for Western North Pacific basin.</p></li>
+<li><p><code>"SP"</code> for South Pacific basin.</p></li>
+<li><p><code>"SI"</code> for South India basin.</p></li>
+<li><p><code>"NI"</code> for North India basin.</p></li>
 </ul></dd>
 
 
 <dt>seasons</dt>
-<dd><p>Seasons of occurrence of the storms (numeric vector, e.g., c(2020,2022)).
+<dd><p>numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
 By default all storms occurring since 1980 are extracted.</p></dd>
 
 
-<dt>unit_conversion</dt>
-<dd><p>Required unit conversions (named character vector), <code>msw</code> has
-to be provided in $m.s^-1$, <code>rmw</code> in $km$, <code>pressure</code> and <code>poci</code> in $Pa$. By default
-<code>unit_conversion=c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")</code>
-to meet the conversion requirement when importing a NetCDF file from the IBTrACS database.
-This argument is mandatory even if no conversion is needed. If no conversion is needed then
-use <code>"None"</code> in the corresponding fields. The following unit conversions are implemented:</p>
-<p>For <code>msw</code>,</p><ul><li><p><code>"knt_to_ms"</code> to convert knot to meter per second (default setting)</p></li>
-<li><p><code>"kmh_to_ms"</code> to convert kilometre per hour to meter per second</p></li>
-<li><p>"<code>mph_to_ms"</code> to convert miles per hour to meter per second</p></li>
-<li><p><code>"None"</code>if no conversion is needed</p></li>
-</ul><p>For <code>rmw</code>,</p><ul><li><p><code>"nm_to_ms"</code>to convert nautical miles to kilometre (default setting)</p></li>
-<li><p><code>"None"</code>if no conversion is needed</p></li>
-</ul><p>For <code>pressure</code> and <code>poci</code>,</p><ul><li><p>"<code>mb_to_pa"</code> to convert  millibar to Pascal  (default setting)</p></li>
-<li><p><code>"b_to_pa"</code> to convert bar to Pascal</p></li>
-<li><p><code>"atm_to_pa"</code> to convert  atmosphere to Pascal</p></li>
-<li><p><code>"psi_to_pa"</code> to convert  psi to Pascal</p></li>
-<li><p><code>"None"</code>if no conversion is needed</p></li>
-</ul></dd>
-
-
 <dt>verbose</dt>
-<dd><p>Whether (TRUE) or not (FALSE) the function should display
+<dd><p>logical. Whether (TRUE) or not (FALSE) the function should display
 information about the processes</p></dd>
 
 </dl></div>

@@ -77,34 +77,34 @@ and creates a <code>StormsList</code> object.</p>
 
 
 <dt>loi</dt>
-<dd><p>Location of interest. Can be defined using:</p><ul><li><p>A country name (a character object, e.g., "Vanuatu").</p></li>
-<li><p>A point coordinate (a numeric vector with lon, lat in decimal degrees, e.g., c(169.5, -19.2)).</p></li>
-<li><p>A sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).</p></li>
+<dd><p>Location of interest. Can be defined using:</p><ul><li><p>character. A country name (e.g., "Vanuatu").</p></li>
+<li><p>numeric vector. A point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)).</p></li>
+<li><p>sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).</p></li>
 </ul></dd>
 
 
 <dt>seasons</dt>
-<dd><p>Season(s) of occurrence of the storms. A numeric vector of one (e.g., 2020)
+<dd><p>numeric vector. Season(s) of occurrence of the storms. One (e.g., 2020)
 or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or
 during several consecutive seasons, respectively. By default all storms occurring since 1980 are extracted.</p></dd>
 
 
 <dt>names</dt>
-<dd><p>Names of specific storms (in capital letters, character vector) to extract.</p></dd>
+<dd><p>character vector. Names of specific storms (in capital letters) to extract.</p></dd>
 
 
 <dt>max_dist</dt>
-<dd><p>Maximum distance between the location of interest and the storm for which track data are extracted (numeric).
+<dd><p>numeric. Maximum distance between the location of interest and the storm for which track data are extracted.
 Default <code>max_dist</code> is set to 300 km.</p></dd>
 
 
 <dt>remove_TD</dt>
-<dd><p>Whether (TRUE) or not (FALSE) removing tropical depressions (msw &lt; 18
+<dd><p>logical. Whether (TRUE) or not (FALSE) removing tropical depressions (msw &lt; 18
 m/s). Default value is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>verbose</dt>
-<dd><p>Type of information the function displays (numeric):</p><ul><li><p><code>0</code>: Nothing is displayed.</p></li>
+<dd><p>numeric. Type of information the function displays:</p><ul><li><p><code>0</code>: Nothing is displayed.</p></li>
 <li><p><code>1</code>: Only information about the processes are displayed.</p></li>
 <li><p><code>2</code>: Information about both the processes and the outputs are displayed (default value).</p></li>
 </ul></dd>
