@@ -261,6 +261,8 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' \itemize{
 #'   \item `"nm_to_ms"`to convert nautical miles to kilometre (default setting).
 #'   \item `"None"`if no conversion is needed.
+#'  }
+#'   For `pressure` and `poci`,
 #'  \itemize{
 #'    \item "`mb_to_pa"` to convert  millibar to Pascal  (default setting).
 #'    \item `"b_to_pa"` to convert bar to Pascal.
