@@ -2,6 +2,7 @@
 
 
 
+
 ########
 #MODELS#
 ########
@@ -549,7 +550,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, dist_
                   vh = data$storm.speed[index],
                   I = I,
                   lat = data$lat[index])
-    
+
     direction <- computeDirectionBoose(x, y, data$lat[index], I)
   }
 
@@ -1122,7 +1123,7 @@ spatialBehaviour <- function(sts,
     cat("=== spatialBehaviour processing ... ===\n\n")
     cat("Initializing data ...")
   }
-  
+
   #Make raster template
   raster.template <- makeTemplateRaster(sts@spatial.loi.buffer, resolutions[space_res])
   #Getting new extent
@@ -1373,7 +1374,7 @@ checkInputsTempBehaviour <- function(sts, points, product, wind_threshold, metho
   stopifnot("temp_res must be numeric" = identical(class(temp_res), "numeric"))
   stopifnot("temp_res must be length 1" = length(temp_res) == 1)
   stopifnot("invalid temp_res: must be either 1, 0.75, 0.5 or 0.25" = temp_res %in% c(1, 0.75, 0.5, 0.25))
-  
+
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
@@ -1494,17 +1495,17 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
   if(product == "TS"){
     l <- list()
     for(i in 1:dim(points)[1]){
-     
+
       if(i > 1)
         i <- i + 1
-      
+
       df <- data.frame(result[,i], result[,i:i+1], indices = indices, isoTimes = isoT)
       colnames(df) <- c("speed", "direction", "indices", "isoTimes")
-      
+
       l <- append(l, list(df))
     }
     names(l) <- rownames(points)
-  
+
   }else if(product == "PDI"){
     l <- data.frame(result, row.names = "PDI")
     colnames(l) <- rownames(points)
@@ -1639,13 +1640,13 @@ temporalBehaviour <- function(sts,
                               verbose = 1){
 
   checkInputsTempBehaviour(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, temp_res, verbose)
-  
+
   if(verbose >0){
     cat("=== spatialBehaviour processing ... ===\n\n")
     cat("Initializing data ...")
   }
-  
-  
+
+
   if(method == "Boose"){
     #Map for intersection
     world <- rworldmap::getMap(resolution = "high")
@@ -1656,13 +1657,13 @@ temporalBehaviour <- function(sts,
   }else{
     ind_countries <- NULL
   }
-  
+
   points$x[points$x < 0] = points$x[points$x < 0] + 360
 
   buffer <- 2.5
   #Initializing final result
   final.result <- list()
-  
+
   if(verbose > 0){
     s <- 1 #Initializing count of storms
     cat(" Done\n\n")
@@ -1678,13 +1679,13 @@ temporalBehaviour <- function(sts,
     for(i in 1:dim(points)[1])
       cat("      ",points$x[i], " ", points$y[i],"\n")
     cat("\n")
-    
+
     cat("\nStorm(s):\n")
     cat("  (",getNbStorms(sts),") ",getNames(sts),"\n\n")
-    
+
   }
 
-  
+
   for(st in sts@data) {
 
     #Handling indices inside loi.buffer or not
@@ -1738,7 +1739,7 @@ temporalBehaviour <- function(sts,
                                    wind_threshold)
 
   }
-  
+
   if(verbose > 0)
     cat("\n=== DONE ===\n\n")
 

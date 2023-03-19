@@ -1,0 +1,162 @@
+---
+title: "Data source"
+output:
+  html_document: default
+date: "`r Sys.Date()`"
+vignette: >
+   %\VignetteIndexEntry{"Data source"}
+   %\VignetteEngine{knitr::rmarkdown}
+   %\VignetteEncoding{UTF-8}
+---
+
+
+
+```{r step up, include = FALSE}
+library(StormR)
+```
+
+Before running `StormR` functions users have to provide a tropical storm track
+dataset as a ".nc" (NetCDF) file in which the location and some characteristics
+of storms are given across their lifespan. This file is used to create a
+`StormsDataset` object using the `defDatabase` function. By default, the
+arguments of `defDatabase` function are set up to create a `StormsDataset`
+object using the USA fields in the IBTrACS database [International Best Track
+Archive for Climate
+Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive)
+(Knapp et al., 2010). This database provides a fairly comprehensive record of
+worldwide tropical storms and cyclones with a 3-hours temporal resolution since
+1841. Other databases can be used as long as the following fields are provided:
+
+| **Field name** | **Description** | **Format/Units** | **Example** | **Type** |
+|:--:|:----:|:-----------:|:-----:|:---:|
+| `names` | Names of the storms | Capital letters | PAM | Mandatory |
+| `seasons` | Years of observations | Calendar year | 2015 | Mandatory |
+| `isoTime` | Date and time of observations | YYYY-MM-DD HH:mm:ss UTC | 2015-03-13 12:00:00 | Mandatory |
+| `lon` | Longitude of the observations | Eastern decimal degrees | 168.7 | Mandatory |
+| `lat` | Latitude of the observations | Northern decimal degrees | -17.6 | Mandatory |
+| `msw` | Maximum sustained wind speed | $m.s^{-1}$ | 77 | Mandatory |
+| `basin` | Name of the area where the storm originated. Traditionally divided into seven basins | NA (North Atlantic) <br /> EP (Eastern North Pacific) <br /> WP (Western North Pacific) <br /> NI (North Indian) <br /> SI (South Indian) <br /> SP (Southern Pacific) <br /> SA (South Atlantic)| SP | Recommended$^{1}$|
+| `rmw` | Radius of maximum winds: distance between the centre of the storm and its band of strongest winds | $km$ | 20 | Recommended$^{2}$ |
+| `pressure` | Central pressure | $Pa$ | 91100 | Recommended$^{3}$ |
+| `poci`| Pressure of the last closed isobar | $Pa$ | 92200 | Recommended$^{3}$ |
+| `sshs`| Saffir-Simpson hurricane wind scale rating based on `msw` (here in $m.s^{-1}$) | $-1 =$ Tropical depression (`msw` $< 18$) <br /> $0 =$ Tropical storm ($18 \leq$ `msw` $< 33$) <br /> $1 =$ Category 1 ($33  \leq$ `msw` $< 42$) <br /> $2 =$ Category 2 ($42 \leq$ `msw` $< 49$) <br /> $3 =$ Category 3 ($49 \leq$ `msw` $< 58$) <br /> $4 =$ Category 4 ($58 \leq$ `msw` $< 70$) <br /> $5 =$ Category 5 (`msw` $\ge 70$)| 5 | Optional$^{4}$  |
+
+$^{1}$ Providing the `basin` allows to filter storms in a particular basin using
+the `basin` argument of the `defDatabase` function. <br />
+$^{2}$ Providing `rmw` allows better estimates of wind speed and direction in
+the `temporatlBehaviour()` and `spatialBehaviour()` functions. If not provided,
+`rmw` is approximated using an empirical formula derived from
+Willoughby et al. (2006) as follows, $R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times
+|\phi|)}$. <br />
+$^{3}$ If the `pressure` and `poci` fields are not provided, both Holland (1980)
+and Boose et al. (2004) wind field models cannot be used in the
+`temporatlBehaviour()` and `spatialBehaviour()` functions. <br />
+$^{4}$ The `sshs` field is optional, if not provided this field is automatically
+filled using the `msw` field.
+
+### Downloading a data source
+
+If not available, a storm track data set has to be downloaded. In the following
+example we illustrate how a storm track data set can be downloaded on the
+IBTrACKS website. Different ".nc" (NetCDF) files containing storm track data
+sets can be downloaded
+[here](https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/).
+Please, follow the IBTrACS citation recommendations when using these datasets
+(including citing Knapp et al., 2010 and Knapp et al., 2018, and providing the
+access date for the later). For example, track data for all the storms that
+occurred over the last three years over the different basins world wide can be
+download to the working directory as follows,
+
+```{r download}
+download.file(url = "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.last3years.v04r00.nc", destfile = "./IBTrACS_ALL_3yrs.nc")
+```
+
+### Creating a `StormsDataset`
+
+Once a storm track data set is available a `StormsDataset` object can be created
+using the `defDatabase` function as follows,
+
+```{r defDatabase}
+sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", basin=NULL, verbose = FALSE)
+str(sds)
+length(unique(paste(sds@database$names,sds@database$seasons," ")))
+```
+
+This `StormsDataset` object contains track data for 275 storms. When using an
+IBTrACKS storm track data set, default arguments can be used. By default, data
+provided by USA agencies (starting with "usa_") are used, but other data can be
+selected. For example, for the South Pacific basin ("SP"), we can choose to use
+data provided by the Australian Bureau of Meteorology (starting with "bom_") in
+the IBTrACKS data set as follows,
+
+```{r DefDatabase 2}
+sds <-defDatabase(filename = "IBTrACS_ALL_3yrs.nc",
+                  fields = c(names = "name",
+                             seasons = "season",
+                             isoTime = "iso_time",
+                             basin = "basin",
+                             lon = "bom_lon",
+                             lat = "bom_lat",
+                             msw = "bom_wind",
+                             rmw = "bom_rmw",
+                             pressure = "bom_pres",
+                             poci = "bom_poci"),
+                  basin = "SP",
+                  verbose = FALSE)
+length(sds@database$names)
+```
+
+This `StormsDataset` object contains track data for 38 storms in the South
+Pacific basin.
+
+### Unit conversion
+
+In the IBTrACS data sets speeds are given in knots ($knt$), distances in
+nautical miles ($nm$), and pressure in millibar ($mb$) but the models
+implemented in the `temporalBehaviour()` and `spatialBehaviour()` functions
+compute wind speed, wind direction, and summary statistics following the
+international system of units (SI) or SI-derived units. Therefore, by default,
+when using IBTrACS data sets, the `defDatabase()` function converts knots
+($knt$) to meter per second ($m.s^{-1}$), nautical miles ($nm$) to kilometres
+($km$), and millibar ($mb$) to Pascal ($pa$).
+
+When using another source of data than IBTrACS, the `unit_conversion` argument
+of the `defDatabase()` function can be used to convert the data to the desired
+units. The following conversions are available,
+
+For `msw`: <br />
+`knt_to_ms`: converts knot in meter per second (default setting) <br />
+`kmh_to_ms`: converts kilometre per hour in meter per second <br />
+`mph_to_ms`: converts miles per hour in meter per second <br />
+`None`: no conversion <br />
+
+For `rmw`: <br />
+`nm_to_ms`: converts nautical miles in kilometre (default setting) <br />
+`None`: no conversion <br />
+
+For both `pressure` and `poci`: <br />
+`mb_to_pa`: converts millibar in Pascal (default setting) <br />
+`b_to_pa`: converts bar in Pascal <br />
+`atm_to_pa`: converts atmosphere in Pascal <br />
+`psi_to_pa`: converts psi in Pascal <br />
+`None`: no conversion <br />
+
+### Test data set
+
+A `test_dataset` is provided with the `StormR` package. This test data set
+comprises the track data of nine storms that occurred near Vanuatu and New
+Caledonia between 2015-2016 and 2020-2021, respectively. This `test_dataset` is
+used by default in the `Storms()` function if no other `StormsDataset` has been
+created with the `defDatabase()` function.
+
+## Reference
+
+* Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico. Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
+ 
+* Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
+
+* Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
+
+* Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, & Schreck, C. J. (2018) International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. [indicate subset used]. NOAA National Centers for Environmental Information. https://doi:10.25921/82ty-9e16 [2023-03-15]
+ 
+* Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1

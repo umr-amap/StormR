@@ -2,6 +2,7 @@
 
 
 
+
 ###########################
 #Unit conversion functions#
 ###########################
@@ -45,7 +46,7 @@ atm_to_pa <- function(x){
 
 
 
-#' StormsDataset 
+#' StormsDataset
 #'
 #' Choose the database to use within the package's functions
 #'
@@ -117,7 +118,7 @@ atm_to_pa <- function(x){
 #' }
 #'
 #' Default value is set according to the most relevant dimensions of IBTrACS
-#' databases: 
+#' databases:
 #' `fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres", poci = "usa_poci", sshs = "usa_sshs")`
 #'
 #' @export
@@ -157,7 +158,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
   #Checking fields input
   stopifnot("fields must be character" = identical(class(fields),"character"))
   stopifnot("unit_conversion must be character" = identical(class(unit_conversion),"character"))
-  
+
   #Mandatory fields
   stopifnot("No 'names' selection in fields" = "names" %in% names(fields))
   stopifnot("No 'seasons' selection in fields" = "seasons" %in% names(fields))
@@ -167,29 +168,29 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
   stopifnot("No 'msw' selection in fields" = "msw" %in% names(fields))
   stopifnot("No unit conversion directive for 'msw' selection in unit_conversion" = "msw" %in% names(unit_conversion))
   stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["msw"] %in% c("None", "mph_to_ms", "knt_to_ms", "kmh_to_ms"))
-  
+
   #Optional fields
   if(("basin" %in% names(fields)) & is.null(basin)){
     warning("No basin specified, Cannot use basin filtering when collecting data")
   }else if(!("basin" %in% names(fields)) & !is.null(basin)){
     stop("No basin field in `fields` input specified, Cannot use basin filtering when collecting data")
   }
-   
-  
+
+
   if(!("rmw" %in% names(fields))){
     warning("No 'rmw' selection in fields, use empirical_rmw = TRUE for the forthcoming computations")
   }else{
     stopifnot("No unit conversion directive for 'rmw' selection in unit_conversion" = "rmw" %in% names(unit_conversion))
     stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["rmw"] %in% c("None", "nm_to_km"))
   }
-   
+
   if(!("pressure" %in% names(fields))){
     warning("No 'pressure' selection in fields, Cannot use Holland method for the forthcoming computations")
   }else{
     stopifnot("No unit conversion directive for 'pressure' selection in unit_conversion" = "pressure" %in% names(unit_conversion))
     stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["pressure"] %in% c("None", "b_to_pa", "mb_to_pa", "psi_to_pa", "atm_to_pa"))
   }
-   
+
 
   if(!("poci" %in% names(fields))){
     warning("No 'poci' selection in fields,  Cannot use Holland method for the forthcoming computations")
@@ -197,7 +198,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
     stopifnot("No unit conversion directive for 'poci' selection in unit_conversion" = "poci" %in% names(unit_conversion))
     stopifnot("Invalid unit_conversion directive for 'msw'" = unit_conversion["poci"] %in% c("None", "b_to_pa", "mb_to_pa", "psi_to_pa", "atm_to_pa"))
   }
-    
+
   #Checking basin input
   if(!is.null(basin)){
     stopifnot("basin must be character" = identical(class(basin),"character"))
@@ -205,30 +206,30 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
     stopifnot("Invalid basin input, must be either 'NA', 'SA', 'EP', 'WP', 'SP', 'SI', or 'NI'" =
                 basin %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI"))
   }
-  
-  
-  
+
+
+
   #Checking seasons input
   stopifnot("seasons must be numeric" = identical(class(seasons),"numeric"))
   stopifnot("seasons must be a range of calendar year" = length(seasons) == 2 & seasons[1] <= seasons[2])
 
-  
+
   #Checking verbose input
   stopifnot("verbose must be logical" = identical(class(verbose),"logical"))
-  
+
 }
 
 
 
 
 
-#' The `defDatabase()` function creates a `StormsDataset` object from a NetCDF file  
+#' The `defDatabase()` function creates a `StormsDataset` object from a NetCDF file
 #'
 #' @param filename character. Name of the NetCDF (.nc) file.
 #' @param fields named character vector. Correspondence between the fields
 #'  in the output `StormsDataset` object and the variable names in the input NetCDF file.
-#' @param basin character. Name of the basin for which storm track data are extracted. 
-#' By default `basin=NULL`, meaning that all stars regardless the basin in which they 
+#' @param basin character. Name of the basin for which storm track data are extracted.
+#' By default `basin=NULL`, meaning that all stars regardless the basin in which they
 #' originated are extracted. Seven basins can be used to filter the data set:
 #' \itemize{
 #'   \item `"NA"` for North Atlantic basin.
@@ -241,13 +242,13 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' }
 #' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
 #' By default all storms occurring since 1980 are extracted.
-#' @param unit_conversion named character vector. Required unit conversions, `msw` has 
-#' to be provided in $m.s^{-1}$, `rmw` in $km$, `pressure` and `poci` in $Pa$. By default 
+#' @param unit_conversion named character vector. Required unit conversions, `msw` has
+#' to be provided in $m.s^{-1}$, `rmw` in $km$, `pressure` and `poci` in $Pa$. By default
 #' `unit_conversion=c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")`
-#' to meet the conversion requirement when importing a NetCDF file from the IBTrACS database. 
+#' to meet the conversion requirement when importing a NetCDF file from the IBTrACS database.
 #' This argument is mandatory even if no conversion is needed. If no conversion is needed then
 #' use `"None"` in the corresponding fields. The following unit conversions are implemented:
-#' 
+#'
 #'   For `msw`,
 #' \itemize{
 #'   \item `"knt_to_ms"` to convert knot to meter per second (default setting).
@@ -314,7 +315,7 @@ defDatabase <- function(filename,
   #Filter by season
   ind <- which(season %in% seq(seasons[1], seasons[2], 1))
   len <- length(ind)
-  
+
   if(!is.null(basin)){
     #Filter by basin ID
     basins <- ncdf4::ncvar_get(dataBase, fields["basin"])
@@ -322,8 +323,8 @@ defDatabase <- function(filename,
     ind <- intersect(ind,indB)
     len <- length(ind)
   }
-  
-  
+
+
   if(unit_conversion["msw"] == "mph_to_ms"){
     msw <- array(mph_to_ms(ncdf4::ncvar_get(dataBase, fields["msw"])[,ind]),
                  dim = c(row,len))
@@ -359,7 +360,7 @@ defDatabase <- function(filename,
       data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind], dim = c(row,len))
     }
   }
-    
+
 
   if("pressure" %in% names(fields)){
     if(unit_conversion["pressure"] == "mb_to_pa"){
@@ -374,7 +375,7 @@ defDatabase <- function(filename,
       data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind], dim = c(row,len))
     }
   }
-    
+
 
   if("poci" %in% names(fields)){
     if(unit_conversion["poci"] == "mb_to_pa"){
@@ -383,7 +384,7 @@ defDatabase <- function(filename,
       data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind], dim = c(row,len))
     }
   }
-   
+
   ncdf4::nc_close(dataBase)
 
 
@@ -407,5 +408,3 @@ defDatabase <- function(filename,
 
 
 }
-
-

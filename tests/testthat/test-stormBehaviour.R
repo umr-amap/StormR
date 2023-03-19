@@ -2,6 +2,7 @@
 
 
 
+
 test_that("Test getRmw function", {
 
   expect_equal(getRmw(seq(0,80,5), -15), c(60, 55, 51, 47, 44, 41, 38, 35, 32,
@@ -505,13 +506,3 @@ test_that("Test computeExposure function", {
   expect_equal(computeExposure(seq(0,80,0.25), 0.25, c(30,50)), c(50.25, 30.25))
 
 })
-
-
-
-
-
-
-
-
-
-
