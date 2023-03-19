@@ -2,6 +2,8 @@
 
 
 
+
+
 #############
 #Storm Class#
 #############
@@ -327,11 +329,11 @@ setMethod("getNames", signature("StormsList"), function(s){
 
 
 
-#' Get the cyclonic season(s) of storm(s) 
+#' Get the cyclonic season(s) of storm(s)
 #'
-#' Get the cyclonic season(s) of storm(s) available in a `Storm` / `StormsList` 
+#' Get the cyclonic season(s) of storm(s) available in a `Storm` / `StormsList`
 #'
-#' @param s `Storm`/`StormsList` 
+#' @param s `Storm`/`StormsList`
 
 #'
 #' @return numeric vector. Cyclonic season(s) of each storms provided by the given `Storm`
@@ -342,10 +344,10 @@ setMethod("getNames", signature("StormsList"), function(s){
 #' @examples
 #' \dontrun{
 #' sts <- Storms(loi = "New Caledonia")
-#' 
+#'
 #' ## For storm Niran
 #' getSeasons(getStorm(sts, name = "NIRAN"))
-#' 
+#'
 #' ## For sts
 #' getSeasons(sts)
 #' }
@@ -551,7 +553,7 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
     stop("loi is missing")
   }
 
-  
+
   #Checking seasons input
   stopifnot("seasons must be numeric" = identical(class(as.numeric(seasons)), "numeric"))
   stopifnot("seasons must be as integer" = all(round(seasons) == seasons))
@@ -866,23 +868,23 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 
 
 
-#' Creating a `StormsList` object 
+#' Creating a `StormsList` object
 #'
-#' The `Storms()` function extracts storm track data from a `StormsDataset` 
+#' The `Storms()` function extracts storm track data from a `StormsDataset`
 #' and creates a `StormsList` object.
 #'
-#' @param sds `StormsDataset` object. By default the `test_dataset` object is used
-#' @param loi Location of interest. Can be defined using: 
+#' @param sds A `StormsDataset` object. By default the `test_dataset` object is used
+#' @param loi Location of interest. Can be defined using:
 #' \itemize{
 #' \item character. A country name (e.g., "Vanuatu").
 #' \item numeric vector. A point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)).
 #' \item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
 #' }
 #' @param seasons numeric vector. Season(s) of occurrence of the storms. One (e.g., 2020)
-#'  or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or 
+#'  or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or
 #'  during several consecutive seasons, respectively. By default all storms occurring since 1980 are extracted.
 #' @param names character vector. Names of specific storms (in capital letters) to extract.
-#' @param max_dist numeric. Maximum distance between the location of interest and the storm for which track data are extracted. 
+#' @param max_dist numeric. Maximum distance between the location of interest and the storm for which track data are extracted.
 #' Default `max_dist` is set to 300 km.
 #' @param remove_TD logical. Whether (TRUE) or not (FALSE) removing tropical depressions (msw < 18
 #'   m/s). Default value is set to `TRUE`.
@@ -893,11 +895,11 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' \item `2`: Information about both the processes and the outputs are displayed (default value).
 #' }
 #'
-#' @returns The `Storms()` function a `StormsList` object containing track data for all storms 
+#' @returns The `Storms()` function a `StormsList` object containing track data for all storms
 #' meeting the specified criteria (name, season, location, ...).
 #'
 #' @details The available countries for the `loi` are those provided in the
-#'   `rwolrdxtra` package. This package provide high resolution vector country 
+#'   `rwolrdxtra` package. This package provide high resolution vector country
 #'   boundaries derived from Natural Earth data. More informations on the Natural Earth data
 #'   here: http://www.naturalearthdata.com/downloads/10m-cultural-vectors/.
 #'
@@ -910,7 +912,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' pt <- c(169, -19)
 #' pam.pt <- Storms(loi = pt, names = "PAM")
 #'
-#' #Getting data using country and storm names 
+#' #Getting data using country and storm names
 #' niran.nc <- Storms(loi = "New Caledonia", names = c("NIRAN"))
 #'
 #' #Getting data using a user defined spatial polygon
@@ -931,7 +933,7 @@ Storms <- function(sds = test_dataset,
                    max_dist = 300,
                    remove_TD = TRUE,
                    verbose = 2){
-  
+
   start_time <- Sys.time()
 
   checkInputsGs(sds, loi, seasons, names, max_dist, verbose, remove_TD)
