@@ -38,6 +38,35 @@ originated are extracted. Seven basins can be used to filter the data set:
 \item{seasons}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
 By default all storms occurring since 1980 are extracted.}
 
+\item{unit_conversion}{named character vector. Required unit conversions, \code{msw} has
+to be provided in $m.s^{-1}$, \code{rmw} in $km$, \code{pressure} and \code{poci} in $Pa$. By default
+\code{unit_conversion=c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")}
+to meet the conversion requirement when importing a NetCDF file from the IBTrACS database.
+This argument is mandatory even if no conversion is needed. If no conversion is needed then
+use \code{"None"} in the corresponding fields. The following unit conversions are implemented:
+
+For \code{msw},
+\itemize{
+\item \code{"knt_to_ms"} to convert knot to meter per second (default setting).
+\item \code{"kmh_to_ms"} to convert kilometre per hour to meter per second.
+\item "\verb{mph_to_ms"} to convert miles per hour to meter per second.
+\item \code{"None"}if no conversion is needed.
+}
+
+For \code{rmw},
+\itemize{
+\item \code{"nm_to_ms"}to convert nautical miles to kilometre (default setting).
+\item \code{"None"}if no conversion is needed.
+}
+For \code{pressure} and \code{poci},
+\itemize{
+\item "\verb{mb_to_pa"} to convert  millibar to Pascal  (default setting).
+\item \code{"b_to_pa"} to convert bar to Pascal.
+\item \code{"atm_to_pa"} to convert  atmosphere to Pascal.
+\item \code{"psi_to_pa"} to convert  psi to Pascal.
+\item \code{"None"}if no conversion is needed.
+}}
+
 \item{verbose}{logical. Whether (TRUE) or not (FALSE) the function should display
 information about the processes}
 }
