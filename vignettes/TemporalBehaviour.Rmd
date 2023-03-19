@@ -8,13 +8,6 @@ vignette: >
    %\VignetteEncoding{UTF-8}
 ---
 
-```{r global_options, include = FALSE}
-knitr::opts_chunk$set(fig.align = 'center',
-                      fig.pos = 't',
-                      cache = FALSE,
-                      eval = TRUE)
-options(knitr.table.format = "latex")
-```
 
 ``` {r setup, include = FALSE}
 library(StormR)

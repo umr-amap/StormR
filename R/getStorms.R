@@ -880,7 +880,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' \item A point coordinate (a numeric vector with lon, lat in decimal degrees, e.g., c(169.5, -19.2)).
 #' \item A sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
 #' }
-#' @param seasons Season(s) of occurrence of the storms. A numeric vector of one (e.g., 2020)
+#' @param seasons  Season(s) of occurrence of the storms. A numeric vector of one (e.g., 2020)
 #'  or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or
 #'  during several consecutive seasons, respectively. By default all storms occurring since 1980 are extracted.
 #' @param names Names of specific storms (in capital letters, character vector) to extract.
