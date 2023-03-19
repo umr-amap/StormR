@@ -19,24 +19,24 @@ Storms(
 
 \item{loi}{Location of interest. Can be defined using:
 \itemize{
-\item A country name (a character object, e.g., "Vanuatu").
-\item A point coordinate (a numeric vector with lon, lat in decimal degrees, e.g., c(169.5, -19.2)).
-\item A sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
+\item character. A country name (e.g., "Vanuatu").
+\item numeric vector. A point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)).
+\item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
 }}
 
-\item{seasons}{Season(s) of occurrence of the storms. A numeric vector of one (e.g., 2020)
+\item{seasons}{numeric vector. Season(s) of occurrence of the storms. One (e.g., 2020)
 or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or
 during several consecutive seasons, respectively. By default all storms occurring since 1980 are extracted.}
 
-\item{names}{Names of specific storms (in capital letters, character vector) to extract.}
+\item{names}{character vector. Names of specific storms (in capital letters) to extract.}
 
-\item{max_dist}{Maximum distance between the location of interest and the storm for which track data are extracted (numeric).
+\item{max_dist}{numeric. Maximum distance between the location of interest and the storm for which track data are extracted.
 Default \code{max_dist} is set to 300 km.}
 
-\item{remove_TD}{Whether (TRUE) or not (FALSE) removing tropical depressions (msw < 18
+\item{remove_TD}{logical. Whether (TRUE) or not (FALSE) removing tropical depressions (msw < 18
 m/s). Default value is set to \code{TRUE}.}
 
-\item{verbose}{Type of information the function displays (numeric):
+\item{verbose}{numeric. Type of information the function displays:
 \itemize{
 \item \code{0}: Nothing is displayed.
 \item \code{1}: Only information about the processes are displayed.

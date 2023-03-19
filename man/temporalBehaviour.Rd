@@ -17,102 +17,107 @@ temporalBehaviour(
 )
 }
 \arguments{
-\item{sts}{\code{StormsList}}
+\item{sts}{\code{StormsList} object.}
 
-\item{points}{data.frame. Contains longitude/latitude coordinates within
-column names \code{x} and \code{y}, on which to compute the desired product}
+\item{points}{data.frame. The lon (in a \code{x} col), lat (in a \code{y} col) coordinates in decimal degrees.}
 
-\item{product}{character. Product to compute. Must be either:
+\item{product}{character. Desired output among:
 \itemize{
-\item \code{"TS"}: Time Series of wind speed
-\item \code{"PDI"}: Power Dissipation Index
-\item \code{"Exposure"}: hour exposition for wind greater than \code{wind_threshold}
-}
-Default value is set to \code{"TS"}}
+\item \code{"TS"}: time series of wind speed and direction (default setting).
+\item \code{"PDI"}: power dissipation index.
+\item \code{"Exposure"}: the duration of exposure.
+}}
 
-\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (m/s) to
-compute \code{"Exposure"} product. Ignored if \code{"Exposure"} is not part of the
-products to compute. Default value is set to Saffir Simpson Hurricane Scale
-thresholds}
+\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (in $m.s^{-1}$) used to
+compute the duration of exposure when \code{product="Exposure"}. By default value the thresholds
+used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 $m.s^{-1}$).}
 
-\item{method}{character. Cyclonic model used to compute product. Must be
-either:
+\item{method}{character. Model used to compute wind speed and direction.
+Three different models are implemented:
 \itemize{
-\item \code{"Willoughby"}: model based on fits performed on cyclonic observations
-\item \code{"Holland"}: model based on both basic cyclonic Physics and parameters
-fitting according to cyclonic observations
-\item \code{"Boose"}: asymmetric model based on Holland model
-}
-Default value is set to \code{"Willoughby"} (See \code{Details})}
+\item \code{"Willoughby"}: the symmetrical model developed by Willoughby et al. (2006) (default setting).
+\item \code{"Holland"}: the symmetrical model developed by Holland (1980).
+\item \code{"Boose"}: the asymmetrical model developed by  Boose et al. (2004).
+}}
 
-\item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations (see \code{Details}). Must be either:
+\item{asymmetry}{character. If \code{method="Holland"} or \code{method="Willoughby"},
+which method is used to add asymmetry. Can be:
 \itemize{
-\item \code{"Miyazaki"}: based on the formula derived in Miyazaki et al. (1962)
-\item \code{"Chen"}:  based on the formula derived in Chen (1994)
-\item \code{"None"}: no asymmetry is added
-}
-Default value is set to \code{"Chen"}. Ignored if \code{method == "Boose"}}
+\item \code{"Chen"}: the model developed by Chen (1994) (default setting).
+\item \code{"Miyazaki"}: the model developed by Miyazaki et al. (1962).
+\item \code{"None"}: no asymmetry.
+}}
 
-\item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
-empirically or using the radius of maximum wind from the observations.
-Default value is set to \code{FALSE}. If \code{TRUE}, a formula extracted from
-Willoughby et al. 2006 is used to compute rmw}
+\item{empirical_rmw}{logical. Whether (TRUE) or not (FALSE) to compute
+the radius of maximum wind (\code{rmw}) empirically with the model developed by
+Willoughby et al. (2006). If \code{empirical_rmw==FALSE} (default setting) then the
+\code{rmw} provided in the \code{StormsList} is used.}
 
-\item{temp_res}{numeric. Period of time used to interpolate data. Allowed
-values are \code{1} (60min), \code{0.75} (45min), \code{0.5} (30min), and \code{0.25} (15min).
-Default value is set to \code{1}}
+\item{temp_res}{numeric. Temporal resolution. Can be \code{1} (for 60 min, default setting),
+\code{0.75} (for 45min), \code{0.5} (for 30 min), and \code{0.25} (15 for min).}
 
-\item{verbose}{numeric. Whether or not the function should display
-informations about the process and/or outputs. Allowed values are:
+\item{verbose}{numeric. Information displayed. Can be:
 \itemize{
-\item \code{0}: Nothing is displayed
-\item \code{1}: Informations about the process are displayed
-\item \code{2}: Outputs are also displayed
-}
-Default value is set to \code{2}}
+\item \code{2}: information about the processes and outputs are displayed (default setting).
+\item \code{1}: information about the processes are displayed.
+\item \code{0}: no information displayed.
+}}
 }
 \value{
-Computed product for each points are returned through lists of
-data.frame (one per points coordinates) contained in a named list. Then,
-each slot, named after the storm, is made of list(s) of data.frame that has
-the following dimensions:
+For each storm and each point location, the \code{temporalBehaviour()} function returns
+a data.frame. The data frames are organised into named lists. Depending on the \code{product} argument
+different data.frame are returned:
 \itemize{
-\item If \code{product == "TS"}: a data frame whose number of rows corresponds to
-the number of interpolated observations. The columns provides
-respectively the wind speed values (m/s), the wind directions
-(in degree), the indices and the ISO time of observations
-\item If \code{product == "PDI"}: a data.frame with one row and one column that
-contains PDI value for each point in points.
-\item If \code{product == "Exposure"}: a data.frame with one row for each wind
-threshold and one column that contains Exposure value for each point
-in points.
+\item If \code{product == "TS"}, the function returns a data.frame with
+one row for each observation (or interpolated observation) and
+four columns for wind speed (in $m.s^{-1}$), wind direction (in degree),
+the indices, and the ISO time of observations.
+\item If \code{product == "PDI"}, the function returns a data.frame with one row
+for each point location and one column for the PDI.
+\item If \code{product == "Exposure"}, the function returns a data.frame with one
+row for each wind speed threshold defined with the \code{wind_threshold} argument
+and one column for each point location.
 }
 }
 \description{
-This function is the pointwise version of \code{spatialBehaviour}. Available
-products are Time Series of wind speed (TS), Power Dissipation Index (PDI)
-and Exposure
+The \code{temporalBehaviour()} function allows computing wind speed and direction
+for a given location or set of locations along the lifespan of a tropical cyclone.
+It also allows to compute to compute three associated summary statistics.
 }
 \details{
 The \code{temp_res} input will perform a linear interpolation of
 observations to further compute each 2D wind speed structure at each
 interpolated observations. For example, if \code{temp_res == 1}, it will
-generate observations every 1hour between the available observations.
+generate observations every 1 hour between the available observations.
 }
 \examples{
 \dontrun{
-pts <- data.frame(lon = c(166.5, 163), lat = c(-22, -19))
+pts <- data.frame(x = c(166.5, 163), y = c(-22, -19))
+row.names(pts)<-c("point_1","point_2")
 
-#Compute time series of wind speed for ERICA and NIRAN on points
-#provided in pts using default settings
+#Computing time series of wind speed and direction for Erica and Niran over points 1 and 2 defined above
 ts_nc <- temporalBehaviour(sts_nc, points = pts)
 
-#Compute PDI for ERICA and NIRAN on points provided in pts using default settings
+#Computing PDI for Erica and Niran over points 1 and 2 defined above
 pdiPt_nc <- temporalBehaviour(sts_nc, points = pts, product = "PDI")
 
-#Compute Exposure for ERICA and NIRAN on points provided in df using default settings
+#Computing the duration of exposure to wind speeds above the thresholds used by the Saffir-Simpson hurricane wind scale for Erica and Niran over points 1 and 2 defined above
 expPt_nc <- temporalBehaviour(sts_nc, points = pts, product = "Exposure", wind_threshold = c(20,30))
 }
 
+}
+\references{
+Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
+Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
+
+Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
+
+Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
+https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
+
+Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
+Oceanographical Magazine, 13(2), 103–117.
+
+Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
+Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
 }
