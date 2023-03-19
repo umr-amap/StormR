@@ -17,15 +17,37 @@ library(rworldxtra)
 data("countriesHigh")
 ```
 
-The main functions of the `StormR` package, `spatialBehaviour()` and `temporalBehaviour()`, allow to compute characteristics of the storm surface wind field, as re-constructed from storm track data and a parametric cyclone model. Three parametric models are implemented in this package: Holland (1980), Willoughby et al. (2006), and Boose et al. (2004). The use of one model or the other is defined  using the `method` argument in  `spatialBehaviour()` and `temporalBehaviour()` functions.
+The main functions of the `StormR` package, `spatialBehaviour()` and
+`temporalBehaviour()`, allow to compute characteristics of the storm surface
+wind field, as re-constructed from storm track data and a parametric cyclone
+model. Three parametric models are implemented in this package: Holland (1980),
+Willoughby et al. (2006), and Boose et al. (2004). The use of one model or the
+other is defined  using the `method` argument in  `spatialBehaviour()` and
+`temporalBehaviour()` functions.
 
-The original Holland (1980) and Willoughby et al. (2006) models provide a symmetrical wind field around the cyclone centre. However cyclonic winds are not symmetric, and an order zero asymmetry is caused by the storm translation (forward motion). We therefore suggest using an asymmetric version of the parametric wind fields that takes into account storm motion. In the `StormR` package the methods developed by Miyazaki et al. (1962) and Chen (1994) that allow to take this asymmetry into account can be used to adjust the outputs of the symmetrical models accordingly. These can be activated by using the `asymmetry` argument of the `spatialBehaviour()` and `temporalBehaviour()` functions. The model of Boose et al. (2004) is already an asymmetrical version of the Holland (1980) model. Contrary to the Holland (1980) and Willoughby et al. (2006), this model considers different parameter settings over water or over lands.
+The original Holland (1980) and Willoughby et al. (2006) models provide a
+symmetrical wind field around the cyclone centre. However cyclonic winds are not
+symmetric, and an order zero asymmetry is caused by the storm translation
+(forward motion). We therefore suggest using an asymmetric version of the
+parametric wind fields that takes into account storm motion. In the `StormR`
+package the methods developed by Miyazaki et al. (1962) and Chen (1994) that
+allow to take this asymmetry into account can be used to adjust the outputs of
+the symmetrical models accordingly. These can be activated by using the
+`asymmetry` argument of the `spatialBehaviour()` and `temporalBehaviour()`
+functions. The model of Boose et al. (2004) is already an asymmetrical version
+of the Holland (1980) model. Contrary to the Holland (1980) and Willoughby et
+al. (2006), this model considers different parameter settings over water or over
+lands.
 
-By default the `spatialBehaviour()` and `temporalBehaviour()` functions use the Willoughby et al. (2006) model adjusted using the Chen (1994) method.
+By default the `spatialBehaviour()` and `temporalBehaviour()` functions use the
+Willoughby et al. (2006) model adjusted using the Chen (1994) method.
 
 ### Holland (1980) symmetric wind field
 
-The Holland (1980) model, widely used in the literature, is based on the gradient wind balance in mature tropical cyclones. The wind speed distribution is computed from the circular air pressure field, which can be derived from the central and environmental pressure and the radius of maximum winds.
+The Holland (1980) model, widely used in the literature, is based on the
+gradient wind balance in mature tropical cyclones. The wind speed distribution
+is computed from the circular air pressure field, which can be derived from the
+central and environmental pressure and the radius of maximum winds.
 
 $$
 v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)
@@ -43,7 +65,13 @@ $b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}$ is the shape parameter, w
 
 ### Willoughby et al. (2006) symmetric wind field
 
-The Willoughby et al. (2006) model is an empirical model fitted to aircraft observations. The model considers two regions: inside the eye and at external radii, for which the wind formulations use different exponents to better match observations. In this model, the wind speed increases as a power function of the radius inside the eye and decays exponentially outside the eye after a smooth polynomial transition across the eyewall (see also Willoughby 1995, Willoughby et al. 2004).
+The Willoughby et al. (2006) model is an empirical model fitted to aircraft
+observations. The model considers two regions: inside the eye and at external
+radii, for which the wind formulations use different exponents to better match
+observations. In this model, the wind speed increases as a power function of the
+radius inside the eye and decays exponentially outside the eye after a smooth
+polynomial transition across the eyewall (see also Willoughby 1995, Willoughby
+et al. 2004).
 
 $$
 \left\{
@@ -92,7 +120,10 @@ $R_m$ is the radius of maximum sustained wind speed (in $km$) <br />
 
 ### Boose et al. (2004) asymmetric model
 
-The Boose et al. (2004) model, or “HURRECON” model, is a modification of the Holland (1980) model (see also Boose et al., 2001). In addition to adding asymmetry, this model treats of water and land differently, using different surface friction coefficient for each. 
+The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
+Holland (1980) model (see also Boose et al., 2001). In addition to adding
+asymmetry, this model treats of water and land differently, using different
+surface friction coefficient for each.
 
 #### Wind speed
 
@@ -136,7 +167,8 @@ $\phi$ is the latitude <br />
 
 ### Wind fields comparison
 
-Here, we compare wind fields generated by different models that can be used in `StormR` for the same time and location (tropical cyclone Pam near Vanuatu)
+Here, we compare wind fields generated by different models that can be used in
+`StormR` for the same time and location (tropical cyclone Pam near Vanuatu)
 
 ```{r}
 st <- Storms(loi = c(168.33,-17.73), names = "PAM",verbose=0)

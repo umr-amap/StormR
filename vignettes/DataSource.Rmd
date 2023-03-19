@@ -20,8 +20,8 @@ dataset as a ".nc" (NetCDF) file in which the location and some characteristics
 of storms are given across their lifespan. This file is used to create a
 `StormsDataset` object using the `defDatabase` function. By default, the
 arguments of `defDatabase` function are set up to create a `StormsDataset`
-object using the USA fields in the IBTrACS database
-[International Best Track Archive for Climate
+object using the USA fields in the IBTrACS database [International Best Track
+Archive for Climate
 Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive)
 (Knapp et al., 2010). This database provides a fairly comprehensive record of
 worldwide tropical storms and cyclones with a 3-hours temporal resolution since
@@ -41,18 +41,16 @@ worldwide tropical storms and cyclones with a 3-hours temporal resolution since
 | `poci`| Pressure of the last closed isobar | $Pa$ | 92200 | Recommended$^{3}$ |
 | `sshs`| Saffir-Simpson hurricane wind scale rating based on `msw` (here in $m.s^{-1}$) | $-1 =$ Tropical depression (`msw` $< 18$) <br /> $0 =$ Tropical storm ($18 \leq$ `msw` $< 33$) <br /> $1 =$ Category 1 ($33  \leq$ `msw` $< 42$) <br /> $2 =$ Category 2 ($42 \leq$ `msw` $< 49$) <br /> $3 =$ Category 3 ($49 \leq$ `msw` $< 58$) <br /> $4 =$ Category 4 ($58 \leq$ `msw` $< 70$) <br /> $5 =$ Category 5 (`msw` $\ge 70$)| 5 | Optional$^{4}$  |
 
-$^{1}$ Providing the `basin` allows to filter storms in a particular basin 
-using the `basin` argument of the `defDatabase` function. <br />
-
-$^{2}$ Providing `rmw` allows better estimates of wind speed and direction
-in the `temporatlBehaviour()` and `spatialBehaviour()` functions. If
-not provided, `rmw` is approximated using an empirical formula derived from
+$^{1}$ Providing the `basin` allows to filter storms in a particular basin using
+the `basin` argument of the `defDatabase` function. <br />
+$^{2}$ Providing `rmw` allows better estimates of wind speed and direction in
+the `temporatlBehaviour()` and `spatialBehaviour()` functions. If not provided,
+`rmw` is approximated using an empirical formula derived from
 Willoughby et al. (2006) as follows, $R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times
 |\phi|)}$. <br />
-
-$^{3}$ If the `pressure` and `poci` fields are not provided, both Holland (1980) and Boose et al. (2004) 
-wind field models cannot be used in the `temporatlBehaviour()` and `spatialBehaviour()` functions. <br />
-
+$^{3}$ If the `pressure` and `poci` fields are not provided, both Holland (1980)
+and Boose et al. (2004) wind field models cannot be used in the
+`temporatlBehaviour()` and `spatialBehaviour()` functions. <br />
 $^{4}$ The `sshs` field is optional, if not provided this field is automatically
 filled using the `msw` field.
 
@@ -61,7 +59,9 @@ filled using the `msw` field.
 If not available, a storm track data set has to be downloaded. In the following
 example we illustrate how a storm track data set can be downloaded on the
 IBTrACKS website. Different ".nc" (NetCDF) files containing storm track data
-sets can be downloaded [here](https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/). Please, follow the IBTrACS citation recommendations when using these datasets
+sets can be downloaded
+[here](https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/).
+Please, follow the IBTrACS citation recommendations when using these datasets
 (including citing Knapp et al., 2010 and Knapp et al., 2018, and providing the
 access date for the later). For example, track data for all the storms that
 occurred over the last three years over the different basins world wide can be
@@ -82,7 +82,12 @@ str(sds)
 length(unique(paste(sds@database$names,sds@database$seasons," ")))
 ```
 
-This `StormsDataset` object contains track data for 275 storms. When using an IBTrACKS storm track data set, default arguments can be used. By default, data provided by USA agencies (starting with "usa_") are used, but other data can be selected. For example, for the South Pacific basin ("SP"), we can choose to use data provided by the Australian Bureau of Meteorology (starting with "bom_") in the IBTrACKS data set as follows,
+This `StormsDataset` object contains track data for 275 storms. When using an
+IBTrACKS storm track data set, default arguments can be used. By default, data
+provided by USA agencies (starting with "usa_") are used, but other data can be
+selected. For example, for the South Pacific basin ("SP"), we can choose to use
+data provided by the Australian Bureau of Meteorology (starting with "bom_") in
+the IBTrACKS data set as follows,
 
 ```{r DefDatabase 2}
 sds <-defDatabase(filename = "IBTrACS_ALL_3yrs.nc",
@@ -108,16 +113,16 @@ Pacific basin.
 
 In the IBTrACS data sets speeds are given in knots ($knt$), distances in
 nautical miles ($nm$), and pressure in millibar ($mb$) but the models
-implemented in the `temporalBehaviour()` and `spatialBehaviour()` functions 
-compute wind speed, wind direction, and summary statistics following the international 
-system of units (SI) or SI-derived units. Therefore,
-by default, when using IBTrACS data sets, the `defDatabase()` function converts
-knots ($knt$) to meter per second ($m.s^{-1}$), nautical miles ($nm$) to
-kilometres ($km$), and millibar ($mb$) to Pascal ($pa$).
+implemented in the `temporalBehaviour()` and `spatialBehaviour()` functions
+compute wind speed, wind direction, and summary statistics following the
+international system of units (SI) or SI-derived units. Therefore, by default,
+when using IBTrACS data sets, the `defDatabase()` function converts knots
+($knt$) to meter per second ($m.s^{-1}$), nautical miles ($nm$) to kilometres
+($km$), and millibar ($mb$) to Pascal ($pa$).
 
-When using another source of data than IBTrACS, the `unit_conversion` argument of the
-`defDatabase()` function can be used to convert the data to the desired units.
-The following conversions are available,
+When using another source of data than IBTrACS, the `unit_conversion` argument
+of the `defDatabase()` function can be used to convert the data to the desired
+units. The following conversions are available,
 
 For `msw`: <br />
 `knt_to_ms`: converts knot in meter per second (default setting) <br />
@@ -138,10 +143,11 @@ For both `pressure` and `poci`: <br />
 
 ### Test data set
 
-A `test_dataset` is provided with the `StormR` package. This test data set comprises the
-track data of nine storms that occurred near Vanuatu and New Caledonia between 2015-2016
-and 2020-2021, respectively. This `test_dataset` is used by default in
-the `Storms()` function if no other `StormsDataset` has been created with the `defDatabase()` function.
+A `test_dataset` is provided with the `StormR` package. This test data set
+comprises the track data of nine storms that occurred near Vanuatu and New
+Caledonia between 2015-2016 and 2020-2021, respectively. This `test_dataset` is
+used by default in the `Storms()` function if no other `StormsDataset` has been
+created with the `defDatabase()` function.
 
 ## Reference
 
