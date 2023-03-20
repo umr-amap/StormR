@@ -1007,98 +1007,96 @@ maskProduct <- function(final_stack, loi, template){
 
 #' Compute indicators of storm behaviour
 #'
-#' This function computes/rasterizes products for each `Storm` included in a
-#' `StormsList`, among Maximum Sustained Wind, Power Dissipation Index, Category
-#' exposure and 2D wind speed structures/direction of wind speed for every
-#' observations
+#' The spatialBehaviour() function allows computing wind speed and
+#'  direction for each cell of a regular grid (i.e., a raster) 
+#' for a given tropical cyclone or set of tropical cyclones. 
+#' It also allows to compute to compute three associated summary statistics.
 #'
-#' @param sts `StormsList`
-#' @param product character. Product to compute among:
+#' @param sts `StormsList` object
+#' @param product character. Desired output among:
 #'   \itemize{
-#'     \item `"MSW"`: Maximum Sustained Wind
-#'     \item `"PDI"`: Power Dissipation Index
-#'     \item `"Exposure"`: hour exposition for wind greater than `wind_threshold`
-#'     \item `"Profiles"`, 2D wind speed structures of wind speed with wind
-#'           direction for each observation
+#'     \item `"Profiles"`: 2D wind speed and direction fields.
+#'     \item `"MSW"`: Maximum sustained wind speed (default setting).
+#'     \item `"PDI"`: Power dissipation index.
+#'     \item `"Exposure"`: Duration of exposure.
 #'   }
-#'   Default value is set to `"MSW"`
-#' @param wind_threshold numeric vector. Minimal wind threshold(s) (m/s) to
-#'   compute `"Exposure"` product. Ignored if `"Exposure"` is not part of the
-#'   products to compute. Default value is set to Saffir Simpson Hurricane Scale
-#'   thresholds
-#' @param method character. Cyclonic model used to compute `product`. Must be
-#'   either:
+#' @param wind_threshold numeric vector. Minimal wind threshold(s) (in m/s)
+#'  used to compute the duration of exposure when product="Exposure". 
+#'  By default value the thresholds used in the Saffir-Simpson hurricane wind scale are used
+#'   (i.e., 18, 33, 42, 49, 58, 70 m/s).
+#' @param wind_threshold numeric vector. Minimal wind threshold(s) (in $m.s^{-1}$) used to
+#'   compute the duration of exposure when `product="Exposure"`. By default value the thresholds 
+#'   used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 $m.s^{-1}$).
+#' @param method character. Model used to compute wind speed and direction. 
+#' Three different models are implemented:
 #'   \itemize{
-#'   \item `"Willoughby"`: model based on fits performed on cyclonic observations
-#'   \item `"Holland"`: model based on both basic cyclonic Physics and parameters
-#'         fitting according to cyclonic observations
-#'   \item `"Boose"`: asymmetric model based on Holland model
+#'   \item `"Willoughby"`: the symmetrical model developed by Willoughby et al. (2006) (default setting).
+#'   \item `"Holland"`: the symmetrical model developed by Holland (1980).
+#'   \item `"Boose"`: the asymmetrical model developed by  Boose et al. (2004).
 #'   }
-#'   Default value is set to `"Willoughby"` (See `Details`)
-#' @param asymmetry character. Indicates which version of asymmetry to use in
-#'   the computations (see `Details`). Must be either:
+#' @param asymmetry character. If `method="Holland"` or `method="Willoughby"`, 
+#' which method is used to add asymmetry. Can be:
 #'   \itemize{
-#'      \item `"Miyazaki"`: based on the formula derived in Miyazaki et al. (1962)
-#'      \item `"Chen"`:  based on the formula derived in Chen (1994)
-#'   \item `"None"`: no asymmetry is added
+#'      \item `"Chen"`: the model developed by Chen (1994) (default setting).
+#'      \item `"Miyazaki"`: the model developed by Miyazaki et al. (1962).
+#'      \item `"None"`: no asymmetry.
 #'   }
-#'   Default value is set to `"Chen"`. Ignored if `method == "Boose"`
-#' @param empirical_rmw logical. Whether to compute the radius of maximum wind
-#'   empirically or using the radius of maximum wind from the observations.
-#'   Default value is set to `FALSE`. If `TRUE`, a formula extracted from
-#'   Willoughby et al. 2006 is used to compute rmw
-#' @param space_res character. Space resolution for the raster(s) to compute.
-#'   Either `"30sec"`, `"2.5min"`, `"5min"` or `"10min"`. Default value is set
-#'   to `"2.5min"`
-#' @param temp_res numeric. Period of time used to interpolate data. Allowed
-#'   values are `1` (60min), `0.75` (45min), `0.5` (30min), and `0.25` (15min).
-#'   Default value is set to `1`
+#' @param empirical_rmw logical. Whether (TRUE) or not (FALSE) to compute
+#' the radius of maximum wind (`rmw`) empirically with the model developed by 
+#' Willoughby et al. (2006). If `empirical_rmw==FALSE` (default setting) then the 
+#' `rmw` provided in the `StormsList` is used.
+#' @param space_res character. Spatial resolution. Can be `"30 sec"` (~1 km at the equator), 
+#' `"2.5 min"` (~4.5 km at the equator), `"5 min"` (~9 km at the equator) or `"10 min"` (~18.6 km at the equator).
+#'  Default setting is `"2.5 min"`.
+#' @param temp_res numeric. Temporal resolution. Can be `1` (for 60 min, default setting),
+#'  `0.75` (for 45min), `0.5` (for 30 min), and `0.25` (15 for min).
 #' @param verbose numeric. Whether or not the function should display
 #'   informations about the process and/or outputs. Allowed values are:
 #' \itemize{
-#' \item `0`: Nothing is displayed
-#' \item `1`: Informations about the process are displayed
-#' \item `2`: Outputs are also displayed
+#'    \item `2`: information about the processes and outputs are displayed (default setting).
+#'    \item `0`: no information displayed.
+#'    \item `1`: information about the processes are displayed.
 #' }
-#'   Default value is set to `2`
-#' @returns SpatRaster stack which provides the desired product computed,
-#'   projected in WGS84 and spanning over the extented LOI of the `StormsList` .
-#'   Number of layers depends on the number of `Storm` available in `sts` and
-#'   also `product` and `temp_res` inputs:
+#' @returns The spatialBehaviour() function returns SpatRaster objects (in WGS84). 
+#' The number of layers in the outputs depends on the number of `Storm` in the inputs, 
+#' on the desired `product`, as well as `temp_res` argument:
 #' \itemize{
-#'    \item `"MSW"` produces one layer per `Storm`. Name of layer is "STORMNAME_MSW"
-#'    \item `"PDI"` produces one layer per `Storm`. Name of layer is "STORMNAME_PDI"
-#'    \item `"Exposure"` produces one layer for each wind values available
-#'           in `wind_threshold` and for each `Storm`. Name of layers are
-#'           "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
-#'    \item `"Profiles"` produces two layers for each observations
-#'          (real and interpolated) and each  `Storm`. Name of layers are
-#'          "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
+#'    \item If `product = "MSW"`, the function returns one layer for each `Storm`. 
+#'    The names of the layer follow the following terminology, the name of the storm 
+#'    in capital letters and “MSW” separated by underscores (e.g., "PAM_MSW").
+#'    \item If `product = "PDI"`, the function returns one layer for each `Storm`. 
+#'    The names of the layer follow the following terminology, the name of the storm 
+#'    in capital letters and “PDI” separated by underscores (e.g., "PAM_PDI").
+#'    \item If `product ="Exposure"`, the function returns one layer for each wind speed values
+#'    in the `wind_threshold` argument and for each `Storm`. The names of the layer follow the 
+#'    following terminology, the name of the storm in capital letters, "Exposure", and the number 
+#'    of the threshold value separated by underscores (e.g., "PAM_Exposure_threshold1", 
+#'    "PAM_Exposure_threshold2", ...).
+#'    \item If `product = "Profiles"` the function returns one layer for wind speed and 
+#'    one layer for wind direction for each observation or interpolated observation and each `Storm`. 
+#'    The names of the layer follow the following terminology, the name of the storm in capital letters, 
+#'    "Speed" or "Direction", and the indices of the observation separated by underscores
+#'    (e.g., "PAM_Speed_41", "PAM_Direction_41",...).
 #' }
 #'
-#' @details The `temp_res` input will perform a linear interpolation
-#'   of observations to further compute each 2D wind speed structure at each
-#'   interpolated observations. For example, if `temp_res == 1`, it will
-#'   generate observations every 1hour between the available observations. Doing
-#'   so, 2D wind speed structure is computed and stacked for each observations
-#'   (available and interpolated) to compute the desired product(s) afterwards.
-#'   If `product == "Profiles"`, nothing else is performed. Otherwise and
-#'   depending on the product(s) to compute, calculations are carried out on the
-#'   stack and `terra::focal` functions are applied to the final raster(s) to
-#'   smooth the result(s).
+#' @details Storm track data set, such as those provided by IBRTrACKS (Knapp et al., 2010),
+#'  usually provide observation at a 3- or 6-hours temporal resolution. In the spatialBehaviour() 
+#'  function linear interpolations are used to reach the temporal resolution set up with 
+#'  the `temp_res` argument (set up to 1 hour by default). When `product = "MSW"`, `product = "PDI"`, or 
+#'  `product = "Exposure"` the `focal()` function from the terra R package to smooth the results using moving windows.
 #'
 #' @examples
 #' \dontrun{
-#' #Compute MSW product for Pam 2015 in Vanuatu using default settings
+#' #Computing maximum sustained wind speed generated by Pam (2015) near Vanuatu
 #' msw.pam <- spatialBehaviour(pam)
 #'
-#' #Compute PDI product for Storms in sts_nc using Holland model without asymmetry
+#' #Computing power dissipation index for several storms near New Caledonia using the Holland model without asymmetry
 #' pdi.nc <- spatialBehaviour(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 #'
-#' #Compute Exposure for Pam 2015 in Vanuatu using default settings
+#' #Computing duration of exposure to Saffir-Simpson hurrican wind scale threshold values during Pam (2015) near Vanuatu
 #' exp.pam <- spatialBehaviour(pam, product = "Exposure")
 #'
-#' #Compute profiles for Storms in sts_nc using default settings
+#' #Computing wind speed and direction profiles for several storms near New Caledonia
 #' prof.nc <- spatialBehaviour(sts_nc, product = "Profiles")
 #' }
 #'
