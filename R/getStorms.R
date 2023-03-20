@@ -895,8 +895,8 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' \item `2`: Information about both the processes and the outputs are displayed (default value).
 #' }
 #'
-#' @returns The `Storms()` function a `StormsList` object containing track data for all storms
-#' meeting the specified criteria (name, season, location, ...).
+#' @returns The `Storms()` function returns a `StormsList` object containing track data for all storms
+#' meeting the specified criteria (e.g., name, season, location).
 #'
 #' @details The available countries for the `loi` are those provided in the
 #'   `rwolrdxtra` package. This package provide high resolution vector country
