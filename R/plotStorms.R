@@ -312,14 +312,19 @@ plotStorms <- function(sts,
 
   #Plotting base map
   world <- rworldmap::getMap(resolution = "high")
-  maps::map(world,
-            fill = TRUE,
-            col = groundColor,
-            bg = oceanColor,
-            wrap = c(0, 360),
-            xlim = c(ext$xmin-1, ext$xmax+1),
-            ylim = c(ext$ymin-1, ext$ymax+1))
-  maps::map.axes(cex.axis = 1)
+  world <- terra::vect(world)
+  p <- terra::plot(world,
+              ext = ext,
+              col = groundColor,
+              background = oceanColor)
+  # maps::map(world,
+  #           fill = TRUE,
+  #           col = groundColor,
+  #           bg = oceanColor,
+  #           wrap = c(0, 360),
+  #           xlim = c(ext$xmin-1, ext$xmax+1),
+  #           ylim = c(ext$ymin-1, ext$ymax+1))
+  #maps::map.axes(cex.axis = 1)
 
   #Plotting loi
   if (loi)
@@ -342,8 +347,10 @@ plotStorms <- function(sts,
     lty <- rep(0,7)
     pch <- rep(19,7)
     lwd <- rep(1,7)
+    print(p)
+    print(p$ext[1])
 
-    graphics::legend(legends,
+     w <- graphics::legend(x = p$ext["xmin"],
                      title = "SSHS",
                      legend = leg,
                      col = col,
@@ -352,6 +359,11 @@ plotStorms <- function(sts,
                      lwd = lwd,
                      cex = 0.6,
                      bty = "n")
+     
+     print(w)
+    
+   
+     
 
   }
   
