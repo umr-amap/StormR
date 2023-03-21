@@ -78,7 +78,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Storms</h1>
             
-            <h4 data-toc-skip class="date">2023-03-19</h4>
+            <h4 data-toc-skip class="date">2023-03-21</h4>
       
       
       <div class="d-none name"><code>Storms.Rmd</code></div>
@@ -112,7 +112,7 @@ locations, and polygon shapefiles, as described below.</p>
 <div class="section level4">
 <h4 id="using-country-names">Using country names<a class="anchor" aria-label="anchor" href="#using-country-names"></a>
 </h4>
-<p>We extract data on the tropical cyclone PAM (2015) nearby Vanuatu as
+<p>We extract data on the tropical cyclone Pam (2015) nearby Vanuatu as
 follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span>,verbose<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
@@ -171,7 +171,7 @@ the returned <code>StormsList</code> object can be obtained using the
 <code>names</code> argument of the <code><a href="../reference/plotStorms.html">plotStorms()</a></code> function as
 follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, names<span class="op">=</span><span class="st">"NIRAN"</span>, labels<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, names<span class="op">=</span><span class="st">"NIRAN"</span>, labels<span class="op">=</span><span class="cn">TRUE</span>, legends<span class="op">=</span><span class="st">"bottomleft"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Storms_files/figure-html/chunk7-1.png" width="700"></p>
 <p>The track data for Niran can also be extracted and stored in a new
 object using the <code><a href="../reference/getStorm-methods.html">getStorm()</a></code> function as follows:</p>
@@ -212,7 +212,7 @@ follows:</p>
 <code>category</code> argument of the <code><a href="../reference/plotStorms.html">plotStorms()</a></code> function
 as follows:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span>, labels<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span>, labels<span class="op">=</span><span class="cn">FALSE</span>, legends<span class="op">=</span><span class="st">"topright"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Storms_files/figure-html/chunk12-1.png" width="700"></p>
 </div>
 </div>
