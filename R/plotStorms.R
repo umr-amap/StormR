@@ -311,20 +311,12 @@ plotStorms <- function(sts,
   }
 
   #Plotting base map
-  world <- rworldmap::getMap(resolution = "high")
-  world <- terra::vect(world)
+  world <- terra::vect(rworldmap::getMap(resolution = "high"))
   p <- terra::plot(world,
               ext = ext,
               col = groundColor,
               background = oceanColor)
-  # maps::map(world,
-  #           fill = TRUE,
-  #           col = groundColor,
-  #           bg = oceanColor,
-  #           wrap = c(0, 360),
-  #           xlim = c(ext$xmin-1, ext$xmax+1),
-  #           ylim = c(ext$ymin-1, ext$ymax+1))
-  #maps::map.axes(cex.axis = 1)
+  
 
   #Plotting loi
   if (loi)
@@ -341,30 +333,34 @@ plotStorms <- function(sts,
   #Adding legends
   if(legends != "none") {
 
-    leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
-    col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
+    leg <- c(" "," " ,"TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
+    col <- c(NA, NA, "#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 
-    lty <- rep(0,7)
-    pch <- rep(19,7)
-    lwd <- rep(1,7)
-    print(p)
-    print(p$ext[1])
-
-     w <- graphics::legend(x = p$ext["xmin"],
-                     title = "SSHS",
+    lty <- rep(0,length(leg))
+    pch <- rep(19,length(leg))
+    lwd <- rep(1,length(leg))
+   
+    
+    graphics::legend(x = legends,
+                     #inset = c(0.15,0),
+                     xpd = TRUE,
+                     
                      legend = leg,
                      col = col,
                      lty = lty,
                      pch = pch,
                      lwd = lwd,
-                     cex = 0.6,
-                     bty = "n")
-     
-     print(w)
+                     pt.cex = 0.6,
+                     cex = 0.8,
+                     bty = "o")
     
-   
-     
-
+    graphics::legend(x = legends,
+                     #inset = c(0.15,0),
+                     legend = c(" "),
+                     xpd = TRUE,
+                     title = "SSHS",
+                     bty = "n")
+    
   }
   
 }
