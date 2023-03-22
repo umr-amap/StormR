@@ -1079,11 +1079,92 @@ maskProduct <- function(final_stack, loi, template){
 #'    (e.g., "PAM_Speed_41", "PAM_Direction_41",...).
 #' }
 #'
-#' @details Storm track data set, such as those provided by IBRTrACKS (Knapp et al., 2010),
-#'  usually provide observation at a 3- or 6-hours temporal resolution. In the spatialBehaviour()
-#'  function linear interpolations are used to reach the temporal resolution set up with
-#'  the `temp_res` argument (set up to 1 hour by default). When `product = "MSW"`, `product = "PDI"`, or
-#'  `product = "Exposure"` the `focal()` function from the terra R package to smooth the results using moving windows.
+#' @details Storm track data set, such as those provided by IBRTrACKS (Knapp et
+#'   al., 2010), usually provide observation at a 3- or 6-hours temporal
+#'   resolution. In the spatialBehaviour() function linear interpolations are
+#'   used to reach the temporal resolution set up with the `temp_res` argument
+#'   (set up to 1 hour by default). When `product = "MSW"`, `product = "PDI"`,
+#'   or `product = "Exposure"` the `focal()` function from the terra R package
+#'   to smooth the results using moving windows.
+#' 
+#'The Willoughby et al. (2006) model is an empirical model fitted to aircraft
+#'observations. The model considers two regions: inside the eye and at external
+#'radii, for which the wind formulations use different exponents to better match
+#'observations. In this model, the wind speed increases as a power function of the
+#'radius inside the eye and decays exponentially outside the eye after a smooth
+#'polynomial transition across the eyewall (see also Willoughby 1995, Willoughby
+#' et al. 2004).
+#'
+#'\eqn{\left\{\begin{aligned}
+#'    v_r &= v_m \times \left(\frac{r}{R_m}\right)^{n} \quad if \quad r < R_m \\
+#'    v_r &= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
+#'    \end{aligned}
+#'    \right.
+#'}
+#'
+#' where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), \eqn{r} is the
+#' distance to the eye of the storm (in \eqn{km}), \eqn{v_m} is the maximum
+#' sustained wind speed (in \eqn{m.s^{-1}}), \eqn{R_m} is the radius of maximum
+#' sustained wind speed (in \eqn{km}), \eqn{X1 = 287.6 - 1.942 \times v_m +
+#' 7.799 \times \ln(R_m) + 1.819 \times |\phi|}, \eqn{X2 = 25}, \eqn{n = 2.1340
+#' + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|}, \eqn{A
+#' = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|}
+#' and \eqn{A\ge0}, \eqn{\phi} is the latitude of the center of the storm.
+#'
+#'The Holland (1980) model, widely used in the literature, is based on the
+#'gradient wind balance in mature tropical cyclones. The wind speed distribution
+#'is computed from the circular air pressure field, which can be derived from
+#'the central and environmental pressure and the radius of maximum winds.
+#'
+#'\eqn{v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)}
+#'
+#'where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), \eqn{r} is the
+#'distance to the eye of the storm (in \eqn{km}), \eqn{R_m} is the radius of
+#'maximum sustained wind speed (in \eqn{km}), \eqn{p_c} is the pressure at the
+#'centre of the storm (in \eqn{Pa}), \eqn{p_{oci}} is the pressure at outermost
+#'closed isobar of the storm (in \eqn{Pa}), \eqn{\rho} is the air density set to
+#'\eqn{1.15 kg.m^{-3}}, \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)} is the
+#'Coriolis force (in \eqn{N.kg^{-1}}, with \eqn{\phi} being the latitude),
+#'\eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape
+#'parameter, with \eqn{e} being the base of natural logarithms ~2.718282 and
+#'\eqn{v_m} the maximum sustained wind speed (in \eqn{m.s^{-1}})
+#'
+#'The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
+#'Holland (1980) model (see also Boose et al., 2001). In addition to adding
+#'asymmetry, this model treats of water and land differently, using different
+#'surface friction coefficient for each.
+#'
+#'\eqn{v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}}
+#'
+#'where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+#'\eqn{v_h} is the storm velocity (in \eqn{m.s^{-1}}),
+#'  \eqn{r} is the distance to the eye of the storm (in \eqn{km}),
+#'  \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
+#'  \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}),
+#'  \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}),
+#'  \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}),
+#'  \eqn{\rho = 1.15} is the air density (in \eqn{kg.m^{-3}}),
+#'  \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape parameter,
+#'  \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land),
+#'  \eqn{S} is a scaling parameter for asymmetry (\eqn{1.0}),
+#'  \eqn{T} oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between forward trajectory of the storm and a radial line from the eye of the storm to point \eqn{r},
+#'  \eqn{S} Asymmetry coefficient (usually set to 1)
+#'  
+#' @references
+#' Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
+#' Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
+#'
+#' Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
+#'
+#' Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
+#'  https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
+#'
+#' Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
+#' Oceanographical Magazine, 13(2), 103–117.
+#'
+#' Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
+#' Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
+#'
 #'
 #' @examples
 #' \dontrun{
@@ -1589,18 +1670,15 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'    and one column for each point location.
 #'    }
 #'
-#' @details The `temp_res` input will perform a linear interpolation
-#'   of observations to further compute each 2D wind speed structure at each
-#'   interpolated observations. For example, if `temp_res == 1`, it will
-#'   generate observations every 1hour between the available observations. Doing
-#'   so, 2D wind speed structure is computed and stacked for each observations
-#'   (available and interpolated) to compute the desired product(s) afterwards.
-#'   If `product == "Profiles"`, nothing else is performed. Otherwise and
-#'   depending on the product(s) to compute, calculations are carried out on the
-#'   stack and `terra::focal` functions are applied to the final raster(s) to
-#'   smooth the result(s).
-#'
-#'   The Willoughby et al. (2006) model is an empirical model fitted to aircraft
+#' @details Storm track data set, such as those provided by IBRTrACKS (Knapp et
+#'   al., 2010), usually provide observation at a 3- or 6-hours temporal
+#'   resolution. In the spatialBehaviour() function linear interpolations are
+#'   used to reach the temporal resolution set up with the `temp_res` argument
+#'   (set up to 1 hour by default). When `product = "MSW"`, `product = "PDI"`,
+#'   or `product = "Exposure"` the `focal()` function from the terra R package
+#'   to smooth the results using moving windows.
+#' 
+#'The Willoughby et al. (2006) model is an empirical model fitted to aircraft
 #'observations. The model considers two regions: inside the eye and at external
 #'radii, for which the wind formulations use different exponents to better match
 #'observations. In this model, the wind speed increases as a power function of the

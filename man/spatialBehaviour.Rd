@@ -17,97 +17,93 @@ spatialBehaviour(
 )
 }
 \arguments{
-\item{sts}{\code{StormsList}}
+\item{sts}{\code{StormsList} object}
 
-\item{product}{character. Product to compute among:
+\item{product}{character. Desired output among:
 \itemize{
-\item \code{"MSW"}: Maximum Sustained Wind
-\item \code{"PDI"}: Power Dissipation Index
-\item \code{"Exposure"}: hour exposition for wind greater than \code{wind_threshold}
-\item \code{"Profiles"}, 2D wind speed structures of wind speed with wind
-direction for each observation
-}
-Default value is set to \code{"MSW"}}
+\item \code{"Profiles"}: 2D wind speed and direction fields.
+\item \code{"MSW"}: Maximum sustained wind speed (default setting).
+\item \code{"PDI"}: Power dissipation index.
+\item \code{"Exposure"}: Duration of exposure.
+}}
 
-\item{wind_threshold}{numeric vector. Minimal wind threshold(s) \eqn{m.s^{-1}} to
-compute \code{"Exposure"} product. Ignored if \code{"Exposure"} is not part of the
-products to compute. Default value is set to Saffir Simpson Hurricane Scale
-thresholds}
+\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (in $m.s^{-1}$) used to
+compute the duration of exposure when \code{product="Exposure"}. By default value the thresholds
+used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 $m.s^{-1}$).}
 
-\item{method}{character. Cyclonic model used to compute \code{product}. Must be
-either:
+\item{method}{character. Model used to compute wind speed and direction.
+Three different models are implemented:
 \itemize{
-\item \code{"Willoughby"}: model based on fits performed on cyclonic observations
-\item \code{"Holland"}: model based on both basic cyclonic Physics and parameters
-fitting according to cyclonic observations
-\item \code{"Boose"}: asymmetric model based on Holland model
-}
-Default value is set to \code{"Willoughby"} (See \code{Details})}
+\item \code{"Willoughby"}: the symmetrical model developed by Willoughby et al. (2006) (default setting).
+\item \code{"Holland"}: the symmetrical model developed by Holland (1980).
+\item \code{"Boose"}: the asymmetrical model developed by  Boose et al. (2004).
+}}
 
-\item{asymmetry}{character. Indicates which version of asymmetry to use in
-the computations (see \code{Details}). Must be either:
+\item{asymmetry}{character. If \code{method="Holland"} or \code{method="Willoughby"},
+which method is used to add asymmetry. Can be:
 \itemize{
-\item \code{"Miyazaki"}: based on the formula derived in Miyazaki et al. (1962)
-\item \code{"Chen"}:  based on the formula derived in Chen (1994)
-\item \code{"None"}: no asymmetry is added
-}
-Default value is set to \code{"Chen"}. Ignored if \code{method == "Boose"}}
+\item \code{"Chen"}: the model developed by Chen (1994) (default setting).
+\item \code{"Miyazaki"}: the model developed by Miyazaki et al. (1962).
+\item \code{"None"}: no asymmetry.
+}}
 
-\item{empirical_rmw}{logical. Whether to compute the radius of maximum wind
-empirically or using the radius of maximum wind from the observations.
-Default value is set to \code{FALSE}. If \code{TRUE}, a formula extracted from
-Willoughby et al. 2006 is used to compute rmw}
+\item{empirical_rmw}{logical. Whether (TRUE) or not (FALSE) to compute
+the radius of maximum wind (\code{rmw}) empirically with the model developed by
+Willoughby et al. (2006). If \code{empirical_rmw==FALSE} (default setting) then the
+\code{rmw} provided in the \code{StormsList} is used.}
 
-\item{space_res}{character. Space resolution for the raster(s) to compute.
-Either \code{"30sec"}, \code{"2.5min"}, \code{"5min"} or \code{"10min"}. Default value is set
-to \code{"2.5min"}}
+\item{space_res}{character. Spatial resolution. Can be \code{"30 sec"} (~1 km at the equator),
+\code{"2.5 min"} (~4.5 km at the equator), \code{"5 min"} (~9 km at the equator) or \code{"10 min"} (~18.6 km at the equator).
+Default setting is \code{"2.5 min"}.}
 
-\item{temp_res}{numeric. Period of time used to interpolate data. Allowed
-values are \code{1} (60min), \code{0.75} (45min), \code{0.5} (30min), and \code{0.25} (15min).
-Default value is set to \code{1}}
+\item{temp_res}{numeric. Temporal resolution. Can be \code{1} (for 60 min, default setting),
+\code{0.75} (for 45min), \code{0.5} (for 30 min), and \code{0.25} (15 for min).}
 
 \item{verbose}{numeric. Whether or not the function should display
 informations about the process and/or outputs. Allowed values are:
 \itemize{
-\item \code{0}: Nothing is displayed
-\item \code{1}: Informations about the process are displayed
-\item \code{2}: Outputs are also displayed
-}
-Default value is set to \code{2}}
+\item \code{2}: information about the processes and outputs are displayed (default setting).
+\item \code{0}: no information displayed.
+\item \code{1}: information about the processes are displayed.
+}}
 }
 \value{
-SpatRaster stack which provides the desired product computed,
-projected in WGS84 and spanning over the extented LOI of the \code{StormsList} .
-Number of layers depends on the number of \code{Storm} available in \code{sts} and
-also \code{product} and \code{temp_res} inputs:
+The spatialBehaviour() function returns SpatRaster objects (in WGS84).
+The number of layers in the outputs depends on the number of \code{Storm} in the inputs,
+on the desired \code{product}, as well as \code{temp_res} argument:
 \itemize{
-\item \code{"MSW"} produces one layer per \code{Storm}. Name of layer is "STORMNAME_MSW"
-\item \code{"PDI"} produces one layer per \code{Storm}. Name of layer is "STORMNAME_PDI"
-\item \code{"Exposure"} produces one layer for each wind values available
-in \code{wind_threshold} and for each \code{Storm}. Name of layers are
-"STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
-\item \code{"Profiles"} produces two layers for each observations
-(real and interpolated) and each  \code{Storm}. Name of layers are
-"STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
+\item If \code{product = "MSW"}, the function returns one layer for each \code{Storm}.
+The names of the layer follow the following terminology, the name of the storm
+in capital letters and “MSW” separated by underscores (e.g., "PAM_MSW").
+\item If \code{product = "PDI"}, the function returns one layer for each \code{Storm}.
+The names of the layer follow the following terminology, the name of the storm
+in capital letters and “PDI” separated by underscores (e.g., "PAM_PDI").
+\item If \code{product ="Exposure"}, the function returns one layer for each wind speed values
+in the \code{wind_threshold} argument and for each \code{Storm}. The names of the layer follow the
+following terminology, the name of the storm in capital letters, "Exposure", and the number
+of the threshold value separated by underscores (e.g., "PAM_Exposure_threshold1",
+"PAM_Exposure_threshold2", ...).
+\item If \code{product = "Profiles"} the function returns one layer for wind speed and
+one layer for wind direction for each observation or interpolated observation and each \code{Storm}.
+The names of the layer follow the following terminology, the name of the storm in capital letters,
+"Speed" or "Direction", and the indices of the observation separated by underscores
+(e.g., "PAM_Speed_41", "PAM_Direction_41",...).
 }
 }
 \description{
-This function computes/rasterizes products for each \code{Storm} included in a
-\code{StormsList}, among Maximum Sustained Wind, Power Dissipation Index, Category
-exposure and 2D wind speed structures/direction of wind speed for every
-observations
+The spatialBehaviour() function allows computing wind speed and
+direction for each cell of a regular grid (i.e., a raster)
+for a given tropical cyclone or set of tropical cyclones.
+It also allows to compute to compute three associated summary statistics.
 }
 \details{
-The \code{temp_res} input will perform a linear interpolation
-of observations to further compute each 2D wind speed structure at each
-interpolated observations. For example, if \code{temp_res == 1}, it will
-generate observations every 1hour between the available observations. Doing
-so, 2D wind speed structure is computed and stacked for each observations
-(available and interpolated) to compute the desired product(s) afterwards.
-If \code{product == "Profiles"}, nothing else is performed. Otherwise and
-depending on the product(s) to compute, calculations are carried out on the
-stack and \code{terra::focal} functions are applied to the final raster(s) to
-smooth the result(s).
+Storm track data set, such as those provided by IBRTrACKS (Knapp et
+al., 2010), usually provide observation at a 3- or 6-hours temporal
+resolution. In the spatialBehaviour() function linear interpolations are
+used to reach the temporal resolution set up with the \code{temp_res} argument
+(set up to 1 hour by default). When \code{product = "MSW"}, \code{product = "PDI"},
+or \code{product = "Exposure"} the \code{focal()} function from the terra R package
+to smooth the results using moving windows.
 
 The Willoughby et al. (2006) model is an empirical model fitted to aircraft
 observations. The model considers two regions: inside the eye and at external
@@ -174,17 +170,32 @@ where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
 }
 \examples{
 \dontrun{
-#Compute MSW product for Pam 2015 in Vanuatu using default settings
+#Computing maximum sustained wind speed generated by Pam (2015) near Vanuatu
 msw.pam <- spatialBehaviour(pam)
 
-#Compute PDI product for Storms in sts_nc using Holland model without asymmetry
+#Computing power dissipation index for several storms near New Caledonia using the Holland model without asymmetry
 pdi.nc <- spatialBehaviour(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 
-#Compute Exposure for Pam 2015 in Vanuatu using default settings
+#Computing duration of exposure to Saffir-Simpson hurrican wind scale threshold values during Pam (2015) near Vanuatu
 exp.pam <- spatialBehaviour(pam, product = "Exposure")
 
-#Compute profiles for Storms in sts_nc using default settings
+#Computing wind speed and direction profiles for several storms near New Caledonia
 prof.nc <- spatialBehaviour(sts_nc, product = "Profiles")
 }
 
+}
+\references{
+Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
+Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
+
+Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
+
+Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
+https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
+
+Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
+Oceanographical Magazine, 13(2), 103–117.
+
+Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
+Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
 }
