@@ -853,11 +853,10 @@ stackProduct <- function(product, stack, raster_template, raster_wind, threshold
 #' @return list of SpatRaster
 rasterizeMSW <- function(final_stack, stack, space_res, name){
 
-  nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
+  nbg = switch(space_res,"30sec" = 59, "2.5min" = 11, "5min" = 5, "10min" = 3)
 
   msw <- max(stack, na.rm = T)
-  #Applying focal function twice to smooth results
-  msw <- terra::focal(msw, w = matrix(1, nbg, nbg), max, na.rm = T, pad = T)
+  #Applying focal function to smooth results
   msw <- terra::focal(msw, w = matrix(1, nbg, nbg), mean, na.rm = T, pad = T)
   names(msw) <- paste0(name, "_MSW")
 
@@ -884,7 +883,7 @@ rasterizeMSW <- function(final_stack, stack, space_res, name){
 #' @return list of SpatRaster
 rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, threshold){
 
-  nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
+  nbg = switch(space_res,"30sec" = 59, "2.5min" = 11, "5min" = 5, "10min" = 3)
 
   #Integrating over the whole track
   prod <- sum(stack, na.rm = T) * temp_res
@@ -916,15 +915,14 @@ rasterizePDI <- function(final_stack, stack, temp_res, space_res, name, threshol
 #' @return list of SpatRaster
 rasterizeExp <- function(final_stack, stack, temp_res, space_res, name, threshold){
 
-  nbg = switch(space_res,"30sec" = 25, "2.5min" = 7, "5min" = 5, "10min" = 3)
-
+  nbg = switch(space_res,"30sec" = 59, "2.5min" = 11, "5min" = 5, "10min" = 3)
 
   for(l in 1:length(threshold)){
     ind <- seq(l,terra::nlyr(stack),length(threshold))
     #Integrating over the whole track
     prod <- sum(terra::subset(stack, ind), na.rm = T) * temp_res
     #Applying focal function to smooth results
-    prod <- terra::focal(prod, w = matrix(1, nbg, nbg), max, na.rm = T, na.rm = T)
+    prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = T)
     names(prod) <- paste0(name,"_Exposure_",threshold[l])
     final_stack <- c(final_stack, prod)
   }
