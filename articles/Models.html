@@ -125,20 +125,22 @@ maximum winds.</p>
 v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times
 (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r
 \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)
-\]</span> where, <br><span class="math inline">\(v_r\)</span> is the
-radial wind speed (in <span class="math inline">\(m.s^{-1}\)</span>)
-<br><span class="math inline">\(r\)</span> is the distance to the eye
-of the storm (in <span class="math inline">\(km\)</span>) <br><span class="math inline">\(R_m\)</span> is the radius of maximum sustained
-wind speed (in <span class="math inline">\(km\)</span>) <br><span class="math inline">\(p_c\)</span> is the pressure at the centre of the
-storm (in <span class="math inline">\(Pa\)</span>) <br><span class="math inline">\(p_{oci}\)</span> is the pressure at outermost
-closed isobar of the storm (in <span class="math inline">\(Pa\)</span>)
-<br><span class="math inline">\(\rho\)</span> is the air density set
-to <span class="math inline">\(1.15 kg.m^{-3}\)</span> <br><span class="math inline">\(f = 2 \times 7.29 \times 10^{-5}
-\sin(\phi)\)</span> is the Coriolis force (in <span class="math inline">\(N.kg^{-1}\)</span>, with <span class="math inline">\(\phi\)</span> being the latitude) <br><span class="math inline">\(b = \frac{\rho \times e \times v_m^2}{p_{oci} -
-p_c}\)</span> is the shape parameter, with <span class="math inline">\(e\)</span> being the base of natural logarithms
-~2.718282 and <span class="math inline">\(v_m\)</span> the maximum
-sustained wind speed (in <span class="math inline">\(m.s^{-1}\)</span>)
-<br><br></p>
+\]</span></p>
+<p>with, <span class="math display">\[
+b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
+\]</span> <span class="math display">\[
+f = 2 \times 7.29 \times 10^{-5} \sin(\phi)
+\]</span></p>
+<p>where, <br><span class="math inline">\(v_r\)</span> is the radial
+wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(b\)</span> is the shape parameter, <br><span class="math inline">\(\rho\)</span> is the air density set to
+<span class="math inline">\(1.15 kg.m^{-3}\)</span>, <br><span class="math inline">\(e\)</span> is the base of natural logarithms
+(~2.718282), <br><span class="math inline">\(v_m\)</span> the maximum
+sustained wind speed (in <span class="math inline">\(m.s^{-1}\)</span>),
+<br><span class="math inline">\(p_{oci}\)</span> is the pressure at
+outermost closed isobar of the storm (in <span class="math inline">\(Pa\)</span>), <br><span class="math inline">\(p_c\)</span> is the pressure at the centre of the
+storm (in <span class="math inline">\(Pa\)</span>), <br><span class="math inline">\(r\)</span> is the distance to the eye of the storm
+(in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(R_m\)</span> is the radius of maximum sustained
+wind speed (in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(f\)</span> is the Coriolis force (in <span class="math inline">\(N.kg^{-1}\)</span>), and <br><span class="math inline">\(\phi\)</span> is the latitude. <br><br></p>
 </div>
 <div class="section level3">
 <h3 id="willoughby-et-al--2006-symmetric-wind-field">Willoughby et al. (2006) symmetric wind field<a class="anchor" aria-label="anchor" href="#willoughby-et-al--2006-symmetric-wind-field"></a>
@@ -160,16 +162,24 @@ v_r &amp;= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A
 \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
 \end{aligned}
 \right.
-\]</span> where, <br><span class="math inline">\(v_r\)</span> is the
-radial wind speed (in <span class="math inline">\(m.s^{-1}\)</span>)
-<br><span class="math inline">\(r\)</span> is the distance to the eye
-of the storm (in <span class="math inline">\(km\)</span>) <br><span class="math inline">\(v_m\)</span> is the maximum sustained wind speed
-(in <span class="math inline">\(m.s^{-1}\)</span>) <br><span class="math inline">\(R_m\)</span> is the radius of maximum sustained
-wind speed (in <span class="math inline">\(km\)</span>) <br><span class="math inline">\(X1 = 287.6 - 1.942 \times v_m + 7.799 \times
-\ln(R_m) + 1.819 \times |\phi|\)</span><br><span class="math inline">\(X2 = 25\)</span> <br><span class="math inline">\(n = 2.1340 + 0.0077 \times v_m - 0.4522 \times
-\ln(R_m) - 0.0038 \times |\phi|\)</span><br><span class="math inline">\(A = 0.5913 + 0.0029 \times v_m - 0.1361 \times
-\ln(R_m) - 0.0042 \times |\phi|\)</span> and <span class="math inline">\(A\ge0\)</span><br><span class="math inline">\(\phi\)</span> is the latitude of the center of the
-storm <br></p>
+\]</span></p>
+<p>with, <span class="math display">\[
+n = 2.1340 + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times
+|\phi|
+\]</span> <span class="math display">\[
+X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times
+|\phi|
+\]</span> <span class="math display">\[
+A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times
+|\phi| \quad and \quad A\ge0
+\]</span></p>
+<p>where, <br><span class="math inline">\(v_r\)</span> is the radial
+wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(v_m\)</span> is the maximum sustained wind
+speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(r\)</span> is the distance to the eye of the storm
+(in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(R_m\)</span> is the radius of maximum sustained
+wind speed (in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(\phi\)</span> is the latitude of the centre of the
+storm, and <br><span class="math inline">\(X2 = 25\)</span>.
+<br></p>
 </div>
 <div class="section level3">
 <h3 id="adding-asymmetry-to-holland-1980-and-willoughby-et-al--2006-wind-fields">Adding asymmetry to Holland (1980) and Willoughby et al. (2006) wind
@@ -180,10 +190,11 @@ follows,</p>
 <p><span class="math inline">\(\vec{V} = \vec{V_c} + C \times
 \vec{V_t}\)</span></p>
 <p>where, <br><span class="math inline">\(\vec{V}\)</span> is the
-combined, asymmetric wind field <br><span class="math inline">\(\vec{V_c}\)</span> is symmetric wind field <br><span class="math inline">\(\vec{V_t}\)</span> is the translation speed
-of the storm <br><span class="math inline">\(C\)</span> is function
-of <span class="math inline">\(r\)</span>, the distance to the eye of
-the storm (in <span class="math inline">\(km\)</span>) <br></p>
+combined, asymmetric wind field, <br><span class="math inline">\(\vec{V_c}\)</span> is symmetric wind field, <br><span class="math inline">\(\vec{V_t}\)</span> is the translation speed
+of the storm, and <br><span class="math inline">\(C\)</span> is
+function of <span class="math inline">\(r\)</span>, the distance to the
+eye of the storm (in <span class="math inline">\(km\)</span>).
+<br></p>
 <p>Two formulations of C proposed by Miyazaki et al. (1962) and Chen
 (1994) are implemented.</p>
 <div class="section level4">
@@ -199,7 +210,7 @@ the storm (in <span class="math inline">\(km\)</span>) <br></p>
 \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times
 r^{\frac{3}{2}}}\)</span></p>
 <p>where, <br><span class="math inline">\(R_m\)</span> is the radius
-of maximum sustained wind speed (in <span class="math inline">\(km\)</span>) <br><br></p>
+of maximum sustained wind speed (in <span class="math inline">\(km\)</span>). <br><br></p>
 </div>
 </div>
 <div class="section level3">
@@ -218,21 +229,23 @@ v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right)
 \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 -
 \left(\frac{R_m}{r}\right)^b}}
 \]</span></p>
-<p><span class="math inline">\(v_r\)</span> is the radial wind speed (in
-<span class="math inline">\(m.s^{-1}\)</span>) <br><span class="math inline">\(v_h\)</span> is the storm velocity (in <span class="math inline">\(m.s^{-1}\)</span>) <br><span class="math inline">\(r\)</span> is the distance to the eye of the storm
-(in <span class="math inline">\(km\)</span>) <br><span class="math inline">\(v_m\)</span> is the maximum sustained wind speed
-(in <span class="math inline">\(m.s^{-1}\)</span>) <br><span class="math inline">\(R_m\)</span> is the radius of maximum sustained
-wind speed (in <span class="math inline">\(km\)</span>) <br><span class="math inline">\(p_c\)</span> is the pressure at the centre of the
-storm (<span class="math inline">\(pressure\)</span> in <span class="math inline">\(Pa\)</span>) <br><span class="math inline">\(p_{oci}\)</span> is the pressure at outermost
-closed isobar of the storm (in <span class="math inline">\(Pa\)</span>)
-<br><span class="math inline">\(\rho = 1.15\)</span> is the air
-density (in <span class="math inline">\(kg.m^{-3}\)</span>) <br><span class="math inline">\(b = \frac{\rho \times e \times v_m^2}{p_{oci} -
-p_c}\)</span> is the shape parameter <br><span class="math inline">\(F\)</span> is a scaling parameter for friction
-(<span class="math inline">\(1.0\)</span> in water, <span class="math inline">\(0.8\)</span> in land) <br><span class="math inline">\(S\)</span> is a scaling parameter for asymmetry
-(<span class="math inline">\(1.0\)</span>) <br><span class="math inline">\(T\)</span> oriented angle (clockwise/counter
-clockwise in Northern/Southern Hemisphere) between forward trajectory of
-the storm and a radial line from the eye of the storm to point <span class="math inline">\(r\)</span> <br><span class="math inline">\(S\)</span> Asymmetry coefficient (usually set to
-1) <br></p>
+<p>with, <span class="math display">\[
+b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
+\]</span></p>
+<p>where, <br><span class="math inline">\(v_r\)</span> is the radial
+wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(F\)</span> is a scaling parameter for
+friction (<span class="math inline">\(1.0\)</span> in water, <span class="math inline">\(0.8\)</span> in land), <br><span class="math inline">\(v_m\)</span> is the maximum sustained wind speed
+(in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(S\)</span> is a scaling parameter for asymmetry
+(usually set to <span class="math inline">\(1\)</span>), <br><span class="math inline">\(T\)</span> is the oriented angle
+(clockwise/counter clockwise in Northern/Southern Hemisphere) between
+the forward trajectory of the storm and a radial line from the eye of
+the storm to point <span class="math inline">\(r\)</span>, <br><span class="math inline">\(v_h\)</span> is the storm velocity (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(R_m\)</span> is the radius of maximum sustained
+wind speed (in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(r\)</span> is the distance to the eye of the storm
+(in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(b\)</span> is the shape parameter, <br><span class="math inline">\(\rho = 1.15\)</span> is the air density (in <span class="math inline">\(kg.m^{-3}\)</span>), <br><span class="math inline">\(p_{oci}\)</span> is the pressure at outermost
+closed isobar of the storm (in <span class="math inline">\(Pa\)</span>),
+and <br><span class="math inline">\(p_c\)</span> is the pressure at
+the centre of the storm (<span class="math inline">\(pressure\)</span>
+in <span class="math inline">\(Pa\)</span>). <br></p>
 </div>
 <div class="section level4">
 <h4 id="wind-direction">Wind direction<a class="anchor" aria-label="anchor" href="#wind-direction"></a>
@@ -247,11 +260,11 @@ D = A_z - 90 - I \quad if \quad \phi \leq 0 \quad(Southern \quad
 Hemispher) \\
 \end{aligned}
 \right.
-\]</span> where <br><span class="math inline">\(D\)</span> is the
-direction of the radial wind <br><span class="math inline">\(A_z\)</span> is the azimuth from point r to the
-eye of the storm <br><span class="math inline">\(I\)</span> is the
+\]</span> where, <br><span class="math inline">\(D\)</span> is the
+direction of the radial wind, <br><span class="math inline">\(A_z\)</span> is the azimuth from point r to the
+eye of the storm, <br><span class="math inline">\(I\)</span> is the
 cross isobar inflow angle (<span class="math inline">\(20\)</span> in
-water, <span class="math inline">\(40\)</span> in land) <br><span class="math inline">\(\phi\)</span> is the latitude <br></p>
+water, <span class="math inline">\(40\)</span> in land), and <br><span class="math inline">\(\phi\)</span> is the latitude. <br></p>
 </div>
 </div>
 <div class="section level3">
