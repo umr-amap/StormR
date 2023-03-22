@@ -85,16 +85,13 @@ for a given location or set of locations along the lifespan of a tropical cyclon
 It also allows to compute to compute three associated summary statistics.
 }
 \details{
-The \code{temp_res} input will perform a linear interpolation
-of observations to further compute each 2D wind speed structure at each
-interpolated observations. For example, if \code{temp_res == 1}, it will
-generate observations every 1hour between the available observations. Doing
-so, 2D wind speed structure is computed and stacked for each observations
-(available and interpolated) to compute the desired product(s) afterwards.
-If \code{product == "Profiles"}, nothing else is performed. Otherwise and
-depending on the product(s) to compute, calculations are carried out on the
-stack and \code{terra::focal} functions are applied to the final raster(s) to
-smooth the result(s).
+Storm track data set, such as those provided by IBRTrACKS (Knapp et
+al., 2010), usually provide observation at a 3- or 6-hours temporal
+resolution. In the spatialBehaviour() function linear interpolations are
+used to reach the temporal resolution set up with the \code{temp_res} argument
+(set up to 1 hour by default). When \code{product = "MSW"}, \code{product = "PDI"},
+or \code{product = "Exposure"} the \code{focal()} function from the terra R package
+to smooth the results using moving windows.
 
 The Willoughby et al. (2006) model is an empirical model fitted to aircraft
 observations. The model considers two regions: inside the eye and at external

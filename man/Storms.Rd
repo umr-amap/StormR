@@ -44,8 +44,8 @@ m/s). Default value is set to \code{TRUE}.}
 }}
 }
 \value{
-The \code{Storms()} function a \code{StormsList} object containing track data for all storms
-meeting the specified criteria (name, season, location, ...).
+The \code{Storms()} function returns a \code{StormsList} object containing track data for all storms
+meeting the specified criteria (e.g., name, season, location).
 }
 \description{
 The \code{Storms()} function extracts storm track data from a \code{StormsDataset}
