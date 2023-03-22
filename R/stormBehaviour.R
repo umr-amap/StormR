@@ -1015,10 +1015,10 @@ maskProduct <- function(final_stack, loi, template){
 #' @param sts `StormsList` object
 #' @param product character. Desired output among:
 #'   \itemize{
-#'     \item `"Profiles"`: 2D wind speed and direction fields.
-#'     \item `"MSW"`: Maximum sustained wind speed (default setting).
-#'     \item `"PDI"`: Power dissipation index.
-#'     \item `"Exposure"`: Duration of exposure.
+#'     \item `"Profiles"`, for 2D wind speed and direction fields,
+#'     \item `"MSW"`, for maximum sustained wind speed (default setting),
+#'     \item `"PDI"`, for power dissipation index, or
+#'     \item `"Exposure"`, for duration of exposure.
 #'   }
 #' @param wind_threshold numeric vector. Minimal wind threshold(s) (in m/s)
 #'  used to compute the duration of exposure when product="Exposure".
@@ -1030,16 +1030,16 @@ maskProduct <- function(final_stack, loi, template){
 #' @param method character. Model used to compute wind speed and direction.
 #' Three different models are implemented:
 #'   \itemize{
-#'   \item `"Willoughby"`: the symmetrical model developed by Willoughby et al. (2006) (default setting).
-#'   \item `"Holland"`: the symmetrical model developed by Holland (1980).
-#'   \item `"Boose"`: the asymmetrical model developed by  Boose et al. (2004).
+#'   \item `"Willoughby"`, the symmetrical model developed by Willoughby et al. (2006) (default setting),
+#'   \item `"Holland"`, the symmetrical model developed by Holland (1980), or
+#'   \item `"Boose"`, the asymmetrical model developed by  Boose et al. (2004).
 #'   }
 #' @param asymmetry character. If `method="Holland"` or `method="Willoughby"`,
 #' which method is used to add asymmetry. Can be:
 #'   \itemize{
-#'      \item `"Chen"`: the model developed by Chen (1994) (default setting).
-#'      \item `"Miyazaki"`: the model developed by Miyazaki et al. (1962).
-#'      \item `"None"`: no asymmetry.
+#'      \item `"Chen"`, for the model developed by Chen (1994) (default setting),
+#'      \item `"Miyazaki"`, for the model developed by Miyazaki et al. (1962), or
+#'      \item `"None"`, for no asymmetry.
 #'   }
 #' @param empirical_rmw logical. Whether (TRUE) or not (FALSE) to compute
 #' the radius of maximum wind (`rmw`) empirically with the model developed by
@@ -1053,26 +1053,25 @@ maskProduct <- function(final_stack, loi, template){
 #' @param verbose numeric. Whether or not the function should display
 #'   informations about the process and/or outputs. Allowed values are:
 #' \itemize{
-#'    \item `2`: information about the processes and outputs are displayed (default setting).
-#'    \item `0`: no information displayed.
-#'    \item `1`: information about the processes are displayed.
+#'    \item `2`, information about the processes and outputs are displayed (default setting),
+#'    \item `0`, no information displayed, or
+#'    \item `1`, information about the processes are displayed.
 #' }
 #' @returns The spatialBehaviour() function returns SpatRaster objects (in WGS84).
 #' The number of layers in the outputs depends on the number of `Storm` in the inputs,
 #' on the desired `product`, as well as `temp_res` argument:
 #' \itemize{
-#'    \item If `product = "MSW"`, the function returns one layer for each `Storm`.
+#'    \item if `product = "MSW"`, the function returns one layer for each `Storm`.
 #'    The names of the layer follow the following terminology, the name of the storm
-#'    in capital letters and “MSW” separated by underscores (e.g., "PAM_MSW").
-#'    \item If `product = "PDI"`, the function returns one layer for each `Storm`.
+#'    in capital letters and “MSW” separated by underscores (e.g., "PAM_MSW"),
+#'    \item if `product = "PDI"`, the function returns one layer for each `Storm`.
 #'    The names of the layer follow the following terminology, the name of the storm
-#'    in capital letters and “PDI” separated by underscores (e.g., "PAM_PDI").
-#'    \item If `product ="Exposure"`, the function returns one layer for each wind speed values
+#'    in capital letters and “PDI” separated by underscores (e.g., "PAM_PDI"),
+#'    \item if `product ="Exposure"`, the function returns one layer for each wind speed values
 #'    in the `wind_threshold` argument and for each `Storm`. The names of the layer follow the
-#'    following terminology, the name of the storm in capital letters, "Exposure", and the number
-#'    of the threshold value separated by underscores (e.g., "PAM_Exposure_threshold1",
-#'    "PAM_Exposure_threshold2", ...).
-#'    \item If `product = "Profiles"` the function returns one layer for wind speed and
+#'    following terminology, the name of the storm in capital letters, "Exposure", and the threshold
+#'     value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...),
+#'    \item if `product = "Profiles"` the function returns one layer for wind speed and
 #'    one layer for wind direction for each observation or interpolated observation and each `Storm`.
 #'    The names of the layer follow the following terminology, the name of the storm in capital letters,
 #'    "Speed" or "Direction", and the indices of the observation separated by underscores
@@ -1086,71 +1085,110 @@ maskProduct <- function(final_stack, loi, template){
 #'   (set up to 1 hour by default). When `product = "MSW"`, `product = "PDI"`,
 #'   or `product = "Exposure"` the `focal()` function from the terra R package
 #'   to smooth the results using moving windows.
-#' 
-#'The Willoughby et al. (2006) model is an empirical model fitted to aircraft
-#'observations. The model considers two regions: inside the eye and at external
-#'radii, for which the wind formulations use different exponents to better match
-#'observations. In this model, the wind speed increases as a power function of the
-#'radius inside the eye and decays exponentially outside the eye after a smooth
-#'polynomial transition across the eyewall (see also Willoughby 1995, Willoughby
-#' et al. 2004).
-#'
-#'\eqn{\left\{\begin{aligned}
+#'   
+#'   The Holland (1980) model, widely used in the literature, is based on the
+#'   'gradient wind balance in mature tropical cyclones. The wind speed distribution
+#'   is computed from the circular air pressure field, which can be derived from
+#'   the central and environmental pressure and the radius of maximum winds.
+#'   
+#'   \eqn{v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)}
+#'   
+#'   with,
+#'   
+#'   \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}}
+#'   
+#'   \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)}
+#'   
+#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{b} is the shape parameter, 
+#'   \eqn{\rho} is the air density set to \eqn{1.15 kg.m^{-3}}, 
+#'   \eqn{e} being the base of natural logarithms (~2.718282), 
+#'   \eqn{v_m} the maximum sustained wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}), 
+#'   \eqn{p_c} is the pressure at the centre of the storm (in \eqn{Pa}), 
+#'   \eqn{r} is the distance to the eye of the storm (in \eqn{km}), 
+#'   \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}), 
+#'   \eqn{f} is the Coriolis force (in \eqn{N.kg^{-1}}, and
+#'   \eqn{\phi} being the latitude).
+#'   
+#'   The Willoughby et al. (2006) model is an empirical model fitted to aircraft
+#'   observations. The model considers two regions: inside the eye and at external
+#'   radii, for which the wind formulations use different exponents to better match
+#'   observations. In this model, the wind speed increases as a power function of the
+#'   radius inside the eye and decays exponentially outside the eye after a smooth
+#'   polynomial transition across the eyewall (see also Willoughby 1995, Willoughby 
+#'   et al. 2004).
+#'   
+#'   \eqn{\left\{\begin{aligned}
 #'    v_r &= v_m \times \left(\frac{r}{R_m}\right)^{n} \quad if \quad r < R_m \\
 #'    v_r &= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
 #'    \end{aligned}
 #'    \right.
-#'}
-#'
-#' where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), \eqn{r} is the
-#' distance to the eye of the storm (in \eqn{km}), \eqn{v_m} is the maximum
-#' sustained wind speed (in \eqn{m.s^{-1}}), \eqn{R_m} is the radius of maximum
-#' sustained wind speed (in \eqn{km}), \eqn{X1 = 287.6 - 1.942 \times v_m +
-#' 7.799 \times \ln(R_m) + 1.819 \times |\phi|}, \eqn{X2 = 25}, \eqn{n = 2.1340
-#' + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|}, \eqn{A
-#' = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|}
-#' and \eqn{A\ge0}, \eqn{\phi} is the latitude of the center of the storm.
-#'
-#'The Holland (1980) model, widely used in the literature, is based on the
-#'gradient wind balance in mature tropical cyclones. The wind speed distribution
-#'is computed from the circular air pressure field, which can be derived from
-#'the central and environmental pressure and the radius of maximum winds.
-#'
-#'\eqn{v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)}
-#'
-#'where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), \eqn{r} is the
-#'distance to the eye of the storm (in \eqn{km}), \eqn{R_m} is the radius of
-#'maximum sustained wind speed (in \eqn{km}), \eqn{p_c} is the pressure at the
-#'centre of the storm (in \eqn{Pa}), \eqn{p_{oci}} is the pressure at outermost
-#'closed isobar of the storm (in \eqn{Pa}), \eqn{\rho} is the air density set to
-#'\eqn{1.15 kg.m^{-3}}, \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)} is the
-#'Coriolis force (in \eqn{N.kg^{-1}}, with \eqn{\phi} being the latitude),
-#'\eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape
-#'parameter, with \eqn{e} being the base of natural logarithms ~2.718282 and
-#'\eqn{v_m} the maximum sustained wind speed (in \eqn{m.s^{-1}})
-#'
-#'The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
-#'Holland (1980) model (see also Boose et al., 2001). In addition to adding
-#'asymmetry, this model treats of water and land differently, using different
-#'surface friction coefficient for each.
-#'
-#'\eqn{v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}}
-#'
-#'where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
-#'\eqn{v_h} is the storm velocity (in \eqn{m.s^{-1}}),
-#'  \eqn{r} is the distance to the eye of the storm (in \eqn{km}),
-#'  \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
-#'  \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}),
-#'  \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}),
-#'  \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}),
-#'  \eqn{\rho = 1.15} is the air density (in \eqn{kg.m^{-3}}),
-#'  \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape parameter,
-#'  \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land),
-#'  \eqn{S} is a scaling parameter for asymmetry (\eqn{1.0}),
-#'  \eqn{T} oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between forward trajectory of the storm and a radial line from the eye of the storm to point \eqn{r},
-#'  \eqn{S} Asymmetry coefficient (usually set to 1)
+#'    }
+#'    
+#'    with,
+#'    
+#'    \eqn{n = 2.1340 + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|}
+#'    
+#'    \eqn{X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times |\phi|}
+#'    
+#'    \eqn{A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|} and \eqn{A\ge0}
+#'    
+#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{r} is the distance to the eye of the storm (in \eqn{km}), 
+#'   \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}), 
+#'   \eqn{\phi} is the latitude of the centre of the storm, 
+#'   \eqn{X2 = 25}.
+#'   
+#'   Asymmetry can be added to Holland (1980) and Willoughby et al. (2006) wind fields as follows,
+#'   
+#'   \eqn{$\vec{V} = \vec{V_c} + C \times \vec{V_t}$}
+#'   
+#'   where, \eqn{$\vec{V}$} is the combined asymmetric wind field, 
+#'   \eqn{$\vec{V_c}$} is symmetric wind field,
+#'   \eqn{$\vec{V_t}$} is the translation speed of the storm, and
+#'   \eqn{$C$} is function of \eqn{$r$}, the distance to the eye of the storm (in \eqn{$km$}).
+#'   
+#'   Two formulations of C proposed by Miyazaki et al. (1962) and Chen (1994) are implemented.
+#'   
+#'   Miyazaki et al. (1962)
+#'   \eqn{$C = e^{(-\frac{r}{500} \times \pi)}$}
+#'   
+#'   Chen (1994)
+#'   \eqn{$C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}$}
+#'   
+#'   where, \eqn{$R_m$} is the radius of maximum sustained wind speed (in \eqn{$km$})
+#'   
+#'   The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
+#'   Holland (1980) model (see also Boose et al., 2001). In addition to adding
+#'   asymmetry, this model treats of water and land differently, using different
+#'   surface friction coefficient for each.
+#'   
+#'   \eqn{v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}}
+#'   
+#'   with, 
+#'   
+#'   \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} 
+#'   
+#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land), 
+#'   \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{S} is a scaling parameter for asymmetry (usually set to \eqn{1}), 
+#'   \eqn{$T$} is the oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between 
+#'   the forward trajectory of the storm and a radial line from the eye of the storm to point $r$
+#'   \eqn{v_h} is the storm velocity (in \eqn{m.s^{-1}}),
+#'   \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}), 
+#'   \eqn{r} is the distance to the eye of the storm (in \eqn{km}), 
+#'   \eqn{b} is the shape parameter, 
+#'   \eqn{\rho = 1.15} is the air density (in \eqn{kg.m^{-3}}), 
+#'   \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}), and
+#'   \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}).
 #'  
 #' @references
+#' Boose, E. R., Chamberlin, K. E., & Foster, D. R. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs, 
+#' 71(1), Article 1. https://doi.org/10.1890/0012-9615(2001)071[0027:LARIOH]2.0.CO;2
+#' 
 #' Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
 #' Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
 #'
@@ -1161,6 +1199,12 @@ maskProduct <- function(final_stack, loi, template){
 #'
 #' Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
 #' Oceanographical Magazine, 13(2), 103–117.
+#' 
+#' Willoughby, H. E. (1995). Normal-Mode Initialization of Barotropic Vortex Motion Models. Journal of the Atmospheric Sciences, 52(24), 
+#' 4501–4514. https://doi.org/10.1175/1520-0469(1995)052<4501:NMIOBV>2.0.CO;2
+#' 
+#' Willoughby, H. E., & Rahn, M. E. (2004). Parametric Representation of the Primary Hurricane Vortex. Part I: Observations and Evaluation of the Holland (1980) Model. 
+#' Monthly Weather Review, 132(12), 3033–3048. https://doi.org/10.1175/MWR2831.1
 #'
 #' Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
 #' Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
@@ -1620,11 +1664,11 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'
 #' @param sts `StormsList` object.
 #' @param points data.frame. The lon (in a `x` col), lat (in a `y` col) coordinates in decimal degrees.
-#' @param product character. Desired output among:
+#' @param product character. Desired output among,
 #'   \itemize{
-#'     \item `"TS"`: time series of wind speed and direction (default setting).
-#'     \item `"PDI"`: power dissipation index.
-#'     \item `"Exposure"`: the duration of exposure.
+#'     \item `"TS"`, for time series of wind speed and direction (default setting),
+#'     \item `"PDI"`, for power dissipation index, or
+#'     \item `"Exposure"` for the duration of exposure.
 #'   }
 #' @param wind_threshold numeric vector. Minimal wind threshold(s) (in $m.s^{-1}$) used to
 #'   compute the duration of exposure when `product="Exposure"`. By default value the thresholds
@@ -1632,16 +1676,16 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #' @param method character. Model used to compute wind speed and direction.
 #' Three different models are implemented:
 #'   \itemize{
-#'   \item `"Willoughby"`: the symmetrical model developed by Willoughby et al. (2006) (default setting).
-#'   \item `"Holland"`: the symmetrical model developed by Holland (1980).
-#'   \item `"Boose"`: the asymmetrical model developed by  Boose et al. (2004).
+#'   \item `"Willoughby"` for the symmetrical model developed by Willoughby et al. (2006) (default setting),
+#'   \item `"Holland"` for the symmetrical model developed by Holland (1980), or
+#'   \item `"Boose"` for the asymmetrical model developed by  Boose et al. (2004).
 #'   }
 #' @param asymmetry character. If `method="Holland"` or `method="Willoughby"`,
 #' which method is used to add asymmetry. Can be:
 #'   \itemize{
-#'      \item `"Chen"`: the model developed by Chen (1994) (default setting).
-#'      \item `"Miyazaki"`: the model developed by Miyazaki et al. (1962).
-#'      \item `"None"`: no asymmetry.
+#'      \item `"Chen"`, for the model developed by Chen (1994) (default setting),
+#'      \item `"Miyazaki"`, for the model developed by Miyazaki et al. (1962), or
+#'      \item `"None"`, for no asymmetry.
 #'   }
 #' @param empirical_rmw logical. Whether (TRUE) or not (FALSE) to compute
 #' the radius of maximum wind (`rmw`) empirically with the model developed by
@@ -1651,98 +1695,134 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'  `0.75` (for 45min), `0.5` (for 30 min), and `0.25` (15 for min).
 #' @param verbose numeric. Information displayed. Can be:
 #' \itemize{
-#'    \item `2`: information about the processes and outputs are displayed (default setting).
-#'    \item `1`: information about the processes are displayed.
-#'    \item `0`: no information displayed.
+#'    \item `2`, information about the processes and outputs are displayed (default setting),
+#'    \item `1`, information about the processes are displayed, or
+#'    \item `0`, no information displayed.
 #' }
 #' @returns For each storm and each point location, the `temporalBehaviour()` function returns
 #' a data.frame. The data frames are organised into named lists. Depending on the `product` argument
 #'  different data.frame are returned:
 #' \itemize{
-#'    \item If `product == "TS"`, the function returns a data.frame with
+#'    \item if `product == "TS"`, the function returns a data.frame with
 #'    one row for each observation (or interpolated observation) and
 #'    four columns for wind speed (in $m.s^{-1}$), wind direction (in degree),
-#'    the indices, and the ISO time of observations.
-#'    \item If `product == "PDI"`, the function returns a data.frame with one row
-#'    for each point location and one column for the PDI.
-#'    \item If `product == "Exposure"`, the function returns a data.frame with one
+#'    the indices, and the ISO time of observations,
+#'    \item if `product == "PDI"`, the function returns a data.frame with one row
+#'    for each point location and one column for the PDI,
+#'    \item if `product == "Exposure"`, the function returns a data.frame with one
 #'    row for each wind speed threshold defined with the `wind_threshold` argument
 #'    and one column for each point location.
 #'    }
 #'
-#' @details Storm track data set, such as those provided by IBRTrACKS (Knapp et
+#'@details  Storm track data set, such as those provided by IBRTrACKS (Knapp et
 #'   al., 2010), usually provide observation at a 3- or 6-hours temporal
 #'   resolution. In the spatialBehaviour() function linear interpolations are
 #'   used to reach the temporal resolution set up with the `temp_res` argument
-#'   (set up to 1 hour by default). When `product = "MSW"`, `product = "PDI"`,
-#'   or `product = "Exposure"` the `focal()` function from the terra R package
-#'   to smooth the results using moving windows.
-#' 
-#'The Willoughby et al. (2006) model is an empirical model fitted to aircraft
-#'observations. The model considers two regions: inside the eye and at external
-#'radii, for which the wind formulations use different exponents to better match
-#'observations. In this model, the wind speed increases as a power function of the
-#'radius inside the eye and decays exponentially outside the eye after a smooth
-#'polynomial transition across the eyewall (see also Willoughby 1995, Willoughby
-#' et al. 2004).
-#'
-#'\eqn{\left\{\begin{aligned}
+#'   (set up to 1 hour by default).
+#'   
+#'   The Holland (1980) model, widely used in the literature, is based on the
+#'   'gradient wind balance in mature tropical cyclones. The wind speed distribution
+#'   is computed from the circular air pressure field, which can be derived from
+#'   the central and environmental pressure and the radius of maximum winds.
+#'   
+#'   \eqn{v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)}
+#'   
+#'   with,
+#'   
+#'   \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}}
+#'   
+#'   \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)}
+#'   
+#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{b} is the shape parameter, 
+#'   \eqn{\rho} is the air density set to \eqn{1.15 kg.m^{-3}}, 
+#'   \eqn{e} being the base of natural logarithms (~2.718282), 
+#'   \eqn{v_m} the maximum sustained wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}), 
+#'   \eqn{p_c} is the pressure at the centre of the storm (in \eqn{Pa}), 
+#'   \eqn{r} is the distance to the eye of the storm (in \eqn{km}), 
+#'   \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}), 
+#'   \eqn{f} is the Coriolis force (in \eqn{N.kg^{-1}}, and
+#'   \eqn{\phi} being the latitude).
+#'   
+#'   The Willoughby et al. (2006) model is an empirical model fitted to aircraft
+#'   observations. The model considers two regions: inside the eye and at external
+#'   radii, for which the wind formulations use different exponents to better match
+#'   observations. In this model, the wind speed increases as a power function of the
+#'   radius inside the eye and decays exponentially outside the eye after a smooth
+#'   polynomial transition across the eyewall (see also Willoughby 1995, Willoughby 
+#'   et al. 2004).
+#'   
+#'   \eqn{\left\{\begin{aligned}
 #'    v_r &= v_m \times \left(\frac{r}{R_m}\right)^{n} \quad if \quad r < R_m \\
 #'    v_r &= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
 #'    \end{aligned}
 #'    \right.
-#'}
-#'
-#' where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), \eqn{r} is the
-#' distance to the eye of the storm (in \eqn{km}), \eqn{v_m} is the maximum
-#' sustained wind speed (in \eqn{m.s^{-1}}), \eqn{R_m} is the radius of maximum
-#' sustained wind speed (in \eqn{km}), \eqn{X1 = 287.6 - 1.942 \times v_m +
-#' 7.799 \times \ln(R_m) + 1.819 \times |\phi|}, \eqn{X2 = 25}, \eqn{n = 2.1340
-#' + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|}, \eqn{A
-#' = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|}
-#' and \eqn{A\ge0}, \eqn{\phi} is the latitude of the center of the storm.
-#'
-#'The Holland (1980) model, widely used in the literature, is based on the
-#'gradient wind balance in mature tropical cyclones. The wind speed distribution
-#'is computed from the circular air pressure field, which can be derived from
-#'the central and environmental pressure and the radius of maximum winds.
-#'
-#'\eqn{v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)}
-#'
-#'where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), \eqn{r} is the
-#'distance to the eye of the storm (in \eqn{km}), \eqn{R_m} is the radius of
-#'maximum sustained wind speed (in \eqn{km}), \eqn{p_c} is the pressure at the
-#'centre of the storm (in \eqn{Pa}), \eqn{p_{oci}} is the pressure at outermost
-#'closed isobar of the storm (in \eqn{Pa}), \eqn{\rho} is the air density set to
-#'\eqn{1.15 kg.m^{-3}}, \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)} is the
-#'Coriolis force (in \eqn{N.kg^{-1}}, with \eqn{\phi} being the latitude),
-#'\eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape
-#'parameter, with \eqn{e} being the base of natural logarithms ~2.718282 and
-#'\eqn{v_m} the maximum sustained wind speed (in \eqn{m.s^{-1}})
-#'
-#'The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
-#'Holland (1980) model (see also Boose et al., 2001). In addition to adding
-#'asymmetry, this model treats of water and land differently, using different
-#'surface friction coefficient for each.
-#'
-#'\eqn{v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}}
-#'
-#'where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
-#'\eqn{v_h} is the storm velocity (in \eqn{m.s^{-1}}),
-#'  \eqn{r} is the distance to the eye of the storm (in \eqn{km}),
-#'  \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
-#'  \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}),
-#'  \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}),
-#'  \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}),
-#'  \eqn{\rho = 1.15} is the air density (in \eqn{kg.m^{-3}}),
-#'  \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape parameter,
-#'  \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land),
-#'  \eqn{S} is a scaling parameter for asymmetry (\eqn{1.0}),
-#'  \eqn{T} oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between forward trajectory of the storm and a radial line from the eye of the storm to point \eqn{r},
-#'  \eqn{S} Asymmetry coefficient (usually set to 1)
-#'
-#'
+#'    }
+#'    
+#'    with,
+#'    
+#'    \eqn{n = 2.1340 + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|}
+#'    
+#'    \eqn{X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times |\phi|}
+#'    
+#'    \eqn{A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|} and \eqn{A\ge0}
+#'    
+#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{r} is the distance to the eye of the storm (in \eqn{km}), 
+#'   \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}), 
+#'   \eqn{\phi} is the latitude of the centre of the storm, 
+#'   \eqn{X2 = 25}.
+#'   
+#'   Asymmetry can be added to Holland (1980) and Willoughby et al. (2006) wind fields as follows,
+#'   
+#'   \eqn{$\vec{V} = \vec{V_c} + C \times \vec{V_t}$}
+#'   
+#'   where, \eqn{$\vec{V}$} is the combined asymmetric wind field, 
+#'   \eqn{$\vec{V_c}$} is symmetric wind field,
+#'   \eqn{$\vec{V_t}$} is the translation speed of the storm, and
+#'   \eqn{$C$} is function of \eqn{$r$}, the distance to the eye of the storm (in \eqn{$km$}).
+#'   
+#'   Two formulations of C proposed by Miyazaki et al. (1962) and Chen (1994) are implemented.
+#'   
+#'   Miyazaki et al. (1962)
+#'   \eqn{$C = e^{(-\frac{r}{500} \times \pi)}$}
+#'   
+#'   Chen (1994)
+#'   \eqn{$C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}$}
+#'   
+#'   where, \eqn{$R_m$} is the radius of maximum sustained wind speed (in \eqn{$km$})
+#'   
+#'   The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
+#'   Holland (1980) model (see also Boose et al., 2001). In addition to adding
+#'   asymmetry, this model treats of water and land differently, using different
+#'   surface friction coefficient for each.
+#'   
+#'   \eqn{v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}}
+#'   
+#'   with, 
+#'   
+#'   \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} 
+#'   
+#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land), 
+#'   \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}), 
+#'   \eqn{S} is a scaling parameter for asymmetry (usually set to \eqn{1}), 
+#'   \eqn{$T$} is the oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between 
+#'   the forward trajectory of the storm and a radial line from the eye of the storm to point $r$
+#'   \eqn{v_h} is the storm velocity (in \eqn{m.s^{-1}}),
+#'   \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}), 
+#'   \eqn{r} is the distance to the eye of the storm (in \eqn{km}), 
+#'   \eqn{b} is the shape parameter, 
+#'   \eqn{\rho = 1.15} is the air density (in \eqn{kg.m^{-3}}), 
+#'   \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}), and
+#'   \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}).
+#'  
 #' @references
+#' Boose, E. R., Chamberlin, K. E., & Foster, D. R. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs, 
+#' 71(1), Article 1. https://doi.org/10.1890/0012-9615(2001)071[0027:LARIOH]2.0.CO;2
+#' 
 #' Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
 #' Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
 #'
@@ -1753,6 +1833,12 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'
 #' Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
 #' Oceanographical Magazine, 13(2), 103–117.
+#' 
+#' Willoughby, H. E. (1995). Normal-Mode Initialization of Barotropic Vortex Motion Models. Journal of the Atmospheric Sciences, 52(24), 
+#' 4501–4514. https://doi.org/10.1175/1520-0469(1995)052<4501:NMIOBV>2.0.CO;2
+#' 
+#' Willoughby, H. E., & Rahn, M. E. (2004). Parametric Representation of the Primary Hurricane Vortex. Part I: Observations and Evaluation of the Holland (1980) Model. 
+#' Monthly Weather Review, 132(12), 3033–3048. https://doi.org/10.1175/MWR2831.1
 #'
 #' Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
 #' Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
