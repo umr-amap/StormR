@@ -182,7 +182,10 @@ plotBehaviour <- function(sts,
 
 
   #Plotting track
-  plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
+  plotStorms(sts = sts,
+             names = name,
+             xlim = c(xmin, xmax),
+             ylim = c(ymin, ymax),
              legends = legends)
 
   #Adding raster_product on map
@@ -242,7 +245,7 @@ plotBehaviour <- function(sts,
 
 
   #Adding track again (to emphazise)
-  plotTrack(sts@data[[name]])
+  #plotTrack(sts@data[[name]])
 
   #Adding labels
   if(labels & product != "Profiles" & product != "WindDirection")

@@ -333,8 +333,8 @@ plotStorms <- function(sts,
   #Adding legends
   if(legends != "none") {
 
-    leg <- c(" "," " ,"TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
-    col <- c(NA, NA, "#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
+    leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
+    col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 
     lty <- rep(0,length(leg))
     pch <- rep(19,length(leg))
@@ -344,7 +344,7 @@ plotStorms <- function(sts,
     graphics::legend(x = legends,
                      #inset = c(0.15,0),
                      xpd = TRUE,
-                     
+                     title = "SSHS",
                      legend = leg,
                      col = col,
                      lty = lty,
@@ -353,13 +353,6 @@ plotStorms <- function(sts,
                      pt.cex = 0.6,
                      cex = 0.8,
                      bty = "o")
-    
-    graphics::legend(x = legends,
-                     #inset = c(0.15,0),
-                     legend = c(" "),
-                     xpd = TRUE,
-                     title = "SSHS",
-                     bty = "n")
     
   }
   
