@@ -225,9 +225,15 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 
 #' The `defDatabase()` function creates a `StormsDataset` object from a NetCDF file
 #'
-#' @param filename character. Name of the NetCDF (.nc) file.
+#' @param filename character. Name of the NetCDF (.nc) file. Default is the `test_dataset.nc` 
+#' file located in the `inst/extdata` repository of the directory (accessible by 
+#' `system.file("extdata", "test_dataset.nc", package = "StormR")`). This toy dataset is extracted 
+#' from the IBTrACS.SP.v04r00.nc file. Provides all the tropical cyclones that occured around Vanuatu 
+#' from 2015 to 2016 and around New Caledonia from 2020 to 2021.
 #' @param fields named character vector. Correspondence between the fields
-#'  in the output `StormsDataset` object and the variable names in the input NetCDF file.
+#'  in the output `StormsDataset` object for internal representation in `StormR` package 
+#' and the variable names in the input NetCDF file.
+#' By default, they are chosen to meet the mapping when importing a NetCDF file from the IBTrACS database.
 #' @param basin character. Name of the basin for which storm track data are extracted.
 #' By default `basin=NULL`, meaning that all stars regardless the basin in which they
 #' originated are extracted. Seven basins can be used to filter the data set:
@@ -276,7 +282,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' @return The `defDatabase()` function returns a `StormsDataset` object.
 #' @example 
 #' @export
-defDatabase <- function(filename,
+defDatabase <- function(filename=system.file("extdata", "test_dataset.nc", package = "StormR"),
                         fields = c(names = "name",
                                    seasons = "season",
                                    isoTime = "iso_time",
