@@ -52,15 +52,27 @@ central and environmental pressure and the radius of maximum winds.
 $$
 v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)
 $$
+
+with,
+$$
+b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
+$$
+$$
+f = 2 \times 7.29 \times 10^{-5} \sin(\phi)
+$$
+
 where, <br />
-$v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
-$r$ is the distance to the eye of the storm (in $km$) <br />
-$R_m$ is the radius of maximum sustained wind speed (in $km$) <br />
-$p_c$ is the pressure at the centre of the storm (in $Pa$) <br />
-$p_{oci}$ is the pressure at outermost closed isobar of the storm (in $Pa$) <br />
-$\rho$ is the air density set to $1.15 kg.m^{-3}$ <br />
-$f = 2 \times 7.29 \times 10^{-5} \sin(\phi)$ is the Coriolis force (in $N.kg^{-1}$, with $\phi$ being the latitude) <br />
-$b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}$ is the shape parameter, with $e$ being the base of natural logarithms ~2.718282 and $v_m$ the maximum sustained wind speed (in $m.s^{-1}$) <br />
+$v_r$ is the radial wind speed (in $m.s^{-1}$), <br />
+$b$ is the shape parameter, <br />
+$\rho$ is the air density set to $1.15 kg.m^{-3}$, <br />
+$e$ is the base of natural logarithms (~2.718282), <br />
+$v_m$ the maximum sustained wind speed (in $m.s^{-1}$), <br />
+$p_{oci}$ is the pressure at outermost closed isobar of the storm (in $Pa$), <br />
+$p_c$ is the pressure at the centre of the storm (in $Pa$), <br />
+$r$ is the distance to the eye of the storm (in $km$), <br />
+$R_m$ is the radius of maximum sustained wind speed (in $km$), <br />
+$f$ is the Coriolis force (in $N.kg^{-1}$), and <br />
+$\phi$ is the latitude. <br />
 <br />
 
 ### Willoughby et al. (2006) symmetric wind field
@@ -81,17 +93,25 @@ v_r &= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A \times e^{-\fra
 \end{aligned}
 \right.
 $$
+
+with,
+$$
+n = 2.1340 + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|
+$$
+$$
+X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times |\phi|
+$$
+$$
+A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi| \quad and \quad A\ge0
+$$
+
 where, <br />
-$v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
-$r$ is the distance to the eye of the storm (in $km$) <br />
-$v_m$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
-$R_m$ is the radius of maximum sustained wind speed (in $km$) <br />
-$X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times |\phi|$<br />
-$X2 = 25$ <br />
-$n = 2.1340 + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|$<br />
-$A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|$ and $A\ge0$<br />
-$\phi$ is the latitude of the center of the storm 
-<br />
+$v_r$ is the radial wind speed (in $m.s^{-1}$), <br />
+$v_m$ is the maximum sustained wind speed (in $m.s^{-1}$), <br />
+$r$ is the distance to the eye of the storm (in $km$), <br />
+$R_m$ is the radius of maximum sustained wind speed (in $km$), <br />
+$\phi$ is the latitude of the centre of the storm, and  <br />
+$X2 = 25$. <br />
 
 ### Adding asymmetry to Holland (1980) and Willoughby et al. (2006) wind fields
 
@@ -100,10 +120,10 @@ The asymmetry caused by the translation of the storm can be added as follows,
 $\vec{V} = \vec{V_c} + C \times \vec{V_t}$
 
 where, <br />
-$\vec{V}$ is the combined, asymmetric wind field <br />
-$\vec{V_c}$ is symmetric wind field <br />
-$\vec{V_t}$ is the translation speed of the storm <br />
-$C$ is function of $r$, the distance to the eye of the storm (in $km$) <br />
+$\vec{V}$ is the combined, asymmetric wind field, <br />
+$\vec{V_c}$ is symmetric wind field, <br />
+$\vec{V_t}$ is the translation speed of the storm, and <br />
+$C$ is function of $r$, the distance to the eye of the storm (in $km$). <br />
 
 Two formulations of C proposed by Miyazaki et al. (1962) and Chen (1994) are implemented.
 
@@ -115,7 +135,7 @@ $C = e^{(-\frac{r}{500} \times \pi)}$
 $C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}$
 
 where, <br />
-$R_m$ is the radius of maximum sustained wind speed (in $km$) <br />
+$R_m$ is the radius of maximum sustained wind speed (in $km$). <br />
 <br />
 
 ### Boose et al. (2004) asymmetric model
@@ -133,19 +153,25 @@ $$
 v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}
 $$
 
-$v_r$ is the radial wind speed (in $m.s^{-1}$) <br />
-$v_h$ is the storm velocity (in $m.s^{-1}$) <br />
-$r$ is the distance to the eye of the storm (in $km$) <br />
-$v_m$ is the maximum sustained wind speed (in $m.s^{-1}$) <br />
-$R_m$ is the radius of maximum sustained wind speed (in $km$) <br />
-$p_c$ is the pressure at the centre of the storm ($pressure$ in $Pa$) <br />
-$p_{oci}$ is the pressure at outermost closed isobar of the storm (in $Pa$) <br />
-$\rho = 1.15$ is the air density (in $kg.m^{-3}$) <br />
-$b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}$ is the shape parameter <br />
-$F$ is a scaling parameter for friction ($1.0$ in water, $0.8$ in land) <br /> 
-$S$ is a scaling parameter for asymmetry ($1.0$) <br /> 
-$T$ oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between forward trajectory of the storm and a radial line from the eye of the storm to point $r$ <br /> 
-$S$ Asymmetry coefficient (usually set to 1) <br />
+with,
+$$
+b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
+$$
+
+where, <br />
+$v_r$ is the radial wind speed (in $m.s^{-1}$), <br />
+$F$ is a scaling parameter for friction ($1.0$ in water, $0.8$ in land), <br />
+$v_m$ is the maximum sustained wind speed (in $m.s^{-1}$), <br />
+$S$ is a scaling parameter for asymmetry (usually set to $1$), <br /> 
+$T$ is the oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between 
+the forward trajectory of the storm and a radial line from the eye of the storm to point $r$, <br /> 
+$v_h$ is the storm velocity (in $m.s^{-1}$), <br />
+$R_m$ is the radius of maximum sustained wind speed (in $km$), <br />
+$r$ is the distance to the eye of the storm (in $km$), <br />
+$b$ is the shape parameter, <br />
+$\rho = 1.15$ is the air density (in $kg.m^{-3}$), <br />
+$p_{oci}$ is the pressure at outermost closed isobar of the storm (in $Pa$), and <br />
+$p_c$ is the pressure at the centre of the storm ($pressure$ in $Pa$). <br />
 
 #### Wind direction
 
@@ -159,11 +185,11 @@ D = A_z - 90 - I \quad if \quad \phi \leq 0 \quad(Southern \quad Hemispher) \\
 \end{aligned}
 \right.
 $$
-where <br />
-$D$ is the direction of the radial wind <br />
-$A_z$ is the azimuth from point r to the eye of the storm <br />
-$I$ is the cross isobar inflow angle ($20$ in water, $40$ in land) <br />
-$\phi$ is the latitude <br />
+where, <br />
+$D$ is the direction of the radial wind, <br />
+$A_z$ is the azimuth from point r to the eye of the storm, <br />
+$I$ is the cross isobar inflow angle ($20$ in water, $40$ in land), and <br />
+$\phi$ is the latitude. <br />
 
 ### Wind fields comparison
 
