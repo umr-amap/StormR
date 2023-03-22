@@ -26,7 +26,7 @@ other is defined  using the `method` argument in  `spatialBehaviour()` and
 `temporalBehaviour()` functions.
 
 The original Holland (1980) and Willoughby et al. (2006) models provide a
-symmetrical wind field around the cyclone centre. However cyclonic winds are not
+symmetrical wind field around the cyclone centre. However, cyclonic winds are not
 symmetric, and an order zero asymmetry is caused by the storm translation
 (forward motion). We therefore suggest using an asymmetric version of the
 parametric wind fields that takes into account storm motion. In the `StormR`
@@ -212,7 +212,7 @@ lines(PAM$lon,PAM$lat,lty=3)
 
 * Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico. Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
 
-*Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
+* Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
  
 * Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
 

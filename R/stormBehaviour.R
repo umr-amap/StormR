@@ -1007,161 +1007,96 @@ maskProduct <- function(final_stack, loi, template){
 
 #' Compute indicators of storm behaviour
 #'
-#' This function computes/rasterizes products for each `Storm` included in a
-#' `StormsList`, among Maximum Sustained Wind, Power Dissipation Index, Category
-#' exposure and 2D wind speed structures/direction of wind speed for every
-#' observations
+#' The spatialBehaviour() function allows computing wind speed and
+#'  direction for each cell of a regular grid (i.e., a raster)
+#' for a given tropical cyclone or set of tropical cyclones.
+#' It also allows to compute to compute three associated summary statistics.
 #'
-#' @param sts `StormsList`
-#' @param product character. Product to compute among:
+#' @param sts `StormsList` object
+#' @param product character. Desired output among:
 #'   \itemize{
-#'     \item `"MSW"`: Maximum Sustained Wind
-#'     \item `"PDI"`: Power Dissipation Index
-#'     \item `"Exposure"`: hour exposition for wind greater than `wind_threshold`
-#'     \item `"Profiles"`, 2D wind speed structures of wind speed with wind
-#'           direction for each observation
+#'     \item `"Profiles"`: 2D wind speed and direction fields.
+#'     \item `"MSW"`: Maximum sustained wind speed (default setting).
+#'     \item `"PDI"`: Power dissipation index.
+#'     \item `"Exposure"`: Duration of exposure.
 #'   }
-#'   Default value is set to `"MSW"`
-#' @param wind_threshold numeric vector. Minimal wind threshold(s) \eqn{m.s^{-1}} to
-#'   compute `"Exposure"` product. Ignored if `"Exposure"` is not part of the
-#'   products to compute. Default value is set to Saffir Simpson Hurricane Scale
-#'   thresholds
-#' @param method character. Cyclonic model used to compute `product`. Must be
-#'   either:
+#' @param wind_threshold numeric vector. Minimal wind threshold(s) (in m/s)
+#'  used to compute the duration of exposure when product="Exposure".
+#'  By default value the thresholds used in the Saffir-Simpson hurricane wind scale are used
+#'   (i.e., 18, 33, 42, 49, 58, 70 m/s).
+#' @param wind_threshold numeric vector. Minimal wind threshold(s) (in $m.s^{-1}$) used to
+#'   compute the duration of exposure when `product="Exposure"`. By default value the thresholds
+#'   used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 $m.s^{-1}$).
+#' @param method character. Model used to compute wind speed and direction.
+#' Three different models are implemented:
 #'   \itemize{
-#'   \item `"Willoughby"`: model based on fits performed on cyclonic observations
-#'   \item `"Holland"`: model based on both basic cyclonic Physics and parameters
-#'         fitting according to cyclonic observations
-#'   \item `"Boose"`: asymmetric model based on Holland model
+#'   \item `"Willoughby"`: the symmetrical model developed by Willoughby et al. (2006) (default setting).
+#'   \item `"Holland"`: the symmetrical model developed by Holland (1980).
+#'   \item `"Boose"`: the asymmetrical model developed by  Boose et al. (2004).
 #'   }
-#'   Default value is set to `"Willoughby"` (See `Details`)
-#' @param asymmetry character. Indicates which version of asymmetry to use in
-#'   the computations (see `Details`). Must be either:
+#' @param asymmetry character. If `method="Holland"` or `method="Willoughby"`,
+#' which method is used to add asymmetry. Can be:
 #'   \itemize{
-#'      \item `"Miyazaki"`: based on the formula derived in Miyazaki et al. (1962)
-#'      \item `"Chen"`:  based on the formula derived in Chen (1994)
-#'   \item `"None"`: no asymmetry is added
+#'      \item `"Chen"`: the model developed by Chen (1994) (default setting).
+#'      \item `"Miyazaki"`: the model developed by Miyazaki et al. (1962).
+#'      \item `"None"`: no asymmetry.
 #'   }
-#'   Default value is set to `"Chen"`. Ignored if `method == "Boose"`
-#' @param empirical_rmw logical. Whether to compute the radius of maximum wind
-#'   empirically or using the radius of maximum wind from the observations.
-#'   Default value is set to `FALSE`. If `TRUE`, a formula extracted from
-#'   Willoughby et al. 2006 is used to compute rmw
-#' @param space_res character. Space resolution for the raster(s) to compute.
-#'   Either `"30sec"`, `"2.5min"`, `"5min"` or `"10min"`. Default value is set
-#'   to `"2.5min"`
-#' @param temp_res numeric. Period of time used to interpolate data. Allowed
-#'   values are `1` (60min), `0.75` (45min), `0.5` (30min), and `0.25` (15min).
-#'   Default value is set to `1`
+#' @param empirical_rmw logical. Whether (TRUE) or not (FALSE) to compute
+#' the radius of maximum wind (`rmw`) empirically with the model developed by
+#' Willoughby et al. (2006). If `empirical_rmw==FALSE` (default setting) then the
+#' `rmw` provided in the `StormsList` is used.
+#' @param space_res character. Spatial resolution. Can be `"30 sec"` (~1 km at the equator),
+#' `"2.5 min"` (~4.5 km at the equator), `"5 min"` (~9 km at the equator) or `"10 min"` (~18.6 km at the equator).
+#'  Default setting is `"2.5 min"`.
+#' @param temp_res numeric. Temporal resolution. Can be `1` (for 60 min, default setting),
+#'  `0.75` (for 45min), `0.5` (for 30 min), and `0.25` (15 for min).
 #' @param verbose numeric. Whether or not the function should display
 #'   informations about the process and/or outputs. Allowed values are:
 #' \itemize{
-#' \item `0`: Nothing is displayed
-#' \item `1`: Informations about the process are displayed
-#' \item `2`: Outputs are also displayed
+#'    \item `2`: information about the processes and outputs are displayed (default setting).
+#'    \item `0`: no information displayed.
+#'    \item `1`: information about the processes are displayed.
 #' }
-#'   Default value is set to `2`
-#' @returns SpatRaster stack which provides the desired product computed,
-#'   projected in WGS84 and spanning over the extented LOI of the `StormsList` .
-#'   Number of layers depends on the number of `Storm` available in `sts` and
-#'   also `product` and `temp_res` inputs:
+#' @returns The spatialBehaviour() function returns SpatRaster objects (in WGS84).
+#' The number of layers in the outputs depends on the number of `Storm` in the inputs,
+#' on the desired `product`, as well as `temp_res` argument:
 #' \itemize{
-#'    \item `"MSW"` produces one layer per `Storm`. Name of layer is "STORMNAME_MSW"
-#'    \item `"PDI"` produces one layer per `Storm`. Name of layer is "STORMNAME_PDI"
-#'    \item `"Exposure"` produces one layer for each wind values available
-#'           in `wind_threshold` and for each `Storm`. Name of layers are
-#'           "STORMNAME_Exposure_threshold1", "STORMNAME_Exposure_threshold2"...
-#'    \item `"Profiles"` produces two layers for each observations
-#'          (real and interpolated) and each  `Storm`. Name of layers are
-#'          "STORMNAME_Speed_observation", "STORMNAME_Direction_observation"
+#'    \item If `product = "MSW"`, the function returns one layer for each `Storm`.
+#'    The names of the layer follow the following terminology, the name of the storm
+#'    in capital letters and “MSW” separated by underscores (e.g., "PAM_MSW").
+#'    \item If `product = "PDI"`, the function returns one layer for each `Storm`.
+#'    The names of the layer follow the following terminology, the name of the storm
+#'    in capital letters and “PDI” separated by underscores (e.g., "PAM_PDI").
+#'    \item If `product ="Exposure"`, the function returns one layer for each wind speed values
+#'    in the `wind_threshold` argument and for each `Storm`. The names of the layer follow the
+#'    following terminology, the name of the storm in capital letters, "Exposure", and the number
+#'    of the threshold value separated by underscores (e.g., "PAM_Exposure_threshold1",
+#'    "PAM_Exposure_threshold2", ...).
+#'    \item If `product = "Profiles"` the function returns one layer for wind speed and
+#'    one layer for wind direction for each observation or interpolated observation and each `Storm`.
+#'    The names of the layer follow the following terminology, the name of the storm in capital letters,
+#'    "Speed" or "Direction", and the indices of the observation separated by underscores
+#'    (e.g., "PAM_Speed_41", "PAM_Direction_41",...).
 #' }
 #'
-#' @details The `temp_res` input will perform a linear interpolation
-#'   of observations to further compute each 2D wind speed structure at each
-#'   interpolated observations. For example, if `temp_res == 1`, it will
-#'   generate observations every 1hour between the available observations. Doing
-#'   so, 2D wind speed structure is computed and stacked for each observations
-#'   (available and interpolated) to compute the desired product(s) afterwards.
-#'   If `product == "Profiles"`, nothing else is performed. Otherwise and
-#'   depending on the product(s) to compute, calculations are carried out on the
-#'   stack and `terra::focal` functions are applied to the final raster(s) to
-#'   smooth the result(s).
-#'   
-#'   The Willoughby et al. (2006) model is an empirical model fitted to aircraft
-#'observations. The model considers two regions: inside the eye and at external
-#'radii, for which the wind formulations use different exponents to better match
-#'observations. In this model, the wind speed increases as a power function of the
-#'radius inside the eye and decays exponentially outside the eye after a smooth
-#'polynomial transition across the eyewall (see also Willoughby 1995, Willoughby
-#' et al. 2004).
+#' @details Storm track data set, such as those provided by IBRTrACKS (Knapp et al., 2010),
+#'  usually provide observation at a 3- or 6-hours temporal resolution. In the spatialBehaviour()
+#'  function linear interpolations are used to reach the temporal resolution set up with
+#'  the `temp_res` argument (set up to 1 hour by default). When `product = "MSW"`, `product = "PDI"`, or
+#'  `product = "Exposure"` the `focal()` function from the terra R package to smooth the results using moving windows.
 #'
-#'\eqn{\left\{\begin{aligned}
-#'    v_r &= v_m \times \left(\frac{r}{R_m}\right)^{n} \quad if \quad r < R_m \\
-#'    v_r &= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
-#'    \end{aligned}
-#'    \right.
-#'}
-#'
-#' where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), \eqn{r} is the
-#' distance to the eye of the storm (in \eqn{km}), \eqn{v_m} is the maximum
-#' sustained wind speed (in \eqn{m.s^{-1}}), \eqn{R_m} is the radius of maximum
-#' sustained wind speed (in \eqn{km}), \eqn{X1 = 287.6 - 1.942 \times v_m +
-#' 7.799 \times \ln(R_m) + 1.819 \times |\phi|}, \eqn{X2 = 25}, \eqn{n = 2.1340
-#' + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|}, \eqn{A
-#' = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|}
-#' and \eqn{A\ge0}, \eqn{\phi} is the latitude of the center of the storm.
-#' 
-#'The Holland (1980) model, widely used in the literature, is based on the
-#'gradient wind balance in mature tropical cyclones. The wind speed distribution
-#'is computed from the circular air pressure field, which can be derived from
-#'the central and environmental pressure and the radius of maximum winds.
-#'
-#'\eqn{v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)}
-#'
-#'where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}), \eqn{r} is the
-#'distance to the eye of the storm (in \eqn{km}), \eqn{R_m} is the radius of
-#'maximum sustained wind speed (in \eqn{km}), \eqn{p_c} is the pressure at the
-#'centre of the storm (in \eqn{Pa}), \eqn{p_{oci}} is the pressure at outermost
-#'closed isobar of the storm (in \eqn{Pa}), \eqn{\rho} is the air density set to
-#'\eqn{1.15 kg.m^{-3}}, \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)} is the
-#'Coriolis force (in \eqn{N.kg^{-1}}, with \eqn{\phi} being the latitude),
-#'\eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape
-#'parameter, with \eqn{e} being the base of natural logarithms ~2.718282 and
-#'\eqn{v_m} the maximum sustained wind speed (in \eqn{m.s^{-1}})
-#'
-#'The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
-#'Holland (1980) model (see also Boose et al., 2001). In addition to adding
-#'asymmetry, this model treats of water and land differently, using different
-#'surface friction coefficient for each.
-#'
-#'\eqn{v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}}
-#'
-#'where \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
-#'\eqn{v_h} is the storm velocity (in \eqn{m.s^{-1}}),
-#'  \eqn{r} is the distance to the eye of the storm (in \eqn{km}),
-#'  \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
-#'  \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}),
-#'  \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}),
-#'  \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}),
-#'  \eqn{\rho = 1.15} is the air density (in \eqn{kg.m^{-3}}),
-#'  \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape parameter,
-#'  \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land), 
-#'  \eqn{S} is a scaling parameter for asymmetry (\eqn{1.0}),
-#'  \eqn{T} oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between forward trajectory of the storm and a radial line from the eye of the storm to point \eqn{r},
-#'  \eqn{S} Asymmetry coefficient (usually set to 1)
-#'  
 #' @examples
 #' \dontrun{
-#' #Compute MSW product for Pam 2015 in Vanuatu using default settings
+#' #Computing maximum sustained wind speed generated by Pam (2015) near Vanuatu
 #' msw.pam <- spatialBehaviour(pam)
 #'
-#' #Compute PDI product for Storms in sts_nc using Holland model without asymmetry
+#' #Computing power dissipation index for several storms near New Caledonia using the Holland model without asymmetry
 #' pdi.nc <- spatialBehaviour(sts_nc, method = "Holland", product = "PDI", asymmetry = "None")
 #'
-#' #Compute Exposure for Pam 2015 in Vanuatu using default settings
+#' #Computing duration of exposure to Saffir-Simpson hurrican wind scale threshold values during Pam (2015) near Vanuatu
 #' exp.pam <- spatialBehaviour(pam, product = "Exposure")
 #'
-#' #Compute profiles for Storms in sts_nc using default settings
+#' #Computing wind speed and direction profiles for several storms near New Caledonia
 #' prof.nc <- spatialBehaviour(sts_nc, product = "Profiles")
 #' }
 #'
@@ -1598,10 +1533,10 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 
 #' Compute indicators of storm behaviour
 #'
-#' The `temporalBehaviour()` function allows computing wind speed and direction 
-#' for a given location or set of locations along the lifespan of a tropical cyclone. 
+#' The `temporalBehaviour()` function allows computing wind speed and direction
+#' for a given location or set of locations along the lifespan of a tropical cyclone.
 #' It also allows to compute to compute three associated summary statistics.
-#' 
+#'
 #' @param sts `StormsList` object.
 #' @param points data.frame. The lon (in a `x` col), lat (in a `y` col) coordinates in decimal degrees.
 #' @param product character. Desired output among:
@@ -1611,16 +1546,16 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'     \item `"Exposure"`: the duration of exposure.
 #'   }
 #' @param wind_threshold numeric vector. Minimal wind threshold(s) (in $m.s^{-1}$) used to
-#'   compute the duration of exposure when `product="Exposure"`. By default value the thresholds 
+#'   compute the duration of exposure when `product="Exposure"`. By default value the thresholds
 #'   used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 $m.s^{-1}$).
-#' @param method character. Model used to compute wind speed and direction. 
+#' @param method character. Model used to compute wind speed and direction.
 #' Three different models are implemented:
 #'   \itemize{
 #'   \item `"Willoughby"`: the symmetrical model developed by Willoughby et al. (2006) (default setting).
 #'   \item `"Holland"`: the symmetrical model developed by Holland (1980).
 #'   \item `"Boose"`: the asymmetrical model developed by  Boose et al. (2004).
 #'   }
-#' @param asymmetry character. If `method="Holland"` or `method="Willoughby"`, 
+#' @param asymmetry character. If `method="Holland"` or `method="Willoughby"`,
 #' which method is used to add asymmetry. Can be:
 #'   \itemize{
 #'      \item `"Chen"`: the model developed by Chen (1994) (default setting).
@@ -1628,8 +1563,8 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'      \item `"None"`: no asymmetry.
 #'   }
 #' @param empirical_rmw logical. Whether (TRUE) or not (FALSE) to compute
-#' the radius of maximum wind (`rmw`) empirically with the model developed by 
-#' Willoughby et al. (2006). If `empirical_rmw==FALSE` (default setting) then the 
+#' the radius of maximum wind (`rmw`) empirically with the model developed by
+#' Willoughby et al. (2006). If `empirical_rmw==FALSE` (default setting) then the
 #' `rmw` provided in the `StormsList` is used.
 #' @param temp_res numeric. Temporal resolution. Can be `1` (for 60 min, default setting),
 #'  `0.75` (for 45min), `0.5` (for 30 min), and `0.25` (15 for min).
@@ -1639,18 +1574,18 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'    \item `1`: information about the processes are displayed.
 #'    \item `0`: no information displayed.
 #' }
-#' @returns For each storm and each point location, the `temporalBehaviour()` function returns 
+#' @returns For each storm and each point location, the `temporalBehaviour()` function returns
 #' a data.frame. The data frames are organised into named lists. Depending on the `product` argument
 #'  different data.frame are returned:
 #' \itemize{
-#'    \item If `product == "TS"`, the function returns a data.frame with 
-#'    one row for each observation (or interpolated observation) and 
-#'    four columns for wind speed (in $m.s^{-1}$), wind direction (in degree), 
+#'    \item If `product == "TS"`, the function returns a data.frame with
+#'    one row for each observation (or interpolated observation) and
+#'    four columns for wind speed (in $m.s^{-1}$), wind direction (in degree),
 #'    the indices, and the ISO time of observations.
-#'    \item If `product == "PDI"`, the function returns a data.frame with one row 
+#'    \item If `product == "PDI"`, the function returns a data.frame with one row
 #'    for each point location and one column for the PDI.
-#'    \item If `product == "Exposure"`, the function returns a data.frame with one 
-#'    row for each wind speed threshold defined with the `wind_threshold` argument 
+#'    \item If `product == "Exposure"`, the function returns a data.frame with one
+#'    row for each wind speed threshold defined with the `wind_threshold` argument
 #'    and one column for each point location.
 #'    }
 #'
@@ -1664,7 +1599,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'   depending on the product(s) to compute, calculations are carried out on the
 #'   stack and `terra::focal` functions are applied to the final raster(s) to
 #'   smooth the result(s).
-#'   
+#'
 #'   The Willoughby et al. (2006) model is an empirical model fitted to aircraft
 #'observations. The model considers two regions: inside the eye and at external
 #'radii, for which the wind formulations use different exponents to better match
@@ -1688,7 +1623,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #' + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|}, \eqn{A
 #' = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|}
 #' and \eqn{A\ge0}, \eqn{\phi} is the latitude of the center of the storm.
-#' 
+#'
 #'The Holland (1980) model, widely used in the literature, is based on the
 #'gradient wind balance in mature tropical cyclones. The wind speed distribution
 #'is computed from the circular air pressure field, which can be derived from
@@ -1723,25 +1658,25 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'  \eqn{p_{oci}} is the pressure at outermost closed isobar of the storm (in \eqn{Pa}),
 #'  \eqn{\rho = 1.15} is the air density (in \eqn{kg.m^{-3}}),
 #'  \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}} is the shape parameter,
-#'  \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land), 
+#'  \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land),
 #'  \eqn{S} is a scaling parameter for asymmetry (\eqn{1.0}),
 #'  \eqn{T} oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between forward trajectory of the storm and a radial line from the eye of the storm to point \eqn{r},
 #'  \eqn{S} Asymmetry coefficient (usually set to 1)
-#'   
+#'
 #'
 #' @references
-#' Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico. 
+#' Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
 #' Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
-#' 
+#'
 #' Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
-#' 
+#'
 #' Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
 #'  https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
-#'  
-#' Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II). 
+#'
+#' Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
 #' Oceanographical Magazine, 13(2), 103–117.
-#'  
-#' Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex. 
+#'
+#' Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
 #' Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
 #'
 #' @examples

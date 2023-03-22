@@ -274,6 +274,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' @param verbose logical. Whether (TRUE) or not (FALSE) the function should display
 #'   information about the processes
 #' @return The `defDatabase()` function returns a `StormsDataset` object.
+#' @example 
 #' @export
 defDatabase <- function(filename,
                         fields = c(names = "name",
