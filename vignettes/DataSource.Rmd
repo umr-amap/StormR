@@ -18,8 +18,8 @@ library(StormR)
 Before running `StormR` functions users have to provide a tropical storm track
 dataset as a ".nc" (NetCDF) file in which the location and some characteristics
 of storms are given across their lifespan. This file is used to create a
-`StormsDataset` object using the `defDatabase` function. By default, the
-arguments of `defDatabase` function are set up to create a `StormsDataset`
+`StormsDataset` object using the `defDatabase()` function. By default, the
+arguments of `defDatabase()` function are set up to create a `StormsDataset`
 object using the USA fields in the IBTrACS database [International Best Track
 Archive for Climate
 Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive)
@@ -42,7 +42,7 @@ worldwide tropical storms and cyclones with a 3-hours temporal resolution since
 | `sshs`| Saffir-Simpson hurricane wind scale rating based on `msw` (here in $m.s^{-1}$) | $-1 =$ Tropical depression (`msw` $< 18$) <br /> $0 =$ Tropical storm ($18 \leq$ `msw` $< 33$) <br /> $1 =$ Category 1 ($33  \leq$ `msw` $< 42$) <br /> $2 =$ Category 2 ($42 \leq$ `msw` $< 49$) <br /> $3 =$ Category 3 ($49 \leq$ `msw` $< 58$) <br /> $4 =$ Category 4 ($58 \leq$ `msw` $< 70$) <br /> $5 =$ Category 5 (`msw` $\ge 70$)| 5 | Optional$^{4}$  |
 
 $^{1}$ Providing the `basin` allows to filter storms in a particular basin using
-the `basin` argument of the `defDatabase` function. <br />
+the `basin` argument of the `defDatabase()` function. <br />
 $^{2}$ Providing `rmw` allows better estimates of wind speed and direction in
 the `temporatlBehaviour()` and `spatialBehaviour()` functions. If not provided,
 `rmw` is approximated using an empirical formula derived from
@@ -74,7 +74,7 @@ download.file(url = "https://www.ncei.noaa.gov/data/international-best-track-arc
 ### Creating a `StormsDataset`
 
 Once a storm track data set is available a `StormsDataset` object can be created
-using the `defDatabase` function as follows,
+using the `defDatabase()` function as follows,
 
 ```{r defDatabase}
 sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", basin=NULL, verbose = FALSE)
