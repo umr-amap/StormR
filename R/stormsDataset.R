@@ -232,12 +232,12 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' By default `basin=NULL`, meaning that all stars regardless the basin in which they
 #' originated are extracted. Seven basins can be used to filter the data set:
 #' \itemize{
-#'   \item `"NA"` for North Atlantic basin.
-#'   \item `"SA"` for South Atlantic basin.
-#'   \item `"EP"` for Eastern North Pacific basin.
-#'   \item `"WP"` for Western North Pacific basin.
-#'   \item `"SP"` for South Pacific basin.
-#'   \item `"SI"` for South India basin.
+#'   \item `"NA"` for North Atlantic basin,
+#'   \item `"SA"` for South Atlantic basin,
+#'   \item `"EP"` for Eastern North Pacific basin,
+#'   \item `"WP"` for Western North Pacific basin,
+#'   \item `"SP"` for South Pacific basin,
+#'   \item `"SI"` for South India basin, or
 #'   \item `"NI"` for North India basin.
 #' }
 #' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
@@ -251,23 +251,23 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #'
 #'   For `msw`,
 #' \itemize{
-#'   \item `"knt_to_ms"` to convert knot to meter per second (default setting).
-#'   \item `"kmh_to_ms"` to convert kilometre per hour to meter per second.
-#'   \item "`mph_to_ms"` to convert miles per hour to meter per second.
+#'   \item `"knt_to_ms"` to convert knot to meter per second (default setting),
+#'   \item `"kmh_to_ms"` to convert kilometre per hour to meter per second,
+#'   \item "`mph_to_ms"` to convert miles per hour to meter per second, or
 #'   \item `"None"`if no conversion is needed.
 #' }
 #'
 #'   For `rmw`,
 #' \itemize{
-#'   \item `"nm_to_ms"`to convert nautical miles to kilometre (default setting).
+#'   \item `"nm_to_ms"`to convert nautical miles to kilometre (default setting), or
 #'   \item `"None"`if no conversion is needed.
 #'  }
 #'   For `pressure` and `poci`,
 #'  \itemize{
-#'    \item "`mb_to_pa"` to convert  millibar to Pascal  (default setting).
-#'    \item `"b_to_pa"` to convert bar to Pascal.
-#'    \item `"atm_to_pa"` to convert  atmosphere to Pascal.
-#'    \item `"psi_to_pa"` to convert  psi to Pascal.
+#'    \item "`mb_to_pa"` to convert  millibar to Pascal  (default setting),
+#'    \item `"b_to_pa"` to convert bar to Pascal,
+#'    \item `"atm_to_pa"` to convert  atmosphere to Pascal,
+#'    \item `"psi_to_pa"` to convert  psi to Pascal, or
 #'    \item `"None"`if no conversion is needed.
 #'  }
 #'
@@ -275,6 +275,9 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #'   information about the processes
 #' @return The `defDatabase()` function returns a `StormsDataset` object.
 #' @example 
+#' \dontrun{
+#' 
+#' }
 #' @export
 defDatabase <- function(filename,
                         fields = c(names = "name",
