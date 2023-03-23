@@ -26,13 +26,21 @@ netcdf
 }
 \examples{
 \dontrun{
-pam <- Storms(loi = "Vanuatu", names = "PAM")
+#' #Create database (Default)
+sds <- defDatabase()
+
+#Get Pam tropical cyclone and MSW
+pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
 pam.msw <- spatialBehaviour(pam)
+
+
 #Save MSW raster in Geotiff file for Pam 2015 over Vanuatu
 writeRast(pam.msw, path = paste0(tempdir(),"/"))
 
-sts.nc <- Storms(loi = "New Caledonia")
+#Compute several PDI rasters over New Caledonia
+sts.nc <- Storms(sds = sds, loi = "New Caledonia")
 pdi.nc <- spatialBehaviour(sts.nc, product = "PDI")
+
 #Save PDI rasters in Geotiff files contained in pdi.nc
 writeRast(pdi.nc, path = paste0(tempdir(),"/"))
 }

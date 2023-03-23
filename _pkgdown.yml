@@ -53,8 +53,6 @@ reference:
 - title: Data
   desc: Examples data provided by this package
   contents:
-  - '`pam`'
-  - '`sts_nc`'
   - '`eezNC`'
-  - '`test_dataset`'
+  
   
