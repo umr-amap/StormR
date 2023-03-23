@@ -86,9 +86,9 @@ It also allows to compute to compute three associated summary statistics.</p>
 
 
 <dt>product</dt>
-<dd><p>character. Desired output among:</p><ul><li><p><code>"TS"</code>: time series of wind speed and direction (default setting).</p></li>
-<li><p><code>"PDI"</code>: power dissipation index.</p></li>
-<li><p><code>"Exposure"</code>: the duration of exposure.</p></li>
+<dd><p>character. Desired output among,</p><ul><li><p><code>"TS"</code>, for time series of wind speed and direction (default setting),</p></li>
+<li><p><code>"PDI"</code>, for power dissipation index, or</p></li>
+<li><p><code>"Exposure"</code> for the duration of exposure.</p></li>
 </ul></dd>
 
 
@@ -100,17 +100,17 @@ used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 
 
 <dt>method</dt>
 <dd><p>character. Model used to compute wind speed and direction.
-Three different models are implemented:</p><ul><li><p><code>"Willoughby"</code>: the symmetrical model developed by Willoughby et al. (2006) (default setting).</p></li>
-<li><p><code>"Holland"</code>: the symmetrical model developed by Holland (1980).</p></li>
-<li><p><code>"Boose"</code>: the asymmetrical model developed by  Boose et al. (2004).</p></li>
+Three different models are implemented:</p><ul><li><p><code>"Willoughby"</code> for the symmetrical model developed by Willoughby et al. (2006) (default setting),</p></li>
+<li><p><code>"Holland"</code> for the symmetrical model developed by Holland (1980), or</p></li>
+<li><p><code>"Boose"</code> for the asymmetrical model developed by  Boose et al. (2004).</p></li>
 </ul></dd>
 
 
 <dt>asymmetry</dt>
 <dd><p>character. If <code>method="Holland"</code> or <code>method="Willoughby"</code>,
-which method is used to add asymmetry. Can be:</p><ul><li><p><code>"Chen"</code>: the model developed by Chen (1994) (default setting).</p></li>
-<li><p><code>"Miyazaki"</code>: the model developed by Miyazaki et al. (1962).</p></li>
-<li><p><code>"None"</code>: no asymmetry.</p></li>
+which method is used to add asymmetry. Can be:</p><ul><li><p><code>"Chen"</code>, for the model developed by Chen (1994) (default setting),</p></li>
+<li><p><code>"Miyazaki"</code>, for the model developed by Miyazaki et al. (1962), or</p></li>
+<li><p><code>"None"</code>, for no asymmetry.</p></li>
 </ul></dd>
 
 
@@ -127,9 +127,9 @@ Willoughby et al. (2006). If <code>empirical_rmw==FALSE</code> (default setting)
 
 
 <dt>verbose</dt>
-<dd><p>numeric. Information displayed. Can be:</p><ul><li><p><code>2</code>: information about the processes and outputs are displayed (default setting).</p></li>
-<li><p><code>1</code>: information about the processes are displayed.</p></li>
-<li><p><code>0</code>: no information displayed.</p></li>
+<dd><p>numeric. Information displayed. Can be:</p><ul><li><p><code>2</code>, information about the processes and outputs are displayed (default setting),</p></li>
+<li><p><code>1</code>, information about the processes are displayed, or</p></li>
+<li><p><code>0</code>, no information displayed.</p></li>
 </ul></dd>
 
 </dl></div>
@@ -139,13 +139,13 @@ Willoughby et al. (2006). If <code>empirical_rmw==FALSE</code> (default setting)
 
 <p>For each storm and each point location, the <code>temporalBehaviour()</code> function returns
 a data.frame. The data frames are organised into named lists. Depending on the <code>product</code> argument
-different data.frame are returned:</p><ul><li><p>If <code>product == "TS"</code>, the function returns a data.frame with
+different data.frame are returned:</p><ul><li><p>if <code>product == "TS"</code>, the function returns a data.frame with
 one row for each observation (or interpolated observation) and
 four columns for wind speed (in $m.s^-1$), wind direction (in degree),
-the indices, and the ISO time of observations.</p></li>
-<li><p>If <code>product == "PDI"</code>, the function returns a data.frame with one row
-for each point location and one column for the PDI.</p></li>
-<li><p>If <code>product == "Exposure"</code>, the function returns a data.frame with one
+the indices, and the ISO time of observations,</p></li>
+<li><p>if <code>product == "PDI"</code>, the function returns a data.frame with one row
+for each point location and one column for the PDI,</p></li>
+<li><p>if <code>product == "Exposure"</code>, the function returns a data.frame with one
 row for each wind speed threshold defined with the <code>wind_threshold</code> argument
 and one column for each point location.</p></li>
 </ul></div>
@@ -155,9 +155,26 @@ and one column for each point location.</p></li>
 al., 2010), usually provide observation at a 3- or 6-hours temporal
 resolution. In the spatialBehaviour() function linear interpolations are
 used to reach the temporal resolution set up with the <code>temp_res</code> argument
-(set up to 1 hour by default). When <code>product = "MSW"</code>, <code>product = "PDI"</code>,
-or <code>product = "Exposure"</code> the <code>focal()</code> function from the terra R package
-to smooth the results using moving windows.</p>
+(set up to 1 hour by default).</p>
+<p>The Holland (1980) model, widely used in the literature, is based on the
+'gradient wind balance in mature tropical cyclones. The wind speed distribution
+is computed from the circular air pressure field, which can be derived from
+the central and environmental pressure and the radius of maximum winds.</p>
+<p>\(v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)\)</p>
+<p>with,</p>
+<p>\(b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}\)</p>
+<p>\(f = 2 \times 7.29 \times 10^{-5} \sin(\phi)\)</p>
+<p>where, \(v_r\) is the radial wind speed (in \(m.s^{-1}\)),
+\(b\) is the shape parameter,
+\(\rho\) is the air density set to \(1.15 kg.m^{-3}\),
+\(e\) being the base of natural logarithms (~2.718282),
+\(v_m\) the maximum sustained wind speed (in \(m.s^{-1}\)),
+\(p_{oci}\) is the pressure at outermost closed isobar of the storm (in \(Pa\)),
+\(p_c\) is the pressure at the centre of the storm (in \(Pa\)),
+\(r\) is the distance to the eye of the storm (in \(km\)),
+\(R_m\) is the radius of maximum sustained wind speed (in \(km\)),
+\(f\) is the Coriolis force (in \(N.kg^{-1}\), and
+\(\phi\) being the latitude).</p>
 <p>The Willoughby et al. (2006) model is an empirical model fitted to aircraft
 observations. The model considers two regions: inside the eye and at external
 radii, for which the wind formulations use different exponents to better match
@@ -170,58 +187,65 @@ et al. 2004).</p>
    v_r &amp;= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
    \end{aligned}
    \right.
-\)</p>
-<p>where \(v_r\) is the radial wind speed (in \(m.s^{-1}\)), \(r\) is the
-distance to the eye of the storm (in \(km\)), \(v_m\) is the maximum
-sustained wind speed (in \(m.s^{-1}\)), \(R_m\) is the radius of maximum
-sustained wind speed (in \(km\)), \(X1 = 287.6 - 1.942 \times v_m +
-7.799 \times \ln(R_m) + 1.819 \times |\phi|\), \(X2 = 25\), \(n = 2.1340
-+ 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|\), \(A
-= 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|\)
-and \(A\ge0\), \(\phi\) is the latitude of the center of the storm.</p>
-<p>The Holland (1980) model, widely used in the literature, is based on the
-gradient wind balance in mature tropical cyclones. The wind speed distribution
-is computed from the circular air pressure field, which can be derived from
-the central and environmental pressure and the radius of maximum winds.</p>
-<p>\(v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)\)</p>
-<p>where \(v_r\) is the radial wind speed (in \(m.s^{-1}\)), \(r\) is the
-distance to the eye of the storm (in \(km\)), \(R_m\) is the radius of
-maximum sustained wind speed (in \(km\)), \(p_c\) is the pressure at the
-centre of the storm (in \(Pa\)), \(p_{oci}\) is the pressure at outermost
-closed isobar of the storm (in \(Pa\)), \(\rho\) is the air density set to
-\(1.15 kg.m^{-3}\), \(f = 2 \times 7.29 \times 10^{-5} \sin(\phi)\) is the
-Coriolis force (in \(N.kg^{-1}\), with \(\phi\) being the latitude),
-\(b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}\) is the shape
-parameter, with \(e\) being the base of natural logarithms ~2.718282 and
-\(v_m\) the maximum sustained wind speed (in \(m.s^{-1}\))</p>
+   \)</p>
+<p>with,</p>
+<p>\(n = 2.1340 + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|\)</p>
+<p>\(X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times |\phi|\)</p>
+<p>\(A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|\) and \(A\ge0\)</p>
+<p>where, \(v_r\) is the radial wind speed (in \(m.s^{-1}\)),
+\(v_m\) is the maximum sustained wind speed (in \(m.s^{-1}\)),
+\(r\) is the distance to the eye of the storm (in \(km\)),
+\(R_m\) is the radius of maximum sustained wind speed (in \(km\)),
+\(\phi\) is the latitude of the centre of the storm,
+\(X2 = 25\).</p>
+<p>Asymmetry can be added to Holland (1980) and Willoughby et al. (2006) wind fields as follows,</p>
+<p>\($\vec{V} = \vec{V_c} + C \times \vec{V_t}$\)</p>
+<p>where, \($\vec{V}$\) is the combined asymmetric wind field,
+\($\vec{V_c}$\) is symmetric wind field,
+\($\vec{V_t}$\) is the translation speed of the storm, and
+\($C$\) is function of \($r$\), the distance to the eye of the storm (in \($km$\)).</p>
+<p>Two formulations of C proposed by Miyazaki et al. (1962) and Chen (1994) are implemented.</p>
+<p>Miyazaki et al. (1962)
+\($C = e^{(-\frac{r}{500} \times \pi)}$\)</p>
+<p>Chen (1994)
+\($C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}$\)</p>
+<p>where, \($R_m$\) is the radius of maximum sustained wind speed (in \($km$\))</p>
 <p>The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
 Holland (1980) model (see also Boose et al., 2001). In addition to adding
 asymmetry, this model treats of water and land differently, using different
 surface friction coefficient for each.</p>
 <p>\(v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}\)</p>
-<p>where \(v_r\) is the radial wind speed (in \(m.s^{-1}\)),
-\(v_h\) is the storm velocity (in \(m.s^{-1}\)),
-\(r\) is the distance to the eye of the storm (in \(km\)),
-\(v_m\) is the maximum sustained wind speed (in \(m.s^{-1}\)),
-\(R_m\) is the radius of maximum sustained wind speed (in \(km\)),
-\(p_c\) is the pressure at the centre of the storm (\(pressure\) in \(Pa\)),
-\(p_{oci}\) is the pressure at outermost closed isobar of the storm (in \(Pa\)),
-\(\rho = 1.15\) is the air density (in \(kg.m^{-3}\)),
-\(b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}\) is the shape parameter,
+<p>with,</p>
+<p>\(b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}\)</p>
+<p>where, \(v_r\) is the radial wind speed (in \(m.s^{-1}\)),
 \(F\) is a scaling parameter for friction (\(1.0\) in water, \(0.8\) in land),
-\(S\) is a scaling parameter for asymmetry (\(1.0\)),
-\(T\) oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between forward trajectory of the storm and a radial line from the eye of the storm to point \(r\),
-\(S\) Asymmetry coefficient (usually set to 1)</p>
+\(v_m\) is the maximum sustained wind speed (in \(m.s^{-1}\)),
+\(S\) is a scaling parameter for asymmetry (usually set to \(1\)),
+\($T$\) is the oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between
+the forward trajectory of the storm and a radial line from the eye of the storm to point $r$
+\(v_h\) is the storm velocity (in \(m.s^{-1}\)),
+\(R_m\) is the radius of maximum sustained wind speed (in \(km\)),
+\(r\) is the distance to the eye of the storm (in \(km\)),
+\(b\) is the shape parameter,
+\(\rho = 1.15\) is the air density (in \(kg.m^{-3}\)),
+\(p_{oci}\) is the pressure at outermost closed isobar of the storm (in \(Pa\)), and
+\(p_c\) is the pressure at the centre of the storm (\(pressure\) in \(Pa\)).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Boose, E. R., Serrano, M. I., &amp; Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
+    <p>Boose, E. R., Chamberlin, K. E., &amp; Foster, D. R. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs,
+71(1), Article 1. https://doi.org/10.1890/0012-9615(2001)0710027:LARIOH2.0.CO;2</p>
+<p>Boose, E. R., Serrano, M. I., &amp; Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
 Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057</p>
 <p>Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.</p>
 <p>Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
 https://doi.org/10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2</p>
 <p>Miyazaki, M., Ueno, T., &amp; Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
 Oceanographical Magazine, 13(2), 103–117.</p>
+<p>Willoughby, H. E. (1995). Normal-Mode Initialization of Barotropic Vortex Motion Models. Journal of the Atmospheric Sciences, 52(24),
+4501–4514. https://doi.org/10.1175/1520-0469(1995)052&lt;4501:NMIOBV&gt;2.0.CO;2</p>
+<p>Willoughby, H. E., &amp; Rahn, M. E. (2004). Parametric Representation of the Primary Hurricane Vortex. Part I: Observations and Evaluation of the Holland (1980) Model.
+Monthly Weather Review, 132(12), 3033–3048. https://doi.org/10.1175/MWR2831.1</p>
 <p>Willoughby, H. E., Darling, R. W. R., &amp; Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
 Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1</p>
     </div>
@@ -229,20 +253,26 @@ Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">166.5</span>, <span class="fl">163</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">22</span>, <span class="op">-</span><span class="fl">19</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#' #Create database (Default)</span></span></span>
+<span class="r-in"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="defDatabase.html">defDatabase</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Get Pam tropical cyclone (2015)</span></span></span>
+<span class="r-in"><span><span class="va">pam</span> <span class="op">&lt;-</span> <span class="fu"><a href="Storms.html">Storms</a></span><span class="op">(</span>sds <span class="op">=</span> <span class="va">sds</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">168.5</span>, <span class="fl">168</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">17.9</span>, <span class="op">-</span><span class="fl">16.3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">pts</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point_1"</span>,<span class="st">"point_2"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Computing time series of wind speed and direction for Erica and Niran</span></span></span>
+<span class="r-in"><span><span class="co">#Computing time series of wind speed and direction for Pam</span></span></span>
 <span class="r-in"><span><span class="co">#over points 1 and 2 defined above</span></span></span>
-<span class="r-in"><span><span class="va">ts_nc</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">sts_nc</span>, points <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts.pam</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">pam</span>, points <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Computing PDI for Erica and Niran over points 1 and 2 defined above</span></span></span>
-<span class="r-in"><span><span class="va">pdiPt_nc</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">sts_nc</span>, points <span class="op">=</span> <span class="va">pts</span>, product <span class="op">=</span> <span class="st">"PDI"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#Computing PDI for Pam over points 1 and 2 defined above</span></span></span>
+<span class="r-in"><span><span class="va">pdi.pam</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">pam</span>, points <span class="op">=</span> <span class="va">pts</span>, product <span class="op">=</span> <span class="st">"PDI"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Computing the duration of exposure to wind speeds above the thresholds</span></span></span>
-<span class="r-in"><span><span class="co">#used by the Saffir-Simpson hurricane wind scale for Erica and Niran</span></span></span>
+<span class="r-in"><span><span class="co">#used by the Saffir-Simpson hurricane wind scale for Pam </span></span></span>
 <span class="r-in"><span><span class="co">#over points 1 and 2 defined above</span></span></span>
-<span class="r-in"><span><span class="va">expPt_nc</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">sts_nc</span>, points <span class="op">=</span> <span class="va">pts</span>, product <span class="op">=</span> <span class="st">"Exposure"</span>, wind_threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">exp.pam</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">pam</span>, points <span class="op">=</span> <span class="va">pts</span>, product <span class="op">=</span> <span class="st">"Exposure"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

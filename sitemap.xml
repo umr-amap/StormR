@@ -94,9 +94,6 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/pam.html</loc>
-  </url>
-  <url>
     <loc>/reference/plotBehaviour.html</loc>
   </url>
   <url>
@@ -106,13 +103,7 @@
     <loc>/reference/spatialBehaviour.html</loc>
   </url>
   <url>
-    <loc>/reference/sts_nc.html</loc>
-  </url>
-  <url>
     <loc>/reference/temporalBehaviour.html</loc>
-  </url>
-  <url>
-    <loc>/reference/test_dataset.html</loc>
   </url>
   <url>
     <loc>/reference/writeRast.html</loc>

@@ -78,7 +78,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>spatialBehaviour</h1>
             
-            <h4 data-toc-skip class="date">2023-03-22</h4>
+            <h4 data-toc-skip class="date">2023-03-23</h4>
       
       
       <div class="d-none name"><code>SpatialBehaviour.Rmd</code></div>
@@ -109,7 +109,13 @@ field profiles or summary statistics.</p>
 cyclone Pam (2015) near Vanuatu. First, track data are extracted as
 follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Storms.html">Storms</a></span><span class="op">(</span>loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span>,verbose<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## === Loading data  ===</span></span>
+<span><span class="co">## Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened</span></span>
+<span><span class="co">## Collecting data ...</span></span>
+<span><span class="co">## === DONE ===</span></span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Storms.html">Storms</a></span><span class="op">(</span>sds<span class="op">=</span><span class="va">sds</span>,loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span>,verbose<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
 <div class="section level4">
@@ -118,7 +124,7 @@ follows:</p>
 <p>Using track data and the <code><a href="../reference/spatialBehaviour.html">spatialBehaviour()</a></code> function
 with the <code>product="Profiles</code> argument we can generate 2D wind
 fields at any time as follows:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>,product<span class="op">=</span><span class="st">"Profiles"</span>,verbose<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">pf</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
@@ -142,10 +148,10 @@ observations gathered every 3 or 6 hours. Therefore, to be able to
 compute wind fields every 1 hour, the observations are interpolated.</p>
 <p>Wind speed and direction profiles at the 41<sup>th</sup> observation
 can be plotted as follows:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">pf</span><span class="op">$</span><span class="va">PAM_Speed_41</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">pf</span><span class="op">$</span><span class="va">PAM_Direction_41</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-3-2.png" width="700"></p>
 </div>
@@ -157,7 +163,7 @@ different <code>products</code> (i.e., <code>"Profiles"</code>,
 <code>"MSW"</code>, <code>"PDI"</code>, <code>"Exposure"</code>) either
 separately or together. Here, we compute all three summary statistics
 together as follows:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>,product<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSW"</span>,<span class="st">"PDI"</span>,<span class="st">"Exposure"</span><span class="op">)</span>,verbose<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">ss</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
@@ -167,15 +173,15 @@ together as follows:</p>
 <span><span class="co">## coord. ref. : lon/lat WGS 84 </span></span>
 <span><span class="co">## source(s)   : memory</span></span>
 <span><span class="co">## names       : PAM_MSW,     PAM_PDI, PAM_E~re_18, PAM_E~re_33, PAM_E~re_42, PAM_E~re_49, ... </span></span>
-<span><span class="co">## min values  :  13.787,    5.241304,           1,           1,           1,           1, ... </span></span>
-<span><span class="co">## max values  :  83.046, 5101.066035,          32,          16,          11,           8, ...</span></span></code></pre>
+<span><span class="co">## min values  : 13.7870,    5.241304,     1.00000,     1.00000,    1.000000,    1.000000, ... </span></span>
+<span><span class="co">## max values  : 73.9045, 4692.619898,    30.90083,    14.70248,    9.446281,    6.826446, ...</span></span></code></pre>
 <p>The <code><a href="../reference/spatialBehaviour.html">spatialBehaviour()</a></code> function returns a
 <code>SpatRaster</code> object with eight rasters: one for the maximum
 sustained wind speed (<code>"MSW"</code>), one for the power dissipation
 index (<code>"PDI"</code>), and one for each of the six defaults wind
 thresholds values set for the duration of exposure
 (<code>"Exposure"</code>).</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ss</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "PAM_MSW"         "PAM_PDI"         "PAM_Exposure_18" "PAM_Exposure_33"</span></span>
 <span><span class="co">## [5] "PAM_Exposure_42" "PAM_Exposure_49" "PAM_Exposure_58" "PAM_Exposure_70"</span></span></code></pre>
@@ -184,16 +190,16 @@ to wind speeds above the thresholds used by the Saffir-Simpson hurricane
 wind scale (i.e., 18, 33, 42, 49, 58, and 70 <span class="math inline">\(m.s^{-1}\)</span>). This can be change using the
 <code>wind_threshold</code> argument.</p>
 <p>The maximum sustained wind speed can be plotted as follows:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">ss</span><span class="op">$</span><span class="va">PAM_MSW</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>The power dissipation index can be plotted as follows:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">ss</span><span class="op">$</span><span class="va">PAM_PDI</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>The duration of exposure to wind stronger than 58 <span class="math inline">\(m.s^{-1}\)</span> (i.e., Saffir-Simpson’s
 categories 4 and 5) can be plotted as follows:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">ss</span><span class="op">$</span><span class="va">PAM_Exposure_58</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 </div>
@@ -211,7 +217,7 @@ set to 1 hour by default but finer spatial resolution of 0.75, 0.50, or
 0.25 hour can be set using the <code>temp_res</code> argument. Maximum
 sustained wind speed can be computed at a 10 min spatial resolution and
 a 30 min temporal resolution as follows:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>,product<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSW"</span><span class="op">)</span>,verbose<span class="op">=</span><span class="fl">0</span>,space_res<span class="op">=</span><span class="st">"10min"</span>,temp_res<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">ss</span><span class="op">$</span><span class="va">PAM_MSW</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
@@ -224,7 +230,7 @@ in a <code>SpatRaster</code> object than can be exported either in
 “.tiff” or “.nc” (NetCDF) formats using the <code><a href="../reference/writeRast.html">writeRast()</a></code>
 function. Here, we export the maximum sustained wind speed in the
 working directory as follows:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/writeRast.html">writeRast</a></span><span class="op">(</span><span class="va">ss</span><span class="op">$</span><span class="va">PAM_MSW</span>, format<span class="op">=</span><span class="st">".tiff"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

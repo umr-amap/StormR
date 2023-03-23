@@ -57,7 +57,7 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">defDatabase</span><span class="op">(</span></span>
-<span>  <span class="va">filename</span>,</span>
+<span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"test_dataset.nc"</span>, package <span class="op">=</span> <span class="st">"StormR"</span><span class="op">)</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>names <span class="op">=</span> <span class="st">"name"</span>, seasons <span class="op">=</span> <span class="st">"season"</span>, isoTime <span class="op">=</span> <span class="st">"iso_time"</span>, lon <span class="op">=</span> <span class="st">"usa_lon"</span>,</span>
 <span>    lat <span class="op">=</span> <span class="st">"usa_lat"</span>, msw <span class="op">=</span> <span class="st">"usa_wind"</span>, sshs <span class="op">=</span> <span class="st">"usa_sshs"</span>, rmw <span class="op">=</span> <span class="st">"usa_rmw"</span>, pressure <span class="op">=</span></span>
 <span>    <span class="st">"usa_pres"</span>, poci <span class="op">=</span> <span class="st">"usa_poci"</span><span class="op">)</span>,</span>
@@ -72,12 +72,18 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>filename</dt>
-<dd><p>character. Name of the NetCDF (.nc) file.</p></dd>
+<dd><p>character. Name of the NetCDF (.nc) file. Default is the <code>test_dataset.nc</code>
+file located in the <code>inst/extdata</code> repository of the directory (accessible by
+<code>system.file("extdata", "test_dataset.nc", package = "StormR")</code>). This toy dataset is extracted
+from the IBTrACS.SP.v04r00.nc file. Provides all the tropical cyclones that occured around Vanuatu
+from 2015 to 2016 and around New Caledonia from 2020 to 2021.</p></dd>
 
 
 <dt>fields</dt>
 <dd><p>named character vector. Correspondence between the fields
-in the output <code>StormsDataset</code> object and the variable names in the input NetCDF file.</p></dd>
+in the output <code>StormsDataset</code> object for internal representation in <code>StormR</code> package
+and the variable names in the input NetCDF file.
+By default, they are chosen to meet the mapping when importing a NetCDF file from the IBTrACS database.</p></dd>
 
 
 <dt>basin</dt>
