@@ -1008,7 +1008,7 @@ maskProduct <- function(final_stack, loi, template){
 #' The spatialBehaviour() function allows computing wind speed and
 #'  direction for each cell of a regular grid (i.e., a raster)
 #' for a given tropical cyclone or set of tropical cyclones.
-#' It also allows to compute to compute three associated summary statistics.
+#' It also allows to compute three associated summary statistics.
 #'
 #' @param sts `StormsList` object
 #' @param product character. Desired output among:
