@@ -98,15 +98,15 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'a default title is generated.
 #'@param xlim numeric vector. The x limits of the plot.
 #'@param ylim numeric vector. The y limits of the plot.
-#' @param labels logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name 
-#' of the storm and the indices and ISO times of the observation.
-#' @param by numeric. If `labels=TRUE`, defines the frequency at which labels are plotted. 
-#' Default value is set to `8` which corresponds to a 24h (or 48h) time interval between the labelled observations
-#' when observations are made every 3 (or 6) hours.
-#' @param pos numeric. If `labels=TRUE`, defines the position of the labels, `1` (above the observation),
-#'  `2` (on the left), `3` (below, default setting), and `4` (on the right).
-#' @param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting),
-#' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
+#'@param labels logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name 
+#'of the storm and the indices and ISO times of the observation.
+#'@param by numeric. If `labels=TRUE`, defines the frequency at which labels are plotted. 
+#'Default value is set to `8` which corresponds to a 24h (or 48h) time interval between the labelled observations
+#'when observations are made every 3 (or 6) hours.
+#'@param pos numeric. If `labels=TRUE`, defines the position of the labels, `1` (above the observation), 
+#'`2` (on the left), `3` (below, default setting), and `4` (on the right).
+#'@param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting), 
+#'`"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #'
 #'@returns NULL
 #'
