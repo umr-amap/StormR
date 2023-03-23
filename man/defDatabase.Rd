@@ -5,7 +5,7 @@
 \title{The \code{defDatabase()} function creates a \code{StormsDataset} object from a NetCDF file}
 \usage{
 defDatabase(
-  filename,
+  filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
   fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
     lat = "usa_lat", msw = "usa_wind", sshs = "usa_sshs", rmw = "usa_rmw", pressure =
     "usa_pres", poci = "usa_poci"),
@@ -17,10 +17,16 @@ defDatabase(
 )
 }
 \arguments{
-\item{filename}{character. Name of the NetCDF (.nc) file.}
+\item{filename}{character. Name of the NetCDF (.nc) file. Default is the \code{test_dataset.nc}
+file located in the \code{inst/extdata} repository of the directory (accessible by
+\code{system.file("extdata", "test_dataset.nc", package = "StormR")}). This toy dataset is extracted
+from the IBTrACS.SP.v04r00.nc file. Provides all the tropical cyclones that occured around Vanuatu
+from 2015 to 2016 and around New Caledonia from 2020 to 2021.}
 
 \item{fields}{named character vector. Correspondence between the fields
-in the output \code{StormsDataset} object and the variable names in the input NetCDF file.}
+in the output \code{StormsDataset} object for internal representation in \code{StormR} package
+and the variable names in the input NetCDF file.
+By default, they are chosen to meet the mapping when importing a NetCDF file from the IBTrACS database.}
 
 \item{basin}{character. Name of the basin for which storm track data are extracted.
 By default \code{basin=NULL}, meaning that all stars regardless the basin in which they

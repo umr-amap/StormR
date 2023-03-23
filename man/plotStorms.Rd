@@ -65,12 +65,17 @@ only a desired set of \code{Storm} extracted from the \code{StormsList}
 }
 \examples{
 \dontrun{
-#Plot Niran over New Caledonia with labels every 24h
-plotStorms(sts_nc, names = "NIRAN", labels = TRUE)
+#' #Create database (Default)
+sds <- defDatabase()
 
-#Plot Niran, with labels every 6h on the right side of observations
-plotStorms(sts_nc, names = "NIRAN", labels = TRUE, by = 2, pos = 4)
+#Get Pam tropical cyclone (2015)
+pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
 
+#Plot Pam over Vanuatu with labels every 24h
+plotStorms(pam, labels = TRUE)
+
+#Plot Pam, with labels every 6h on the right side of observations
+plotStorms(pam, labels = TRUE, by = 2, pos = 4)
 }
 
 

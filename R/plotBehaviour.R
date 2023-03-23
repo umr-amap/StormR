@@ -127,7 +127,11 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'
 #' @examples
 #' \dontrun{
-#' pam <- Storms(loi = "Vanuatu", names = "PAM")
+#' #Create database (Default)
+#' sds <- defDatabase()
+#' 
+#' #Get Pam tropical cyclone
+#' pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
 #' 
 #' #Plot MSW raster for Pam (2015) in Vanuatu
 #' pam.msw <- spatialBehaviour(pam, verbose = 0)
