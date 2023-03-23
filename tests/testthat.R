@@ -8,5 +8,7 @@
 
 library(testthat)
 library(StormR)
+sds <- defDatabase()
+pam <- Storms(sds=sds,loi = "Vanuatu", names = "PAM",verbose=0)
 
 test_check("StormR")
