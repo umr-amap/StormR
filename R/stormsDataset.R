@@ -229,15 +229,28 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' @param filename character. Name of the NetCDF (.nc) file. Default is the `test_dataset.nc` 
 #' file located in the `inst/extdata` repository of the directory (accessible by 
 #' `system.file("extdata", "test_dataset.nc", package = "StormR")`). This toy dataset is extracted 
-#' from the IBTrACS.SP.v04r00.nc file. Provides all the tropical cyclones that occured around Vanuatu 
+#' from the IBTrACS.SP.v04r00.nc file. Provides all the tropical cyclones that occurred around Vanuatu 
 #' from 2015 to 2016 and around New Caledonia from 2020 to 2021.
 #' @param fields named character vector. Correspondence between the fields
-#'  in the output `StormsDataset` object for internal representation in `StormR` package 
-#' and the variable names in the input NetCDF file.
-#' By default, they are chosen to meet the mapping when importing a NetCDF file from the IBTrACS database.
-#' @param basin character. Name of the basin for which storm track data are extracted.
-#' By default `basin=NULL`, meaning that all stars regardless the basin in which they
-#' originated are extracted. Seven basins can be used to filter the data set:
+#'  in the output `StormsDataset` and the variable names in the input NetCDF file. By default, 
+#'  correspondences are set up to import data from a NetCDF file from the IBTrACS database. Correspondences 
+#'  for following fields have to (mandatory fields) or can be (recommended or optional fields) provided:
+#'  \itemize{
+#'    \item "`names"`, names of the storms (mandatory),
+#'    \item `"seasons"`, years of observations (mandatory),
+#'    \item `"isoTime"`, date and time of observations (mandatory),
+#'    \item `"lon"`, longitude of the observations (mandatory),
+#'    \item `"lat"`, latitude of the observations (mandatory),
+#'    \item `"msw"`, maximum sustained wind speed (mandatory),
+#'    \item `"basin"`, name of the area where the storm originated. Traditionally divided into seven basins (recommended),
+#'    \item `"rmw"`, radius of maximum winds: distance between the centre of the storm and its band of strongest winds (recommended),
+#'    \item `"pressure"`, central pressure (recommended),
+#'    \item `"poci"`, pressure of the last closed isobar (recommended), and
+#'    \item `"sshs"`, Saffir-Simpson hurricane wind scale rating based on msw (optional).
+#'  }
+#' @param basin character. If the basin field is provided then the name of the basin for which storm track data are extracted.
+#' By default `basin=NULL`, meaning that all stars regardless the basin in which they originated are extracted. 
+#' Seven basins can be used to filter the data set:
 #' \itemize{
 #'   \item `"NA"`, for North Atlantic basin,
 #'   \item `"SA"`, for South Atlantic basin,
@@ -279,7 +292,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #'  }
 #'
 #' @param verbose logical. Whether (TRUE) or not (FALSE) the function should display
-#'   information about the processes
+#'   information about the processes.
 #' @return The `defDatabase()` function returns a `StormsDataset` object.
 #' @example 
 #' \dontrun{
