@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2023-03-20" />
+<meta name="date" content="2023-03-23" />
 
 <title>temporalBehaviour</title>
 
@@ -350,7 +350,7 @@ display: none;
 
 
 <h1 class="title toc-ignore">temporalBehaviour</h1>
-<h4 class="date">2023-03-20</h4>
+<h4 class="date">2023-03-23</h4>
 
 </div>
 
@@ -378,8 +378,13 @@ the two locations of interest are provided in a data frame as
 follows:</p>
 <pre class="r"><code>df&lt;-data.frame(x=c(168.33,167.17),y=c(-17.73,-15.53))
 rownames(df)&lt;-c(&quot;Port_Vila&quot;,&quot;Luganville&quot;)</code></pre>
-<p>The track data for PAM nearby Vanuatu are extracted as follows:</p>
-<pre class="r"><code>st&lt;-Storms(loi = &quot;Vanuatu&quot;, names = &quot;PAM&quot;, verbose=0)
+<p>The track data for Pam nearby Vanuatu are extracted as follows:</p>
+<pre class="r"><code>sds&lt;-defDatabase()</code></pre>
+<pre><code>## === Loading data  ===
+## Open database... /home/ibanez/R/x86_64-pc-linux-gnu-library/4.2/StormR/extdata/test_dataset.nc opened
+## Collecting data ...
+## === DONE ===</code></pre>
+<pre class="r"><code>st&lt;-Storms(sds=sds,loi = &quot;Vanuatu&quot;, names = &quot;PAM&quot;, verbose=0)
 plotStorms(st)
 points(df$x,df$y,pch=3,col=c(&quot;blue&quot;,&quot;red&quot;))
 text(df$x,df$y,labels = c(&quot;Port Vila&quot;,&quot;Luganville&quot;),pos=2,col=c(&quot;blue&quot;,&quot;red&quot;),cex=0.8)</code></pre>

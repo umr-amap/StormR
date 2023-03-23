@@ -222,7 +222,8 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 
 
 
-
+#' Creating a `StormsDataset` object
+#'
 #' The `defDatabase()` function creates a `StormsDataset` object from a NetCDF file
 #'
 #' @param filename character. Name of the NetCDF (.nc) file. Default is the `test_dataset.nc` 
@@ -238,13 +239,13 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' By default `basin=NULL`, meaning that all stars regardless the basin in which they
 #' originated are extracted. Seven basins can be used to filter the data set:
 #' \itemize{
-#'   \item `"NA"` for North Atlantic basin,
-#'   \item `"SA"` for South Atlantic basin,
-#'   \item `"EP"` for Eastern North Pacific basin,
-#'   \item `"WP"` for Western North Pacific basin,
-#'   \item `"SP"` for South Pacific basin,
-#'   \item `"SI"` for South India basin, or
-#'   \item `"NI"` for North India basin.
+#'   \item `"NA"`, for North Atlantic basin,
+#'   \item `"SA"`, for South Atlantic basin,
+#'   \item `"EP"`, for Eastern North Pacific basin,
+#'   \item `"WP"`, for Western North Pacific basin,
+#'   \item `"SP"`, for South Pacific basin,
+#'   \item `"SI"`, for South India basin, or
+#'   \item `"NI"`, for North India basin.
 #' }
 #' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
 #' By default all storms occurring since 1980 are extracted.
@@ -257,10 +258,10 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #'
 #'   For `msw`,
 #' \itemize{
-#'   \item `"knt_to_ms"` to convert knot to meter per second (default setting),
-#'   \item `"kmh_to_ms"` to convert kilometre per hour to meter per second,
-#'   \item "`mph_to_ms"` to convert miles per hour to meter per second, or
-#'   \item `"None"`if no conversion is needed.
+#'   \item `"knt_to_ms"`, to convert knot to meter per second (default setting),
+#'   \item `"kmh_to_ms"`, to convert kilometre per hour to meter per second,
+#'   \item "`mph_to_ms"`, to convert miles per hour to meter per second, or
+#'   \item `"None"`, if no conversion is needed.
 #' }
 #'
 #'   For `rmw`,
@@ -270,11 +271,11 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #'  }
 #'   For `pressure` and `poci`,
 #'  \itemize{
-#'    \item "`mb_to_pa"` to convert  millibar to Pascal  (default setting),
-#'    \item `"b_to_pa"` to convert bar to Pascal,
-#'    \item `"atm_to_pa"` to convert  atmosphere to Pascal,
-#'    \item `"psi_to_pa"` to convert  psi to Pascal, or
-#'    \item `"None"`if no conversion is needed.
+#'    \item "`mb_to_pa"`, to convert  millibar to Pascal  (default setting),
+#'    \item `"b_to_pa"`, to convert bar to Pascal,
+#'    \item `"atm_to_pa"`, to convert  atmosphere to Pascal,
+#'    \item `"psi_to_pa"`, to convert  psi to Pascal, or
+#'    \item `"None"`, if no conversion is needed.
 #'  }
 #'
 #' @param verbose logical. Whether (TRUE) or not (FALSE) the function should display
@@ -282,7 +283,10 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' @return The `defDatabase()` function returns a `StormsDataset` object.
 #' @example 
 #' \dontrun{
-#' 
+#' #Creating a `StormsDataset` object with storms between 2010 and 2015 
+#' #in the South Pacific using the NetCDF provided with the package
+#' SP_2015_2020<-defDatabase(seasons=c(2010-2015))
+#' str(SP_2015_2020)
 #' }
 #' @export
 defDatabase <- function(filename=system.file("extdata", "test_dataset.nc", package = "StormR"),

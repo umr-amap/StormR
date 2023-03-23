@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2023-03-17" />
+<meta name="date" content="2023-03-23" />
 
 <title>Data source</title>
 
@@ -350,7 +350,7 @@ display: none;
 
 
 <h1 class="title toc-ignore">Data source</h1>
-<h4 class="date">2023-03-17</h4>
+<h4 class="date">2023-03-23</h4>
 
 </div>
 
@@ -359,8 +359,8 @@ display: none;
 tropical storm track dataset as a “.nc” (NetCDF) file in which the
 location and some characteristics of storms are given across their
 lifespan. This file is used to create a <code>StormsDataset</code>
-object using the <code>defDatabase</code> function. By default, the
-arguments of <code>defDatabase</code> function are set up to create a
+object using the <code>defDatabase()</code> function. By default, the
+arguments of <code>defDatabase()</code> function are set up to create a
 <code>StormsDataset</code> object using the USA fields in the IBTrACS
 database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive">International
 Best Track Archive for Climate Stewardship</a> (Knapp et al., 2010).
@@ -477,23 +477,21 @@ storm (<span class="math inline">\(18 \leq\)</span> <code>msw</code>
 </table>
 <p><span class="math inline">\(^{1}\)</span> Providing the
 <code>basin</code> allows to filter storms in a particular basin using
-the <code>basin</code> argument of the <code>defDatabase</code>
-function. <br /></p>
-<p><span class="math inline">\(^{2}\)</span> Providing <code>rmw</code>
-allows better estimates of wind speed and direction in the
+the <code>basin</code> argument of the <code>defDatabase()</code>
+function. <br /> <span class="math inline">\(^{2}\)</span> Providing
+<code>rmw</code> allows better estimates of wind speed and direction in
+the <code>temporatlBehaviour()</code> and
+<code>spatialBehaviour()</code> functions. If not provided,
+<code>rmw</code> is approximated using an empirical formula derived from
+Willoughby et al. (2006) as follows, <span class="math inline">\(R_m =
+46.4e^{(-0.0155 \times v_m + 0.0169 \times |\phi|)}\)</span>. <br />
+<span class="math inline">\(^{3}\)</span> If the <code>pressure</code>
+and <code>poci</code> fields are not provided, both Holland (1980) and
+Boose et al. (2004) wind field models cannot be used in the
 <code>temporatlBehaviour()</code> and <code>spatialBehaviour()</code>
-functions. If not provided, <code>rmw</code> is approximated using an
-empirical formula derived from Willoughby et al. (2006) as follows,
-<span class="math inline">\(R_m = 46.4e^{(-0.0155 \times v_m + 0.0169
-\times |\phi|)}\)</span>. <br /></p>
-<p><span class="math inline">\(^{3}\)</span> If the
-<code>pressure</code> and <code>poci</code> fields are not provided,
-both Holland (1980) and Boose et al. (2004) wind field models cannot be
-used in the <code>temporatlBehaviour()</code> and
-<code>spatialBehaviour()</code> functions. <br /></p>
-<p><span class="math inline">\(^{4}\)</span> The <code>sshs</code> field
-is optional, if not provided this field is automatically filled using
-the <code>msw</code> field.</p>
+functions. <br /> <span class="math inline">\(^{4}\)</span> The
+<code>sshs</code> field is optional, if not provided this field is
+automatically filled using the <code>msw</code> field.</p>
 <div id="downloading-a-data-source" class="section level3">
 <h3>Downloading a data source</h3>
 <p>If not available, a storm track data set has to be downloaded. In the
@@ -511,11 +509,30 @@ follows,</p>
 <div id="creating-a-stormsdataset" class="section level3">
 <h3>Creating a <code>StormsDataset</code></h3>
 <p>Once a storm track data set is available a <code>StormsDataset</code>
-object can be created using the <code>defDatabase</code> function as
+object can be created using the <code>defDatabase()</code> function as
 follows,</p>
 <pre class="r"><code>sds &lt;- defDatabase(filename = &quot;IBTrACS_ALL_3yrs.nc&quot;, basin=NULL, verbose = FALSE)
-str(sds)
-length(unique(paste(sds@database$names,sds@database$seasons,&quot; &quot;)))</code></pre>
+str(sds)</code></pre>
+<pre><code>## Formal class &#39;StormsDataset&#39; [package &quot;StormR&quot;] with 5 slots
+##   ..@ filename: chr &quot;IBTrACS_ALL_3yrs.nc&quot;
+##   ..@ fields  : Named chr [1:10] &quot;name&quot; &quot;season&quot; &quot;iso_time&quot; &quot;usa_lon&quot; ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:10] &quot;names&quot; &quot;seasons&quot; &quot;isoTime&quot; &quot;lon&quot; ...
+##   ..@ basin   : chr &quot;None&quot;
+##   ..@ seasons : Named int [1:2] 2020 2023
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;min&quot; &quot;max&quot;
+##   ..@ database:List of 10
+##   .. ..$ names    : chr [1:344(1d)] &quot;BLAKE&quot; &quot;CLAUDIA&quot; &quot;TINO&quot; &quot;NOT_NAMED&quot; ...
+##   .. ..$ seasons  : int [1:344(1d)] 2020 2020 2020 2020 2020 2020 2020 2020 2020 2020 ...
+##   .. ..$ isotimes : chr [1:360, 1:344] &quot;2020-01-04 00:00:00&quot; &quot;2020-01-04 03:00:00&quot; &quot;2020-01-04 06:00:00&quot; &quot;2020-01-04 09:00:00&quot; ...
+##   .. ..$ longitude: num [1:360, 1:344] NA NA NA NA NA ...
+##   .. ..$ latitude : num [1:360, 1:344] NA NA NA NA NA ...
+##   .. ..$ msw      : num [1:360, 1:344] NA NA NA NA NA ...
+##   .. ..$ sshs     : int [1:360, 1:344] -5 -5 -5 -5 -5 -5 -5 -5 -3 -3 ...
+##   .. ..$ rmw      : num [1:360, 1:344] NA NA NA NA NA ...
+##   .. ..$ pressure : num [1:360, 1:344] NA NA NA NA NA ...
+##   .. ..$ poci     : num [1:360, 1:344] NA NA NA NA NA ...</code></pre>
+<pre class="r"><code>length(unique(paste(sds@database$names,sds@database$seasons,&quot; &quot;)))</code></pre>
+<pre><code>## [1] 275</code></pre>
 <p>This <code>StormsDataset</code> object contains track data for 275
 storms. When using an IBTrACKS storm track data set, default arguments
 can be used. By default, data provided by USA agencies (starting with
@@ -537,6 +554,7 @@ data set as follows,</p>
                   basin = &quot;SP&quot;,
                   verbose = FALSE)
 length(sds@database$names)</code></pre>
+<pre><code>## [1] 38</code></pre>
 <p>This <code>StormsDataset</code> object contains track data for 38
 storms in the South Pacific basin.</p>
 </div>

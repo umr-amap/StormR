@@ -43,7 +43,8 @@ described below.
 We extract data on the tropical cyclone Pam (2015) nearby Vanuatu as follows:  
 
 ``` {r chunk1}
-st <- Storms(loi = "Vanuatu", names = "PAM",verbose=0)
+sds <- defDatabase()
+st <- Storms(sds=sds,loi = "Vanuatu", names = "PAM",verbose=0)
 ```
 
 The `Storms()` function returns a `StormsList` object in which the first slot
@@ -76,7 +77,7 @@ We can extract all tropical cyclones near Nouméa (longitude = 166.45, latitude 
 
 ``` {r chunk5}
 pt <- c(166.45,-22.27)
-st <- Storms(loi = pt, seasons = c(2015,2021), verbose=0)
+st <- Storms(sds=sds,loi = pt, seasons = c(2015,2021), verbose=0)
 ```
 
 The number, the names, and the season of occurrence of the storms in the
@@ -112,7 +113,7 @@ with the `StormR` package as follows:
 
 ``` {r chunk9}
 sp <- eezNC
-st <- Storms(loi = eezNC, season=c(2015,2021),verbose=0)
+st <- Storms(sds=sds,loi = eezNC, season=c(2015,2021),verbose=0)
 ```
 
 Information about the spatial extent of the track data exaction can be obtained
