@@ -873,11 +873,11 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' The `Storms()` function extracts storm track data from a `StormsDataset`
 #' and creates a `StormsList` object.
 #'
-#' @param sds A `StormsDataset` object. By default the `test_dataset` object is used
-#' @param loi Location of interest. Can be defined using:
+#' @param sds `StormsDataset` object.
+#' @param loi Location of interest. Can be defined using,
 #' \itemize{
-#' \item character. A country name (e.g., "Vanuatu").
-#' \item numeric vector. A point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)).
+#' \item character, a country name (e.g., "Vanuatu"),
+#' \item numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)), or
 #' \item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
 #' }
 #' @param seasons numeric vector. Season(s) of occurrence of the storms. One (e.g., 2020)
@@ -888,11 +888,11 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' Default `max_dist` is set to 300 km.
 #' @param remove_TD logical. Whether (TRUE) or not (FALSE) removing tropical depressions (msw < 18
 #'   m/s). Default value is set to `TRUE`.
-#' @param verbose numeric. Type of information the function displays:
+#' @param verbose numeric. Type of information the function displays. Can be:
 #' \itemize{
-#' \item `0`: Nothing is displayed.
-#' \item `1`: Only information about the processes are displayed.
-#' \item `2`: Information about both the processes and the outputs are displayed (default value).
+#' \item `2`, information about both the processes and the outputs are displayed (default value),
+#' \item `1`, only information about the processes are displayed, or
+#' \item `0`, nothing is displayed.
 #' }
 #'
 #' @returns The `Storms()` function returns a `StormsList` object containing track data for all storms
@@ -905,7 +905,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #'
 #' @examples
 #' \dontrun{
-#' #Create database (Default)
+#' #Creating a StormsDataset
 #' sds <- defDatabase()
 #' 
 #' #Getting data using country names
