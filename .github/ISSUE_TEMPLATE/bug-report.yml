@@ -14,11 +14,11 @@ body:
       required: true
 
   - type: textarea
-    id: what-did-you-expect-to-happen
+    id: propose-a-solution
     attributes:
-      label: What did you expect to happen?
+      label: Propose a solution
       description: |
-        Describe what you expected to happen.
+        Describe what you expected to happen, what you would have liked to happen and if possible propose a solution.
     validations:
       required: false
 
@@ -28,14 +28,14 @@ body:
       label: Minimal Complete Verifiable Example
       description: |
         Minimal, self-contained copy-pastable example that demonstrates the issue. This will be automatically formatted into code, so no need for markdown backticks.
-      render: Python
+      render: R
 
   - type: textarea
     id: log-output
     attributes:
       label: Relevant log output
       description: Please copy and paste any relevant output. This will be automatically formatted into code, so no need for markdown backticks.
-      render: Python
+      render: R
 
   - type: textarea
     id: extra
