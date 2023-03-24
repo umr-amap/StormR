@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotBehaviour.R
 \name{plotBehaviour}
 \alias{plotBehaviour}
-\title{Plot rasterized information storm behaviour}
+\title{Plotting spatial wind behaviour}
 \usage{
 plotBehaviour(
   sts,
@@ -18,70 +18,56 @@ plotBehaviour(
 )
 }
 \arguments{
-\item{sts}{\code{StormsList}}
+\item{sts}{\code{StormsList} object.}
 
-\item{raster_product}{SpatRaster object. Name of the layer must be
-"STORMNAME_product" where product is either:
-\itemize{
-\item \code{"MSW"}
-\item \code{"PDI"}
-\item \code{"Exposure_threshold"} where \code{threshold} represents the wind threshold
-used to compute Exposure raster
-\item \code{"Speed_index"} where \code{index} stands for the index of observation
-\item \code{"Direction_index"} where \code{index} stands for the index of
-observation
-}}
+\item{raster_product}{layer name in a \code{SpatRaster} object. The names of the layers follow
+the following terminology, the name of the storm in capital letters and the name of the statistic
+separated by underscores (e.g., "PAM_MSW", "PAM_PDI"). For the duration of exposure, the names of the
+layer follow the following terminology, the name of the storm in capital letters, "Exposure", and the threshold
+value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...). For the wind profiles,
+the names of the layer follow the following terminology, the name of the storm in capital letters, "Speed" or "Direction",
+and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41",...).}
 
-\item{color_palette}{character vector. Represents the color palette used for
-the plot. Default value is set to \code{NULL}, which will automatically choose a
-color palette provided by this package and depending on the product}
+\item{color_palette}{character vector. The color palette used to plot the raster layer. If \code{color_palette=NULL} (default setting),
+default color palette are used.}
 
-\item{main}{character. Title of the plot. Default value is set to \code{NULL} which
-will set a title automatically depending on the product}
+\item{main}{character. Title of the plot.  If \code{main=NULL} (default setting),
+a default title is generated.}
 
-\item{xlim}{numeric vector. A set of longitude coordinates that controls the
-longitude extent of the plot. Default value is set to \code{NUL}L which will let
-the plot extends according to the longitude range of the extended LOI}
+\item{xlim}{numeric vector. The x limits of the plot.}
 
-\item{ylim}{numeric vector. A set of latitude coordinates that controls the
-latitude extent of the plot. Default value is set to \code{NULL} which will let
-the plot extends according to the longitude range of the extended LOI}
+\item{ylim}{numeric vector. The y limits of the plot.}
 
-\item{labels}{logical. Whether or not to plot name labels with the
-corresponding indices of observations and ISO Times along the track. Default
-value is set to \code{NULL}}
+\item{labels}{logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name
+of the storm and the indices and ISO times of the observation.}
 
-\item{by}{numeric. Defines the frequency at which labels are plotted for the 3
-(or 6) hourly records. Default value is set to \code{8} which represents a 24h
-(or 48h) time interval between each labeled observations. Ignored if \code{labels == FALSE}}
+\item{by}{numeric. If \code{labels=TRUE}, defines the frequency at which labels are plotted.
+Default value is set to \code{8} which corresponds to a 24h (or 48h) time interval between the labelled observations
+when observations are made every 3 (or 6) hours.}
 
-\item{pos}{numeric. Must be between \code{1} and \code{4}. Correspond to the position of
-labels according to the observation: \code{1} (up), \code{2} (left), \code{3} (down), \code{4}
-(right). Default value is set to \code{3}. Ignored if \code{labels == FALSE}}
+\item{pos}{numeric. If \code{labels=TRUE}, defines the position of the labels, \code{1} (above the observation),
+\code{2} (on the left), \code{3} (below, default setting), and \code{4} (on the right).}
 
-\item{legends}{character. Indicates the where the legend should be plotted.
-Must be either \code{"topright"}, \code{"topleft"},  (default setting),
-\code{"bottomleft"}, \code{"bottomright"} or \code{"none"} (no legend)}
+\item{legends}{character. Indicates where to plot the legend, \code{"topright"}, \code{"topleft"} (default setting),
+\code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
 }
 \description{
-This function plots a rasterized product (among maximum sustained wind, power
-dissipation index, category exposure, or 2D wind speed structure/wind
-direction at a given observation) associated with a \code{Storm} provided in a
-\code{StormsList} alongside with its track
+The \code{plotBehaviour()} function allows plotting spatial statistics generated using
+the \code{spatialBehaviour()} function and stored in \code{SpatRaster} objects.
 }
 \examples{
 \dontrun{
-#Create database (Default)
+#Creating a StormsDataset
 sds <- defDatabase()
 
-#Get Pam tropical cyclone
+#Getting storm track data for tropical cyclone Pam (2015)
 pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
 
-#Plot MSW raster for Pam (2015) in Vanuatu
+#Plotting maximum sustained wind speed for Pam (2015) near Vanuatu
 pam.msw <- spatialBehaviour(pam, verbose = 0)
 plotBehaviour(pam, pam.msw)
 
-#Plot a 2D windspeed structure  for Pam (2015) in Vanuatu
+#Plotting 2D wind speed profile for Pam (2015) near Vanuatu
 pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 }
