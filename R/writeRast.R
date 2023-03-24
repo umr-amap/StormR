@@ -35,36 +35,34 @@ checkInputsWr <- function(rast, format, filename, path){
 
 
 
-#' Save raster(s) in the desired format
+#' Exporting rasters to GeoTIFF or NetCDF files
 #'
-#' This function writes SpatRaster(s) in the given format among Geotiff or
-#' netcdf
+#' The `writeRast()` function exports rasters stored in SpatRaster objects to 
+#' GeoTIFF or NetCDF files.
 #'
-#' @param rast SpatRaster object
-#' @param format character. Format of the file to export. Either `".tiff"` or
-#'   `".nc"`. Default value is set to `".tiff"`
-#' @param filename character. Name of the file. Default value is set to `NULL`,
-#'   in this case it will be set to `names(rast)`
-#' @param path character. Relative path where the file should be written
+#' @param rast `SpatRaster` object.
+#' @param format character. Format of the file to export. Either `".tiff"` (GeoTIFF, default setting) or
+#'   `".nc"` (NetCDF).
+#' @param filename character. Output file name. By default `filename=NULL` and the name of the raster layer is used.
+#' @param path character. Path to the directory where the file is exported to.
 #' @returns `NULL`
 #' @examples
 #' \dontrun{
-#' #' #Create database (Default)
+#' #Creating a StormsDataset
 #' sds <- defDatabase()
 #' 
-#' #Get Pam tropical cyclone and MSW
+#' #Getting storm track data for tropical cyclone Pam (2015) near Vanuatu and computing maximum sustained wind speed
 #' pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
 #' pam.msw <- spatialBehaviour(pam)
 #' 
-#' 
-#' #Save MSW raster in Geotiff file for Pam 2015 over Vanuatu
+#' #Exporting maximum sustained wind speed raster layer to a GeoTIFF file
 #' writeRast(pam.msw, path = paste0(tempdir(),"/"))
 #'
-#' #Compute several PDI rasters over New Caledonia
+#' #Computing power dissipation index for several storms near New Caledonia
 #' sts.nc <- Storms(sds = sds, loi = "New Caledonia")
 #' pdi.nc <- spatialBehaviour(sts.nc, product = "PDI")
 #' 
-#' #Save PDI rasters in Geotiff files contained in pdi.nc
+#' #Exporting the power dissipation index raster layers to a NetCDF file
 #' writeRast(pdi.nc, path = paste0(tempdir(),"/"))
 #' }
 #'
