@@ -6,3 +6,5 @@
 
 inst/doc
 docs
+docs/*
+.Rproj.user

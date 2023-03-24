@@ -916,8 +916,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' }
 #' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere, 
 #' the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both 
-#' years should be specified, with cyclones assigned for the year that originated in. By default all storms occurring since 
-#' 1980 are extracted.
+#' years should be specified, with cyclones assigned for the year that originated in. By default all storms from `sds` are extracted.
 #' @param names character vector. Names of specific storms (in capital letters).
 #' @param max_dist numeric. Maximum distance between the location of interest and the storm for which track data are extracted.
 #' Default `max_dist` is set to 300 km.
