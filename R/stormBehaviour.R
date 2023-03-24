@@ -1188,7 +1188,7 @@ maskProduct <- function(final_stack, loi, template){
 #' 71(1), Article 1. https://doi.org/10.1890/0012-9615(2001)071[0027:LARIOH]2.0.CO;2
 #' 
 #' Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
-#' Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
+#' Ecological Monographs, 74(2), Article 2. [https://doi.org/10.1890/02-4057](https://doi.org/10.1890/02-4057)
 #'
 #' Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
 #'
