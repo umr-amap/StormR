@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotStorms.R
 \name{plotStorms}
 \alias{plotStorms}
-\title{Plot storm track(s)}
+\title{Plotting storm track data}
 \usage{
 plotStorms(
   sts,
@@ -18,63 +18,49 @@ plotStorms(
 )
 }
 \arguments{
-\item{sts}{\code{StormsList}}
+\item{sts}{\code{StormsList} object}
 
 \item{names}{character vector. Name(s) of the storm(s) in capital letters to
-plot on the map. Default value is set to \code{NULL}, which will plot every
-storm provided in \code{sts}. To see which \code{Storm} are included in a \code{StormsList}
-, use the \code{getNames} function}
+plot. If \code{names = NULL} (default setting), all storms are plotted.}
 
-\item{category}{numeric vector. Should be either a category or a range of
-categories in the Saffir Simpson scale (-1 to 5). Default value is set to
-\code{NULL} which will consider every \code{Storm} in \code{sts}. Otherwise it will consider
-only \code{Storm} that reached \code{category} input}
+\item{category}{numeric vector. Category of the storms in the Saffir-Simpson hurricane wind scale
+to be plotted. Can be a single category or a range of categories between -1 (tropical depression)
+and 5 (category 5 cyclone). If \code{category=NULL} (default setting), all storms are plotted.}
 
-\item{xlim}{numeric vector. A set of longitude coordinates that controls the
-longitude extent of the plot. Default value is set to \code{NULL} which will let
-the plot extends according to the longitude range of the extended LOI}
+\item{xlim}{numeric vector. The x limits of the plot.}
 
-\item{ylim}{numeric vector. A set of latitude coordinates that controls the
-latitude extent of the plot. Default value is set to \code{NULL} which will let
-the plot extends according to the the latitude range of the extended LOI}
+\item{ylim}{numeric vector. The y limits of the plot.}
 
-\item{labels}{logical. Whether or not to plot names labels with the
-corresponding indices of observations and ISO Times along the track(s).
-Default value is set to \code{NULL}}
+\item{labels}{logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name
+of the storm and the indices and ISO times of the observation.}
 
-\item{by}{numeric. Defines the frequency at which labels are plotted for the
-3 (or 6) hourly records. Default value is set to \code{8} which represents a 24h
-(or 48h) time interval between each labeled observations. Ignored if
-\code{labels == FALSE}}
+\item{by}{numeric. If \code{labels=TRUE}, defines the frequency at which labels are plotted.
+Default value is set to \code{8} which corresponds to a 24h (or 48h) time interval between the labelled observations
+when observations are made every 3 (or 6) hours.}
 
-\item{pos}{numeric. Must be between \code{1} and \code{4}. Correspond to the position
-of labels according to the observation: \code{1} (up), \code{2} (left), \code{3} (down),
-\code{4} (right). Default value is set to 3. Ignored if \code{labels == FALSE}}
+\item{pos}{numeric. If \code{labels=TRUE}, defines the position of the labels, \code{1} (above the observation),
+\code{2} (on the left), \code{3} (below, default setting), and \code{4} (on the right).}
 
-\item{legends}{character. Indicates the where the legend should be plotted.
-Must be either \code{"topright"}, \code{"topleft"},  (default setting),
-\code{"bottomleft"}, \code{"bottomright"} or \code{"none"} (no legend)}
+\item{legends}{character. Indicates where to plot the legend, \code{"topright"}, \code{"topleft"} (default setting),
+\code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
 
-\item{loi}{logical. Whether or not to plot the extended LOI on the map.
-Default value is set to \code{TRUE}}
+\item{loi}{logical. Whether (TRUE, default setting) or not (FALSE) plotting the extent of the buffered location of interest on the map.}
 }
 \description{
-This function plots a set of storm tracks contained in a \code{StormsList}
-(See \code{Storms} function). Depending on the inputs, the user can choose to plot
-only a desired set of \code{Storm} extracted from the \code{StormsList}
+This \code{plotStorms()} function allows plotting storm track data stored in a \code{StormsList} object.
 }
 \examples{
 \dontrun{
-#' #Create database (Default)
+#' #Creating a StormsDataset
 sds <- defDatabase()
 
-#Get Pam tropical cyclone (2015)
+#Getting storm track data for tropical cyclone Pam (2015)
 pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
 
-#Plot Pam over Vanuatu with labels every 24h
+#Plotting Pam over Vanuatu with labels every 24h
 plotStorms(pam, labels = TRUE)
 
-#Plot Pam, with labels every 6h on the right side of observations
+#Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 plotStorms(pam, labels = TRUE, by = 2, pos = 4)
 }
 

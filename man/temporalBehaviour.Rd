@@ -2,7 +2,7 @@
 % Please edit documentation in R/stormBehaviour.R
 \name{temporalBehaviour}
 \alias{temporalBehaviour}
-\title{Compute indicators of storm behaviour}
+\title{Computing wind behaviour time series and summary statistics at given point locations}
 \usage{
 temporalBehaviour(
   sts,
@@ -148,22 +148,22 @@ where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
 
 Asymmetry can be added to Holland (1980) and Willoughby et al. (2006) wind fields as follows,
 
-\eqn{$\vec{V} = \vec{V_c} + C \times \vec{V_t}$}
+\eqn{\vec{V} = \vec{V_c} + C \times \vec{V_t}}
 
-where, \eqn{$\vec{V}$} is the combined asymmetric wind field,
-\eqn{$\vec{V_c}$} is symmetric wind field,
-\eqn{$\vec{V_t}$} is the translation speed of the storm, and
-\eqn{$C$} is function of \eqn{$r$}, the distance to the eye of the storm (in \eqn{$km$}).
+where, \eqn{\vec{V}} is the combined asymmetric wind field,
+\eqn{\vec{V_c}} is symmetric wind field,
+\eqn{\vec{V_t}} is the translation speed of the storm, and
+\eqn{C} is function of \eqn{r}, the distance to the eye of the storm (in \eqn{km}).
 
 Two formulations of C proposed by Miyazaki et al. (1962) and Chen (1994) are implemented.
 
 Miyazaki et al. (1962)
-\eqn{$C = e^{(-\frac{r}{500} \times \pi)}$}
+\eqn{C = e^{(-\frac{r}{500} \times \pi)}}
 
 Chen (1994)
-\eqn{$C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}$}
+\eqn{C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}}
 
-where, \eqn{$R_m$} is the radius of maximum sustained wind speed (in \eqn{$km$})
+where, \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km})
 
 The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
 Holland (1980) model (see also Boose et al., 2001). In addition to adding
@@ -180,7 +180,7 @@ where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
 \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land),
 \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
 \eqn{S} is a scaling parameter for asymmetry (usually set to \eqn{1}),
-\eqn{$T$} is the oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between
+\eqn{T} is the oriented angle (clockwise/counter clockwise in Northern/Southern Hemisphere) between
 the forward trajectory of the storm and a radial line from the eye of the storm to point $r$
 \eqn{v_h} is the storm velocity (in \eqn{m.s^{-1}}),
 \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}),
@@ -192,10 +192,10 @@ the forward trajectory of the storm and a radial line from the eye of the storm 
 }
 \examples{
 \dontrun{
-#' #Create database (Default)
+#Creating a StormsDataset
 sds <- defDatabase()
 
-#Get Pam tropical cyclone (2015)
+#Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
 pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
 
 pts <- data.frame(x = c(168.5, 168), y = c(-17.9, -16.3))
