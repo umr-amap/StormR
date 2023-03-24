@@ -73,12 +73,12 @@ and creates a <code>StormsList</code> object.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>sds</dt>
-<dd><p>A <code>StormsDataset</code> object. By default the <code>test_dataset</code> object is used</p></dd>
+<dd><p><code>StormsDataset</code> object.</p></dd>
 
 
 <dt>loi</dt>
-<dd><p>Location of interest. Can be defined using:</p><ul><li><p>character. A country name (e.g., "Vanuatu").</p></li>
-<li><p>numeric vector. A point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)).</p></li>
+<dd><p>Location of interest. Can be defined using,</p><ul><li><p>character, a country name (e.g., "Vanuatu"),</p></li>
+<li><p>numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)), or</p></li>
 <li><p>sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).</p></li>
 </ul></dd>
 
@@ -104,9 +104,9 @@ m/s). Default value is set to <code>TRUE</code>.</p></dd>
 
 
 <dt>verbose</dt>
-<dd><p>numeric. Type of information the function displays:</p><ul><li><p><code>0</code>: Nothing is displayed.</p></li>
-<li><p><code>1</code>: Only information about the processes are displayed.</p></li>
-<li><p><code>2</code>: Information about both the processes and the outputs are displayed (default value).</p></li>
+<dd><p>numeric. Type of information the function displays. Can be:</p><ul><li><p><code>2</code>, information about both the processes and the outputs are displayed (default value),</p></li>
+<li><p><code>1</code>, only information about the processes are displayed, or</p></li>
+<li><p><code>0</code>, nothing is displayed.</p></li>
 </ul></dd>
 
 </dl></div>
@@ -128,7 +128,7 @@ here: http://www.naturalearthdata.com/downloads/10m-cultural-vectors/.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co">#Create database (Default)</span></span></span>
+<span class="r-in"><span><span class="co">#Creating a StormsDataset</span></span></span>
 <span class="r-in"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="defDatabase.html">defDatabase</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Getting data using country names</span></span></span>
