@@ -882,7 +882,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' }
 #' @param seasons numeric vector. Season(s) of occurrence of the storms. One (e.g., 2020)
 #'  or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or
-#'  during several consecutive seasons, respectively. By default all storms occurring since 1980 are extracted.
+#'  during several consecutive seasons, respectively. By default all storms from `sds` are extracted.
 #' @param names character vector. Names of specific storms (in capital letters) to extract.
 #' @param max_dist numeric. Maximum distance between the location of interest and the storm for which track data are extracted.
 #' Default `max_dist` is set to 300 km.
