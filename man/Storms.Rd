@@ -15,12 +15,12 @@ Storms(
 )
 }
 \arguments{
-\item{sds}{A \code{StormsDataset} object. By default the \code{test_dataset} object is used}
+\item{sds}{\code{StormsDataset} object.}
 
-\item{loi}{Location of interest. Can be defined using:
+\item{loi}{Location of interest. Can be defined using,
 \itemize{
-\item character. A country name (e.g., "Vanuatu").
-\item numeric vector. A point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)).
+\item character, a country name (e.g., "Vanuatu"),
+\item numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)), or
 \item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
 }}
 
@@ -36,11 +36,11 @@ Default \code{max_dist} is set to 300 km.}
 \item{remove_TD}{logical. Whether (TRUE) or not (FALSE) removing tropical depressions (msw < 18
 m/s). Default value is set to \code{TRUE}.}
 
-\item{verbose}{numeric. Type of information the function displays:
+\item{verbose}{numeric. Type of information the function displays. Can be:
 \itemize{
-\item \code{0}: Nothing is displayed.
-\item \code{1}: Only information about the processes are displayed.
-\item \code{2}: Information about both the processes and the outputs are displayed (default value).
+\item \code{2}, information about both the processes and the outputs are displayed (default value),
+\item \code{1}, only information about the processes are displayed, or
+\item \code{0}, nothing is displayed.
 }}
 }
 \value{
@@ -59,7 +59,7 @@ here: http://www.naturalearthdata.com/downloads/10m-cultural-vectors/.
 }
 \examples{
 \dontrun{
-#Create database (Default)
+#Creating a StormsDataset
 sds <- defDatabase()
 
 #Getting data using country names

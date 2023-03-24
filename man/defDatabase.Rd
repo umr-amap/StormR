@@ -2,7 +2,7 @@
 % Please edit documentation in R/stormsDataset.R
 \name{defDatabase}
 \alias{defDatabase}
-\title{The \code{defDatabase()} function creates a \code{StormsDataset} object from a NetCDF file}
+\title{Creating a \code{StormsDataset} object}
 \usage{
 defDatabase(
   filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
@@ -20,25 +20,38 @@ defDatabase(
 \item{filename}{character. Name of the NetCDF (.nc) file. Default is the \code{test_dataset.nc}
 file located in the \code{inst/extdata} repository of the directory (accessible by
 \code{system.file("extdata", "test_dataset.nc", package = "StormR")}). This toy dataset is extracted
-from the IBTrACS.SP.v04r00.nc file. Provides all the tropical cyclones that occured around Vanuatu
+from the IBTrACS.SP.v04r00.nc file. Provides all the tropical cyclones that occurred around Vanuatu
 from 2015 to 2016 and around New Caledonia from 2020 to 2021.}
 
 \item{fields}{named character vector. Correspondence between the fields
-in the output \code{StormsDataset} object for internal representation in \code{StormR} package
-and the variable names in the input NetCDF file.
-By default, they are chosen to meet the mapping when importing a NetCDF file from the IBTrACS database.}
-
-\item{basin}{character. Name of the basin for which storm track data are extracted.
-By default \code{basin=NULL}, meaning that all stars regardless the basin in which they
-originated are extracted. Seven basins can be used to filter the data set:
+in the output \code{StormsDataset} and the variable names in the input NetCDF file. By default,
+correspondences are set up to import data from a NetCDF file from the IBTrACS database. Correspondences
+for following fields have to (mandatory fields) or can be (recommended or optional fields) provided:
 \itemize{
-\item \code{"NA"} for North Atlantic basin.
-\item \code{"SA"} for South Atlantic basin.
-\item \code{"EP"} for Eastern North Pacific basin.
-\item \code{"WP"} for Western North Pacific basin.
-\item \code{"SP"} for South Pacific basin.
-\item \code{"SI"} for South India basin.
-\item \code{"NI"} for North India basin.
+\item "\verb{names"}, names of the storms (mandatory),
+\item \code{"seasons"}, years of observations (mandatory),
+\item \code{"isoTime"}, date and time of observations (mandatory),
+\item \code{"lon"}, longitude of the observations (mandatory),
+\item \code{"lat"}, latitude of the observations (mandatory),
+\item \code{"msw"}, maximum sustained wind speed (mandatory),
+\item \code{"basin"}, name of the area where the storm originated. Traditionally divided into seven basins (recommended),
+\item \code{"rmw"}, radius of maximum winds: distance between the centre of the storm and its band of strongest winds (recommended),
+\item \code{"pressure"}, central pressure (recommended),
+\item \code{"poci"}, pressure of the last closed isobar (recommended), and
+\item \code{"sshs"}, Saffir-Simpson hurricane wind scale rating based on msw (optional).
+}}
+
+\item{basin}{character. If the basin field is provided then the name of the basin for which storm track data are extracted.
+By default \code{basin=NULL}, meaning that all stars regardless the basin in which they originated are extracted.
+Seven basins can be used to filter the data set:
+\itemize{
+\item \code{"NA"}, for North Atlantic basin,
+\item \code{"SA"}, for South Atlantic basin,
+\item \code{"EP"}, for Eastern North Pacific basin,
+\item \code{"WP"}, for Western North Pacific basin,
+\item \code{"SP"}, for South Pacific basin,
+\item \code{"SI"}, for South India basin, or
+\item \code{"NI"}, for North India basin.
 }}
 
 \item{seasons}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
@@ -53,28 +66,28 @@ use \code{"None"} in the corresponding fields. The following unit conversions ar
 
 For \code{msw},
 \itemize{
-\item \code{"knt_to_ms"} to convert knot to meter per second (default setting).
-\item \code{"kmh_to_ms"} to convert kilometre per hour to meter per second.
-\item "\verb{mph_to_ms"} to convert miles per hour to meter per second.
-\item \code{"None"}if no conversion is needed.
+\item \code{"knt_to_ms"}, to convert knot to meter per second (default setting),
+\item \code{"kmh_to_ms"}, to convert kilometre per hour to meter per second,
+\item "\verb{mph_to_ms"}, to convert miles per hour to meter per second, or
+\item \code{"None"}, if no conversion is needed.
 }
 
 For \code{rmw},
 \itemize{
-\item \code{"nm_to_ms"}to convert nautical miles to kilometre (default setting).
+\item \code{"nm_to_ms"}to convert nautical miles to kilometre (default setting), or
 \item \code{"None"}if no conversion is needed.
 }
 For \code{pressure} and \code{poci},
 \itemize{
-\item "\verb{mb_to_pa"} to convert  millibar to Pascal  (default setting).
-\item \code{"b_to_pa"} to convert bar to Pascal.
-\item \code{"atm_to_pa"} to convert  atmosphere to Pascal.
-\item \code{"psi_to_pa"} to convert  psi to Pascal.
-\item \code{"None"}if no conversion is needed.
+\item "\verb{mb_to_pa"}, to convert  millibar to Pascal  (default setting),
+\item \code{"b_to_pa"}, to convert bar to Pascal,
+\item \code{"atm_to_pa"}, to convert  atmosphere to Pascal,
+\item \code{"psi_to_pa"}, to convert  psi to Pascal, or
+\item \code{"None"}, if no conversion is needed.
 }}
 
 \item{verbose}{logical. Whether (TRUE) or not (FALSE) the function should display
-information about the processes}
+information about the processes.}
 }
 \value{
 The \code{defDatabase()} function returns a \code{StormsDataset} object.
