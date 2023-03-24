@@ -201,14 +201,23 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #' This `plotStorms()` function allows plotting storm track data stored in a `StormsList` object.
 #'
 #' @param sts `StormsList` object 
-#' @param names character vector. Name(s) of the storm(s) in capital letters to
-#'   plot. If `names = NULL` (default setting), all storms are plotted.
-#' @param category numeric vector. Category of the storms in the Saffir-Simpson hurricane wind scale
-#' to be plotted. Can be a single category or a range of categories between -1 (tropical depression) 
-#' and 5 (category 5 cyclone). If `category=NULL` (default setting), all storms are plotted.
+#' @param names character vector. Name(s) of the storm(s) in capital letters.
+#'  If `names = NULL` (default setting), all storms are plotted.
+#' @param category numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
+#'  Can be a single category or a range of categories among:
+#' \itemize{
+#'    \item -1, for tropical depression,
+#'    \item 0, for tropical storms,
+#'    \item 1, for category 1 tropical cyclone,
+#'    \item 2, for category 2 tropical cyclone,
+#'    \item 3, for category 3 tropical cyclone,
+#'    \item 4, for category 4 tropical cyclone, or
+#'    \item 5, for category 5 tropical cyclone.
+#' }
+#'  If `category=NULL` (default setting), all storms are plotted.
 #' @param xlim numeric vector. The x limits of the plot.
 #' @param ylim numeric vector. The y limits of the plot.
-#' @param labels logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name 
+#' @param labels logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name 
 #' of the storm and the indices and ISO times of the observation.
 #' @param by numeric. If `labels=TRUE`, defines the frequency at which labels are plotted. 
 #' Default value is set to `8` which corresponds to a 24h (or 48h) time interval between the labelled observations
@@ -217,7 +226,7 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #'  `2` (on the left), `3` (below, default setting), and `4` (on the right).
 #' @param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting),
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
-#' @param loi logical. Whether (TRUE, default setting) or not (FALSE) plotting the extent of the buffered location of interest on the map.
+#' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the extent of the buffered location of interest on the map.
 #' @import rworldxtra
 #'
 #' @examples

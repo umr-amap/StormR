@@ -86,19 +86,19 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #'
 #'@param sts `StormsList` object.
 #'@param raster_product layer name in a `SpatRaster` object. The names of the layers follow 
-#'the following terminology, the name of the storm in capital letters and the name of the statistic 
-#'separated by underscores (e.g., "PAM_MSW", "PAM_PDI"). For the duration of exposure, the names of the 
-#'layer follow the following terminology, the name of the storm in capital letters, "Exposure", and the threshold 
-#'value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...). For the wind profiles, 
-#'the names of the layer follow the following terminology, the name of the storm in capital letters, "Speed" or "Direction", 
-#'and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41",...).
+#'the following terminology: 
+#' \itemize{
+#'    \item for "MSW" or "PDI", the name of the storm in capital letters and the name of the statistic separated by underscores (e.g., "PAM_MSW", "PAM_PDI"),
+#'    \item for duration of exposure, the name of the storm in capital letters, "Exposure", and the threshold value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...).
+#'    \item for wind profiles, the name of the storm in capital letters, "Speed" or "Direction", and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41",...).
+#' }
 #'@param color_palette character vector. The color palette used to plot the raster layer. If `color_palette=NULL` (default setting), 
-#'default color palette are used.
-#'@param main character. Title of the plot.  If `main=NULL` (default setting),
-#'a default title is generated.
+#'the default color palette is used.
+#'@param main character. Title of the plot. If `main=NULL` (default setting),
+#'a default title is generated based on the name of the layer.
 #'@param xlim numeric vector. The x limits of the plot.
 #'@param ylim numeric vector. The y limits of the plot.
-#'@param labels logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name 
+#'@param labels logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name 
 #'of the storm and the indices and ISO times of the observation.
 #'@param by numeric. If `labels=TRUE`, defines the frequency at which labels are plotted. 
 #'Default value is set to `8` which corresponds to a 24h (or 48h) time interval between the labelled observations

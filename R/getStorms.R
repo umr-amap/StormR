@@ -150,23 +150,29 @@ setMethod("show",
 
 
 
-#' Extract a `Storm`
+#' Extracting a `Storm`
 #'
-#' Extract a `Storm` from a `StormsList`
+#' The `getStorm()` function allows to extract a specific `Storm` object from a `StormsList` object.
 #'
 #' @param sts `StormsList`
-#' @param name character. Name of the storm to extract
-#' @param season numeric. Cyclonic season of the `Storm` to extract. Used only
-#'   if several `Storm` in the `sts` share the same name. Default value is set
-#'   de `NULL`
-#'
-#' @return `Storm`
+#' @param name character. Name of the storm to extract.
+#' @param season numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere, 
+#' the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both 
+#' years should be specified, with cyclones assigned for the year that originated in. By default all storms occurring since 
+#' 1980 are extracted.
+#' @return The `getStorm()` function returns a `Storm` object.
 #' @export
 #' @docType methods
 #' @rdname getStorm-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting `Storm` for the tropical cyclone Niran
 #' st <- getStorm(sts, name = "NIRAN")
 #' }
 setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getStorm"))
@@ -192,20 +198,26 @@ setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL
 
 
 
-#' Get number of `Storm` in `StormsList`
+#' Getting the number of `Storm`
 #'
-#' Get the number of `Storm` available in a `StormsList`
+#' The `getNbStorms()` functions allows to get the number of `Storm` objects in a `StormsList` object.
 #'
 #' @param sts `StormsList`
 #'
-#' @return numeric. Number of `Storm` available in the given `StormsList`
+#' @return numeric. The `getNbStorms()` returns the number of `Storm` objects in the given `StormsList` object.
 #' @export
 #' @docType methods
 #' @rdname getNbStorms-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
-#' nb <- getNbStorms(sts)
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting the number of storms in the sts object
+#' getNbStorms(sts)
 #' }
 setGeneric("getNbStorms", function(sts) standardGeneric("getNbStorms"))
 #' @rdname getNbStorms-methods
@@ -215,19 +227,25 @@ setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data)
 
 
 
-#' Get LOI from a `StormsList`
+#' Getting the location of interest
 #'
-#' Get the Location Of Interest from a `StormsList`
+#' The `getLOI()` functions allows to get the location of interest from a `StormsList` object.
 #'
 #' @param sts `StormsList` object
 #'
-#' @return sf object. Location Of Interest for the given `StormsList`
+#' @return sf object. The `getLOI()` functions returns the location of interest for the given `StormsList`.
 #' @export
 #' @docType methods
 #' @rdname getLOI-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting the location of interest for the sts object
 #' loi <- getLOI(sts)
 #' }
 setGeneric("getLOI", function(sts) standardGeneric("getLOI"))
@@ -238,20 +256,26 @@ setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 
 
 
-#' Get the extended LOI from a `StormsList`
+#' Getting the buffered location of interest
 #'
-#' Get the extended Location Of Interest from a `StormsList`
+#' The `getBuffer()` function allows to get the buffered location of interest from a `StormsList` object.
 #'
 #' @param sts `StormsList`
 #'
-#' @return sf object. Extended Location Of Interest for the given `StormsList`
+#' @return The `getBuffer()` returns a `sf` object.
 #'
 #' @export
 #' @docType methods
 #' @rdname getBuffer-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting the buffered location of interest from the sts object
 #' buff <- getBuffer(sts)
 #' }
 setGeneric("getBuffer", function(sts) standardGeneric("getBuffer"))
@@ -262,20 +286,26 @@ setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.bu
 
 
 
-#' Get buffer size from a `StormsList`
+#' Getting the buffer size
 #'
-#' Get the buffer size for a `StormsList`
+#' The `getBufferSize()` allows to get buffer size from a `StormsList` object.
 #'
 #' @param sts `StormsList`
 #'
-#' @return numeric. Buffer size (in km) used to generate the extended Location
-#'   Of Interest for the given `StormsList`
+#' @return numeric. The `getBufferSize()` returns the buffer size (in \eqn{km}) used to generate the buffered location
+#'   of interest for a `StormsList` object.
 #' @export
 #' @docType methods
 #' @rdname getBufferSize-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting the buffer size from the sts object
 #' buffsize <- getBufferSize(sts)
 #' }
 setGeneric("getBufferSize", function(sts) standardGeneric("getBufferSize"))
@@ -294,25 +324,25 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 
 
 
-#' Get name(s) of storm(s)
+#' Getting the names of the storms
 #'
-#' Get the name(s) of storm(s) available in a `Storm` / `StormsList`
+#' The `getNames()` function allows to get the names of the storms in a `Storm` or a `StormsList` object.
 #'
-#' @param s `Storm` / `StormsList`
+#' @param s `Storm` or `StormsList` object.
 #'
-#' @return character vector. Names of each storms provided by the given `Storm`
-#'   / `StormsList`
+#' @return character vector. The `getNames()` function returns the names of the storms in a `Storm` or a `StormsList` object.
 #' @export
 #' @docType methods
 #' @rdname getNames-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
-#'
-#' ## For storm Niran
-#' getNames(getStorm(sts, name = "NIRAN"))
-#'
-#' ## For sts
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting the names of the storms from the sts object. 
 #' getNames(sts)
 #' }
 setGeneric("getNames", function(s) standardGeneric("getNames"))
@@ -329,26 +359,25 @@ setMethod("getNames", signature("StormsList"), function(s){
 
 
 
-#' Get the cyclonic season(s) of storm(s)
+#' Getting cyclonic seasons of the storms
 #'
-#' Get the cyclonic season(s) of storm(s) available in a `Storm` / `StormsList`
+#' The `getSeasons()` function allows to get the cyclonic seasons of the storms in a `Storm` or `StormsList` object.
 #'
-#' @param s `Storm`/`StormsList`
-
+#' @param s `Storm` or `StormsList` object.
 #'
-#' @return numeric vector. Cyclonic season(s) of each storms provided by the given `Storm`
-#'   / `StormsList`
+#' @return numeric vector. The `getSeasons()` function  returns the cyclonic season of each storm in a `Storm` or `StormsList` object.
 #' @export
 #' @docType methods
 #' @rdname getSeasons-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
-#'
-#' ## For storm Niran
-#' getSeasons(getStorm(sts, name = "NIRAN"))
-#'
-#' ## For sts
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting the cyclonic seasons of the storms from the sts object. 
 #' getSeasons(sts)
 #' }
 setGeneric("getSeasons", function(s) standardGeneric("getSeasons"))
@@ -361,26 +390,25 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 
 
 
-#' Get maximum SSHS reached of storm(s)
+#' Getting maximum Saffir-Simpson hurricane wind scale category
 #'
-#' Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storm(s)
-#' available in a `Storm` / `StormsList`
+#' The `getSSHS()` function allows to get the maximum Saffir-Simpson hurricane wind scale category reached by each storm in a `Storm` or `StormsList` object.
 #'
-#' @param s `Storm` / `StormsList`
+#' @param s `Storm` or `StormsList` object.
 #'
-#' @return numeric vector. Maximum SSHS reached for each storm provided by the
-#'   given `Storm` / `StormsList`
+#' @return numeric vector. The `getSSHS()` function return the maximum Saffir-Simpson hurricane wind scale category reached by each storm in the `Storm` or `StormsList` object.
 #' @export
 #' @docType methods
 #' @rdname getSSHS-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
-#'
-#' ## For storm Niran
-#' getSSHS(getStorm(sts, name = "NIRAN"))
-#'
-#' ## For sts
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting maximum Saffir-Simpson hurricane wind scale category reached by each storm in the sts object 
 #' getSSHS(sts)
 #' }
 setGeneric("getSSHS", function(s) standardGeneric("getSSHS"))
@@ -394,29 +422,31 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 
 
 
-#' Get the number of observations available
+#' Getting the number of observations
 #'
-#' Get the number of observations available for a given `Storm`
+#' The getNbObs() function allows to get the number of observations available for a storm in a `Storm` or `StormsList` object.
 #'
 #' @param ... extra arguments for `StormsList`
-#' @param s  `Storm`/`StormsList`
-#' @param name character. Name of the storm to extract in capital letters
-#' @param season numeric. Cyclonic season of the `Storm` to extract. Used only
-#'   if several `Storm` in `s` share the same name. Default value is set to
-#'   `NULL`
+#' @param s  `Storm` or `StormsList` object.
+#' @param name character. Name of the storm in capital letters.
+#' @param season numeric. Cyclonic season of the `Storm`. Required only
+#'   if several `Storm` in the `s` have the same name. Default value is set to
+#'   `NULL`.
 #'
-#' @return numeric. Number of observations available for the given `Storm`
+#' @return numeric. The getNbObs() function returns the number of observations for a storm in a `Storm` or `StormsList` object. 
 #' @export
 #' @docType methods
 #' @rdname getNbObs-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
-#'
-#' ## For storm Niran
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' ##Getting the number of observations for the tropical cyclone Niran in the sts object 
 #' getNbObs(getStorm(sts, name = "NIRAN"))
-#'
-#' ## Equivalent to
 #' getNbObs(sts, name = "NIRAN")
 #' }
 setGeneric("getNbObs", function(s, ...) standardGeneric("getNbObs"))
@@ -430,29 +460,31 @@ setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) 
 
 
 
-#' Get observations available
+#' Getting observations
 #'
-#' Get the observations available for a given `Storm`
+#' The `getObs()` function allows to get the observed track data for a storm in a `Storm` or `StormsList` object.
 #'
 #' @param ... extra argument for `StormsList`
-#' @param s `Storm`/`StormsList`
-#' @param name character. Name of the storm to extract in capital letters
-#' @param season numeric. Cyclonic season of the `Storm` to extract. Used only
-#'   if several `Storm` in `s` object share the same name. Default value is set
-#'   to `NULL`
+#' @param s `Storm` or `StormsList` object
+#' @param name character. Name of the storm in capital letters.
+#' @param season numeric. Cyclonic season of the `Storm`. Required only
+#'   if several `Storm` in the `s` object have the same name. Default value is set
+#'   to `NULL`.
 #'
-#' @return data.frame. Observations of the given storm
+#' @return data.frame. The `getObs()` function returns observed track data for a storm in a `Storm` or `StormsList` object.
 #' @export
 #' @docType methods
 #' @rdname getObs-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
-#'
-#' ## For storm Niran
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting the observed track data for the tropical cyclone Niran in the sts object 
 #' getObs(getStorm(sts, name = "NIRAN"))
-#'
-#' ## Equivalent to
 #' getObs(sts, name = "NIRAN")
 #' }
 setGeneric("getObs", function(s, ...) standardGeneric("getObs"))
@@ -465,31 +497,32 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 
 
 
-#' Get indices of observations within the extended LOI
+#' Getting the number of the observations
 #'
-#' Get the indices of observations within the extended Location Of Interest for
-#' a given `Storm`
+#' The `getInObs()` function allows to get the number of the of the observations in a given `Storm` or `StormsList` object.
 #'
 #' @param ... extra argument for `StormsList`
-#' @param s `Storm`/`StormsList`
-#' @param name character. Name of the storm to extract in capital letters
-#' @param season numeric. Cyclonic season of the `Storm` to extract. Used only
-#'   if several `Storm` in `s` object share the same name. Default value is set
+#' @param s `Storm` or `StormsList` object.
+#' @param name character. Name of the storm in capital letters.
+#' @param season numeric. Cyclonic season of the `Storm`. Required only
+#'   if several `Storm` in `s` object have the same name. Default value is set
 #'   to `NULL`
 #'
-#' @return numeric vector. Indices within the extended LOI for the given `Storm`
+#' @return numeric vector. The `getInObs()` function returns the number of the observations in a given `Storm` or `StormsList` object.
 #'
 #' @export
 #' @docType methods
 #' @rdname getInObs-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia")
-#'
-#' ## For storm Niran
+#' #Creating a StormsDataset
+#' sds <- defDatabase()
+#' 
+#' #Getting storm track data for all storms near New Caledonia
+#' sts <- Storms(sds=sds, loi = "New Caledonia")
+#' 
+#' #Getting the number of the observation for the tropical cyclone Niran in the sts object 
 #' getInObs(getStorm(sts, name = "NIRAN"))
-#'
-#' ## Equivalent to
 #' getInObs(sts, name = "NIRAN")
 #' }
 setGeneric("getInObs", function(s, ...) standardGeneric("getInObs"))
@@ -871,7 +904,8 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' Creating a `StormsList` object
 #'
 #' The `Storms()` function extracts storm track data from a `StormsDataset`
-#' and creates a `StormsList` object.
+#' and creates a `StormsList` object based on specified arguments relating to location of interest, 
+#' seasons, and names of the storms.
 #'
 #' @param sds `StormsDataset` object.
 #' @param loi Location of interest. Can be defined using,
@@ -880,14 +914,16 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' \item numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)), or
 #' \item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
 #' }
-#' @param seasons numeric vector. Season(s) of occurrence of the storms. One (e.g., 2020)
-#'  or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or
-#'  during several consecutive seasons, respectively. By default all storms occurring since 1980 are extracted.
-#' @param names character vector. Names of specific storms (in capital letters) to extract.
+#' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere, 
+#' the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both 
+#' years should be specified, with cyclones assigned for the year that originated in. By default all storms occurring since 
+#' 1980 are extracted.
+#' @param names character vector. Names of specific storms (in capital letters).
 #' @param max_dist numeric. Maximum distance between the location of interest and the storm for which track data are extracted.
 #' Default `max_dist` is set to 300 km.
-#' @param remove_TD logical. Whether (TRUE) or not (FALSE) removing tropical depressions (msw < 18
-#'   m/s). Default value is set to `TRUE`.
+#' @param remove_TD logical. Whether (TRUE) or not (FALSE) removing tropical depressions (\eqn{msw < 18
+#'   m.s^{-1}}, not considered to be stormed in Saffir-Simpson hurricane wind scale) are removed. 
+#'   Default value is set to `TRUE`.
 #' @param verbose numeric. Type of information the function displays. Can be:
 #' \itemize{
 #' \item `2`, information about both the processes and the outputs are displayed (default value),
@@ -901,7 +937,11 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' @details The available countries for the `loi` are those provided in the
 #'   `rwolrdxtra` package. This package provide high resolution vector country
 #'   boundaries derived from Natural Earth data. More informations on the Natural Earth data
-#'   here: http://www.naturalearthdata.com/downloads/10m-cultural-vectors/.
+#'   here: [http://www.naturalearthdata.com/downloads/10m-cultural-vectors/](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/).
+#'
+#'@references 
+#'Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). 
+#'Bulletin of the American Meteorological Society, 91(3), Article 3. [https://doi.org/10.1175/2009bams2755.1](https://doi.org/10.1175/2009bams2755.1)
 #'
 #' @examples
 #' \dontrun{
