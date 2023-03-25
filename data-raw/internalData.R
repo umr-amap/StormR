@@ -50,6 +50,8 @@ pdiPalette <- rev(viridis::inferno(50))
 exposurePalette <- rev(viridis::viridis(50))
 
 #Data for test functions
+suppressWarnings(sds <- defDatabase())
+pam <- Storms(sds, loi = "Vanuatu", names = "PAM")
 df_getDataInterpolate <-getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, 3, FALSE, "Willoughby")
 
 usethis::use_data(resolutions,
