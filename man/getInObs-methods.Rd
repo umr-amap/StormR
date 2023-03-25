@@ -5,7 +5,7 @@
 \alias{getInObs}
 \alias{getInObs,StormsList-method}
 \alias{getInObs,Storm-method}
-\title{Get indices of observations within the extended LOI}
+\title{Getting the number of the observations}
 \usage{
 getInObs(s, ...)
 
@@ -14,31 +14,32 @@ getInObs(s, ...)
 \S4method{getInObs}{Storm}(s)
 }
 \arguments{
-\item{s}{\code{Storm}/\code{StormsList}}
+\item{s}{\code{Storm} or \code{StormsList} object.}
 
 \item{...}{extra argument for \code{StormsList}}
 
-\item{name}{character. Name of the storm to extract in capital letters}
+\item{name}{character. Name of the storm in capital letters.}
 
-\item{season}{numeric. Cyclonic season of the \code{Storm} to extract. Used only
-if several \code{Storm} in \code{s} object share the same name. Default value is set
+\item{season}{numeric. Cyclonic season of the \code{Storm}. Required only
+if several \code{Storm} in \code{s} object have the same name. Default value is set
 to \code{NULL}}
 }
 \value{
-numeric vector. Indices within the extended LOI for the given \code{Storm}
+numeric vector. The \code{getInObs()} function returns the number of the observations in a given \code{Storm} or \code{StormsList} object.
 }
 \description{
-Get the indices of observations within the extended Location Of Interest for
-a given \code{Storm}
+The \code{getInObs()} function allows to get the number of the of the observations in a given \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
 
-## For storm Niran
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
+
+#Getting the number of the observation for the tropical cyclone Niran in the sts object 
 getInObs(getStorm(sts, name = "NIRAN"))
-
-## Equivalent to
 getInObs(sts, name = "NIRAN")
 }
 }

@@ -4,7 +4,7 @@
 \name{getBufferSize}
 \alias{getBufferSize}
 \alias{getBufferSize,StormsList-method}
-\title{Get buffer size from a \code{StormsList}}
+\title{Getting the buffer size}
 \usage{
 getBufferSize(sts)
 
@@ -14,15 +14,21 @@ getBufferSize(sts)
 \item{sts}{\code{StormsList}}
 }
 \value{
-numeric. Buffer size (in km) used to generate the extended Location
-Of Interest for the given \code{StormsList}
+numeric. The \code{getBufferSize()} returns the buffer size (in \eqn{km}) used to generate the buffered location
+of interest for a \code{StormsList} object.
 }
 \description{
-Get the buffer size for a \code{StormsList}
+The \code{getBufferSize()} allows to get buffer size from a \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
+
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
+
+#Getting the buffer size from the sts object
 buffsize <- getBufferSize(sts)
 }
 }

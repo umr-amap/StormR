@@ -4,7 +4,7 @@
 \name{getStorm}
 \alias{getStorm}
 \alias{getStorm,StormsList-method}
-\title{Extract a \code{Storm}}
+\title{Extracting a \code{Storm}}
 \usage{
 getStorm(sts, name, season = NULL)
 
@@ -13,21 +13,28 @@ getStorm(sts, name, season = NULL)
 \arguments{
 \item{sts}{\code{StormsList}}
 
-\item{name}{character. Name of the storm to extract}
+\item{name}{character. Name of the storm to extract.}
 
-\item{season}{numeric. Cyclonic season of the \code{Storm} to extract. Used only
-if several \code{Storm} in the \code{sts} share the same name. Default value is set
-de \code{NULL}}
+\item{season}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere,
+the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both
+years should be specified, with cyclones assigned for the year that originated in. By default all storms occurring since
+1980 are extracted.}
 }
 \value{
-\code{Storm}
+The \code{getStorm()} function returns a \code{Storm} object.
 }
 \description{
-Extract a \code{Storm} from a \code{StormsList}
+The \code{getStorm()} function allows to extract a specific \code{Storm} object from a \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
+
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
+
+#Getting `Storm` for the tropical cyclone Niran
 st <- getStorm(sts, name = "NIRAN")
 }
 }

@@ -5,7 +5,7 @@
 \alias{getSSHS}
 \alias{getSSHS,Storm-method}
 \alias{getSSHS,StormsList-method}
-\title{Get maximum SSHS reached of storm(s)}
+\title{Getting maximum Saffir-Simpson hurricane wind scale category}
 \usage{
 getSSHS(s)
 
@@ -14,24 +14,23 @@ getSSHS(s)
 \S4method{getSSHS}{StormsList}(s)
 }
 \arguments{
-\item{s}{\code{Storm} / \code{StormsList}}
+\item{s}{\code{Storm} or \code{StormsList} object.}
 }
 \value{
-numeric vector. Maximum SSHS reached for each storm provided by the
-given \code{Storm} / \code{StormsList}
+numeric vector. The \code{getSSHS()} function return the maximum Saffir-Simpson hurricane wind scale category reached by each storm in the \code{Storm} or \code{StormsList} object.
 }
 \description{
-Get the maximum Saffir Simpson Hurricane Scale (SSHS) reached of storm(s)
-available in a \code{Storm} / \code{StormsList}
+The \code{getSSHS()} function allows to get the maximum Saffir-Simpson hurricane wind scale category reached by each storm in a \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
 
-## For storm Niran
-getSSHS(getStorm(sts, name = "NIRAN"))
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
 
-## For sts
+#Getting maximum Saffir-Simpson hurricane wind scale category reached by each storm in the sts object 
 getSSHS(sts)
 }
 }

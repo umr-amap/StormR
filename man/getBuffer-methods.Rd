@@ -4,7 +4,7 @@
 \name{getBuffer}
 \alias{getBuffer}
 \alias{getBuffer,StormsList-method}
-\title{Get the extended LOI from a \code{StormsList}}
+\title{Getting the buffered location of interest}
 \usage{
 getBuffer(sts)
 
@@ -14,14 +14,20 @@ getBuffer(sts)
 \item{sts}{\code{StormsList}}
 }
 \value{
-sf object. Extended Location Of Interest for the given \code{StormsList}
+The \code{getBuffer()} returns a \code{sf} object.
 }
 \description{
-Get the extended Location Of Interest from a \code{StormsList}
+The \code{getBuffer()} function allows to get the buffered location of interest from a \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
+
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
+
+#Getting the buffered location of interest from the sts object
 buff <- getBuffer(sts)
 }
 }

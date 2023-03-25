@@ -4,7 +4,7 @@
 \name{getLOI}
 \alias{getLOI}
 \alias{getLOI,StormsList-method}
-\title{Get LOI from a \code{StormsList}}
+\title{Getting the location of interest}
 \usage{
 getLOI(sts)
 
@@ -14,14 +14,20 @@ getLOI(sts)
 \item{sts}{\code{StormsList} object}
 }
 \value{
-sf object. Location Of Interest for the given \code{StormsList}
+sf object. The \code{getLOI()} functions returns the location of interest for the given \code{StormsList}.
 }
 \description{
-Get the Location Of Interest from a \code{StormsList}
+The \code{getLOI()} functions allows to get the location of interest from a \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
+
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
+
+#Getting the location of interest for the sts object
 loi <- getLOI(sts)
 }
 }

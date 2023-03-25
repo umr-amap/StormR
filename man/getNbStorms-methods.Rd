@@ -4,7 +4,7 @@
 \name{getNbStorms}
 \alias{getNbStorms}
 \alias{getNbStorms,StormsList-method}
-\title{Get number of \code{Storm} in \code{StormsList}}
+\title{Getting the number of \code{Storm}}
 \usage{
 getNbStorms(sts)
 
@@ -14,14 +14,20 @@ getNbStorms(sts)
 \item{sts}{\code{StormsList}}
 }
 \value{
-numeric. Number of \code{Storm} available in the given \code{StormsList}
+numeric. The \code{getNbStorms()} returns the number of \code{Storm} objects in the given \code{StormsList} object.
 }
 \description{
-Get the number of \code{Storm} available in a \code{StormsList}
+The \code{getNbStorms()} functions allows to get the number of \code{Storm} objects in a \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
-nb <- getNbStorms(sts)
+#Creating a StormsDataset
+sds <- defDatabase()
+
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
+
+#Getting the number of storms in the sts object
+getNbStorms(sts)
 }
 }

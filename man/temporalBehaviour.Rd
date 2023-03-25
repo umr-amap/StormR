@@ -19,29 +19,31 @@ temporalBehaviour(
 \arguments{
 \item{sts}{\code{StormsList} object.}
 
-\item{points}{data.frame. The lon (in a \code{x} col), lat (in a \code{y} col) coordinates in decimal degrees.}
+\item{points}{data.frame. Consisting of two columns names as "x" (for the longitude) and
+"y" (for the latitude), providing the coordinates in decimal degrees of the point locations. Row names
+can also be provided to named the locations.}
 
-\item{product}{character. Desired output among,
+\item{product}{character. Desired output statistics:
 \itemize{
-\item \code{"TS"}, for time series of wind speed and direction (default setting),
+\item \code{"TS"}, for time series of wind speeds and directions (default setting),
 \item \code{"PDI"}, for power dissipation index, or
-\item \code{"Exposure"} for the duration of exposure.
+\item \code{"Exposure"}, for the duration of exposure to defined wind thresholds.
 }}
 
-\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (in $m.s^{-1}$) used to
-compute the duration of exposure when \code{product="Exposure"}. By default value the thresholds
-used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 $m.s^{-1}$).}
+\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (in \eqn{m.s^{-1}}) used to
+compute the duration of exposure when \code{product="Exposure"}. By default the thresholds
+used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 \eqn{m.s^{-1}}).}
 
 \item{method}{character. Model used to compute wind speed and direction.
 Three different models are implemented:
 \itemize{
-\item \code{"Willoughby"} for the symmetrical model developed by Willoughby et al. (2006) (default setting),
-\item \code{"Holland"} for the symmetrical model developed by Holland (1980), or
-\item \code{"Boose"} for the asymmetrical model developed by  Boose et al. (2004).
+\item \code{"Willoughby"}, for the symmetrical model developed by Willoughby et al. (2006) (default setting),
+\item \code{"Holland"}, for the symmetrical model developed by Holland (1980), or
+\item \code{"Boose"}, for the asymmetrical model developed by  Boose et al. (2004).
 }}
 
 \item{asymmetry}{character. If \code{method="Holland"} or \code{method="Willoughby"},
-which method is used to add asymmetry. Can be:
+this argument specifies the method used to add asymmetry. Can be:
 \itemize{
 \item \code{"Chen"}, for the model developed by Chen (1994) (default setting),
 \item \code{"Miyazaki"}, for the model developed by Miyazaki et al. (1962), or
@@ -49,7 +51,7 @@ which method is used to add asymmetry. Can be:
 }}
 
 \item{empirical_rmw}{logical. Whether (TRUE) or not (FALSE) to compute
-the radius of maximum wind (\code{rmw}) empirically with the model developed by
+the radius of maximum wind (\code{rmw}) empirically using the model developed by
 Willoughby et al. (2006). If \code{empirical_rmw==FALSE} (default setting) then the
 \code{rmw} provided in the \code{StormsList} is used.}
 
@@ -70,26 +72,26 @@ different data.frame are returned:
 \itemize{
 \item if \code{product == "TS"}, the function returns a data.frame with
 one row for each observation (or interpolated observation) and
-four columns for wind speed (in $m.s^{-1}$), wind direction (in degree),
-the indices, and the ISO time of observations,
+four columns for wind speed (in \eqn{m.s^{-1}}), wind direction (in degree),
+the observation number, and the ISO time of observations,
 \item if \code{product == "PDI"}, the function returns a data.frame with one row
 for each point location and one column for the PDI,
 \item if \code{product == "Exposure"}, the function returns a data.frame with one
-row for each wind speed threshold defined with the \code{wind_threshold} argument
-and one column for each point location.
+row for the duration of exposure to winds above each wind speed threshold defined
+by the \code{wind_threshold} argument and one column for each point location.
 }
 }
 \description{
 The \code{temporalBehaviour()} function allows computing wind speed and direction
 for a given location or set of locations along the lifespan of a tropical cyclone.
-It also allows to compute to compute three associated summary statistics.
+It also allows to compute three associated summary statistics.
 }
 \details{
-Storm track data set, such as those provided by IBRTrACKS (Knapp et
+Storm track data sets, such as those extracted from IBRTrACKS (Knapp et
 al., 2010), usually provide observation at a 3- or 6-hours temporal
-resolution. In the spatialBehaviour() function linear interpolations are
-used to reach the temporal resolution set up with the \code{temp_res} argument
-(set up to 1 hour by default).
+resolution. In the spatialBehaviour() function, linear interpolations are
+used to reach the temporal resolution specified in the \code{temp_res} argument
+(default value = 1 hour).
 
 The Holland (1980) model, widely used in the literature, is based on the
 'gradient wind balance in mature tropical cyclones. The wind speed distribution
@@ -217,25 +219,28 @@ exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
 }
 \references{
 Boose, E. R., Chamberlin, K. E., & Foster, D. R. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs,
-71(1), Article 1. https://doi.org/10.1890/0012-9615(2001)071\link{0027:LARIOH}2.0.CO;2
+71(1), Article 1. [https://doi.org/10.1890/0012-9615(2001)071\link{0027:LARIOH}2.0.CO;2](https://doi.org/10.1890/0012-9615(2001)071\link{0027:LARIOH}2.0.CO;2)
 
 Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
-Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
+Ecological Monographs, 74(2), Article 2. \url{https://doi.org/10.1890/02-4057}
 
 Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
 
 Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
-https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
+\url{https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2}
+
+Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS).
+Bulletin of the American Meteorological Society, 91(3), Article 3. \url{https://doi.org/10.1175/2009bams2755.1}
 
 Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
 Oceanographical Magazine, 13(2), 103–117.
 
 Willoughby, H. E. (1995). Normal-Mode Initialization of Barotropic Vortex Motion Models. Journal of the Atmospheric Sciences, 52(24),
-4501–4514. https://doi.org/10.1175/1520-0469(1995)052<4501:NMIOBV>2.0.CO;2
+4501–4514. \url{https://doi.org/10.1175/1520-0469(1995)052<4501:NMIOBV>2.0.CO;2}
 
 Willoughby, H. E., & Rahn, M. E. (2004). Parametric Representation of the Primary Hurricane Vortex. Part I: Observations and Evaluation of the Holland (1980) Model.
-Monthly Weather Review, 132(12), 3033–3048. https://doi.org/10.1175/MWR2831.1
+Monthly Weather Review, 132(12), 3033–3048. \url{https://doi.org/10.1175/MWR2831.1}
 
 Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
-Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
+Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. \url{https://doi.org/10.1175/MWR3106.1}
 }

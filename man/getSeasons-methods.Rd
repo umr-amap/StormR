@@ -5,7 +5,7 @@
 \alias{getSeasons}
 \alias{getSeasons,Storm-method}
 \alias{getSeasons,StormsList-method}
-\title{Get the cyclonic season(s) of storm(s)}
+\title{Getting cyclonic seasons of the storms}
 \usage{
 getSeasons(s)
 
@@ -14,23 +14,23 @@ getSeasons(s)
 \S4method{getSeasons}{StormsList}(s)
 }
 \arguments{
-\item{s}{\code{Storm}/\code{StormsList}}
+\item{s}{\code{Storm} or \code{StormsList} object.}
 }
 \value{
-numeric vector. Cyclonic season(s) of each storms provided by the given \code{Storm}
-/ \code{StormsList}
+numeric vector. The \code{getSeasons()} function  returns the cyclonic season of each storm in a \code{Storm} or \code{StormsList} object.
 }
 \description{
-Get the cyclonic season(s) of storm(s) available in a \code{Storm} / \code{StormsList}
+The \code{getSeasons()} function allows to get the cyclonic seasons of the storms in a \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
 
-## For storm Niran
-getSeasons(getStorm(sts, name = "NIRAN"))
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
 
-## For sts
+#Getting the cyclonic seasons of the storms from the sts object. 
 getSeasons(sts)
 }
 }
