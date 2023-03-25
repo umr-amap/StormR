@@ -171,7 +171,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 
   #Optional fields
   if(("basin" %in% names(fields)) & is.null(basin)){
-    warning("No basin specified, Cannot use basin filtering when collecting data")
+    warning("No basin argument specified, Cannot use basin filtering when collecting data")
   }else if(!("basin" %in% names(fields)) & !is.null(basin)){
     stop("No basin field in `fields` input specified, Cannot use basin filtering when collecting data")
   }
@@ -312,6 +312,7 @@ defDatabase <- function(filename=system.file("extdata", "test_dataset.nc", packa
                                    lon = "usa_lon",
                                    lat = "usa_lat",
                                    msw = "usa_wind",
+                                   basin = "basin",
                                    sshs = "usa_sshs",
                                    rmw = "usa_rmw",
                                    pressure = "usa_pres",
