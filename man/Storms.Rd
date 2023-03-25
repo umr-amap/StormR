@@ -24,17 +24,18 @@ Storms(
 \item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
 }}
 
-\item{seasons}{numeric vector. Season(s) of occurrence of the storms. One (e.g., 2020)
-or two years (e.g., c(2020,2022)) to extract storms occurring during one specific season or
-during several consecutive seasons, respectively. By default all storms occurring since 1980 are extracted.}
+\item{seasons}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere,
+the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both
+years should be specified, with cyclones assigned for the year that originated in. By default all storms from \code{sds} are extracted.}
 
-\item{names}{character vector. Names of specific storms (in capital letters) to extract.}
+\item{names}{character vector. Names of specific storms (in capital letters).}
 
 \item{max_dist}{numeric. Maximum distance between the location of interest and the storm for which track data are extracted.
 Default \code{max_dist} is set to 300 km.}
 
-\item{remove_TD}{logical. Whether (TRUE) or not (FALSE) removing tropical depressions (msw < 18
-m/s). Default value is set to \code{TRUE}.}
+\item{remove_TD}{logical. Whether (TRUE) or not (FALSE) removing tropical depressions (\eqn{msw < 18
+  m.s^{-1}}, not considered to be stormed in Saffir-Simpson hurricane wind scale) are removed.
+Default value is set to \code{TRUE}.}
 
 \item{verbose}{numeric. Type of information the function displays. Can be:
 \itemize{
@@ -49,13 +50,14 @@ meeting the specified criteria (e.g., name, season, location).
 }
 \description{
 The \code{Storms()} function extracts storm track data from a \code{StormsDataset}
-and creates a \code{StormsList} object.
+and creates a \code{StormsList} object based on specified arguments relating to location of interest,
+seasons, and names of the storms.
 }
 \details{
 The available countries for the \code{loi} are those provided in the
 \code{rwolrdxtra} package. This package provide high resolution vector country
 boundaries derived from Natural Earth data. More informations on the Natural Earth data
-here: http://www.naturalearthdata.com/downloads/10m-cultural-vectors/.
+here: \url{http://www.naturalearthdata.com/downloads/10m-cultural-vectors/}.
 }
 \examples{
 \dontrun{
@@ -81,4 +83,8 @@ sts_sp <- Storms(sds = sds, loi = sp)
 }
 
 
+}
+\references{
+Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS).
+Bulletin of the American Meteorological Society, 91(3), Article 3. \url{https://doi.org/10.1175/2009bams2755.1}
 }

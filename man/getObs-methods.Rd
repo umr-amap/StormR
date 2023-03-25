@@ -5,7 +5,7 @@
 \alias{getObs}
 \alias{getObs,StormsList-method}
 \alias{getObs,Storm-method}
-\title{Get observations available}
+\title{Getting observations}
 \usage{
 getObs(s, ...)
 
@@ -14,30 +14,32 @@ getObs(s, ...)
 \S4method{getObs}{Storm}(s)
 }
 \arguments{
-\item{s}{\code{Storm}/\code{StormsList}}
+\item{s}{\code{Storm} or \code{StormsList} object}
 
 \item{...}{extra argument for \code{StormsList}}
 
-\item{name}{character. Name of the storm to extract in capital letters}
+\item{name}{character. Name of the storm in capital letters.}
 
-\item{season}{numeric. Cyclonic season of the \code{Storm} to extract. Used only
-if several \code{Storm} in \code{s} object share the same name. Default value is set
-to \code{NULL}}
+\item{season}{numeric. Cyclonic season of the \code{Storm}. Required only
+if several \code{Storm} in the \code{s} object have the same name. Default value is set
+to \code{NULL}.}
 }
 \value{
-data.frame. Observations of the given storm
+data.frame. The \code{getObs()} function returns observed track data for a storm in a \code{Storm} or \code{StormsList} object.
 }
 \description{
-Get the observations available for a given \code{Storm}
+The \code{getObs()} function allows to get the observed track data for a storm in a \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
 
-## For storm Niran
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
+
+#Getting the observed track data for the tropical cyclone Niran in the sts object 
 getObs(getStorm(sts, name = "NIRAN"))
-
-## Equivalent to
 getObs(sts, name = "NIRAN")
 }
 }

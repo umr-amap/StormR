@@ -7,8 +7,8 @@
 defDatabase(
   filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
   fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
-    lat = "usa_lat", msw = "usa_wind", sshs = "usa_sshs", rmw = "usa_rmw", pressure =
-    "usa_pres", poci = "usa_poci"),
+    lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw =
+    "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
   basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unit_conversion = c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci =
@@ -19,14 +19,14 @@ defDatabase(
 \arguments{
 \item{filename}{character. Name of the NetCDF (.nc) file. Default is the \code{test_dataset.nc}
 file located in the \code{inst/extdata} repository of the directory (accessible by
-\code{system.file("extdata", "test_dataset.nc", package = "StormR")}). This toy dataset is extracted
-from the IBTrACS.SP.v04r00.nc file. Provides all the tropical cyclones that occurred around Vanuatu
+\code{system.file("extdata", "test_dataset.nc", package = "StormR")}). This test dataset is extracted
+from the IBTrACS.SP.v04r00.nc file and provides all the tropical cyclones that occurred around Vanuatu
 from 2015 to 2016 and around New Caledonia from 2020 to 2021.}
 
-\item{fields}{named character vector. Correspondence between the fields
-in the output \code{StormsDataset} and the variable names in the input NetCDF file. By default,
-correspondences are set up to import data from a NetCDF file from the IBTrACS database. Correspondences
-for following fields have to (mandatory fields) or can be (recommended or optional fields) provided:
+\item{fields}{named character vector. This argument allows to specify the corresponding variable names
+in the input NetCDF file for each field in the output \code{StormsDataset}. By default, the corresponding
+variable names are set up to import data from a NetCDF file from the IBTrACS database (Knapp et al., 2010). Corresponding variable
+names for following fields have to (mandatory fields) or can be (recommended or optional fields) provided:
 \itemize{
 \item "\verb{names"}, names of the storms (mandatory),
 \item \code{"seasons"}, years of observations (mandatory),
@@ -34,15 +34,15 @@ for following fields have to (mandatory fields) or can be (recommended or option
 \item \code{"lon"}, longitude of the observations (mandatory),
 \item \code{"lat"}, latitude of the observations (mandatory),
 \item \code{"msw"}, maximum sustained wind speed (mandatory),
-\item \code{"basin"}, name of the area where the storm originated. Traditionally divided into seven basins (recommended),
+\item \code{"basin"}, name of the area where the storm originated (recommended),
 \item \code{"rmw"}, radius of maximum winds: distance between the centre of the storm and its band of strongest winds (recommended),
 \item \code{"pressure"}, central pressure (recommended),
 \item \code{"poci"}, pressure of the last closed isobar (recommended), and
 \item \code{"sshs"}, Saffir-Simpson hurricane wind scale rating based on msw (optional).
 }}
 
-\item{basin}{character. If the basin field is provided then the name of the basin for which storm track data are extracted.
-By default \code{basin=NULL}, meaning that all stars regardless the basin in which they originated are extracted.
+\item{basin}{character. If the basin field is provided, then storm track data will only be extracted for the named basin.
+By default \code{basin=NULL}, meaning that all storms irrespective of the basin they originated in are extracted.
 Seven basins can be used to filter the data set:
 \itemize{
 \item \code{"NA"}, for North Atlantic basin,
@@ -54,13 +54,15 @@ Seven basins can be used to filter the data set:
 \item \code{"NI"}, for North India basin.
 }}
 
-\item{seasons}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
-By default all storms occurring since 1980 are extracted.}
+\item{seasons}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere,
+the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both
+years should be specified, with cyclones assigned for the year that originated in. By default all storms occurring since
+1980 are extracted.}
 
-\item{unit_conversion}{named character vector. Required unit conversions, \code{msw} has
-to be provided in $m.s^{-1}$, \code{rmw} in $km$, \code{pressure} and \code{poci} in $Pa$. By default
+\item{unit_conversion}{named character vector. \code{StormR} functions use the metric system (international system of units), therefore
+\code{msw} has to be provided in \eqn{m.s^{-1}}, \code{rmw} in \eqn{km}, \code{pressure} and \code{poci} in \eqn{Pa}. By default
 \code{unit_conversion=c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")}
-to meet the conversion requirement when importing a NetCDF file from the IBTrACS database.
+to meet the requirements when importing a NetCDF file from the IBTrACS database.
 This argument is mandatory even if no conversion is needed. If no conversion is needed then
 use \code{"None"} in the corresponding fields. The following unit conversions are implemented:
 
@@ -93,5 +95,6 @@ information about the processes.}
 The \code{defDatabase()} function returns a \code{StormsDataset} object.
 }
 \description{
-The \code{defDatabase()} function creates a \code{StormsDataset} object from a NetCDF file
+The \code{defDatabase()} function creates a \code{StormsDataset} object from a NetCDF file.
+This is an essential first step before other \code{stormR} functions can be used.
 }

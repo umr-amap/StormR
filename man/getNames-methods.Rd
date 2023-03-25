@@ -5,7 +5,7 @@
 \alias{getNames}
 \alias{getNames,Storm-method}
 \alias{getNames,StormsList-method}
-\title{Get name(s) of storm(s)}
+\title{Getting the names of the storms}
 \usage{
 getNames(s)
 
@@ -14,23 +14,23 @@ getNames(s)
 \S4method{getNames}{StormsList}(s)
 }
 \arguments{
-\item{s}{\code{Storm} / \code{StormsList}}
+\item{s}{\code{Storm} or \code{StormsList} object.}
 }
 \value{
-character vector. Names of each storms provided by the given \code{Storm}
-/ \code{StormsList}
+character vector. The \code{getNames()} function returns the names of the storms in a \code{Storm} or a \code{StormsList} object.
 }
 \description{
-Get the name(s) of storm(s) available in a \code{Storm} / \code{StormsList}
+The \code{getNames()} function allows to get the names of the storms in a \code{Storm} or a \code{StormsList} object.
 }
 \examples{
 \dontrun{
-sts <- Storms(loi = "New Caledonia")
+#Creating a StormsDataset
+sds <- defDatabase()
 
-## For storm Niran
-getNames(getStorm(sts, name = "NIRAN"))
+#Getting storm track data for all storms near New Caledonia
+sts <- Storms(sds=sds, loi = "New Caledonia")
 
-## For sts
+#Getting the names of the storms from the sts object. 
 getNames(sts)
 }
 }

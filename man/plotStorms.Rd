@@ -20,18 +20,27 @@ plotStorms(
 \arguments{
 \item{sts}{\code{StormsList} object}
 
-\item{names}{character vector. Name(s) of the storm(s) in capital letters to
-plot. If \code{names = NULL} (default setting), all storms are plotted.}
+\item{names}{character vector. Name(s) of the storm(s) in capital letters.
+If \code{names = NULL} (default setting), all storms are plotted.}
 
-\item{category}{numeric vector. Category of the storms in the Saffir-Simpson hurricane wind scale
-to be plotted. Can be a single category or a range of categories between -1 (tropical depression)
-and 5 (category 5 cyclone). If \code{category=NULL} (default setting), all storms are plotted.}
+\item{category}{numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
+Can be a single category or a range of categories among:
+\itemize{
+\item -1, for tropical depression,
+\item 0, for tropical storms,
+\item 1, for category 1 tropical cyclone,
+\item 2, for category 2 tropical cyclone,
+\item 3, for category 3 tropical cyclone,
+\item 4, for category 4 tropical cyclone, or
+\item 5, for category 5 tropical cyclone.
+}
+If \code{category=NULL} (default setting), all storms are plotted.}
 
 \item{xlim}{numeric vector. The x limits of the plot.}
 
 \item{ylim}{numeric vector. The y limits of the plot.}
 
-\item{labels}{logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name
+\item{labels}{logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name
 of the storm and the indices and ISO times of the observation.}
 
 \item{by}{numeric. If \code{labels=TRUE}, defines the frequency at which labels are plotted.
@@ -44,7 +53,7 @@ when observations are made every 3 (or 6) hours.}
 \item{legends}{character. Indicates where to plot the legend, \code{"topright"}, \code{"topleft"} (default setting),
 \code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
 
-\item{loi}{logical. Whether (TRUE, default setting) or not (FALSE) plotting the extent of the buffered location of interest on the map.}
+\item{loi}{logical. Whether (TRUE, default setting) or not (FALSE) to plot the extent of the buffered location of interest on the map.}
 }
 \description{
 This \code{plotStorms()} function allows plotting storm track data stored in a \code{StormsList} object.
