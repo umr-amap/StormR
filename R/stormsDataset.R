@@ -381,9 +381,21 @@ defDatabase <- function(filename=system.file("extdata", "test_dataset.nc", packa
                latitude = array(ncdf4::ncvar_get(dataBase, fields["lat"])[,ind],
                                 dim = c(row,len)),
                msw = msw)
+  
+  #Sort by Date
+  o <- order(data$isotimes[1,])
+  
+  data$names <- data$names[o]
+  data$seasons <- data$seasons[o]
+  data$isotimes <- data$isotimes[,o]
+  data$longitude <- data$longitude[,o]
+  data$latitude <- data$latitude[,o]
+  data$msw <- data$msw[,o]
 
-  if("sshs" %in% names(fields))
+  if("sshs" %in% names(fields)){
     data$sshs <- array(ncdf4::ncvar_get(dataBase, fields["sshs"])[,ind], dim = c(row,len))
+    data$sshs <- data$sshs[,o]
+  }
 
   if("rmw" %in% names(fields)){
     if(unit_conversion["rmw"] == "nm_to_km"){
@@ -391,6 +403,7 @@ defDatabase <- function(filename=system.file("extdata", "test_dataset.nc", packa
     }else{
       data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[,ind], dim = c(row,len))
     }
+    data$rmw <- data$rmw[,o]
   }
 
 
@@ -406,6 +419,7 @@ defDatabase <- function(filename=system.file("extdata", "test_dataset.nc", packa
     }else{
       data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[,ind], dim = c(row,len))
     }
+    data$pressure <- data$pressure[,o]
   }
 
 
@@ -415,6 +429,7 @@ defDatabase <- function(filename=system.file("extdata", "test_dataset.nc", packa
     }else{
       data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[,ind], dim = c(row,len))
     }
+    data$poci <- data$poci[,o]
   }
 
   ncdf4::nc_close(dataBase)
