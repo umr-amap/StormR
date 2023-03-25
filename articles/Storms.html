@@ -78,7 +78,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Storms</h1>
             
-            <h4 data-toc-skip class="date">2023-03-24</h4>
+            <h4 data-toc-skip class="date">2023-03-25</h4>
       
       
       <div class="d-none name"><code>Storms.Rmd</code></div>
@@ -165,14 +165,14 @@ the returned <code>StormsList</code> object can be obtained using the
 <code><a href="../reference/getSeasons-methods.html">getSeasons()</a></code> functions as follows:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getNbStorms-methods.html">getNbStorms</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 2</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 4</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getNames-methods.html">getNames</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "SOLO"  "NIRAN"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "SOLO"   "GRETEL" "LUCAS"  "NIRAN"</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getSeasons-methods.html">getSeasons</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  SOLO NIRAN </span></span>
-<span><span class="co">##  2015  2021</span></span></code></pre>
+<pre><code><span><span class="co">##   SOLO GRETEL  LUCAS  NIRAN </span></span>
+<span><span class="co">##   2015   2020   2021   2021</span></span></code></pre>
 <p>We can plot track data for the topical cyclone Niran only using the
 <code>names</code> argument of the <code><a href="../reference/plotStorms.html">plotStorms()</a></code> function as
 follows:</p>
@@ -212,8 +212,8 @@ wind scale can be obtained using the <code><a href="../reference/getSSHS-methods
 follows:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getSSHS-methods.html">getSSHS</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##   PAM  SOLO NIRAN </span></span>
-<span><span class="co">##     5     0     5</span></span></code></pre>
+<pre><code><span><span class="co">##     PAM    SOLO     ULA WINSTON    ZENA    UESI  GRETEL   LUCAS   NIRAN </span></span>
+<span><span class="co">##       5       0       4       5       2       1       1       1       5</span></span></code></pre>
 <p>We can only plot category 4 and 5 tropical cyclones using the
 <code>category</code> argument of the <code><a href="../reference/plotStorms.html">plotStorms()</a></code> function
 as follows:</p>
