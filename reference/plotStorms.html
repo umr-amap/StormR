@@ -77,14 +77,20 @@
 
 
 <dt>names</dt>
-<dd><p>character vector. Name(s) of the storm(s) in capital letters to
-plot. If <code>names = NULL</code> (default setting), all storms are plotted.</p></dd>
+<dd><p>character vector. Name(s) of the storm(s) in capital letters.
+If <code>names = NULL</code> (default setting), all storms are plotted.</p></dd>
 
 
 <dt>category</dt>
-<dd><p>numeric vector. Category of the storms in the Saffir-Simpson hurricane wind scale
-to be plotted. Can be a single category or a range of categories between -1 (tropical depression)
-and 5 (category 5 cyclone). If <code>category=NULL</code> (default setting), all storms are plotted.</p></dd>
+<dd><p>numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
+Can be a single category or a range of categories among:</p><ul><li><p>-1, for tropical depression,</p></li>
+<li><p>0, for tropical storms,</p></li>
+<li><p>1, for category 1 tropical cyclone,</p></li>
+<li><p>2, for category 2 tropical cyclone,</p></li>
+<li><p>3, for category 3 tropical cyclone,</p></li>
+<li><p>4, for category 4 tropical cyclone, or</p></li>
+<li><p>5, for category 5 tropical cyclone.</p></li>
+</ul><p>If <code>category=NULL</code> (default setting), all storms are plotted.</p></dd>
 
 
 <dt>xlim</dt>
@@ -96,7 +102,7 @@ and 5 (category 5 cyclone). If <code>category=NULL</code> (default setting), all
 
 
 <dt>labels</dt>
-<dd><p>logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name
+<dd><p>logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name
 of the storm and the indices and ISO times of the observation.</p></dd>
 
 
@@ -117,7 +123,7 @@ when observations are made every 3 (or 6) hours.</p></dd>
 
 
 <dt>loi</dt>
-<dd><p>logical. Whether (TRUE, default setting) or not (FALSE) plotting the extent of the buffered location of interest on the map.</p></dd>
+<dd><p>logical. Whether (TRUE, default setting) or not (FALSE) to plot the extent of the buffered location of interest on the map.</p></dd>
 
 </dl></div>
 

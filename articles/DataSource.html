@@ -249,12 +249,15 @@ follows,</p>
 object can be created using the <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function as
 follows,</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>, basin<span class="op">=</span><span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sds</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>, basin<span class="op">=</span><span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in checkInputsIDb(filename, fields, basin, seasons, unit_conversion, :</span></span>
+<span><span class="co">## No basin argument specified, Cannot use basin filtering when collecting data</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sds</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Formal class 'StormsDataset' [package "StormR"] with 5 slots</span></span>
 <span><span class="co">##   ..@ filename: chr "IBTrACS_ALL_3yrs.nc"</span></span>
-<span><span class="co">##   ..@ fields  : Named chr [1:10] "name" "season" "iso_time" "usa_lon" ...</span></span>
-<span><span class="co">##   .. ..- attr(*, "names")= chr [1:10] "names" "seasons" "isoTime" "lon" ...</span></span>
+<span><span class="co">##   ..@ fields  : Named chr [1:11] "name" "season" "iso_time" "usa_lon" ...</span></span>
+<span><span class="co">##   .. ..- attr(*, "names")= chr [1:11] "names" "seasons" "isoTime" "lon" ...</span></span>
 <span><span class="co">##   ..@ basin   : chr "None"</span></span>
 <span><span class="co">##   ..@ seasons : Named int [1:2] 2020 2023</span></span>
 <span><span class="co">##   .. ..- attr(*, "names")= chr [1:2] "min" "max"</span></span>
@@ -269,7 +272,7 @@ follows,</p>
 <span><span class="co">##   .. ..$ rmw      : num [1:360, 1:344] NA NA NA NA NA ...</span></span>
 <span><span class="co">##   .. ..$ pressure : num [1:360, 1:344] NA NA NA NA NA ...</span></span>
 <span><span class="co">##   .. ..$ poci     : num [1:360, 1:344] NA NA NA NA NA ...</span></span></code></pre>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">names</span>,<span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">seasons</span>,<span class="st">" "</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 275</span></span></code></pre>
 <p>This <code>StormsDataset</code> object contains track data for 275
@@ -279,7 +282,7 @@ can be used. By default, data provided by USA agencies (starting with
 South Pacific basin (“SP”), we can choose to use data provided by the
 Australian Bureau of Meteorology (starting with “bom_”) in the IBTrACKS
 data set as follows,</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>,</span>
 <span>                  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>names <span class="op">=</span> <span class="st">"name"</span>,</span>
 <span>                             seasons <span class="op">=</span> <span class="st">"season"</span>,</span>

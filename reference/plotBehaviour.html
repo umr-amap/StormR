@@ -81,22 +81,20 @@ the <code><a href="spatialBehaviour.html">spatialBehaviour()</a></code> function
 
 <dt>raster_product</dt>
 <dd><p>layer name in a <code>SpatRaster</code> object. The names of the layers follow
-the following terminology, the name of the storm in capital letters and the name of the statistic
-separated by underscores (e.g., "PAM_MSW", "PAM_PDI"). For the duration of exposure, the names of the
-layer follow the following terminology, the name of the storm in capital letters, "Exposure", and the threshold
-value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...). For the wind profiles,
-the names of the layer follow the following terminology, the name of the storm in capital letters, "Speed" or "Direction",
-and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41",...).</p></dd>
+the following terminology:</p><ul><li><p>for "MSW" or "PDI", the name of the storm in capital letters and the name of the statistic separated by underscores (e.g., "PAM_MSW", "PAM_PDI"),</p></li>
+<li><p>for duration of exposure, the name of the storm in capital letters, "Exposure", and the threshold value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...).</p></li>
+<li><p>for wind profiles, the name of the storm in capital letters, "Speed" or "Direction", and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41",...).</p></li>
+</ul></dd>
 
 
 <dt>color_palette</dt>
 <dd><p>character vector. The color palette used to plot the raster layer. If <code>color_palette=NULL</code> (default setting),
-default color palette are used.</p></dd>
+the default color palette is used.</p></dd>
 
 
 <dt>main</dt>
-<dd><p>character. Title of the plot.  If <code>main=NULL</code> (default setting),
-a default title is generated.</p></dd>
+<dd><p>character. Title of the plot. If <code>main=NULL</code> (default setting),
+a default title is generated based on the name of the layer.</p></dd>
 
 
 <dt>xlim</dt>
@@ -108,7 +106,7 @@ a default title is generated.</p></dd>
 
 
 <dt>labels</dt>
-<dd><p>logical. Whether (TRUE) or not (FALSE, default setting) add labels with the name
+<dd><p>logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name
 of the storm and the indices and ISO times of the observation.</p></dd>
 
 
