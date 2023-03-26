@@ -1,9 +1,9 @@
-.Rproj*
+*.Rproj*
 .Rhistory
 .Rdata
 .httr-oauth
 .DS_Store
-
+*.html
 inst/doc
 docs
 docs/*
