@@ -1,6 +1,29 @@
 url: ~
 template:
   bootstrap: 5
+navbar:
+  structure:
+    left: [home, intro, reference, articles, tutorials, news]
+    right: [github]
+  components:
+    home:
+      icon: fa-home fa-lg
+      href: index.html
+    intro:
+      text: Get started
+      href: articles/Storms.html
+    articles:
+      text: Articles
+      href: articles/index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: Change log
+      href: news/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/umr-amap/StormR
 
 reference:
 
@@ -55,4 +78,24 @@ reference:
   contents:
   - '`eezNC`'
   
+
+articles:
+
+- title: Load Data
+  navbar: Load_data
+  contents: 
+  - '`DataSource`' 
+
+- title: Getting started
+  navbar: Getting_started
+  contents: 
+  - '`Storms`' 
+
+- title: Storms analysis
+  navbar: Storms_analysis
+  contents: 
+  - '`Behaviour`' 
+  - '`Models`'
+  - '`SpatialBehaviour`'
+  - '`TemporalBehaviour`'
   
