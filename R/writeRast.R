@@ -79,23 +79,22 @@ writeRast <- function(rast, format = ".tiff", filename = NULL, path = "./"){
     if(product == "MSW"){
       varname <- "msw"
       unit <- "(m/s)"
-      longname <- "maximum sustained wind (m/s)"
+      long_name <- "maximum sustained wind (m/s)"
 
     }else if (product == "PDI"){
       varname <- "pdi"
       unit <- "none"
-      longname <- "power dissipation index"
+      long_name <- "power dissipation index"
 
-    }else if (stringr::str_detect(product,"Exposure")){
-      c <- stringr::str_sub(product,9,nchar(product))
+    }else if (product == "Exposure"){
       varname <- "exp"
       unit <- "none"
-      longname <- paste("category",c,"exposure")
+      long_name <- paste("Wind threshold exposure")
 
-    }else if (stringr::str_detect(product,"profile")){
+    }else if (stringr::str_detect(product,"Speed")){
       varname <- "rws"
       unit <- "(m/s)"
-      longname <- "radial wind speed"
+      long_name <- "radial wind speed"
 
     }
   }
@@ -114,7 +113,7 @@ writeRast <- function(rast, format = ".tiff", filename = NULL, path = "./"){
   } else if (format == ".nc") {
     terra::writeCDF(x = rast,
                     varname = product,
-                    longname = longname,
+                    longname = long_name,
                     unit = unit,
                     filename = f.name,
                     overwrite = TRUE)
