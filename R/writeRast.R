@@ -102,7 +102,7 @@ writeRast <- function(rast, format = ".tiff", filename = NULL, path = "./"){
   if(!is.null(filename)){
     f.name <- paste0(path, filename, format)
   }else{
-    f.name <- paste0(path, names(rast), format)
+    f.name <- paste0(path, name, "_", product, format)
   }
 
   if (format == ".tiff") {
