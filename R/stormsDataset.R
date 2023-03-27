@@ -297,6 +297,11 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' @param verbose logical. Whether (TRUE) or not (FALSE) the function should display
 #'   information about the processes.
 #' @return The `defDatabase()` function returns a `StormsDataset` object.
+#' 
+#' @references
+#' Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). 
+#' Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
+#' 
 #' @example 
 #' \dontrun{
 #' #Creating a `StormsDataset` object with storms between 2010 and 2015 
