@@ -24,7 +24,7 @@ years should be specified, with cyclones assigned for the year that originated i
 The \code{getStorm()} function returns a \code{Storm} object.
 }
 \description{
-The \code{getStorm()} function allows to extract a specific \code{Storm} object from a \code{StormsList} object.
+The \code{getStorm()} function extracts a specific \code{Storm} object from a \code{StormsList} object.
 }
 \examples{
 \dontrun{

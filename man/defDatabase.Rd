@@ -98,3 +98,15 @@ The \code{defDatabase()} function returns a \code{StormsDataset} object.
 The \code{defDatabase()} function creates a \code{StormsDataset} object from a NetCDF file.
 This is an essential first step before other \code{stormR} functions can be used.
 }
+\examples{
+\dontrun{
+#Creating a `StormsDataset` object with storms between 2010 and 2015 
+#in the South Pacific using the NetCDF provided with the package
+SP_2015_2020<-defDatabase(seasons=c(2010-2015))
+str(SP_2015_2020)
+}
+}
+\references{
+Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS).
+Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
+}

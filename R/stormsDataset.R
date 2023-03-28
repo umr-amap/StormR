@@ -302,7 +302,7 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 #' Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). 
 #' Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
 #' 
-#' @example 
+#' @examples
 #' \dontrun{
 #' #Creating a `StormsDataset` object with storms between 2010 and 2015 
 #' #in the South Pacific using the NetCDF provided with the package
