@@ -14,10 +14,10 @@ getNbStorms(sts)
 \item{sts}{\code{StormsList}}
 }
 \value{
-numeric. The \code{getNbStorms()} returns the number of \code{Storm} objects in the given \code{StormsList} object.
+numeric.
 }
 \description{
-The \code{getNbStorms()} functions allows to get the number of \code{Storm} objects in a \code{StormsList} object.
+The \code{getNbStorms()} returns the number of \code{Storm} objects in the given \code{StormsList} object.
 }
 \examples{
 \dontrun{

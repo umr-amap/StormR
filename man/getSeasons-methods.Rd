@@ -17,10 +17,10 @@ getSeasons(s)
 \item{s}{\code{Storm} or \code{StormsList} object.}
 }
 \value{
-numeric vector. The \code{getSeasons()} function  returns the cyclonic season of each storm in a \code{Storm} or \code{StormsList} object.
+numeric vector.
 }
 \description{
-The \code{getSeasons()} function allows to get the cyclonic seasons of the storms in a \code{Storm} or \code{StormsList} object.
+The \code{getSeasons()} function  returns the cyclonic season of each storm in a \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{
@@ -30,7 +30,7 @@ sds <- defDatabase()
 #Getting storm track data for all storms near New Caledonia
 sts <- Storms(sds=sds, loi = "New Caledonia")
 
-#Getting the cyclonic seasons of the storms from the sts object. 
+#Getting the cyclonic seasons of the storms from the sts object 
 getSeasons(sts)
 }
 }

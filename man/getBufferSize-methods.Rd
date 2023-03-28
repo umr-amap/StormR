@@ -14,11 +14,10 @@ getBufferSize(sts)
 \item{sts}{\code{StormsList}}
 }
 \value{
-numeric. The \code{getBufferSize()} returns the buffer size (in \eqn{km}) used to generate the buffered location
-of interest for a \code{StormsList} object.
+numeric.
 }
 \description{
-The \code{getBufferSize()} allows to get buffer size from a \code{StormsList} object.
+The \code{getBufferSize()} returns the buffer size used to generate the buffered location of interest for a \code{StormsList} object.
 }
 \examples{
 \dontrun{

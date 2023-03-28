@@ -17,10 +17,10 @@ getSSHS(s)
 \item{s}{\code{Storm} or \code{StormsList} object.}
 }
 \value{
-numeric vector. The \code{getSSHS()} function return the maximum Saffir-Simpson hurricane wind scale category reached by each storm in the \code{Storm} or \code{StormsList} object.
+numeric vector.
 }
 \description{
-The \code{getSSHS()} function allows to get the maximum Saffir-Simpson hurricane wind scale category reached by each storm in a \code{Storm} or \code{StormsList} object.
+The \code{getSSHS()} function return the maximum Saffir-Simpson hurricane wind scale category reached by each storm in the \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{
@@ -30,7 +30,8 @@ sds <- defDatabase()
 #Getting storm track data for all storms near New Caledonia
 sts <- Storms(sds=sds, loi = "New Caledonia")
 
-#Getting maximum Saffir-Simpson hurricane wind scale category reached by each storm in the sts object 
+#Getting maximum Saffir-Simpson hurricane wind scale category 
+#reached by each storm in the sts object 
 getSSHS(sts)
 }
 }
