@@ -1,5 +1,5 @@
-
-library(ncdf4)
+suppressWarnings(sds <- defDatabase(verbose = F))
+pam <- Storms(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 msw <- spatialBehaviour(pam, verbose = 0)
 
 test_that("Tests checkInputsWr function", {
@@ -63,10 +63,10 @@ test_that("Function correctly writes a netCDF file for MSW product", {
   # Check that the file was created
   expect_true(file.exists("./PAM_MSW.nc"))
   # Check the longname attribute
-  nc <- nc_open("./PAM_MSW.nc")
-  longname_attr <- ncatt_get(nc, "MSW", "long_name")
+  nc <- ncdf4::nc_open("./PAM_MSW.nc")
+  longname_attr <- ncdf4::ncatt_get(nc, "MSW", "long_name")
   expect_equal(longname_attr$value, "maximum sustained wind (m/s)")
-  nc_close(nc)
+  ncdf4::nc_close(nc)
   # Remove the file after the test is done
   file.remove("./PAM_MSW.nc")
 })
@@ -79,10 +79,10 @@ test_that("Function correctly writes a netCDF file for PDI product", {
   # Check that the file was created
   expect_true(file.exists("./PAM_PDI.nc"))
   # Check the longname attribute
-  nc <- nc_open("./PAM_PDI.nc")
-  longname_attr <- ncatt_get(nc, "PDI", "long_name")
+  nc <- ncdf4::nc_open("./PAM_PDI.nc")
+  longname_attr <- ncdf4::ncatt_get(nc, "PDI", "long_name")
   expect_equal(longname_attr$value, "power dissipation index")
-  nc_close(nc)
+  ncdf4::nc_close(nc)
   # Remove the file after the test is done
   file.remove("./PAM_PDI.nc")
 })
@@ -95,10 +95,10 @@ test_that("Function correctly writes a netCDF file for Exposure product", {
   # Check that the file was created
   expect_true(file.exists("./exposure.nc"))
   # Check the longname attribute
-  nc <- nc_open("./exposure.nc")
-  longname_attr <- ncatt_get(nc, "Exposure", "long_name")
+  nc <- ncdf4::nc_open("./exposure.nc")
+  longname_attr <- ncdf4::ncatt_get(nc, "Exposure", "long_name")
   expect_equal(longname_attr$value, "Wind threshold exposure")
-  nc_close(nc)
+  ncdf4::nc_close(nc)
   # Remove the file after the test is done
   file.remove("./exposure.nc")
 })
@@ -111,10 +111,10 @@ test_that("Function correctly writes a netCDF file for profile product", {
   # Check that the file was created
   expect_true(file.exists("./profile.nc"))
   # Check the longname attribute
-  nc <- nc_open("./profile.nc")
-  longname_attr <- ncatt_get(nc, "Speed", "long_name")
+  nc <- ncdf4::nc_open("./profile.nc")
+  longname_attr <- ncdf4::ncatt_get(nc, "Speed", "long_name")
   expect_equal(longname_attr$value, "radial wind speed")
-  nc_close(nc)
+  ncdf4::nc_close(nc)
   # Remove
   file.remove("./profile.nc")
 })
