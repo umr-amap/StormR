@@ -17,10 +17,10 @@ getNames(s)
 \item{s}{\code{Storm} or \code{StormsList} object.}
 }
 \value{
-character vector. The \code{getNames()} function returns the names of the storms in a \code{Storm} or a \code{StormsList} object.
+character vector.
 }
 \description{
-The \code{getNames()} function allows to get the names of the storms in a \code{Storm} or a \code{StormsList} object.
+The \code{getNames()} function returns the names of the storms in a \code{Storm} or a \code{StormsList} object.
 }
 \examples{
 \dontrun{
@@ -30,7 +30,7 @@ sds <- defDatabase()
 #Getting storm track data for all storms near New Caledonia
 sts <- Storms(sds=sds, loi = "New Caledonia")
 
-#Getting the names of the storms from the sts object. 
+#Getting the names of the storms from the sts object
 getNames(sts)
 }
 }

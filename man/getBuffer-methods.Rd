@@ -17,7 +17,7 @@ getBuffer(sts)
 The \code{getBuffer()} returns a \code{sf} object.
 }
 \description{
-The \code{getBuffer()} function allows to get the buffered location of interest from a \code{StormsList} object.
+The \code{getBuffer()} function returns the buffered location of interest from a \code{StormsList} object.
 }
 \examples{
 \dontrun{

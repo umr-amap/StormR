@@ -25,10 +25,10 @@ if several \code{Storm} in \code{s} object have the same name. Default value is 
 to \code{NULL}}
 }
 \value{
-numeric vector. The \code{getInObs()} function returns the number of the observations in a given \code{Storm} or \code{StormsList} object.
+numeric vector.
 }
 \description{
-The \code{getInObs()} function allows to get the number of the of the observations in a given \code{Storm} or \code{StormsList} object.
+The \code{getInObs()} function returns the number of the observations in a given \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{
