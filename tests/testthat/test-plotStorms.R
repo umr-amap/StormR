@@ -28,6 +28,9 @@ test_that("Test getColors function", {
 
 test_that("Test checkInputsPs function", {
 
+  suppressWarnings(sds <- defDatabase(verbose = F))
+  pam <- Storms(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
+ 
   #Checking sts input
   expect_error(checkInputsPs(names = NULL,
                              category = NULL,
@@ -37,11 +40,10 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
   #Checking names input
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = 2,
                              category = NULL,
                              labels = TRUE,
@@ -50,10 +52,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = "JULIA",
                              category = NULL,
                              labels = TRUE,
@@ -62,11 +63,10 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
   #Checking category input
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = c(1, 6),
                              labels = TRUE,
@@ -75,10 +75,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = c(-10, 5),
                              labels = TRUE,
@@ -87,10 +86,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = 2.5,
                              labels = TRUE,
@@ -99,10 +97,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = "1",
                              labels = TRUE,
@@ -111,10 +108,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = TRUE,
                              labels = TRUE,
@@ -123,12 +119,11 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
 
   #Checking xlim/ylim input
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -137,10 +132,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = "132",
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -149,10 +143,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = 160,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -161,10 +154,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = c(400, 500),
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -173,10 +165,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = "-50",
-                             reset_setting = TRUE))
+                             ylim = "-50"))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -185,10 +176,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = 60,
-                             reset_setting = TRUE))
+                             ylim = 60))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -197,10 +187,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = c(-100, 100),
-                             reset_setting = TRUE))
+                             ylim = c(-100, 100)))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -209,10 +198,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = "TRUE",
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -221,10 +209,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = 1,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = "TRUE",
@@ -233,10 +220,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = 1,
@@ -245,35 +231,11 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
-                             names = NULL,
-                             category = NULL,
-                             labels = TRUE,
-                             by = 8,
-                             pos = 3,
-                             legends = "topleft",
-                             loi = TRUE,
-                             xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = "TRUE"))
-
-  expect_error(checkInputsPs(sts = sts_nc,
-                             names = NULL,
-                             category = NULL,
-                             labels = TRUE,
-                             by = 8,
-                             pos = 3,
-                             legends = "topleft",
-                             loi = TRUE,
-                             xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = 1))
-
+ 
   #Checking by input
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -282,10 +244,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -294,10 +255,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -306,10 +266,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -318,11 +277,10 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
   #Checking pos input
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -331,10 +289,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -343,10 +300,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -355,10 +311,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -367,10 +322,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -379,10 +333,9 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
 
-  expect_error(checkInputsPs(sts = sts_nc,
+  expect_error(checkInputsPs(sts = pam,
                              names = NULL,
                              category = NULL,
                              labels = TRUE,
@@ -391,7 +344,53 @@ test_that("Test checkInputsPs function", {
                              legends = "topleft",
                              loi = TRUE,
                              xlim = NULL,
-                             ylim = NULL,
-                             reset_setting = TRUE))
+                             ylim = NULL))
+  
+  #Checking legends input
+  expect_error(checkInputsPs(sts = pam,
+                             names = NULL,
+                             category = NULL,
+                             labels = TRUE,
+                             by = 8,
+                             pos = 3,
+                             legends = 1,
+                             loi = TRUE,
+                             xlim = NULL,
+                             ylim = NULL))
+  
+  expect_error(checkInputsPs(sts = pam,
+                             names = NULL,
+                             category = NULL,
+                             labels = TRUE,
+                             by = 8,
+                             pos = 3,
+                             legends = TRUE,
+                             loi = TRUE,
+                             xlim = NULL,
+                             ylim = NULL))
+  
+  expect_error(checkInputsPs(sts = pam,
+                             names = NULL,
+                             category = NULL,
+                             labels = TRUE,
+                             by = 8,
+                             pos = 3,
+                             legends = c("topleft", "topright"),
+                             loi = TRUE,
+                             xlim = NULL,
+                             ylim = NULL))
+  
+  expect_error(checkInputsPs(sts = pam,
+                             names = NULL,
+                             category = NULL,
+                             labels = TRUE,
+                             by = 8,
+                             pos = 3,
+                             legends = "top",
+                             loi = TRUE,
+                             xlim = NULL,
+                             ylim = NULL))
+  
+  
 
 })
