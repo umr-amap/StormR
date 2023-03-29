@@ -152,7 +152,7 @@ setMethod("show",
 
 #' Extracting a `Storm`
 #'
-#' The `getStorm()` function allows to extract a specific `Storm` object from a `StormsList` object.
+#' The `getStorm()` function extracts a specific `Storm` object from a `StormsList` object.
 #'
 #' @param sts `StormsList`
 #' @param name character. Name of the storm to extract.
@@ -200,11 +200,11 @@ setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL
 
 #' Getting the number of `Storm`
 #'
-#' The `getNbStorms()` functions allows to get the number of `Storm` objects in a `StormsList` object.
+#' The `getNbStorms()` returns the number of `Storm` objects in the given `StormsList` object.
 #'
 #' @param sts `StormsList`
 #'
-#' @return numeric. The `getNbStorms()` returns the number of `Storm` objects in the given `StormsList` object.
+#' @return numeric.
 #' @export
 #' @docType methods
 #' @rdname getNbStorms-methods
@@ -229,11 +229,11 @@ setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data)
 
 #' Getting the location of interest
 #'
-#' The `getLOI()` functions allows to get the location of interest from a `StormsList` object.
+#' The `getLOI()` functions returns the location of interest for the given `StormsList`.
 #'
 #' @param sts `StormsList` object
 #'
-#' @return sf object. The `getLOI()` functions returns the location of interest for the given `StormsList`.
+#' @return sf object. 
 #' @export
 #' @docType methods
 #' @rdname getLOI-methods
@@ -258,7 +258,7 @@ setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 
 #' Getting the buffered location of interest
 #'
-#' The `getBuffer()` function allows to get the buffered location of interest from a `StormsList` object.
+#' The `getBuffer()` function returns the buffered location of interest from a `StormsList` object.
 #'
 #' @param sts `StormsList`
 #'
@@ -288,12 +288,11 @@ setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.bu
 
 #' Getting the buffer size
 #'
-#' The `getBufferSize()` allows to get buffer size from a `StormsList` object.
+#' The `getBufferSize()` returns the buffer size used to generate the buffered location of interest for a `StormsList` object.
 #'
 #' @param sts `StormsList`
 #'
-#' @return numeric. The `getBufferSize()` returns the buffer size (in \eqn{km}) used to generate the buffered location
-#'   of interest for a `StormsList` object.
+#' @return numeric. 
 #' @export
 #' @docType methods
 #' @rdname getBufferSize-methods
@@ -326,11 +325,11 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 
 #' Getting the names of the storms
 #'
-#' The `getNames()` function allows to get the names of the storms in a `Storm` or a `StormsList` object.
+#' The `getNames()` function returns the names of the storms in a `Storm` or a `StormsList` object.
 #'
 #' @param s `Storm` or `StormsList` object.
 #'
-#' @return character vector. The `getNames()` function returns the names of the storms in a `Storm` or a `StormsList` object.
+#' @return character vector.
 #' @export
 #' @docType methods
 #' @rdname getNames-methods
@@ -342,7 +341,7 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- Storms(sds=sds, loi = "New Caledonia")
 #' 
-#' #Getting the names of the storms from the sts object. 
+#' #Getting the names of the storms from the sts object
 #' getNames(sts)
 #' }
 setGeneric("getNames", function(s) standardGeneric("getNames"))
@@ -361,11 +360,11 @@ setMethod("getNames", signature("StormsList"), function(s){
 
 #' Getting cyclonic seasons of the storms
 #'
-#' The `getSeasons()` function allows to get the cyclonic seasons of the storms in a `Storm` or `StormsList` object.
+#' The `getSeasons()` function  returns the cyclonic season of each storm in a `Storm` or `StormsList` object.
 #'
 #' @param s `Storm` or `StormsList` object.
 #'
-#' @return numeric vector. The `getSeasons()` function  returns the cyclonic season of each storm in a `Storm` or `StormsList` object.
+#' @return numeric vector.
 #' @export
 #' @docType methods
 #' @rdname getSeasons-methods
@@ -377,7 +376,7 @@ setMethod("getNames", signature("StormsList"), function(s){
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- Storms(sds=sds, loi = "New Caledonia")
 #' 
-#' #Getting the cyclonic seasons of the storms from the sts object. 
+#' #Getting the cyclonic seasons of the storms from the sts object 
 #' getSeasons(sts)
 #' }
 setGeneric("getSeasons", function(s) standardGeneric("getSeasons"))
@@ -392,11 +391,11 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 
 #' Getting maximum Saffir-Simpson hurricane wind scale category
 #'
-#' The `getSSHS()` function allows to get the maximum Saffir-Simpson hurricane wind scale category reached by each storm in a `Storm` or `StormsList` object.
+#' The `getSSHS()` function return the maximum Saffir-Simpson hurricane wind scale category reached by each storm in the `Storm` or `StormsList` object.
 #'
 #' @param s `Storm` or `StormsList` object.
 #'
-#' @return numeric vector. The `getSSHS()` function return the maximum Saffir-Simpson hurricane wind scale category reached by each storm in the `Storm` or `StormsList` object.
+#' @return numeric vector.
 #' @export
 #' @docType methods
 #' @rdname getSSHS-methods
@@ -408,7 +407,8 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- Storms(sds=sds, loi = "New Caledonia")
 #' 
-#' #Getting maximum Saffir-Simpson hurricane wind scale category reached by each storm in the sts object 
+#' #Getting maximum Saffir-Simpson hurricane wind scale category 
+#' #reached by each storm in the sts object 
 #' getSSHS(sts)
 #' }
 setGeneric("getSSHS", function(s) standardGeneric("getSSHS"))
@@ -424,7 +424,7 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 
 #' Getting the number of observations
 #'
-#' The getNbObs() function allows to get the number of observations available for a storm in a `Storm` or `StormsList` object.
+#' The getNbObs() function returns the number of observations for a storm in a `Storm` or `StormsList` object.
 #'
 #' @param ... extra arguments for `StormsList`
 #' @param s  `Storm` or `StormsList` object.
@@ -433,7 +433,7 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 #'   if several `Storm` in the `s` have the same name. Default value is set to
 #'   `NULL`.
 #'
-#' @return numeric. The getNbObs() function returns the number of observations for a storm in a `Storm` or `StormsList` object. 
+#' @return numeric. 
 #' @export
 #' @docType methods
 #' @rdname getNbObs-methods
@@ -445,7 +445,7 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- Storms(sds=sds, loi = "New Caledonia")
 #' 
-#' ##Getting the number of observations for the tropical cyclone Niran in the sts object 
+#' #Getting the number of observations for the tropical cyclone Niran in the sts object 
 #' getNbObs(getStorm(sts, name = "NIRAN"))
 #' getNbObs(sts, name = "NIRAN")
 #' }
@@ -462,7 +462,7 @@ setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) 
 
 #' Getting observations
 #'
-#' The `getObs()` function allows to get the observed track data for a storm in a `Storm` or `StormsList` object.
+#' The `getObs()` function returns observed track data for a storm in a `Storm` or `StormsList` object.
 #'
 #' @param ... extra argument for `StormsList`
 #' @param s `Storm` or `StormsList` object
@@ -471,7 +471,7 @@ setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) 
 #'   if several `Storm` in the `s` object have the same name. Default value is set
 #'   to `NULL`.
 #'
-#' @return data.frame. The `getObs()` function returns observed track data for a storm in a `Storm` or `StormsList` object.
+#' @return data.frame. 
 #' @export
 #' @docType methods
 #' @rdname getObs-methods
@@ -499,7 +499,7 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 
 #' Getting the number of the observations
 #'
-#' The `getInObs()` function allows to get the number of the of the observations in a given `Storm` or `StormsList` object.
+#' The `getInObs()` function returns the number of the observations in a given `Storm` or `StormsList` object.
 #'
 #' @param ... extra argument for `StormsList`
 #' @param s `Storm` or `StormsList` object.
@@ -508,7 +508,7 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 #'   if several `Storm` in `s` object have the same name. Default value is set
 #'   to `NULL`
 #'
-#' @return numeric vector. The `getInObs()` function returns the number of the observations in a given `Storm` or `StormsList` object.
+#' @return numeric vector.
 #'
 #' @export
 #' @docType methods

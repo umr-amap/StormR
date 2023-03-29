@@ -51,8 +51,10 @@ checkInputsWr <- function(rast, format, filename, path){
 #' #Creating a StormsDataset
 #' sds <- defDatabase()
 #' 
-#' #Getting storm track data for tropical cyclone Pam (2015) near Vanuatu and computing maximum sustained wind speed
+#' #Getting storm track data for tropical cyclone Pam (2015) near Vanuatu
 #' pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
+#' 
+#' #Computing maximum sustained wind speed
 #' pam.msw <- spatialBehaviour(pam)
 #' 
 #' #Exporting maximum sustained wind speed raster layer to a GeoTIFF file

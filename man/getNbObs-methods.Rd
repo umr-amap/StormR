@@ -25,10 +25,10 @@ if several \code{Storm} in the \code{s} have the same name. Default value is set
 \code{NULL}.}
 }
 \value{
-numeric. The getNbObs() function returns the number of observations for a storm in a \code{Storm} or \code{StormsList} object.
+numeric.
 }
 \description{
-The getNbObs() function allows to get the number of observations available for a storm in a \code{Storm} or \code{StormsList} object.
+The getNbObs() function returns the number of observations for a storm in a \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{
@@ -38,7 +38,7 @@ sds <- defDatabase()
 #Getting storm track data for all storms near New Caledonia
 sts <- Storms(sds=sds, loi = "New Caledonia")
 
-##Getting the number of observations for the tropical cyclone Niran in the sts object 
+#Getting the number of observations for the tropical cyclone Niran in the sts object 
 getNbObs(getStorm(sts, name = "NIRAN"))
 getNbObs(sts, name = "NIRAN")
 }

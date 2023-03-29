@@ -14,10 +14,10 @@ getLOI(sts)
 \item{sts}{\code{StormsList} object}
 }
 \value{
-sf object. The \code{getLOI()} functions returns the location of interest for the given \code{StormsList}.
+sf object.
 }
 \description{
-The \code{getLOI()} functions allows to get the location of interest from a \code{StormsList} object.
+The \code{getLOI()} functions returns the location of interest for the given \code{StormsList}.
 }
 \examples{
 \dontrun{

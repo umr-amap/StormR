@@ -25,10 +25,10 @@ if several \code{Storm} in the \code{s} object have the same name. Default value
 to \code{NULL}.}
 }
 \value{
-data.frame. The \code{getObs()} function returns observed track data for a storm in a \code{Storm} or \code{StormsList} object.
+data.frame.
 }
 \description{
-The \code{getObs()} function allows to get the observed track data for a storm in a \code{Storm} or \code{StormsList} object.
+The \code{getObs()} function returns observed track data for a storm in a \code{Storm} or \code{StormsList} object.
 }
 \examples{
 \dontrun{

@@ -123,8 +123,7 @@ observations. The model considers two regions: inside the eye and at external
 radii, for which the wind formulations use different exponents to better match
 observations. In this model, the wind speed increases as a power function of the
 radius inside the eye and decays exponentially outside the eye after a smooth
-polynomial transition across the eyewall (see also Willoughby 1995, Willoughby
-et al. 2004).
+polynomial transition across the eyewall.
 
 \eqn{\left\{\begin{aligned}
    v_r &= v_m \times \left(\frac{r}{R_m}\right)^{n} \quad if \quad r < R_m \\
@@ -168,7 +167,7 @@ Chen (1994)
 where, \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km})
 
 The Boose et al. (2004) model, or “HURRECON” model, is a modification of the
-Holland (1980) model (see also Boose et al., 2001). In addition to adding
+Holland (1980) model. In addition to adding
 asymmetry, this model treats of water and land differently, using different
 surface friction coefficient for each.
 
@@ -218,29 +217,20 @@ exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
 
 }
 \references{
-Boose, E. R., Chamberlin, K. E., & Foster, D. R. (2001). Landscape and Regional Impacts of Hurricanes in New England. Ecological Monographs,
-71(1), Article 1. [https://doi.org/10.1890/0012-9615(2001)071\link{0027:LARIOH}2.0.CO;2](https://doi.org/10.1890/0012-9615(2001)071\link{0027:LARIOH}2.0.CO;2)
-
 Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
-Ecological Monographs, 74(2), Article 2. \url{https://doi.org/10.1890/02-4057}
+Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
 
 Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
 
 Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
-\url{https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2}
+https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
 
 Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS).
-Bulletin of the American Meteorological Society, 91(3), Article 3. \url{https://doi.org/10.1175/2009bams2755.1}
+Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
 
 Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
 Oceanographical Magazine, 13(2), 103–117.
 
-Willoughby, H. E. (1995). Normal-Mode Initialization of Barotropic Vortex Motion Models. Journal of the Atmospheric Sciences, 52(24),
-4501–4514. \url{https://doi.org/10.1175/1520-0469(1995)052<4501:NMIOBV>2.0.CO;2}
-
-Willoughby, H. E., & Rahn, M. E. (2004). Parametric Representation of the Primary Hurricane Vortex. Part I: Observations and Evaluation of the Holland (1980) Model.
-Monthly Weather Review, 132(12), 3033–3048. \url{https://doi.org/10.1175/MWR2831.1}
-
 Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
-Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. \url{https://doi.org/10.1175/MWR3106.1}
+Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
 }
