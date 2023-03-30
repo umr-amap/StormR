@@ -43,7 +43,7 @@ described below.
 We extract data on the tropical cyclone Pam (2015) nearby Vanuatu as follows:  
 
 ``` {r chunk1}
-sds <- defDatabase()
+sds <- defDatabase(verbose=FALSE)
 st <- Storms(sds=sds,loi = "Vanuatu", names = "PAM",verbose=0)
 ```
 
