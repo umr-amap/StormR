@@ -7,19 +7,18 @@
 #'
 #' @noRd
 #' @param rast SpatRaster
-#' @param format character
 #' @param filename character
 #' @param path character
 #'
 #' @return NULL
-checkInputsWr <- function(rast, format, filename, path){
+checkInputsWr <- function(rast, filename, path){
 
   #Check rast input
   stopifnot("no data to write" = !missing(rast))
 
   #Check format input
-  stopifnot("Invalid format" = format %in% c(".tiff", ".nc"))
-  stopifnot("Only one format can be chosen" = length(format) == 1)
+  format <- strsplit(filename,split=".", fixed = TRUE)[[1]][2]
+  stopifnot("Invalid format" = format %in% c("tiff", "nc"))
 
   #Check filenames
   if(!is.null(filename)){
@@ -31,8 +30,106 @@ checkInputsWr <- function(rast, format, filename, path){
 
 }
 
+#' Write raster to netcdf file
+#'
+#' @noRd
+#' @param rastds SpatRasterDataSet defined from `writeRast`
+#' @param filename character. Output file name. 
+#'
+#' @return NULL
+writeNC <- function(rastds, filename){
+  n <- length(rastds)
+  a <- rastds[[1]]
+  xname = "longitude"
+  yname = "latitude"
+  xunit = "degrees_east"
+  yunit = "degrees_north"
+  xdim <- ncdf4::ncdim_def( xname, xunit, terra::xFromCol(a, 1:ncol(a)) )
+  ydim <- ncdf4::ncdim_def( yname, yunit, terra::yFromRow(a, 1:nrow(a)) )
+  
+  zdimt <- list()
+  first_exposure <- TRUE
+  j <- 1
+  for (i in 1:n) {
+    lyr <- terra::varnames(rastds)[i]
+    product <- strsplit(lyr, split = "_")[[1]][2]
+    storm <- strsplit(lyr, split = "_")[[1]][1]
+    if (product == "Speed"){
+      zdimt[[j]] <- ncdf4::ncdim_def(paste0("time_",storm), "seconds since 1970-1-1 00:00:00", 
+                               rastds[lyr]@ptr$time, unlim=TRUE)   
+      j <- j+1
+    } else if (product == "Exposure" && first_exposure){
+      zdim_exposure <- ncdf4::ncdim_def("sshs", "m.s-1", sshs, unlim=FALSE)  
+      first_exposure <- FALSE
+    }
+  }
+    
+  missval <- -1.175494e38
+  
+  nc <- ncol(a)
+  nr <- nrow(a)
 
+  j <- 1
+  ncvars <- list()
+  for (i in 1:n) {
+    lyr <- terra::varnames(rastds)[i]
+    product <- strsplit(lyr, split = "_")[[1]][2]
+    storm <- strsplit(lyr, split = "_")[[1]][1]
+    if (product %in% c("MSW","PDI")){
+      ncvars[[i]] <- ncdf4::ncvar_def(lyr, terra::units(rastds)[i], 
+                                      list(xdim, ydim), missval, terra::longnames(rastds)[i], 
+                                      prec = "float", compression=NA)
+    } else if (product %in% c("Speed","Direction")){
+      ncvars[[i]] <- ncdf4::ncvar_def(lyr, terra::units(rastds)[i], 
+                                      list(xdim, ydim, zdimt[[j]]), missval, terra::longnames(rastds)[i], 
+                                      prec = "float", compression=NA)
+      if (product == "Direction") j <- j+1
+    } else if (product == "Exposure"){
+      ncvars[[i]] <- ncdf4::ncvar_def(lyr, terra::units(rastds)[i], 
+                                      list(xdim, ydim, zdim_exposure), missval, terra::longnames(rastds)[i], 
+                                      prec = "float", compression=NA)      
+      
+    }
+  }
+  
+  ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
+  
+  ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=TRUE, verbose=FALSE)
+  on.exit(ncdf4::nc_close(ncobj))
 
+  haveprj <- FALSE
+  prj <- terra::crs(rastds[1])
+  prj <- gsub("\n", "", prj)
+  if (prj != "") {
+    haveprj <- TRUE
+    ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "crs_wkt", prj, prec="text")
+    # need for older gdal?
+    ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
+    prj <- rastds[1]@ptr$get_crs("proj4")
+    if (prj != "") {
+      ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", prj, prec='text')
+    }
+    prj <- crs(rastds[1], describe=TRUE)[1,3]
+    if (!is.na(prj)) {
+      ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "epsg_code", prj, prec='text')
+    }
+  }
+
+  e <- terra::ext(rastds)
+  rs <- terra::res(rastds)
+  gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
+  ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "geotransform", gt, prec="text")
+  
+
+    
+  
+  ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
+  pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
+  ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
+  ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
+  
+    
+}
 
 
 #' Exporting rasters to GeoTIFF or NetCDF files
@@ -41,10 +138,10 @@ checkInputsWr <- function(rast, format, filename, path){
 #' GeoTIFF or NetCDF files.
 #'
 #' @param rast `SpatRaster` object.
-#' @param format character. Format of the file to export. Either `".tiff"` (GeoTIFF, default setting) or
-#'   `".nc"` (NetCDF).
-#' @param filename character. Output file name. By default `filename=NULL` and the name of the raster layer is used.
-#' @param path character. Path to the directory where the file is exported to.
+#' @param filename character. Output file name. Can be either a `".tiff"` file (GeoTIFF) or `".nc"` (NetCDF).
+#'  By default `filename=NULL` and the name of the file is generated based on 
+#'  raster information (storms and products) with the '.tiff' extension.
+#' @param path character. Path to the directory where the file is exported to. By default `path=./'`.
 #' @returns `NULL`
 #' @examples
 #' \dontrun{
@@ -69,55 +166,69 @@ checkInputsWr <- function(rast, format, filename, path){
 #' }
 #'
 #' @export
-writeRast <- function(rast, format = ".tiff", filename = NULL, path = "./"){
+writeRast <- function(rast, filename = NULL, path = "./"){
 
-
-  checkInputsWr(rast, format, filename, path)
-
-  name <- strsplit(names(rast), split = "_", fixed = TRUE)[[1]][1]
-  product <- strsplit(names(rast), split = "_", fixed = TRUE)[[1]][2]
-
-  if(format == ".nc"){
-    if(product == "MSW"){
-      varname <- "msw"
-      unit <- "(m/s)"
-      long_name <- "maximum sustained wind (m/s)"
-
-    }else if (product == "PDI"){
-      varname <- "pdi"
-      unit <- "none"
-      long_name <- "power dissipation index"
-
-    }else if (product == "Exposure"){
-      varname <- "exp"
-      unit <- "none"
-      long_name <- paste("Wind threshold exposure")
-
-    }else if (stringr::str_detect(product,"Speed")){
-      varname <- "rws"
-      unit <- "(m/s)"
-      long_name <- "radial wind speed"
-
-    }
-  }
-
+  products_info <- strsplit(names(rast), split = "_", fixed = TRUE)
+  var_names <- unique(rapply(products_info, function(x) paste0(x[1:2], collapse = "_")))
+  # Gather all storms inside raster
+  storm_names <- unique(lapply(var_names, function(x) strsplit(x, split = "_", fixed = TRUE)[[1]][1]))
+  # Gather all products type computed inside raster
+  products <- lapply(var_names, function(x) strsplit(x, split = "_", fixed = TRUE)[[1]][2])
+  
+  # Define output filename
   if(!is.null(filename)){
-    f.name <- paste0(path, filename, format)
+    f.name <- filename
   }else{
-    f.name <- paste0(path, name, "_", product, format)
+    f.name <- paste0(paste(storm_names, collapse = "_"), "_", paste(products, collapse = "_"), ".tiff")
   }
 
-  if (format == ".tiff") {
+  checkInputsWr(rast, f.name, path)
+
+  # Check output format
+  format <- strsplit(f.name,split=".", fixed = TRUE)[[1]][2]
+  
+  if (format == "tiff") {
+    # Write tiff file. Easy !
     terra::writeRaster(x = rast,
-                       filename = f.name,
+                       filename = paste0(path, f.name),
                        overwrite = TRUE)
 
-  } else if (format == ".nc") {
-    terra::writeCDF(x = rast,
-                    varname = product,
-                    longname = long_name,
-                    unit = unit,
-                    filename = f.name,
-                    overwrite = TRUE)
+  } else if (format == "nc") {
+      # Write netcdf file. More tricky !
+      var_units <- c()
+      var_longnames <- c()
+      # We separate all variables by Storm and product
+      for (p in products){
+        if(p == "MSW"){
+          var_units <- c(var_units,"m.s-1")
+          var_longnames <- c(var_longnames,"maximum sustained wind")
+        }else if (p == "PDI"){
+          var_units <- c(var_units,"none")
+          var_longnames <- c(var_longnames,"power dissipation index")
+        }else if (p == "Exposure"){
+          var_units <- c(var_units,"none")
+          var_longnames <- c(var_longnames,"Wind threshold exposure")
+        }else if (p == "Speed"){
+          var_units <- c(var_units,"m.s-1" )
+          var_longnames <- c(var_longnames,"radial wind speed")
+        }else if (p == "Direction"){
+          var_units <- c(var_units,"degree" )
+          var_longnames <- c(var_longnames,"wind direction")
+        }
+      }
+
+      split_vector <- c()
+      for (i in 1:rast@ptr$nlyr()){
+        ind <- which(paste(c(strsplit(rast[[i]]@ptr$names, split = "_", fixed = TRUE)[[1]][1:2]), collapse="_") == var_names)
+        #ind <- which(strsplit(rast[[i]]@ptr$names, split = "_", fixed = TRUE)[[1]][2] == products)
+        split_vector <- c(split_vector, ind)
+      }
+      rastds <- terra::sds(terra::split(x = rast, f= split_vector))
+
+      terra::varnames(rastds) <- var_names
+      terra::units(rastds) <- var_units
+      terra::longnames(rastds) <- var_longnames
+    
+      writeNC(rastds, filename =paste0(path, f.name))
   }
 }
