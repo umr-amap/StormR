@@ -279,7 +279,8 @@ makeTemplateModel <- function(raster_template, buffer, data, index){
                           ymin = data$lat[index] - buffer,
                           ymax = data$lat[index] + buffer,
                           resolution = terra::res(raster_template),
-                          vals = NA)
+                          vals = NA,
+                          time = as.POSIXct(data$isoTimes[index]))
   terra::origin(template) <- c(0,0)
 
   return(template)
@@ -1251,7 +1252,7 @@ spatialBehaviour <- function(sts,
   final.stack.msw <- c()
   final.stack.pdi <- c()
   final.stack.exp <- c()
-  final.stack.prof <- c()
+  final.stack.wind <- c()
 
   if(method == "Boose"){
     #Map for intersection
@@ -1308,7 +1309,7 @@ spatialBehaviour <- function(sts,
     aux.stack.msw <- c()
     aux.stack.pdi <- c()
     aux.stack.exp <- c()
-    aux.stack.prof <- c()
+    aux.stack.speed <- c()
     aux.stack.direction <- c()
 
 
@@ -1351,7 +1352,7 @@ spatialBehaviour <- function(sts,
       if("Profiles" %in% product){
         names(raster.wind) <- paste0(st@name,"_","Speed","_",dataTC$indices[j])
         names(raster.direction) <- paste0(st@name,"_","Direction","_",dataTC$indices[j])
-        aux.stack.prof <- stackRaster(aux.stack.prof, raster.template, raster.wind)
+        aux.stack.speed <- stackRaster(aux.stack.speed, raster.template, raster.wind)
         aux.stack.direction <- stackRaster(aux.stack.direction, raster.template, raster.direction)
       }
 
@@ -1373,11 +1374,13 @@ spatialBehaviour <- function(sts,
       aux.stack.msw <- terra::rast(aux.stack.msw)
       final.stack.msw <- rasterizeProduct("MSW", final.stack.msw, aux.stack.msw,
                                           temp_res, space_res, st@name, NULL)
+      terra::time(final.stack.msw[[length(final.stack.msw)]]) <- terra::time(aux.stack.msw[[1]])
     }
     if("PDI" %in% product){
       aux.stack.pdi <- terra::rast(aux.stack.pdi)
       final.stack.pdi <- rasterizeProduct("PDI", final.stack.pdi, aux.stack.pdi,
                                           temp_res, space_res, st@name, NULL)
+      terra::time(final.stack.pdi[[length(final.stack.pdi)]]) <- terra::time(aux.stack.pdi[[1]])
     }
     if("Exposure" %in% product){
       aux.stack.exp <- terra::rast(aux.stack.exp)
@@ -1385,9 +1388,9 @@ spatialBehaviour <- function(sts,
                                           temp_res, space_res, st@name, wind_threshold)
     }
     if("Profiles" %in% product){
-      aux.stack.prof <- terra::rast(aux.stack.prof)
+      aux.stack.speed <- terra::rast(aux.stack.speed)
       aux.stack.direction <- terra::rast(aux.stack.direction)
-      final.stack.prof <- c(final.stack.prof, aux.stack.prof, aux.stack.direction)
+      final.stack.wind <- c(final.stack.wind, aux.stack.speed, aux.stack.direction)
     }
 
     if(verbose > 0)
@@ -1403,7 +1406,7 @@ spatialBehaviour <- function(sts,
   if("Exposure" %in% product)
     final.stack <- c(final.stack, final.stack.exp)
   if("Profiles" %in% product)
-    final.stack <- c(final.stack, final.stack.prof)
+    final.stack <- c(final.stack, final.stack.wind)
 
   final.stack <- terra::rast(final.stack)
   final.stack <- maskProduct(final.stack, sts@spatial.loi.buffer, raster.template)
