@@ -1463,7 +1463,7 @@ checkInputsTempBehaviour <- function(sts, points, product, wind_threshold, metho
   stopifnot("no data found" = !missing(points))
   stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
   stopifnot("colnames of points must be \"x\" (Eastern degree), \"y\" (Northern degree)" = colnames(points) == c("x","y"))
-  stopifnot("Invalid points coordinates" = points$x >= 0 & points$x <= 360 &
+  stopifnot("Invalid points coordinates" = points$x > -180 & points$x <= 360 &
               points$y >= -90 & points$y <= 90)
 
   #Checking product input
@@ -1869,6 +1869,7 @@ temporalBehaviour <- function(sts,
 
   checkInputsTempBehaviour(sts, points, product, wind_threshold, method, asymmetry, empirical_rmw, temp_res, verbose)
 
+  
   if(verbose >0){
     cat("=== spatialBehaviour processing ... ===\n\n")
     cat("Initializing data ...")
