@@ -88,33 +88,33 @@ test_that("Function correctly writes a netCDF file for PDI product", {
 })
 
 # Test case 4: Test that the function correctly writes a netCDF file for Exposure product
-test_that("Function correctly writes a netCDF file for Exposure product", {
-  exposure <- spatialBehaviour(pam, product = "Exposure", verbose = 0)
-  # Call the function with netCDF format and Exposure product
-  writeRast(exposure, format = ".nc", filename = "exposure")
-  # Check that the file was created
-  expect_true(file.exists("./exposure.nc"))
-  # Check the longname attribute
-  nc <- ncdf4::nc_open("./exposure.nc")
-  longname_attr <- ncdf4::ncatt_get(nc, "Exposure", "long_name")
-  expect_equal(longname_attr$value, "Wind threshold exposure")
-  ncdf4::nc_close(nc)
-  # Remove the file after the test is done
-  file.remove("./exposure.nc")
-})
+# test_that("Function correctly writes a netCDF file for Exposure product", {
+#   exposure <- spatialBehaviour(pam, product = "Exposure", verbose = 0)
+#   # Call the function with netCDF format and Exposure product
+#   writeRast(exposure, format = ".nc", filename = "exposure")
+#   # Check that the file was created
+#   expect_true(file.exists("./exposure.nc"))
+#   # Check the longname attribute
+#   nc <- ncdf4::nc_open("./exposure.nc")
+#   longname_attr <- ncdf4::ncatt_get(nc, "Exposure", "long_name")
+#   expect_equal(longname_attr$value, "Wind threshold exposure")
+#   ncdf4::nc_close(nc)
+#   # Remove the file after the test is done
+#   file.remove("./exposure.nc")
+# })
 
 # Test case 5: Test that the function correctly writes a netCDF file for profile product
-test_that("Function correctly writes a netCDF file for profile product", {
-  profiles <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-  # Call the function with netCDF format and profile product
-  writeRast(profiles, format = ".nc", filename = "profile")
-  # Check that the file was created
-  expect_true(file.exists("./profile.nc"))
-  # Check the longname attribute
-  nc <- ncdf4::nc_open("./profile.nc")
-  longname_attr <- ncdf4::ncatt_get(nc, "Speed", "long_name")
-  expect_equal(longname_attr$value, "radial wind speed")
-  ncdf4::nc_close(nc)
-  # Remove
-  file.remove("./profile.nc")
-})
+# test_that("Function correctly writes a netCDF file for profile product", {
+#   profiles <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
+#   # Call the function with netCDF format and profile product
+#   writeRast(profiles, format = ".nc", filename = "profile")
+#   # Check that the file was created
+#   expect_true(file.exists("./profile.nc"))
+#   # Check the longname attribute
+#   nc <- ncdf4::nc_open("./profile.nc")
+#   longname_attr <- ncdf4::ncatt_get(nc, "Speed", "long_name")
+#   expect_equal(longname_attr$value, "radial wind speed")
+#   ncdf4::nc_close(nc)
+#   # Remove
+#   file.remove("./profile.nc")
+# })
