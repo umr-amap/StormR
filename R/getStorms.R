@@ -659,14 +659,24 @@ convertLoi <- function(loi){
     loi.sf <- sf::st_transform(loi.sf, crs = wgs84)
 
   } else if (identical(class(loi), c("character"))){
-
-    map <- rworldmap::getMap(resolution = "high")
-    id.country <- which(map@data$ADMIN == loi)
-    stopifnot("invalid entry for loi" = length(id.country) > 0)
-    loi.sf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
-    sf::st_crs(loi.sf) = wgs84
+    
+    if(loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL")){
+      poly <- cbind(c(Basins[loi,]$xmin, Basins[loi,]$xmax, Basins[loi,]$xmax, Basins[loi,]$xmin, Basins[loi,]$xmin),
+                    c(Basins[loi,]$ymin, Basins[loi,]$ymin, Basins[loi,]$ymax, Basins[loi,]$ymax, Basins[loi,]$ymin))
+      loi.sf <- sf::st_polygon(list(poly))
+      loi.sf <- sf::st_sfc(loi.sf, crs = 4326)
+      loi.sf <- sf::st_as_sf(loi.sf)
+      
+    }else{
+      map <- rworldmap::getMap(resolution = "high")
+      id.country <- which(map@data$ADMIN == loi)
+      stopifnot("invalid entry for loi" = length(id.country) > 0)
+      loi.sf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
+      sf::st_crs(loi.sf) = wgs84
+    }
 
   }
+  
   #Handling time line for Fiji
   loi.sf <- sf::st_shift_longitude(loi.sf)
 
@@ -680,16 +690,23 @@ convertLoi <- function(loi){
 #' make loi buffer
 #'
 #' @noRd
-#' @param loi sf object. loi input from `StormsList` already converted into sf
+#' @param loi character. loi input from `Storms` 
+#' @param loi.sf sf object. loi input from `Storms` already converted into sf
 #'   object
 #' @param buffer numeric. Buffer size to use (in km)
 #'
 #' @return loi extended with buffer in a sf format
-makeBuffer <- function(loi, buffer){
+makeBuffer <- function(loi, loi.sf, buffer){
 
-    loi.buffer <- sf::st_buffer(loi, dist = buffer)
+  if(loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL")){
+    loi.buffer <- loi.sf
+  }else{
+    loi.buffer <- sf::st_buffer(loi.sf, dist = buffer)
     loi.buffer <- sf::st_shift_longitude(loi.buffer)
+  }
+   
     return(loi.buffer)
+    
 }
 
 
@@ -910,9 +927,10 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' @param sds `StormsDataset` object.
 #' @param loi Location of interest. Can be defined using,
 #' \itemize{
-#' \item character, a country name (e.g., "Vanuatu"),
-#' \item numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)), or
-#' \item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
+#' \item character, a country name (e.g., "Vanuatu")
+#' \item character, a basin name among "NA", "SA", "EP", "WP", "SP", "SI" and "NI"
+#' \item numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2))
+#' \item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile)
 #' }
 #' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere, 
 #' the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both 
@@ -989,9 +1007,16 @@ Storms <- function(sds,
 
   #Converting loi
   loi.sf <- convertLoi(loi)
+  
+  print(loi.sf)
+  plot(loi.sf); axis(1); axis(2);
+  
 
   #Handling buffer
-  loi.sf.buffer <- makeBuffer(loi.sf, max_dist * km)
+  loi.sf.buffer <- makeBuffer(loi, loi.sf, max_dist * km)
+  
+  print(loi.sf.buffer)
+  plot(loi.sf.buffer, add = T); axis(1); axis(2);
 
   if (verbose){
     cat("Done\n")

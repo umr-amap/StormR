@@ -19,9 +19,10 @@ Storms(
 
 \item{loi}{Location of interest. Can be defined using,
 \itemize{
-\item character, a country name (e.g., "Vanuatu"),
-\item numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2)), or
-\item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile).
+\item character, a country name (e.g., "Vanuatu")
+\item character, a basin name among "NA", "SA", "EP", "WP", "SP", "SI" and "NI"
+\item numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2))
+\item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile)
 }}
 
 \item{seasons}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere,
