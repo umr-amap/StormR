@@ -59,7 +59,7 @@ writeNC <- function(rastds, filename){
                                rastds[lyr]@ptr$time, unlim=TRUE)   
       j <- j+1
     } else if (product == "Exposure" && first_exposure){
-      zdim_exposure <- ncdf4::ncdim_def("sshs", "m.s-1", sshs, unlim=FALSE)  
+      zdim_exposure <- ncdf4::ncdim_def("Wind_thresholds", "m.s-1", sshs[1:6], unlim=FALSE)  
       first_exposure <- FALSE
     }
   }
@@ -120,6 +120,30 @@ writeNC <- function(rastds, filename){
   gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
   ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "geotransform", gt, prec="text")
   
+  for (i in 1:n) {
+    a = rastds[i]
+    terra::readStart(a)
+    b <- terra::blocks(a, 4)
+    if (length(ncvars[[i]]$dim) == 3) {
+      for (j in 1:b$n) {
+        d <- readValues(a, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+        d[is.nan(d)] <- NA
+        d <- array(d, c(nc, b$nrows[j], terra::nlyr(rastds[i])))
+        ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j], 1), count=c(nc, b$nrows[j], terra::nlyr(rastds[i])))
+      }
+    } else {
+      for (j in 1:b$n) {
+        d <- readValues(a, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+        d[is.nan(d)] <- NA
+        d <- matrix(d, ncol=b$nrows[j])
+        ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]), count=c(nc, b$nrows[j]))
+      }
+    }
+    readStop(a)
+    if (haveprj) {
+      ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
+    }
+  }
 
     
   
@@ -179,7 +203,7 @@ writeRast <- function(rast, filename = NULL, path = "./"){
   if(!is.null(filename)){
     f.name <- filename
   }else{
-    f.name <- paste0(paste(storm_names, collapse = "_"), "_", paste(products, collapse = "_"), ".tiff")
+    f.name <- paste0(paste(storm_names, collapse = "_"), "_", paste(unique(products), collapse = "_"), ".tiff")
   }
 
   checkInputsWr(rast, f.name, path)
@@ -217,10 +241,10 @@ writeRast <- function(rast, filename = NULL, path = "./"){
         }
       }
 
+      # We recreate a spatRasterDataset, one subDataset is one product for one storm
       split_vector <- c()
       for (i in 1:rast@ptr$nlyr()){
         ind <- which(paste(c(strsplit(rast[[i]]@ptr$names, split = "_", fixed = TRUE)[[1]][1:2]), collapse="_") == var_names)
-        #ind <- which(strsplit(rast[[i]]@ptr$names, split = "_", fixed = TRUE)[[1]][2] == products)
         split_vector <- c(split_vector, ind)
       }
       rastds <- terra::sds(terra::split(x = rast, f= split_vector))
@@ -229,6 +253,7 @@ writeRast <- function(rast, filename = NULL, path = "./"){
       terra::units(rastds) <- var_units
       terra::longnames(rastds) <- var_longnames
     
+      # We write the netcdf file
       writeNC(rastds, filename =paste0(path, f.name))
   }
 }

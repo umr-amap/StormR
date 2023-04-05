@@ -135,5 +135,5 @@ the `writeRast()` function. Here, we export the maximum sustained wind speed in
 the working directory as follows:
 
 ```{r}
-writeRast(ss$PAM_MSW, format=".tiff")
+writeRast(ss$PAM_MSW)
 ```
