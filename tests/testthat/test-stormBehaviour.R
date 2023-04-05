@@ -610,10 +610,10 @@ test_that("Test checkInputsTempBehaviour function", {
 
 test_that("Test computePDI function", {
 
-  expect_equal(computePDI(seq(0,80), 1), 6.48)
-  expect_equal(computePDI(seq(0,80,0.75), 0.75), 6.38)
-  expect_equal(computePDI(seq(0,80,0.5), 0.5), 6.44)
-  expect_equal(computePDI(seq(0,80,0.25), 0.25), 6.42)
+  expect_equal(computePDI(seq(0,80), 1), 20995.2)
+  expect_equal(computePDI(seq(0,80,0.75), 0.75), 20351.403)
+  expect_equal(computePDI(seq(0,80,0.5), 0.5),  20736.8)
+  expect_equal(computePDI(seq(0,80,0.25), 0.25), 20608.2)
 
 })
 

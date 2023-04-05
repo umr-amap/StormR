@@ -295,7 +295,7 @@ test_that("Test makeBuffer function", {
   suppressWarnings(sds <- defDatabase(verbose = F))
   pam <- Storms(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
-  expect_identical(makeBuffer(pam@spatial.loi, 300 * km), pam@spatial.loi.buffer)
+  expect_identical(makeBuffer("Vanuatu",pam@spatial.loi, 300 * km), pam@spatial.loi.buffer)
 
 })
 
