@@ -1008,15 +1008,10 @@ Storms <- function(sds,
   #Converting loi
   loi.sf <- convertLoi(loi)
   
-  print(loi.sf)
-  plot(loi.sf); axis(1); axis(2);
-  
 
   #Handling buffer
   loi.sf.buffer <- makeBuffer(loi, loi.sf, max_dist * km)
   
-  print(loi.sf.buffer)
-  plot(loi.sf.buffer, add = T); axis(1); axis(2);
 
   if (verbose){
     cat("Done\n")
