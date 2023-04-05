@@ -1519,7 +1519,7 @@ computePDI <- function(wind, temp_res){
   #Raising to power 3
   pdi <- wind ** 3
   #Applying both rho and surface drag coefficient
-  pdi <- wind * rho * Cd
+  pdi <- pdi * rho * Cd
   #Integrating over the whole track
   pdi <- sum(pdi, na.rm = T) * temp_res
 
