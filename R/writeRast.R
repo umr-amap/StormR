@@ -109,7 +109,7 @@ writeNC <- function(rastds, filename){
     if (prj != "") {
       ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", prj, prec='text')
     }
-    prj <- crs(rastds[1], describe=TRUE)[1,3]
+    prj <- terra::crs(rastds[1], describe=TRUE)[1,3]
     if (!is.na(prj)) {
       ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "epsg_code", prj, prec='text')
     }
@@ -126,20 +126,20 @@ writeNC <- function(rastds, filename){
     b <- terra::blocks(a, 4)
     if (length(ncvars[[i]]$dim) == 3) {
       for (j in 1:b$n) {
-        d <- readValues(a, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+        d <- terra::readValues(a, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
         d[is.nan(d)] <- NA
         d <- array(d, c(nc, b$nrows[j], terra::nlyr(rastds[i])))
         ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j], 1), count=c(nc, b$nrows[j], terra::nlyr(rastds[i])))
       }
     } else {
       for (j in 1:b$n) {
-        d <- readValues(a, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+        d <- terra::readValues(a, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
         d[is.nan(d)] <- NA
         d <- matrix(d, ncol=b$nrows[j])
         ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]), count=c(nc, b$nrows[j]))
       }
     }
-    readStop(a)
+    terra::readStop(a)
     if (haveprj) {
       ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
     }
