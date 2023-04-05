@@ -66,7 +66,7 @@ GeoTIFF or NetCDF files.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writeRast</span><span class="op">(</span><span class="va">rast</span>, format <span class="op">=</span> <span class="st">".tiff"</span>, filename <span class="op">=</span> <span class="cn">NULL</span>, path <span class="op">=</span> <span class="st">"./"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writeRast</span><span class="op">(</span><span class="va">rast</span>, filename <span class="op">=</span> <span class="cn">NULL</span>, path <span class="op">=</span> <span class="st">"./"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,17 +75,14 @@ GeoTIFF or NetCDF files.</p>
 <dd><p><code>SpatRaster</code> object.</p></dd>
 
 
-<dt>format</dt>
-<dd><p>character. Format of the file to export. Either <code>".tiff"</code> (GeoTIFF, default setting) or
-<code>".nc"</code> (NetCDF).</p></dd>
-
-
 <dt>filename</dt>
-<dd><p>character. Output file name. By default <code>filename=NULL</code> and the name of the raster layer is used.</p></dd>
+<dd><p>character. Output file name. Can be either a <code>".tiff"</code> file (GeoTIFF) or <code>".nc"</code> (NetCDF).
+By default <code>filename=NULL</code> and the name of the file is generated based on
+raster information (storms and products) with the '.tiff' extension.</p></dd>
 
 
 <dt>path</dt>
-<dd><p>character. Path to the directory where the file is exported to.</p></dd>
+<dd><p>character. Path to the directory where the file is exported to. By default <code>path=./'</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
