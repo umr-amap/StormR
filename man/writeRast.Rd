@@ -4,17 +4,16 @@
 \alias{writeRast}
 \title{Exporting rasters to GeoTIFF or NetCDF files}
 \usage{
-writeRast(rast, format = ".tiff", filename = NULL, path = "./")
+writeRast(rast, filename = NULL, path = "./")
 }
 \arguments{
 \item{rast}{\code{SpatRaster} object.}
 
-\item{format}{character. Format of the file to export. Either \code{".tiff"} (GeoTIFF, default setting) or
-\code{".nc"} (NetCDF).}
+\item{filename}{character. Output file name. Can be either a \code{".tiff"} file (GeoTIFF) or \code{".nc"} (NetCDF).
+By default \code{filename=NULL} and the name of the file is generated based on
+raster information (storms and products) with the '.tiff' extension.}
 
-\item{filename}{character. Output file name. By default \code{filename=NULL} and the name of the raster layer is used.}
-
-\item{path}{character. Path to the directory where the file is exported to.}
+\item{path}{character. Path to the directory where the file is exported to. By default \verb{path=./'}.}
 }
 \value{
 \code{NULL}
