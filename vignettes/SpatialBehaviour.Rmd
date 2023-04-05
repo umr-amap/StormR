@@ -1,6 +1,6 @@
 ---
 title: "spatialBehaviour"
-output: html_document
+output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >
    %\VignetteIndexEntry{"spatialBehaviour"}
