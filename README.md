@@ -1,8 +1,9 @@
 
 
-# StormR R package
+# StormR R package <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
+[![codecov](https://codecov.io/github/umr-amap/StormR/branch/master/graph/badge.svg?token=5YMVL4TFB5)](https://codecov.io/github/umr-amap/StormR)
 <!-- badges: end -->
 
 ## Overview
@@ -36,3 +37,4 @@ library(StormR)
 |`temporalBehaviour()`|Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |`StormsList` object|lists of data.frame objects|
 |`spatialBehaviour()`|Computes 2D wind fields and summary statistics over a given location of interest |`StormsList` object|`SpatRaster` object|
 |`plotBehaviour()`|Plots 2D wind fields and summary statistics|`StormsList` + `SpatRaster` objects||
+|`writeRast()`|Exports wind fields and summary statistics to file|`SpatRaster` object|`.tiff` or `.nc` file|
