@@ -3,7 +3,7 @@ title: "Storms"
 output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >
-   %\VignetteIndexEntry{"Storms"}
+   %\VignetteIndexEntry{Storms}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
 ---

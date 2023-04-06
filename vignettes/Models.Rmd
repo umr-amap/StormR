@@ -3,7 +3,7 @@ title: "Models"
 output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >
-   %\VignetteIndexEntry{"Models"}
+   %\VignetteIndexEntry{Models}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
 ---
