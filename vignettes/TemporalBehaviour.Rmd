@@ -3,7 +3,7 @@ title: "temporalBehaviour"
 output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >
-   %\VignetteIndexEntry{"temporalBehaviour"}
+   %\VignetteIndexEntry{temporalBehaviour}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
 ---

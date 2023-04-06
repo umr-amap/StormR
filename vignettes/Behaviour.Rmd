@@ -3,7 +3,7 @@ title: "Behaviour"
 output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >
-   %\VignetteIndexEntry{"Behaviour"}
+   %\VignetteIndexEntry{Behaviour}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
 ---

@@ -3,7 +3,7 @@ title: "spatialBehaviour"
 output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >
-   %\VignetteIndexEntry{"spatialBehaviour"}
+   %\VignetteIndexEntry{spatialBehaviour}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
 ---
