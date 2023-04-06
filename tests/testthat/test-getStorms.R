@@ -215,6 +215,12 @@ test_that("Tests invalid inputs", {
 })
 
 
+test_that("Test numeric vector loi input", {
+  suppressWarnings(sds <- defDatabase(verbose = FALSE))
+  sts <- Storms(sds = sds, loi = c(168.33,-17.73), verbose = 0)
+  expect_identical(getNames(sts), c("PAM","ZENA","LUCAS"))
+  expect_identical(getObs(getStorm(sts, "LUCAS"))$poci[1:6],c(100100,100100,100100,100200,100400,100400))
+})
 
 
 
