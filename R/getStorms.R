@@ -698,7 +698,7 @@ convertLoi <- function(loi){
 #' @return loi extended with buffer in a sf format
 makeBuffer <- function(loi, loi.sf, buffer){
 
-  if(loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL")){
+  if((identical(class(loi), c("character"))) && (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))){
     loi.buffer <- loi.sf
   }else{
     loi.buffer <- sf::st_buffer(loi.sf, dist = buffer)
@@ -1008,10 +1008,10 @@ Storms <- function(sds,
   #Converting loi
   loi.sf <- convertLoi(loi)
   
+ 
+   #Handling buffer
+   loi.sf.buffer <- makeBuffer(loi, loi.sf, max_dist * km)
 
-  #Handling buffer
-  loi.sf.buffer <- makeBuffer(loi, loi.sf, max_dist * km)
-  
 
   if (verbose){
     cat("Done\n")
