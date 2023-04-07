@@ -19,7 +19,7 @@ spatialBehaviour(
 \arguments{
 \item{sts}{\code{StormsList} object}
 
-\item{product}{character. Desired output statistics:
+\item{product}{character vector. Desired output statistics:
 \itemize{
 \item \code{"Profiles"}, for 2D wind speed and direction fields,
 \item \code{"MSW"}, for maximum sustained wind speed (default setting),
