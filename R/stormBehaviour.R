@@ -1012,7 +1012,7 @@ maskProduct <- function(final_stack, loi, template){
 #' It also allows to compute three associated summary statistics.
 #'
 #' @param sts `StormsList` object
-#' @param product character. Desired output statistics:
+#' @param product character vector. Desired output statistics:
 #'   \itemize{
 #'     \item `"Profiles"`, for 2D wind speed and direction fields,
 #'     \item `"MSW"`, for maximum sustained wind speed (default setting),
