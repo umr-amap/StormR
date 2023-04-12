@@ -171,9 +171,9 @@ checkInputsIDb <- function(filename, fields, basin, seasons, unit_conversion, ve
 
   #Optional fields
   if(("basin" %in% names(fields)) & is.null(basin)){
-    warning("No basin argument specified, Cannot use basin filtering when collecting data")
+    warning("No basin argument specified. StormR will work as expected but cannot use basin filtering for speed-up when collecting data")
   }else if(!("basin" %in% names(fields)) & !is.null(basin)){
-    stop("No basin field in `fields` input specified, Cannot use basin filtering when collecting data")
+    stop("No basin field in `fields` input specified. StormR will work as expected but cannot use basin filtering for speed-up when collecting data")
   }
 
 

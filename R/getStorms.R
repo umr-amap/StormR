@@ -179,14 +179,11 @@ setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getSt
 #' @rdname getStorm-methods
 setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL){
   if(!is.null(season)){
-    w = which(getNames(sts) == name)
-    for(i in 1:length(w)){
-      if(getSeasons(sts@data[[w[i]]]) == season){
-        j = w[i]
-        break
-      }
+    if (getSeasons(sts)[[name]] == season){
+      sts@data[[name]]
+    } else {
+      stop(paste("No cyclone named", name, "for season", season)) 
     }
-    sts@data[[j]]
   }else{
     if(length(which(getNames(sts) == name)) > 1)
       stop(paste("More than 1 storm named",name, ".Please specify season\n"))
@@ -651,7 +648,7 @@ convertLoi <- function(loi){
 
     if(loi[1] < 0){
       loi[1] <- loi[1] + 360
-      warning("longitude coordinate for loi set between 0 and 360 degree")
+      warning("longitude coordinate for loi has been corrected and set between 0 and 360 degree")
     }
     loi.df <- data.frame(lon = loi[1], lat = loi[2])
     loi.sf <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
@@ -774,33 +771,16 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 #'
 #' @noRd
 #' @param msw numeric maximum sustained wind
+#' @param scale list of values that defines the scale intensity of the storm, e.g. `sshs`
 #'
 #' @return numeric, sshs
-computeSSHS <- function(msw){
+computeScaleIndice <- function(msw, scale){
 
   if (is.na(msw)) {
     res <- NA
 
-  } else if (msw < sshs[1]) {
-    res <- -1
-
-  } else if (msw >= sshs[1] & msw < sshs[2]) {
-    res <- 0
-
-  } else if (msw >= sshs[2] & msw < sshs[3]) {
-    res <- 1
-
-  } else if (msw >= sshs[3] & msw < sshs[4]) {
-    res <- 2
-
-  } else if (msw >= sshs[4] & msw < sshs[5]) {
-    res <- 3
-
-  } else if (msw >= sshs[5] & msw < sshs[6]) {
-    res <- 4
-
-  } else if (msw >= sshs[6]) {
-    res <- 5
+  } else {
+    res <- findInterval(msw, scale) - 1
   }
 
   return(res)
@@ -878,7 +858,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
     if("sshs" %in% names(sds@fields)){
       storm@obs.all$sshs <- sds@database$sshs[valid_indices, index]
     }else{
-      storm@obs.all$sshs <- unlist(lapply(X = storm@obs.all$msw, FUN = computeSSHS))
+      storm@obs.all$sshs <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = sshs))
     }
 
     if("rmw" %in% names(sds@fields))
