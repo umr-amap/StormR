@@ -10,35 +10,19 @@
 #'
 #' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
+#' @param scale list of values that defines the scale intensity of the storm, e.g. `sshs`
 #'
 #' @return color associated with the observation
-getColors <- function(msw) {
+getColors <- function(msw, scale) {
 
   if (is.na(msw)) {
     color <- NA
 
-  } else if (msw < sshs[1]) {
-    color <- sshsPalette[1]
-
-  } else if (msw >= sshs[1] & msw < sshs[2]) {
-    color <- sshsPalette[2]
-
-  } else if (msw >= sshs[2] & msw < sshs[3]) {
-    color <- sshsPalette[3]
-
-  } else if (msw >= sshs[3] & msw < sshs[4]) {
-    color <- sshsPalette[4]
-
-  } else if (msw >= sshs[4] & msw < sshs[5]) {
-    color <- sshsPalette[5]
-
-  } else if (msw >= sshs[5] & msw < sshs[6]) {
-    color <- sshsPalette[6]
-
-  } else if (msw >= sshs[6]) {
-    color <- sshsPalette[7]
+  } else {
+    i <- findInterval(msw, scale)
+    color <- sshsPalette[i]
   }
-
+    
   return(color)
 }
 
@@ -62,7 +46,7 @@ plotTrack <- function(st) {
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
-  colors <- unlist(lapply(msw, getColors))
+  colors <- unlist(lapply(msw, getColors, scale = sshs))
 
   graphics::lines(
     lon,
