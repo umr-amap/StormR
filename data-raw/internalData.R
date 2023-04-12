@@ -14,7 +14,7 @@ psi2pa <- 6895
 atm2pa <- 101300
 km <- 1000
 wgs84 <- 4326
-sshs <- c(18, 33, 42, 49, 58, 70, 100)
+sshs <- c(18, 33, 42, 49, 58, 70)
 
 Basins <- data.frame(row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"),
                     xmin = c(270, 290, 180, 100, 135, 10, 30, 0),
@@ -29,7 +29,7 @@ margin <- c(4, 12, 4, 8)
 oceanColor <- "white"
 groundColor <- "grey"
 
-sshsPalette <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
+sshsPalette <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20")
 
 
 palette <- c("#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
