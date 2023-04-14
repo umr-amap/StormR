@@ -1,6 +1,4 @@
-## code to prepare `basins` dataset goes here
-
-
+## Various data needed by StormR
 
 #Data for routines
 resolutions = c("30sec" = 0.00833333, "2.5min" = 0.04166667, "5min" = 0.08333333, "10min" = 0.1666667)
