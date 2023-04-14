@@ -20,7 +20,7 @@ getColors <- function(msw, scale) {
 
   } else {
     i <- findInterval(msw, scale)
-    color <- sshsPalette[i]
+    color <- sshsPalette[i+1]
   }
     
   return(color)
