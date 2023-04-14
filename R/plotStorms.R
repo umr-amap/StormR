@@ -301,8 +301,8 @@ plotStorms <- function(sts,
             col = groundColor,
             bg = oceanColor,
             wrap = c(0, 360),
-            xlim = c(ext$xmin-1, ext$xmax+1),
-            ylim = c(ext$ymin-1, ext$ymax+1))
+            xlim = c(ext$xmin-1, ext$xmax+1), # we extend W & E by 1°
+            ylim = c(ext$ymin-1, ext$ymax+1)) # we extend S & N by 1°
   maps::map.axes(cex.axis = 1)
 
   #Plotting loi
