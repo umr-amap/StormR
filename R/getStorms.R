@@ -1095,8 +1095,8 @@ Storms <- function(sds,
         for(i in 1:getNbStorms(sts)){
           n = getNames(sts@data[[i]])
           s = getSeasons(sts@data[[i]])
-          sshs = getSSHS(sts@data[[i]])
-          cat("       ",n,"-", s, "-", sshs, "-",length(getInObs(sts, n, s)),"\n")
+          sshsv = getSSHS(sts@data[[i]])
+          cat("       ",n,"-", s, "-", sshsv, "-",length(getInObs(sts, n, s)),"\n")
         }
         cat("\n")
       }
