@@ -55,7 +55,19 @@ test_that("Test Willougbhy / Holland / Boose functions", {
 
 })
 
+test_that("Test spatialBehaviour function", {
+  suppressWarnings(sds <- defDatabase(verbose = FALSE))
+  pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
+  sb <- spatialBehaviour(pam, method = "Holland")
+  
+  expect_equal(sb@ptr[["range_min"]], 6.846)
+  expect_equal(sb@ptr[["range_max"]], 76.73394)
 
+  sb <- spatialBehaviour(pam, method = "Boose")
+  expect_equal(sb@ptr[["range_min"]], 8.086)
+  expect_equal(sb@ptr[["range_max"]], 73.80468)
+
+})
 
 
 
@@ -307,6 +319,21 @@ test_that("Test computeDirection function", {
 })
 
 
+test_that("Test computeDirectionBoose function", {
+
+  expect_equal(computeDirectionBoose(1, 1, 30, 1), 275)
+  expect_equal(computeDirectionBoose(1, 1, 30, 0), 295)
+  expect_equal(computeDirectionBoose(1, -1, 30, 1), 5)
+  expect_equal(computeDirectionBoose(1, -1, 30, 0), 25)
+  expect_equal(computeDirectionBoose(-1, 1, 30, 1), 185)
+  expect_equal(computeDirectionBoose(-1, 1, 30, 0), 205)
+
+  expect_equal(computeDirectionBoose(1, 1, -30, 1), 175)
+  expect_equal(computeDirectionBoose(1, 1, -30, 0), 155)
+  expect_equal(computeDirectionBoose(-1, -1, -30, 1), 355)
+  expect_equal(computeDirectionBoose(-1, -1, -30, 0), 335)
+
+})
 
 
 
