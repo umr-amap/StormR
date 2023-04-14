@@ -89,7 +89,7 @@ It also allows to compute three associated summary statistics.
 \details{
 Storm track data sets, such as those extracted from IBRTrACKS (Knapp et
 al., 2010), usually provide observation at a 3- or 6-hours temporal
-resolution. In the spatialBehaviour() function, linear interpolations are
+resolution. In the temporalBehaviour() function, linear interpolations are
 used to reach the temporal resolution specified in the \code{temp_res} argument
 (default value = 1 hour).
 
