@@ -221,8 +221,8 @@ plotBehaviour <- function(sts,
   plot(raster_product,
        col = col,
        type = "continuous",
-       xlim = c(xmin, xmax),
-       ylim = c(ymin, ymax),
+       xlim = c(xmin - 1, xmax + 1), # we extend W & E by 1°. Needs to be in agreement with plotStorm
+       ylim = c(ymin - 1, ymax + 1), # we extend S & N by 1°. Needs to be in agreement with plotStorm
        alpha = 0.7,
        axes = FALSE,
        range = range,
