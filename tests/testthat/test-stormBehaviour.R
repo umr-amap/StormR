@@ -58,14 +58,14 @@ test_that("Test Willougbhy / Holland / Boose functions", {
 test_that("Test spatialBehaviour function", {
   suppressWarnings(sds <- defDatabase(verbose = FALSE))
   pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-  sb <- spatialBehaviour(pam, method = "Holland")
+  sb <- spatialBehaviour(pam, method = "Holland", verbose = 0)
   
   expect_equal(sb@ptr[["range_min"]], 6.846)
-  expect_equal(sb@ptr[["range_max"]], 76.73394)
+  expect_equal(sb@ptr[["range_max"]], 76.733942)
 
-  sb <- spatialBehaviour(pam, method = "Boose")
+  sb <- spatialBehaviour(pam, method = "Boose", verbose = 0)
   expect_equal(sb@ptr[["range_min"]], 8.086)
-  expect_equal(sb@ptr[["range_max"]], 73.80468)
+  expect_equal(sb@ptr[["range_max"]], 73.804678)
 
 })
 
