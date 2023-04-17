@@ -1715,7 +1715,7 @@ finalizeResult <- function(final_result, result, product, points, isoT, indices,
 #'
 #'@details  Storm track data sets, such as those extracted from IBRTrACKS (Knapp et
 #'   al., 2010), usually provide observation at a 3- or 6-hours temporal
-#'   resolution. In the spatialBehaviour() function, linear interpolations are
+#'   resolution. In the temporalBehaviour() function, linear interpolations are
 #'   used to reach the temporal resolution specified in the `temp_res` argument
 #'   (default value = 1 hour).
 #'   
@@ -1874,7 +1874,7 @@ temporalBehaviour <- function(sts,
 
   
   if(verbose >0){
-    cat("=== spatialBehaviour processing ... ===\n\n")
+    cat("=== temporalBehaviour processing ... ===\n\n")
     cat("Initializing data ...")
   }
 

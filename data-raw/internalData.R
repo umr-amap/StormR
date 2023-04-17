@@ -1,6 +1,4 @@
-## code to prepare `basins` dataset goes here
-
-
+## Various data needed by StormR
 
 #Data for routines
 resolutions = c("30sec" = 0.00833333, "2.5min" = 0.04166667, "5min" = 0.08333333, "10min" = 0.1666667)
@@ -14,7 +12,7 @@ psi2pa <- 6895
 atm2pa <- 101300
 km <- 1000
 wgs84 <- 4326
-sshs <- c(18, 33, 42, 49, 58, 70, 100)
+sshs <- c(18, 33, 42, 49, 58, 70)
 
 Basins <- data.frame(row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"),
                     xmin = c(270, 290, 180, 100, 135, 10, 30, 0),
@@ -51,7 +49,7 @@ exposurePalette <- rev(viridis::viridis(50))
 
 #Data for test functions
 suppressWarnings(sds <- defDatabase())
-pam <- Storms(sds, loi = "Vanuatu", names = "PAM")
+pam <- Storms(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 df_getDataInterpolate <-getDataInterpolate(pam@data[["PAM"]], seq(26,49), 4, 3, FALSE, "Willoughby")
 
 usethis::use_data(resolutions,
