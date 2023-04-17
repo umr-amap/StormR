@@ -217,12 +217,11 @@ plotBehaviour <- function(sts,
   graphics::title(leg)
 
   
-  
-  plot(raster_product,
+  terra::plot(raster_product,
        col = col,
        type = "continuous",
-       xlim = c(xmin, xmax),
-       ylim = c(ymin, ymax),
+       xlim = c(xmin - 1, xmax + 1),
+       ylim = c(ymin - 1, ymax + 1),
        alpha = 0.7,
        axes = FALSE,
        range = range,
