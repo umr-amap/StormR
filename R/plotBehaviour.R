@@ -58,19 +58,19 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
   #Checking color_palette input
   if(!is.null(color_palette))
     stopifnot("color_palette must be character" = identical(class(color_palette),"character"))
-  
+
   #Checking main input
   if(!is.null(main)){
     stopifnot("main must be character" = identical(class(main),"character"))
     stopifnot("main must be length 1" = length(main) == 1)
   }
-  
+
   #Checking legend
   stopifnot("legends must be character" = identical(class(legends), "character"))
   stopifnot("legends must be length 1" = length(legends) == 1)
   stopifnot("legends must be either topright, topleft, bottomleft, bottomright, or none" = legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none"))
-  
-  
+
+
 
 }
 
@@ -79,33 +79,33 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 
 
 
-#'Plotting spatial wind behaviour 
+#'Plotting spatial wind behaviour
 #'
-#'The `plotBehaviour()` function allows plotting spatial statistics generated using 
+#'The `plotBehaviour()` function allows plotting spatial statistics generated using
 #'the `spatialBehaviour()` function and stored in `SpatRaster` objects.
 #'
 #'@param sts `StormsList` object.
-#'@param raster_product layer name in a `SpatRaster` object. The names of the layers follow 
-#'the following terminology: 
+#'@param raster_product layer name in a `SpatRaster` object. The names of the layers follow
+#'the following terminology:
 #' \itemize{
 #'    \item for "MSW" or "PDI", the name of the storm in capital letters and the name of the statistic separated by underscores (e.g., "PAM_MSW", "PAM_PDI"),
 #'    \item for duration of exposure, the name of the storm in capital letters, "Exposure", and the threshold value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...).
 #'    \item for wind profiles, the name of the storm in capital letters, "Speed" or "Direction", and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41",...).
 #' }
-#'@param color_palette character vector. The color palette used to plot the raster layer. If `color_palette=NULL` (default setting), 
+#'@param color_palette character vector. The color palette used to plot the raster layer. If `color_palette=NULL` (default setting),
 #'the default color palette is used.
 #'@param main character. Title of the plot. If `main=NULL` (default setting),
 #'a default title is generated based on the name of the layer.
 #'@param xlim numeric vector. The x limits of the plot.
 #'@param ylim numeric vector. The y limits of the plot.
-#'@param labels logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name 
+#'@param labels logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name
 #'of the storm and the indices and ISO times of the observation.
-#'@param by numeric. If `labels=TRUE`, defines the frequency at which labels are plotted. 
+#'@param by numeric. If `labels=TRUE`, defines the frequency at which labels are plotted.
 #'Default value is set to `8` which corresponds to a 24h (or 48h) time interval between the labelled observations
 #'when observations are made every 3 (or 6) hours.
-#'@param pos numeric. If `labels=TRUE`, defines the position of the labels, `1` (above the observation), 
+#'@param pos numeric. If `labels=TRUE`, defines the position of the labels, `1` (above the observation),
 #'`2` (on the left), `3` (below, default setting), and `4` (on the right).
-#'@param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting), 
+#'@param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting),
 #'`"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #'
 #'@returns NULL
@@ -114,10 +114,10 @@ checkInputsPb <- function(sts, raster_product, xlim, ylim, labels, by, pos, colo
 #' \dontrun{
 #' #Creating a StormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #'#Getting storm track data for tropical cyclone Pam (2015)
 #' pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
-#' 
+#'
 #' #Plotting maximum sustained wind speed for Pam (2015) near Vanuatu
 #' pam.msw <- spatialBehaviour(pam, verbose = 0)
 #' plotBehaviour(pam, pam.msw)
@@ -209,19 +209,19 @@ plotBehaviour <- function(sts,
 
   if(!is.null(color_palette))
     col <- color_palette
-  
+
   if(!is.null(main))
     leg <- main
 
   #Adding title
   graphics::title(leg)
 
-  
+
   terra::plot(raster_product,
        col = col,
        type = "continuous",
-       xlim = c(xmin - 1, xmax + 1),
-       ylim = c(ymin - 1, ymax + 1),
+       xlim = c(xmin - 1, xmax + 1), # we extend W & E by 1°. Needs to be in agreement with plotStorm
+       ylim = c(ymin - 1, ymax + 1), # we extend S & N by 1°. Needs to be in agreement with plotStorm
        alpha = 0.7,
        axes = FALSE,
        range = range,
@@ -268,5 +268,5 @@ plotBehaviour <- function(sts,
                      cex = 0.6)
     }
   }
-  
+
 }

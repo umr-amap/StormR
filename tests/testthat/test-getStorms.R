@@ -252,6 +252,7 @@ test_that("StormsList class getters", {
   
 
   expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
+  expect_error(getStorm(sts_nc, "NIRAN", 2015))
   expect_identical(getNames(sts_nc), c("PAM", "SOLO", "ULA", "UESI", "GRETEL", "LUCAS", "NIRAN"))
   expect_identical(getSeasons(sts_nc), c("PAM" = 2015, "SOLO" = 2015, "ULA" = 2016, "UESI" = 2020, "GRETEL" = 2020, "LUCAS" = 2021, "NIRAN" = 2021))
   expect_identical(getSSHS(sts_nc), c("PAM" = 5, "SOLO" = 0, "ULA" = 4, "UESI" = 1, "GRETEL" = 1, "LUCAS" = 1, "NIRAN" = 5))
@@ -319,11 +320,33 @@ test_that("Test convert loi function", {
   suppressWarnings(sds <- defDatabase(verbose = F))
   pam <- Storms(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
   
-
+  expect_warning(convertLoi(c(-30,20)))
   expect_identical(convertLoi("Vanuatu"), pam@spatial.loi)
+  expect_identical(sf::st_crs(convertLoi(eezNC))$input, "EPSG:4326")
+  expect_identical(sf::st_coordinates(convertLoi("SP")), sf::st_coordinates(sf::st_sf(sf::st_sfc(sf::st_polygon(list(rbind(c(135,-60), c(290,-60), c(290,0), c(135,0), c(135,-60))))))))
 
+  Sr1 = sp::Polygon(rbind(c(135,-60), c(290,-60), c(290,0), c(135,0), c(135,-60)))
+  Sr2 = sp::Polygon(rbind(c(180,0), c(290,0), c(290,60), c(180,60), c(180,0)), hole = TRUE)
+  Srs1 = sp::Polygons(list(Sr1), "s1")
+  Srs2 = sp::Polygons(list(Sr2), "s2")
+  SpP = sp::SpatialPolygons(list(Srs1,Srs2), 1:2, proj4string=CRS(as.character("wgs84")))
+  centroids <- sp::coordinates(SpP)
+  x <- centroids[,1]
+  y <- centroids[,2]
+  z <- 1.4 + 0.1*x + 0.2*y + 0.002*x*x
+  test <- SpatialPolygonsDataFrame(SpP,
+          data=data.frame(x=x, y=y, z=z, row.names=row.names(SpP)))
+  expect_identical(sf::st_crs(convertLoi(test))$input, "EPSG:4326")
 })
 
+
+test_that("Test computeScaleIndice function", {
+  expect_equal(computeScaleIndice(49, sshs), 3)
+  expect_equal(computeScaleIndice(10, sshs), -1)
+  expect_equal(computeScaleIndice(100, sshs), 5)
+}
+
+)
 
 
 

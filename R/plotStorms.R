@@ -10,33 +10,17 @@
 #'
 #' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
+#' @param scale list of values that defines the scale intensity of the storm, e.g. `sshs`
 #'
 #' @return color associated with the observation
-getColors <- function(msw) {
+getColors <- function(msw, scale) {
 
   if (is.na(msw)) {
     color <- NA
 
-  } else if (msw < sshs[1]) {
-    color <- sshsPalette[1]
-
-  } else if (msw >= sshs[1] & msw < sshs[2]) {
-    color <- sshsPalette[2]
-
-  } else if (msw >= sshs[2] & msw < sshs[3]) {
-    color <- sshsPalette[3]
-
-  } else if (msw >= sshs[3] & msw < sshs[4]) {
-    color <- sshsPalette[4]
-
-  } else if (msw >= sshs[4] & msw < sshs[5]) {
-    color <- sshsPalette[5]
-
-  } else if (msw >= sshs[5] & msw < sshs[6]) {
-    color <- sshsPalette[6]
-
-  } else if (msw >= sshs[6]) {
-    color <- sshsPalette[7]
+  } else {
+    i <- findInterval(msw, scale)
+    color <- sshsPalette[i+1]
   }
 
   return(color)
@@ -62,7 +46,7 @@ plotTrack <- function(st) {
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
-  colors <- unlist(lapply(msw, getColors))
+  colors <- unlist(lapply(msw, getColors, scale = sshs))
 
   graphics::lines(
     lon,
@@ -183,7 +167,7 @@ checkInputsPs <- function(sts, names, category, labels, by,
   stopifnot("pos must be numeric" = identical(class(pos), "numeric"))
   stopifnot("pos must length 1" = length(pos) == 1)
   stopifnot("pos must be between either 1, 2, 3 or 4" = pos %in% c(1, 2, 3, 4))
-  
+
   #Checking legend
   stopifnot("legends must be character" = identical(class(legends), "character"))
   stopifnot("legends must be length 1" = length(legends) == 1)
@@ -200,7 +184,7 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #'
 #' This `plotStorms()` function allows plotting storm track data stored in a `StormsList` object.
 #'
-#' @param sts `StormsList` object 
+#' @param sts `StormsList` object
 #' @param names character vector. Name(s) of the storm(s) in capital letters.
 #'  If `names = NULL` (default setting), all storms are plotted.
 #' @param category numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
@@ -217,9 +201,9 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #'  If `category=NULL` (default setting), all storms are plotted.
 #' @param xlim numeric vector. The x limits of the plot.
 #' @param ylim numeric vector. The y limits of the plot.
-#' @param labels logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name 
+#' @param labels logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name
 #' of the storm and the indices and ISO times of the observation.
-#' @param by numeric. If `labels=TRUE`, defines the frequency at which labels are plotted. 
+#' @param by numeric. If `labels=TRUE`, defines the frequency at which labels are plotted.
 #' Default value is set to `8` which corresponds to a 24h (or 48h) time interval between the labelled observations
 #' when observations are made every 3 (or 6) hours.
 #' @param pos numeric. If `labels=TRUE`, defines the position of the labels, `1` (above the observation),
@@ -233,17 +217,17 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #' \dontrun{
 #' #' #Creating a StormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for tropical cyclone Pam (2015)
 #' pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
-#' 
+#'
 #' #Plotting Pam over Vanuatu with labels every 24h
 #' plotStorms(pam, labels = TRUE)
 #'
 #' #Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 #' plotStorms(pam, labels = TRUE, by = 2, pos = 4)
 #' }
-#' 
+#'
 #'
 #' @export
 plotStorms <- function(sts,
@@ -309,19 +293,18 @@ plotStorms <- function(sts,
       sts.aux <- sts@data
     }
   }
-  
-  
+
+
   #Plotting base map
   world <- rworldmap::getMap(resolution = "high")
- 
+
   maps::map(world,
             fill = TRUE,
             col = groundColor,
             bg = oceanColor,
             wrap = c(0, 360),
-            xlim = c(ext$xmin - 1 , ext$xmax + 1),
-            ylim = c(ext$ymin - 1, ext$ymax + 1))
-  
+            xlim = c(ext$xmin-1, ext$xmax+1), # we extend W & E by 1°
+            ylim = c(ext$ymin-1, ext$ymax+1)) # we extend S & N by 1°
   maps::map.axes(cex.axis = 1)
 
 
@@ -358,5 +341,5 @@ plotStorms <- function(sts,
                      bty = "n")
 
   }
-  
+
 }
