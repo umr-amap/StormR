@@ -38,3 +38,6 @@ library(StormR)
 |`spatialBehaviour()`|Computes 2D wind fields and summary statistics over a given location of interest |`StormsList` object|`SpatRaster` object|
 |`plotBehaviour()`|Plots 2D wind fields and summary statistics|`StormsList` + `SpatRaster` objects||
 |`writeRast()`|Exports wind fields and summary statistics to file|`SpatRaster` object|`.tiff` or `.nc` file|
+
+## Funding
+This work was supported by Hermon Slade Foundation, [grant HSF 19105](http://www.hermonslade.org.au/hsf-19105/).
