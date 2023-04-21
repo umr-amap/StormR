@@ -3,699 +3,901 @@
 
 
 test_that("Test checkInputsIDb function", {
-  
-  
-  #Checking filename input
-  expect_error(checkInputsIDb(fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = 1,
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = T,
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  
-  expect_error(checkInputsIDb(filename = c("data", ".nc"),
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  #Checking fields input
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields =  1,
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = T,
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt2ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm2km",
-                                                  pressure="mb_to_pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure="mb2pa",
-                                                  poci="mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb2pa"),
-                              verbose = TRUE))
-  
-  #Checking basin input
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = 1,
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = T,
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = c("NA", "WP"),
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "basin",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  #Checking seasons
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = 2000,
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(2020,2000),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c("2000", "2020"),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = TRUE,
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  
-  #Checking unit_conversion input
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = 1,
-                              verbose = TRUE))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = T,
-                              verbose = TRUE))
-  
-  
-  #Checking verbose input
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = 1,
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = 1))
-  
-  expect_error(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = 1,
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = "1"))
-  
-  #Warnings
-  expect_warning(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "pressure" = "usa_pres",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_warning(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "poci" = "usa_poci"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
-  expect_warning(checkInputsIDb(filename = "database.nc",
-                              fields = c("basin" = "basin",
-                                         "names" = "name",
-                                         "seasons" = "season",
-                                         "isoTime" = "iso_time",
-                                         "lon" = "usa_lon",
-                                         "lat" = "usa_lat",
-                                         "msw" = "usa_wind",
-                                         "sshs" = "usa_sshs",
-                                         "rmw" = "usa_rmw",
-                                         "pressure" = "usa_pres"),
-                              basin = "SP",
-                              seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                              unit_conversion = c(msw = "knt_to_ms",
-                                                  rmw = "nm_to_km",
-                                                  pressure = "mb_to_pa",
-                                                  poci = "mb_to_pa"),
-                              verbose = TRUE))
-  
+  # Checking filename input
+  expect_error(checkInputsIDb(
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
 
+  expect_error(checkInputsIDb(
+    filename = 1,
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = TRUE,
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+
+  expect_error(checkInputsIDb(
+    filename = c("data", ".nc"),
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  # Checking fields input
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = 1,
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = TRUE,
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb_to_pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb_to_pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = TRUE,
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = TRUE
+  ))
+
+  # Checking basin input
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = 1,
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = TRUE,
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = c("NA", "WP"),
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "basin",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  # Checking seasons
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = 2000,
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(2020, 2000),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c("2000", "2020"),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = TRUE,
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+
+  # Checking unitConversion input
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = 1,
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = TRUE,
+    verbose = 1
+  ))
+
+
+  # Checking verbose input
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = 1,
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_error(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = 1,
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = "1"
+  ))
+
+  # Warnings
+  expect_warning(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "pressure" = "usa_pres",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_warning(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "poci" = "usa_poci"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
+
+  expect_warning(checkInputsIDb(
+    filename = "database.nc",
+    fields = c(
+      "basin" = "basin",
+      "names" = "name",
+      "seasons" = "season",
+      "isoTime" = "iso_time",
+      "lon" = "usa_lon",
+      "lat" = "usa_lat",
+      "msw" = "usa_wind",
+      "sshs" = "usa_sshs",
+      "rmw" = "usa_rmw",
+      "pressure" = "usa_pres"
+    ),
+    basin = "SP",
+    seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+    unitConversion = c(
+      msw = "knt2ms",
+      rmw = "nm2km",
+      pressure = "mb2pa",
+      poci = "mb2pa"
+    ),
+    verbose = 1
+  ))
 })
-
-

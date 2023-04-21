@@ -3,29 +3,30 @@
 \docType{methods}
 \name{getNbStorms}
 \alias{getNbStorms}
-\alias{getNbStorms,StormsList-method}
-\title{Getting the number of \code{Storm}}
+\alias{getNbStorms,stormsList-method}
+\title{Getting the number of \code{storm}}
 \usage{
 getNbStorms(sts)
 
-\S4method{getNbStorms}{StormsList}(sts)
+\S4method{getNbStorms}{stormsList}(sts)
 }
 \arguments{
-\item{sts}{\code{StormsList}}
+\item{sts}{\code{stormsList}}
 }
 \value{
 numeric.
 }
 \description{
-The \code{getNbStorms()} returns the number of \code{Storm} objects in the given \code{StormsList} object.
+The \code{getNbStorms()} returns the number of \code{storm} objects
+in the given \code{stormsList} object.
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+#Creating a stormsDataset
 sds <- defDatabase()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- Storms(sds=sds, loi = "New Caledonia")
+sts <- storms(sds=sds, loi = "New Caledonia")
 
 #Getting the number of storms in the sts object
 getNbStorms(sts)

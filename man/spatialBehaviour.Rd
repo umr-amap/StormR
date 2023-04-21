@@ -7,12 +7,12 @@
 spatialBehaviour(
   sts,
   product = "MSW",
-  wind_threshold = c(18, 33, 42, 49, 58, 70),
+  windThreshold = c(18, 33, 42, 49, 58, 70),
   method = "Willoughby",
   asymmetry = "Chen",
-  empirical_rmw = FALSE,
-  space_res = "2.5min",
-  temp_res = 1,
+  empiricalRMW = FALSE,
+  spaceRes = "2.5min",
+  tempRes = 1,
   verbose = 2
 )
 }
@@ -27,7 +27,7 @@ spatialBehaviour(
 \item \code{"Exposure"}, for duration of exposure.
 }}
 
-\item{wind_threshold}{numeric vector. Minimal wind threshold(s) (in \eqn{m.s^{-1}}) used to
+\item{windThreshold}{numeric vector. Minimal wind threshold(s) (in \eqn{m.s^{-1}}) used to
 compute the duration of exposure when \code{product="Exposure"}. By default the thresholds
 used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 \eqn{m.s^{-1}}).}
 
@@ -47,16 +47,16 @@ this argument specifies the method used to add asymmetry. Can be:
 \item \code{"None"}, for no asymmetry.
 }}
 
-\item{empirical_rmw}{logical. Whether (TRUE) or not (FALSE) to compute
+\item{empiricalRMW}{logical. Whether (TRUE) or not (FALSE) to compute
 the radius of maximum wind (\code{rmw}) empirically using the model developed by
-Willoughby et al. (2006). If \code{empirical_rmw==FALSE} (default setting) then the
+Willoughby et al. (2006). If \code{empiricalRMW==FALSE} (default setting) then the
 \code{rmw} provided in the \code{StormsList} is used.}
 
-\item{space_res}{character. Spatial resolution. Can be \code{"30 sec"} (~1 km at the equator),
+\item{spaceRes}{character. Spatial resolution. Can be \code{"30 sec"} (~1 km at the equator),
 \code{"2.5 min"} (~4.5 km at the equator), \code{"5 min"} (~9 km at the equator) or \code{"10 min"} (~18.6 km at the equator).
 Default setting is \code{"2.5 min"}.}
 
-\item{temp_res}{numeric. Temporal resolution. Can be \code{1} (for 60 min, default setting),
+\item{tempRes}{numeric. Temporal resolution. Can be \code{1} (for 60 min, default setting),
 \code{0.75} (for 45min), \code{0.5} (for 30 min), and \code{0.25} (15 for min).}
 
 \item{verbose}{numeric. Whether or not the function should display
@@ -70,7 +70,7 @@ informations about the process and/or outputs. Can be:
 \value{
 The spatialBehaviour() function returns SpatRaster objects (in WGS84).
 The number of layers in the output depends on the number of storms in the inputs,
-on the desired \code{product}, as well as the \code{temp_res} argument:
+on the desired \code{product}, as well as the \code{tempRes} argument:
 \itemize{
 \item if \code{product = "MSW"}, the function returns one layer for each \code{Storm}.
 The names of the layer follow the following terminology, the name of the storm
@@ -79,7 +79,7 @@ in capital letters and “MSW” separated by underscores (e.g., "PAM_MSW"),
 The names of the layer follow the following terminology, the name of the storm
 in capital letters and “PDI” separated by underscores (e.g., "PAM_PDI"),
 \item if \code{product ="Exposure"}, the function returns one layer for each wind speed values
-in the \code{wind_threshold} argument and for each \code{Storm}. The names of the layer follow the
+in the \code{windThreshold} argument and for each \code{Storm}. The names of the layer follow the
 following terminology, the name of the storm in capital letters, "Exposure", and the threshold
 value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...),
 \item if \code{product = "Profiles"} the function returns one layer for wind speed and
@@ -99,7 +99,7 @@ It also allows to compute three associated summary statistics.
 Storm track data sets, such as those extracted from IBRTrACKS (Knapp et
 al., 2010), usually provide observation at a 3- or 6-hours temporal
 resolution. In the spatialBehaviour() function, linear interpolations are
-used to reach the temporal resolution specified in the \code{temp_res} argument
+used to reach the temporal resolution specified in the \code{tempRes} argument
 (default value = 1 hour). When \code{product = "MSW"}, \code{product = "PDI"},
 or \code{product = "Exposure"} the \code{focal()} function from the \code{terra} R package
 is used to smooth the results using moving windows.
@@ -109,7 +109,9 @@ The Holland (1980) model, widely used in the literature, is based on the
 is computed from the circular air pressure field, which can be derived from
 the central and environmental pressure and the radius of maximum winds.
 
-\eqn{v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)}
+\eqn{v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c)
+  \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} -
+  \left(\frac{r \times f}{2}\right)}
 
 with,
 
@@ -138,7 +140,8 @@ polynomial transition across the eyewall.
 
 \eqn{\left\{\begin{aligned}
    v_r &= v_m \times \left(\frac{r}{R_m}\right)^{n} \quad if \quad r < R_m \\
-   v_r &= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
+   v_r &= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} +
+   A \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
    \end{aligned}
    \right.
    }
@@ -173,7 +176,8 @@ Miyazaki et al. (1962)
 \eqn{C = e^{(-\frac{r}{500} \times \pi)}}
 
 Chen (1994)
-\eqn{C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}}
+\eqn{C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 +
+  r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}}
 
 where, \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km})
 
@@ -182,7 +186,8 @@ Holland (1980) model. In addition to adding
 asymmetry, this model treats of water and land differently, using different
 surface friction coefficient for each.
 
-\eqn{v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}}
+\eqn{v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times
+  \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}}
 
 with,
 
@@ -204,24 +209,24 @@ the forward trajectory of the storm and a radial line from the eye of the storm 
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+# Creating a stormsDataset
 sds <- defDatabase()
 
-#Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
-pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
+# Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
+pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
-#Computing maximum sustained wind speed generated by Pam (2015) near Vanuatu
-#using default settings
+# Computing maximum sustained wind speed generated by Pam (2015) near Vanuatu
+# using default settings
 msw.pam <- spatialBehaviour(pam)
 
-#Computing PDI generated by Pam (2015) near Vanuatu using the Holland model without asymmetry
+# Computing PDI generated by Pam (2015) near Vanuatu using the Holland model without asymmetry
 pdi.pam <- spatialBehaviour(pam, method = "Holland", product = "PDI", asymmetry = "None")
 
-#Computing duration of exposure to Saffir-Simpson hurricane wind scale threshold values
-#during Pam (2015) near Vanuatu using default settings
+# Computing duration of exposure to Saffir-Simpson hurricane wind scale threshold values
+# during Pam (2015) near Vanuatu using default settings
 exp.pam <- spatialBehaviour(pam, product = "Exposure")
 
-#Computing wind speed and direction profiles  generated by Pam (2015) near Vanuatu
+# Computing wind speed and direction profiles  generated by Pam (2015) near Vanuatu
 # using Boose model
 prof.pam <- spatialBehaviour(pam, product = "Profiles", method = "Boose")
 }
@@ -233,15 +238,17 @@ Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
 
 Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
 
-Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
-https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
+Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes.
+Monthly Weather Review, 108(8), 1212–1218. https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
 
-Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS).
+Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
+The International Best Track Archive for Climate Stewardship (IBTrACS).
 Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
 
-Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II).
-Oceanographical Magazine, 13(2), 103–117.
+Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of
+typhoon surges along the Japanese coast (II). Oceanographical Magazine, 13(2), 103–117.
 
-Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex.
-Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
+Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of
+the Primary Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles.
+Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
 }

@@ -1,39 +1,51 @@
-suppressWarnings(sds <- defDatabase(verbose = F))
-pam <- Storms(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
+suppressWarnings(sds <- defDatabase(verbose = 0))
+pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 msw <- spatialBehaviour(pam, verbose = 0)
 
 test_that("Tests checkInputsWr function", {
+  # Checking rast validity
+  expect_error(writeRast(
+    filename = NULL,
+    path = "./"
+  ))
 
-  #Checking rast validity
-  expect_error(writeRast(filename = NULL,
-                         path = "./"))
+  # Checking filename validity
+  expect_error(writeRast(
+    rast = msw,
+    filename = TRUE,
+    path = "./"
+  ))
 
-  #Checking filename validity
-  expect_error(writeRast(rast = msw,
-                         filename = TRUE,
-                         path = "./"))
+  expect_error(writeRast(
+    rast = msw,
+    filename = 2,
+    path = "./"
+  ))
 
-  expect_error(writeRast(rast = msw,
-                         filename = 2,
-                         path = "./"))
+  expect_error(writeRast(
+    rast = msw,
+    filename = "filename.pdf",
+    path = "./"
+  ))
 
-  expect_error(writeRast(rast = msw,
-                         filename = "filename.pdf",
-                         path = "./"))
+  expect_error(writeRast(
+    rast = msw,
+    filename = "filename",
+    path = "./"
+  ))
 
-  expect_error(writeRast(rast = msw,
-                         filename = "filename",
-                         path = "./"))
+  # Checking path validity
+  expect_error(writeRast(
+    rast = msw,
+    filename = NULL,
+    path = TRUE
+  ))
 
-  #Checking path validity
-  expect_error(writeRast(rast = msw,
-                         filename = NULL,
-                         path = TRUE))
-
-  expect_error(writeRast(rast = msw,
-                         filename = NULL,
-                         path = 2))
-
+  expect_error(writeRast(
+    rast = msw,
+    filename = NULL,
+    path = 2
+  ))
 })
 
 # Test case 1: Test that the function correctly writes a tiff file
