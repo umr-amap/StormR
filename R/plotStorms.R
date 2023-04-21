@@ -14,13 +14,11 @@
 #'
 #' @return color associated with the observation
 getColors <- function(msw, scale) {
-
   if (is.na(msw)) {
     color <- NA
-
   } else {
     i <- findInterval(msw, scale)
-    color <- sshsPalette[i+1]
+    color <- sshsPalette[i + 1]
   }
 
   return(color)
@@ -40,9 +38,8 @@ getColors <- function(msw, scale) {
 #'
 #' @return NULL
 plotTrack <- function(st) {
-
-  cex.l <- 1
-  cex.p <- 0.6
+  cexL <- 1
+  cexP <- 0.6
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
@@ -54,7 +51,7 @@ plotTrack <- function(st) {
     col = "black",
     lty = 2,
     lwd = 1,
-    cex = cex.l
+    cex = cexL
   )
 
   graphics::points(
@@ -63,9 +60,8 @@ plotTrack <- function(st) {
     col = colors,
     pch = 19,
     lwd = 1,
-    cex = cex.p
+    cex = cexP
   )
-
 }
 
 
@@ -85,7 +81,6 @@ plotTrack <- function(st) {
 #'
 #' @return NULL
 plotLabels <- function(st, by, pos) {
-
   cex <- 0.5
   ind <- round(seq(1, getNbObs(st), by))
 
@@ -94,12 +89,12 @@ plotLabels <- function(st, by, pos) {
     lat <- st@obs.all$lat[i]
 
     graphics::text(lon,
-                   lat,
-                   labels = paste0(st@name," (",i,")\n", st@obs.all$iso.time[i]),
-                   pos = pos,
-                   cex = cex)
+      lat,
+      labels = paste0(st@name, " (", i, ")\n", st@obs.all$iso.time[i]),
+      pos = pos,
+      cex = cex
+    )
   }
-
 }
 
 
@@ -121,59 +116,59 @@ plotLabels <- function(st, by, pos) {
 #' @param ylim numeric vector
 #' @return NULL
 checkInputsPs <- function(sts, names, category, labels, by,
-                          pos, legends, loi, xlim, ylim){
-
-  #Checking sts input
+                          pos, legends, loi, xlim, ylim) {
+  # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
-  #Checking names input
+  # Checking names input
   if (!is.null(names)) {
     stopifnot("names must be characters" = identical(class(names), "character"))
     stopifnot("Invalid storm names (storm not found)" = names %in% getNames(sts))
   }
 
-  #Checking category input
+  # Checking category input
   if (!is.null(category)) {
     stopifnot("category must be numeric(s)" = identical(class(category), "numeric"))
-    stopifnot("Invalid category input" = category %in% c(-1,-2,0,1,2,3,4,5))
+    stopifnot("Invalid category input" = category %in% c(-1, -2, 0, 1, 2, 3, 4, 5))
   }
 
-  #Checking xlim input
+  # Checking xlim input
   if (!is.null(xlim)) {
     stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
     stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
-                xlim <= 360)
+      xlim <= 360)
   }
 
-  #Checking ylim input
+  # Checking ylim input
   if (!is.null(ylim)) {
     stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
     stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
-                ylim <= 90)
+      ylim <= 90)
   }
 
-  #Checking logical inputs
+  # Checking logical inputs
   stopifnot("loi must be logical" = identical(class(loi), "logical"))
   stopifnot("labels must be logical" = identical(class(labels), "logical"))
 
-  #Checking by input
+  # Checking by input
   stopifnot("by must be numeric" = identical(class(by), "numeric"))
   stopifnot("by must length 1" = length(by) == 1)
   stopifnot("by must be as integer" = round(by) == by)
 
-  #Checking pos input
+  # Checking pos input
   stopifnot("pos must be numeric" = identical(class(pos), "numeric"))
   stopifnot("pos must length 1" = length(pos) == 1)
   stopifnot("pos must be between either 1, 2, 3 or 4" = pos %in% c(1, 2, 3, 4))
 
-  #Checking legend
+  # Checking legend
   stopifnot("legends must be character" = identical(class(legends), "character"))
   stopifnot("legends must be length 1" = length(legends) == 1)
-  stopifnot("legends must be either topright, topleft, bottomleft, bottomright, or none" = legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none"))
-
-
+  stopifnot(
+    "legends must be either topright, topleft, bottomleft, bottomright, or none" =
+      legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none")
+  )
 }
 
 
@@ -210,24 +205,24 @@ checkInputsPs <- function(sts, names, category, labels, by,
 #'  `2` (on the left), `3` (below, default setting), and `4` (on the right).
 #' @param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting),
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
-#' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the extent of the buffered location of interest on the map.
+#' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the
+#' extent of the buffered location of interest on the map.
 #' @import rworldxtra
 #'
 #' @examples
 #' \dontrun{
-#' #' #Creating a StormsDataset
+#' #' #Creating a stormsDataset
 #' sds <- defDatabase()
 #'
-#' #Getting storm track data for tropical cyclone Pam (2015)
-#' pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
+#' # Getting storm track data for tropical cyclone Pam (2015)
+#' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #'
-#' #Plotting Pam over Vanuatu with labels every 24h
+#' # Plotting Pam over Vanuatu with labels every 24h
 #' plotStorms(pam, labels = TRUE)
 #'
-#' #Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
+#' # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 #' plotStorms(pam, labels = TRUE, by = 2, pos = 4)
 #' }
-#'
 #'
 #' @export
 plotStorms <- function(sts,
@@ -239,18 +234,20 @@ plotStorms <- function(sts,
                        by = 8,
                        pos = 3,
                        legends = "topleft",
-                       loi = TRUE){
+                       loi = TRUE) {
+  checkInputsPs(
+    sts, names, category, labels, by, pos, legends,
+    loi, xlim, ylim
+  )
 
 
-  checkInputsPs(sts, names, category, labels, by, pos, legends,
-                loi, xlim, ylim)
-
-
-  #Handling spatial extent
-  ext <- terra::ext(sf::st_bbox(sts@spatial.loi.buffer)$xmin,
-                    sf::st_bbox(sts@spatial.loi.buffer)$xmax,
-                    sf::st_bbox(sts@spatial.loi.buffer)$ymin,
-                    sf::st_bbox(sts@spatial.loi.buffer)$ymax)
+  # Handling spatial extent
+  ext <- terra::ext(
+    sf::st_bbox(sts@spatialLoiBuffer)$xmin,
+    sf::st_bbox(sts@spatialLoiBuffer)$xmax,
+    sf::st_bbox(sts@spatialLoiBuffer)$ymin,
+    sf::st_bbox(sts@spatialLoiBuffer)$ymax
+  )
 
   if (!is.null(xlim)) {
     xlim <- xlim[order(xlim)]
@@ -264,82 +261,80 @@ plotStorms <- function(sts,
     ext$ymax <- ylim[2]
   }
 
-  #Handling categories and names
-  if(!is.null(category) & is.null(names)){
-
-    if(length(category) == 2){
+  # Handling categories and names
+  if (!is.null(category) && is.null(names)) {
+    if (length(category) == 2) {
       category <- category[order(category)]
-      cat.inf <- category[1]
-      cat.sup <- category[2]
-      ind <- which(getSSHS(sts) >= cat.inf & getSSHS(sts) <= cat.sup)
-
-    }else{
-      #length category == 1
+      catInf <- category[1]
+      catSup <- category[2]
+      ind <- which(getSSHS(sts) >= catInf & getSSHS(sts) <= catSup)
+    } else {
+      # length category == 1
       ind <- which(getSSHS(sts) == category)
     }
 
-    sts.aux <- unlist(sts@data)[ind]
-
-  }else{
-
-    if(!is.null(names)){
-      if(!is.null(category))
+    stsAux <- unlist(sts@data)[ind]
+  } else {
+    if (!is.null(names)) {
+      if (!is.null(category)) {
         warning("category input ignored\n")
+      }
 
       ind <- which(getNames(sts) %in% names)
-      sts.aux <- unlist(sts@data)[ind]
-
-    }else{
-      sts.aux <- sts@data
+      stsAux <- unlist(sts@data)[ind]
+    } else {
+      stsAux <- sts@data
     }
   }
 
 
-  #Plotting base map
+  # Plotting base map
   world <- rworldmap::getMap(resolution = "high")
 
   maps::map(world,
-            fill = TRUE,
-            col = groundColor,
-            bg = oceanColor,
-            wrap = c(0, 360),
-            xlim = c(ext$xmin-1, ext$xmax+1), # we extend W & E by 1°
-            ylim = c(ext$ymin-1, ext$ymax+1)) # we extend S & N by 1°
+    fill = TRUE,
+    col = groundColor,
+    bg = oceanColor,
+    wrap = c(0, 360),
+    xlim = c(ext$xmin - 1, ext$xmax + 1), # we extend W & E by 1°
+    ylim = c(ext$ymin - 1, ext$ymax + 1)
+  ) # we extend S & N by 1°
   maps::map.axes(cex.axis = 1)
 
 
-  #Plotting loi
-  if (loi)
-    plot(sts@spatial.loi.buffer, lwd = 1, border = "blue", add = T)
+  # Plotting loi
+  if (loi) {
+    plot(sts@spatialLoiBuffer, lwd = 1, border = "blue", add = TRUE)
+  }
 
-  if(loi & as.character(sf::st_geometry_type(sts@spatial.loi)) == "POINT")
-    plot(sts@spatial.loi, lwd = 2, col = "blue", pch = 4, add = T)
+  if (loi && as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT") {
+    plot(sts@spatialLoi, lwd = 2, col = "blue", pch = 4, add = TRUE)
+  }
 
-  #Plotting track(s) and labels
-  lapply(sts.aux, plotTrack)
-  if(labels)
-    lapply(sts.aux, plotLabels, by, pos)
+  # Plotting track(s) and labels
+  lapply(stsAux, plotTrack)
+  if (labels) {
+    lapply(stsAux, plotLabels, by, pos)
+  }
 
-  #Adding legends
-  if(legends != "none") {
-
+  # Adding legends
+  if (legends != "none") {
     leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
     col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 
-    lty <- rep(0,7)
-    pch <- rep(19,7)
-    lwd <- rep(1,7)
+    lty <- rep(0, 7)
+    pch <- rep(19, 7)
+    lwd <- rep(1, 7)
 
     graphics::legend(legends,
-                     title = "SSHS",
-                     legend = leg,
-                     col = col,
-                     lty = lty,
-                     pch = pch,
-                     lwd = lwd,
-                     cex = 0.6,
-                     bty = "n")
-
+      title = "SSHS",
+      legend = leg,
+      col = col,
+      lty = lty,
+      pch = pch,
+      lwd = lwd,
+      cex = 0.6,
+      bty = "n"
+    )
   }
-
 }

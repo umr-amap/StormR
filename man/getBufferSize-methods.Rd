@@ -3,29 +3,30 @@
 \docType{methods}
 \name{getBufferSize}
 \alias{getBufferSize}
-\alias{getBufferSize,StormsList-method}
+\alias{getBufferSize,stormsList-method}
 \title{Getting the buffer size}
 \usage{
 getBufferSize(sts)
 
-\S4method{getBufferSize}{StormsList}(sts)
+\S4method{getBufferSize}{stormsList}(sts)
 }
 \arguments{
-\item{sts}{\code{StormsList}}
+\item{sts}{\code{stormsList}}
 }
 \value{
 numeric.
 }
 \description{
-The \code{getBufferSize()} returns the buffer size used to generate the buffered location of interest for a \code{StormsList} object.
+The \code{getBufferSize()} returns the buffer size used to generate
+the buffered location of interest for a \code{stormsList} object.
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+#Creating a stormsDataset
 sds <- defDatabase()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- Storms(sds=sds, loi = "New Caledonia")
+sts <- storms(sds=sds, loi = "New Caledonia")
 
 #Getting the buffer size from the sts object
 buffsize <- getBufferSize(sts)

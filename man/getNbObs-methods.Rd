@@ -3,42 +3,44 @@
 \docType{methods}
 \name{getNbObs}
 \alias{getNbObs}
-\alias{getNbObs,Storm-method}
-\alias{getNbObs,StormsList-method}
+\alias{getNbObs,storm-method}
+\alias{getNbObs,stormsList-method}
 \title{Getting the number of observations}
 \usage{
 getNbObs(s, ...)
 
-\S4method{getNbObs}{Storm}(s)
+\S4method{getNbObs}{storm}(s)
 
-\S4method{getNbObs}{StormsList}(s, name, season = NULL)
+\S4method{getNbObs}{stormsList}(s, name, season = NULL)
 }
 \arguments{
-\item{s}{\code{Storm} or \code{StormsList} object.}
+\item{s}{\code{storm} or \code{stormsList} object.}
 
-\item{...}{extra arguments for \code{StormsList}}
+\item{...}{extra arguments for \code{stormsList}}
 
 \item{name}{character. Name of the storm in capital letters.}
 
-\item{season}{numeric. Cyclonic season of the \code{Storm}. Required only
-if several \code{Storm} in the \code{s} have the same name. Default value is set to
+\item{season}{numeric. Cyclonic season of the \code{storm}. Required only
+if several \code{storm} in the \code{s} have the same name. Default value is set to
 \code{NULL}.}
 }
 \value{
 numeric.
 }
 \description{
-The getNbObs() function returns the number of observations for a storm in a \code{Storm} or \code{StormsList} object.
+The getNbObs() function returns the number of observations
+for a storm in a \code{storm} or \code{stormsList} object.
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+#Creating a stormsDataset
 sds <- defDatabase()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- Storms(sds=sds, loi = "New Caledonia")
+sts <- storms(sds=sds, loi = "New Caledonia")
 
-#Getting the number of observations for the tropical cyclone Niran in the sts object 
+#Getting the number of observations for the tropical
+cyclone Niran in the sts object
 getNbObs(getStorm(sts, name = "NIRAN"))
 getNbObs(sts, name = "NIRAN")
 }

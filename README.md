@@ -31,8 +31,8 @@ library(StormR)
 
 | **Name** | **Description** | **Inputs** | **Outputs** |
 |:--:|:----:|:-----------:|:-----:|
-|`defDatabase()`|Creates a `StormsDataset` object|".nc" (NetCDF) file|`StormsDataset` object|
-|`Storms()`|Extracts storms|`StormsDataset` object|`StormsList` object|
+|`defDatabase()`|Creates a `stormsDataset` object|".nc" (NetCDF) file|`stormsDataset` object|
+|`defStormsList()`|Extracts storms|`stormsDataset` object|`StormsList` object|
 |`plotStorms()`|Plots storms track data|`StormsList` object||
 |`temporalBehaviour()`|Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |`StormsList` object|lists of data.frame objects|
 |`spatialBehaviour()`|Computes 2D wind fields and summary statistics over a given location of interest |`StormsList` object|`SpatRaster` object|

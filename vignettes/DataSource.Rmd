@@ -18,8 +18,8 @@ library(StormR)
 Before running `StormR` functions users have to provide a tropical storm track
 dataset as a ".nc" (NetCDF) file in which the location and some characteristics
 of storms are given across their lifespan. This file is used to create a
-`StormsDataset` object using the `defDatabase()` function. By default, the
-arguments of `defDatabase()` function are set up to create a `StormsDataset`
+`stormsDataset` object using the `defDatabase()` function. By default, the
+arguments of `defDatabase()` function are set up to create a `stormsDataset`
 object using the USA fields in the IBTrACS database [International Best Track
 Archive for Climate
 Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive)
@@ -71,18 +71,18 @@ download to the working directory as follows,
 download.file(url = "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.last3years.v04r00.nc", destfile = "./IBTrACS_ALL_3yrs.nc")
 ```
 
-### Creating a `StormsDataset`
+### Creating a `stormsDataset`
 
-Once a storm track data set is available a `StormsDataset` object can be created
+Once a storm track data set is available a `stormsDataset` object can be created
 using the `defDatabase()` function as follows,
 
 ```{r defDatabase}
-sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", basin=NULL, verbose = FALSE)
+sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", basin = NULL, verbose = 0)
 str(sds)
-length(unique(paste(sds@database$names,sds@database$seasons," ")))
+length(unique(paste(sds@database$names, sds@database$seasons, " ")))
 ```
 
-This `StormsDataset` object contains track data for 275 storms. When using an
+This `stormsDataset` object contains track data for 275 storms. When using an
 IBTrACKS storm track data set, default arguments can be used. By default, data
 provided by USA agencies (starting with "usa_") are used, but other data can be
 selected. For example, for the South Pacific basin ("SP"), we can choose to use
@@ -90,23 +90,27 @@ data provided by the Australian Bureau of Meteorology (starting with "bom_") in
 the IBTrACKS data set as follows,
 
 ```{r DefDatabase 2}
-sds <-defDatabase(filename = "IBTrACS_ALL_3yrs.nc",
-                  fields = c(names = "name",
-                             seasons = "season",
-                             isoTime = "iso_time",
-                             basin = "basin",
-                             lon = "bom_lon",
-                             lat = "bom_lat",
-                             msw = "bom_wind",
-                             rmw = "bom_rmw",
-                             pressure = "bom_pres",
-                             poci = "bom_poci"),
-                  basin = "SP",
-                  verbose = FALSE)
+sds <- defDatabase(
+  filename = "IBTrACS_ALL_3yrs.nc",
+  fields = c(
+    names = "name",
+    seasons = "season",
+    isoTime = "iso_time",
+    basin = "basin",
+    lon = "bom_lon",
+    lat = "bom_lat",
+    msw = "bom_wind",
+    rmw = "bom_rmw",
+    pressure = "bom_pres",
+    poci = "bom_poci"
+  ),
+  basin = "SP",
+  verbose = 0
+)
 length(sds@database$names)
 ```
 
-This `StormsDataset` object contains track data for 38 storms in the South
+This `stormsDataset` object contains track data for 38 storms in the South
 Pacific basin.
 
 ### Unit conversion
@@ -120,34 +124,32 @@ when using IBTrACS data sets, the `defDatabase()` function converts knots
 ($knt$) to meter per second ($m.s^{-1}$), nautical miles ($nm$) to kilometres
 ($km$), and millibar ($mb$) to Pascal ($pa$).
 
-When using another source of data than IBTrACS, the `unit_conversion` argument
+When using another source of data than IBTrACS, the `unitConversion` argument
 of the `defDatabase()` function can be used to convert the data to the desired
 units. The following conversions are available,
 
 For `msw`: <br />
-`knt_to_ms`: converts knot in meter per second (default setting) <br />
-`kmh_to_ms`: converts kilometre per hour in meter per second <br />
-`mph_to_ms`: converts miles per hour in meter per second <br />
+`knt2ms`: converts knot in meter per second (default setting) <br />
+`kmh2ms`: converts kilometre per hour in meter per second <br />
+`mph2ms`: converts miles per hour in meter per second <br />
 `None`: no conversion <br />
 
 For `rmw`: <br />
-`nm_to_ms`: converts nautical miles in kilometre (default setting) <br />
+`nm2ms`: converts nautical miles in kilometre (default setting) <br />
 `None`: no conversion <br />
 
 For both `pressure` and `poci`: <br />
-`mb_to_pa`: converts millibar in Pascal (default setting) <br />
-`b_to_pa`: converts bar in Pascal <br />
-`atm_to_pa`: converts atmosphere in Pascal <br />
-`psi_to_pa`: converts psi in Pascal <br />
+`mb2pa`: converts millibar in Pascal (default setting) <br />
+`b2pa`: converts bar in Pascal <br />
+`atm2pa`: converts atmosphere in Pascal <br />
+`psi2pa`: converts psi in Pascal <br />
 `None`: no conversion <br />
 
 ### Test data set
 
 A `test_dataset` is provided with the `StormR` package. This test data set
 comprises the track data of nine storms that occurred near Vanuatu and New
-Caledonia between 2015-2016 and 2020-2021, respectively. This `test_dataset` is
-used by default in the `Storms()` function if no other `StormsDataset` has been
-created with the `defDatabase()` function.
+Caledonia between 2015-2016 and 2020-2021, respectively.
 
 ## Reference
 

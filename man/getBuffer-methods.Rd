@@ -3,29 +3,30 @@
 \docType{methods}
 \name{getBuffer}
 \alias{getBuffer}
-\alias{getBuffer,StormsList-method}
+\alias{getBuffer,stormsList-method}
 \title{Getting the buffered location of interest}
 \usage{
 getBuffer(sts)
 
-\S4method{getBuffer}{StormsList}(sts)
+\S4method{getBuffer}{stormsList}(sts)
 }
 \arguments{
-\item{sts}{\code{StormsList}}
+\item{sts}{\code{stormsList}}
 }
 \value{
 The \code{getBuffer()} returns a \code{sf} object.
 }
 \description{
-The \code{getBuffer()} function returns the buffered location of interest from a \code{StormsList} object.
+The \code{getBuffer()} function returns the buffered location
+of interest from a \code{stormsList} object.
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+#Creating a stormsDataset
 sds <- defDatabase()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- Storms(sds=sds, loi = "New Caledonia")
+sts <- storms(sds=sds, loi = "New Caledonia")
 
 #Getting the buffered location of interest from the sts object
 buff <- getBuffer(sts)

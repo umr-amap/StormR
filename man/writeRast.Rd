@@ -24,24 +24,24 @@ GeoTIFF or NetCDF files.
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+# Creating a stormsDataset
 sds <- defDatabase()
 
-#Getting storm track data for tropical cyclone Pam (2015) near Vanuatu
-pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
+# Getting storm track data for tropical cyclone Pam (2015) near Vanuatu
+pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
-#Computing maximum sustained wind speed
+# Computing maximum sustained wind speed
 pam.msw <- spatialBehaviour(pam)
 
-#Exporting maximum sustained wind speed raster layer to a GeoTIFF file
-writeRast(pam.msw, path = paste0(tempdir(),"/"))
+# Exporting maximum sustained wind speed raster layer to a GeoTIFF file
+writeRast(pam.msw, path = paste0(tempdir(), "/"))
 
-#Computing power dissipation index for several storms near New Caledonia
+# Computing power dissipation index for several storms near New Caledonia
 sts.nc <- Storms(sds = sds, loi = "New Caledonia")
 pdi.nc <- spatialBehaviour(sts.nc, product = "PDI")
 
-#Exporting the power dissipation index raster layers to a NetCDF file
-writeRast(pdi.nc, path = paste0(tempdir(),"/"))
+# Exporting the power dissipation index raster layers to a NetCDF file
+writeRast(pdi.nc, path = paste0(tempdir(), "/"))
 }
 
 }
