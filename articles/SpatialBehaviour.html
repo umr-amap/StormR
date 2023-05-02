@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>spatialBehaviour</h1>
             
-            <h4 data-toc-skip class="date">2023-04-19</h4>
+            <h4 data-toc-skip class="date">2023-05-02</h4>
       
       
       <div class="d-none name"><code>SpatialBehaviour.Rmd</code></div>
@@ -118,15 +118,14 @@ cyclone Pam (2015) near Vanuatu. First, track data are extracted as
 follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in checkInputsIDb(filename, fields, basin, seasons, unit_conversion, :</span></span>
-<span><span class="co">## No basin argument specified. StormR will work as expected but cannot use basin</span></span>
-<span><span class="co">## filtering for speed-up when collecting data</span></span></code></pre>
+<pre><code><span><span class="co">## Warning in checkInputsIDb(filename, fields, basin, seasons, unitConversion, : No basin argument specified. StormR will work as expected</span></span>
+<span><span class="co">##              but cannot use basin filtering for speed-up when collecting data</span></span></code></pre>
 <pre><code><span><span class="co">## === Loading data  ===</span></span>
 <span><span class="co">## Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened</span></span>
 <span><span class="co">## Collecting data ...</span></span>
 <span><span class="co">## === DONE ===</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Storms.html">Storms</a></span><span class="op">(</span>sds<span class="op">=</span><span class="va">sds</span>,loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span>,verbose<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defStormsList.html">defStormsList</a></span><span class="op">(</span>sds <span class="op">=</span> <span class="va">sds</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
 <div class="section level4">
@@ -136,7 +135,7 @@ follows:</p>
 with the <code>product="Profiles</code> argument we can generate 2D wind
 fields at any time as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>,product<span class="op">=</span><span class="st">"Profiles"</span>,verbose<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">pf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="st">"Profiles"</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">pf</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
 <span><span class="co">## dimensions  : 304, 219, 114  (nrow, ncol, nlyr)</span></span>
@@ -161,10 +160,10 @@ compute wind fields every 1 hour, the observations are interpolated.</p>
 <p>Wind speed and direction profiles at the 41<sup>th</sup> observation
 can be plotted as follows:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">pf</span><span class="op">$</span><span class="va">PAM_Speed_41</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">pf</span><span class="op">$</span><span class="va">PAM_Speed_41</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">pf</span><span class="op">$</span><span class="va">PAM_Direction_41</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">pf</span><span class="op">$</span><span class="va">PAM_Direction_41</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-3-2.png" width="700"></p>
 </div>
 <div class="section level4">
@@ -176,7 +175,7 @@ different <code>products</code> (i.e., <code>"Profiles"</code>,
 separately or together. Here, we compute all three summary statistics
 together as follows:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>,product<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSW"</span>,<span class="st">"PDI"</span>,<span class="st">"Exposure"</span><span class="op">)</span>,verbose<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSW"</span>, <span class="st">"PDI"</span>, <span class="st">"Exposure"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">ss</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
 <span><span class="co">## dimensions  : 304, 219, 8  (nrow, ncol, nlyr)</span></span>
@@ -203,16 +202,16 @@ wind scale (i.e., 18, 33, 42, 49, 58, and 70 <span class="math inline">\(m.s^{-1
 <code>wind_threshold</code> argument.</p>
 <p>The maximum sustained wind speed can be plotted as follows:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">ss</span><span class="op">$</span><span class="va">PAM_MSW</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">ss</span><span class="op">$</span><span class="va">PAM_MSW</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>The power dissipation index can be plotted as follows:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">ss</span><span class="op">$</span><span class="va">PAM_PDI</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">ss</span><span class="op">$</span><span class="va">PAM_PDI</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>The duration of exposure to wind stronger than 58 <span class="math inline">\(m.s^{-1}\)</span> (i.e., Saffir-Simpson’s
 categories 4 and 5) can be plotted as follows:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">ss</span><span class="op">$</span><span class="va">PAM_Exposure_58</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">ss</span><span class="op">$</span><span class="va">PAM_Exposure_58</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 </div>
 </div>
@@ -224,14 +223,14 @@ spatial resolutions are available. By default the spatial resolution is
 set to 2.5 min (~4.5 km at the equator), but a finer spatial resolution
 of 30 s (~1 km at the equator) and coarser spatial resolutions of 5 min
 (~9 km at the equator) or 10 min (~18.6 km at the equator) can be set
-using the <code>space_res</code> argument. The temporal resolution is
-set to 1 hour by default but finer spatial resolution of 0.75, 0.50, or
-0.25 hour can be set using the <code>temp_res</code> argument. Maximum
+using the <code>spaceRes</code> argument. The temporal resolution is set
+to 1 hour by default but finer spatial resolution of 0.75, 0.50, or 0.25
+hour can be set using the <code>tempRes</code> argument. Maximum
 sustained wind speed can be computed at a 10 min spatial resolution and
 a 30 min temporal resolution as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>,product<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSW"</span><span class="op">)</span>,verbose<span class="op">=</span><span class="fl">0</span>,space_res<span class="op">=</span><span class="st">"10min"</span>,temp_res<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>,<span class="va">ss</span><span class="op">$</span><span class="va">PAM_MSW</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MSW"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="fl">0</span>, spaceRes <span class="op">=</span> <span class="st">"10min"</span>, tempRes <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotBehaviour.html">plotBehaviour</a></span><span class="op">(</span><span class="va">st</span>, <span class="va">ss</span><span class="op">$</span><span class="va">PAM_MSW</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpatialBehaviour_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 <div class="section level3">

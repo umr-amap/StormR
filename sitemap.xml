@@ -40,9 +40,6 @@
     <loc>/reference/Storm-class.html</loc>
   </url>
   <url>
-    <loc>/reference/Storms.html</loc>
-  </url>
-  <url>
     <loc>/reference/StormsDataset-class.html</loc>
   </url>
   <url>
@@ -50,6 +47,9 @@
   </url>
   <url>
     <loc>/reference/defDatabase.html</loc>
+  </url>
+  <url>
+    <loc>/reference/defStormsList.html</loc>
   </url>
   <url>
     <loc>/reference/eezNC.html</loc>

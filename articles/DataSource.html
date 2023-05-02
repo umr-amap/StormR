@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Data source</h1>
             
-            <h4 data-toc-skip class="date">2023-04-19</h4>
+            <h4 data-toc-skip class="date">2023-05-02</h4>
       
       
       <div class="d-none name"><code>DataSource.Rmd</code></div>
@@ -97,10 +97,10 @@
 <p>Before running <code>StormR</code> functions users have to provide a
 tropical storm track dataset as a “.nc” (NetCDF) file in which the
 location and some characteristics of storms are given across their
-lifespan. This file is used to create a <code>StormsDataset</code>
+lifespan. This file is used to create a <code>stormsDataset</code>
 object using the <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function. By default, the
 arguments of <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function are set up to create a
-<code>StormsDataset</code> object using the USA fields in the IBTrACS
+<code>stormsDataset</code> object using the USA fields in the IBTrACS
 database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International
 Best Track Archive for Climate Stewardship</a> (Knapp et al., 2010).
 This database provides a fairly comprehensive record of worldwide
@@ -251,19 +251,18 @@ follows,</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.last3years.v04r00.nc"</span>, destfile <span class="op">=</span> <span class="st">"./IBTrACS_ALL_3yrs.nc"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="creating-a-stormsdataset">Creating a <code>StormsDataset</code><a class="anchor" aria-label="anchor" href="#creating-a-stormsdataset"></a>
+<h3 id="creating-a-stormsdataset">Creating a <code>stormsDataset</code><a class="anchor" aria-label="anchor" href="#creating-a-stormsdataset"></a>
 </h3>
-<p>Once a storm track data set is available a <code>StormsDataset</code>
+<p>Once a storm track data set is available a <code>stormsDataset</code>
 object can be created using the <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function as
 follows,</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>, basin<span class="op">=</span><span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in checkInputsIDb(filename, fields, basin, seasons, unit_conversion, :</span></span>
-<span><span class="co">## No basin argument specified. StormR will work as expected but cannot use basin</span></span>
-<span><span class="co">## filtering for speed-up when collecting data</span></span></code></pre>
+<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>, basin <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in checkInputsIDb(filename, fields, basin, seasons, unitConversion, : No basin argument specified. StormR will work as expected</span></span>
+<span><span class="co">##              but cannot use basin filtering for speed-up when collecting data</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sds</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Formal class 'StormsDataset' [package "StormR"] with 5 slots</span></span>
+<pre><code><span><span class="co">## Formal class 'stormsDataset' [package "StormR"] with 5 slots</span></span>
 <span><span class="co">##   ..@ filename: chr "IBTrACS_ALL_3yrs.nc"</span></span>
 <span><span class="co">##   ..@ fields  : Named chr [1:11] "name" "season" "iso_time" "usa_lon" ...</span></span>
 <span><span class="co">##   .. ..- attr(*, "names")= chr [1:11] "names" "seasons" "isoTime" "lon" ...</span></span>
@@ -271,20 +270,20 @@ follows,</p>
 <span><span class="co">##   ..@ seasons : Named int [1:2] 2020 2023</span></span>
 <span><span class="co">##   .. ..- attr(*, "names")= chr [1:2] "min" "max"</span></span>
 <span><span class="co">##   ..@ database:List of 10</span></span>
-<span><span class="co">##   .. ..$ names    : chr [1:346(1d)] "BLAKE" "CLAUDIA" "TINO" "NOT_NAMED" ...</span></span>
-<span><span class="co">##   .. ..$ seasons  : int [1:346(1d)] 2020 2020 2020 2020 2020 2020 2020 2020 2020 2020 ...</span></span>
-<span><span class="co">##   .. ..$ isotimes : chr [1:360, 1:346] "2020-01-04 00:00:00" "2020-01-04 03:00:00" "2020-01-04 06:00:00" "2020-01-04 09:00:00" ...</span></span>
-<span><span class="co">##   .. ..$ longitude: num [1:360, 1:346] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ latitude : num [1:360, 1:346] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ msw      : num [1:360, 1:346] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ sshs     : int [1:360, 1:346] -5 -5 -5 -5 -5 -5 -5 -5 -3 -3 ...</span></span>
-<span><span class="co">##   .. ..$ rmw      : num [1:360, 1:346] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ pressure : num [1:360, 1:346] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ poci     : num [1:360, 1:346] NA NA NA NA NA ...</span></span></code></pre>
+<span><span class="co">##   .. ..$ names    : chr [1:347(1d)] "BLAKE" "CLAUDIA" "TINO" "NOT_NAMED" ...</span></span>
+<span><span class="co">##   .. ..$ seasons  : int [1:347(1d)] 2020 2020 2020 2020 2020 2020 2020 2020 2020 2020 ...</span></span>
+<span><span class="co">##   .. ..$ isotimes : chr [1:360, 1:347] "2020-01-04 00:00:00" "2020-01-04 03:00:00" "2020-01-04 06:00:00" "2020-01-04 09:00:00" ...</span></span>
+<span><span class="co">##   .. ..$ longitude: num [1:360, 1:347] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ latitude : num [1:360, 1:347] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ msw      : num [1:360, 1:347] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ sshs     : int [1:360, 1:347] -5 -5 -5 -5 -5 -5 -5 -5 -3 -3 ...</span></span>
+<span><span class="co">##   .. ..$ rmw      : num [1:360, 1:347] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ pressure : num [1:360, 1:347] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ poci     : num [1:360, 1:347] NA NA NA NA NA ...</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">names</span>,<span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">seasons</span>,<span class="st">" "</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 277</span></span></code></pre>
-<p>This <code>StormsDataset</code> object contains track data for 275
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">names</span>, <span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">seasons</span>, <span class="st">" "</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 278</span></span></code></pre>
+<p>This <code>stormsDataset</code> object contains track data for 275
 storms. When using an IBTrACKS storm track data set, default arguments
 can be used. By default, data provided by USA agencies (starting with
 “usa_”) are used, but other data can be selected. For example, for the
@@ -292,22 +291,26 @@ South Pacific basin (“SP”), we can choose to use data provided by the
 Australian Bureau of Meteorology (starting with “bom_”) in the IBTrACKS
 data set as follows,</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>,</span>
-<span>                  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>names <span class="op">=</span> <span class="st">"name"</span>,</span>
-<span>                             seasons <span class="op">=</span> <span class="st">"season"</span>,</span>
-<span>                             isoTime <span class="op">=</span> <span class="st">"iso_time"</span>,</span>
-<span>                             basin <span class="op">=</span> <span class="st">"basin"</span>,</span>
-<span>                             lon <span class="op">=</span> <span class="st">"bom_lon"</span>,</span>
-<span>                             lat <span class="op">=</span> <span class="st">"bom_lat"</span>,</span>
-<span>                             msw <span class="op">=</span> <span class="st">"bom_wind"</span>,</span>
-<span>                             rmw <span class="op">=</span> <span class="st">"bom_rmw"</span>,</span>
-<span>                             pressure <span class="op">=</span> <span class="st">"bom_pres"</span>,</span>
-<span>                             poci <span class="op">=</span> <span class="st">"bom_poci"</span><span class="op">)</span>,</span>
-<span>                  basin <span class="op">=</span> <span class="st">"SP"</span>,</span>
-<span>                  verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span></span>
+<span>  filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>,</span>
+<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    names <span class="op">=</span> <span class="st">"name"</span>,</span>
+<span>    seasons <span class="op">=</span> <span class="st">"season"</span>,</span>
+<span>    isoTime <span class="op">=</span> <span class="st">"iso_time"</span>,</span>
+<span>    basin <span class="op">=</span> <span class="st">"basin"</span>,</span>
+<span>    lon <span class="op">=</span> <span class="st">"bom_lon"</span>,</span>
+<span>    lat <span class="op">=</span> <span class="st">"bom_lat"</span>,</span>
+<span>    msw <span class="op">=</span> <span class="st">"bom_wind"</span>,</span>
+<span>    rmw <span class="op">=</span> <span class="st">"bom_rmw"</span>,</span>
+<span>    pressure <span class="op">=</span> <span class="st">"bom_pres"</span>,</span>
+<span>    poci <span class="op">=</span> <span class="st">"bom_poci"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  basin <span class="op">=</span> <span class="st">"SP"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">names</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 38</span></span></code></pre>
-<p>This <code>StormsDataset</code> object contains track data for 38
+<p>This <code>stormsDataset</code> object contains track data for 38
 storms in the South Pacific basin.</p>
 </div>
 <div class="section level3">
@@ -320,19 +323,20 @@ following the international system of units (SI) or SI-derived units.
 Therefore, by default, when using IBTrACS data sets, the
 <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function converts knots (<span class="math inline">\(knt\)</span>) to meter per second (<span class="math inline">\(m.s^{-1}\)</span>), nautical miles (<span class="math inline">\(nm\)</span>) to kilometres (<span class="math inline">\(km\)</span>), and millibar (<span class="math inline">\(mb\)</span>) to Pascal (<span class="math inline">\(pa\)</span>).</p>
 <p>When using another source of data than IBTrACS, the
-<code>unit_conversion</code> argument of the <code><a href="../reference/defDatabase.html">defDatabase()</a></code>
+<code>unitConversion</code> argument of the <code><a href="../reference/defDatabase.html">defDatabase()</a></code>
 function can be used to convert the data to the desired units. The
 following conversions are available,</p>
-<p>For <code>msw</code>: <br><code>knt_to_ms</code>: converts knot in
-meter per second (default setting) <br><code>kmh_to_ms</code>:
-converts kilometre per hour in meter per second <br><code>mph_to_ms</code>: converts miles per hour in meter per second
-<br><code>None</code>: no conversion <br></p>
-<p>For <code>rmw</code>: <br><code>nm_to_ms</code>: converts nautical
+<p>For <code>msw</code>: <br><code>knt2ms</code>: converts knot in
+meter per second (default setting) <br><code>kmh2ms</code>: converts
+kilometre per hour in meter per second <br><code>mph2ms</code>:
+converts miles per hour in meter per second <br><code>None</code>: no
+conversion <br></p>
+<p>For <code>rmw</code>: <br><code>nm2ms</code>: converts nautical
 miles in kilometre (default setting) <br><code>None</code>: no
 conversion <br></p>
-<p>For both <code>pressure</code> and <code>poci</code>: <br><code>mb_to_pa</code>: converts millibar in Pascal (default setting)
-<br><code>b_to_pa</code>: converts bar in Pascal <br><code>atm_to_pa</code>: converts atmosphere in Pascal <br><code>psi_to_pa</code>: converts psi in Pascal <br><code>None</code>:
-no conversion <br></p>
+<p>For both <code>pressure</code> and <code>poci</code>: <br><code>mb2pa</code>: converts millibar in Pascal (default setting) <br><code>b2pa</code>: converts bar in Pascal <br><code>atm2pa</code>:
+converts atmosphere in Pascal <br><code>psi2pa</code>: converts psi
+in Pascal <br><code>None</code>: no conversion <br></p>
 </div>
 <div class="section level3">
 <h3 id="test-data-set">Test data set<a class="anchor" aria-label="anchor" href="#test-data-set"></a>
@@ -340,9 +344,7 @@ no conversion <br></p>
 <p>A <code>test_dataset</code> is provided with the <code>StormR</code>
 package. This test data set comprises the track data of nine storms that
 occurred near Vanuatu and New Caledonia between 2015-2016 and 2020-2021,
-respectively. This <code>test_dataset</code> is used by default in the
-<code><a href="../reference/Storms.html">Storms()</a></code> function if no other <code>StormsDataset</code>
-has been created with the <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function.</p>
+respectively.</p>
 </div>
 <div class="section level2">
 <h2 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
