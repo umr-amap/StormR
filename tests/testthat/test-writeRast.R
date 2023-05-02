@@ -2,7 +2,7 @@ suppressWarnings(sds <- defDatabase(verbose = 0))
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 msw <- spatialBehaviour(pam, verbose = 0)
 
-test_that("Tests checkInputsWr function", {
+test_that("Tests checkInputsWriteRastiteRast function", {
   # Checking rast validity
   expect_error(writeRast(
     filename = NULL,

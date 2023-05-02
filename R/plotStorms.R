@@ -115,7 +115,7 @@ plotLabels <- function(st, by, pos) {
 #' @param xlim numeric vector
 #' @param ylim numeric vector
 #' @return NULL
-checkInputsPs <- function(sts, names, category, labels, by,
+checkInputsPlotStorms <- function(sts, names, category, labels, by,
                           pos, legends, loi, xlim, ylim) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -235,7 +235,7 @@ plotStorms <- function(sts,
                        pos = 3,
                        legends = "topleft",
                        loi = TRUE) {
-  checkInputsPs(
+  checkInputsPlotStorms(
     sts, names, category, labels, by, pos, legends,
     loi, xlim, ylim
   )

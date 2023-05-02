@@ -79,224 +79,224 @@ test_that("Test spatialBehaviour function", {
 
 
 
-test_that("Test checkInputsSb function", {
+test_that("Test checkInputsSpatialBehaviour function", {
   # Checking sts input
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
   # Checking product input
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = 1,
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  # Check wind_threshold input
-  expect_error(checkInputsSb(
+  # Check windThreshold input
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c("18", "33", "42", "49", "58", "70"),
+    windThreshold = c("18", "33", "42", "49", "58", "70"),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(-3, -45),
+    windThreshold = c(-3, -45),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
   # Checking method input
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = 1,
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = TRUE,
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = c("Willoughby", "Holland"),
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
   # Checking asymmetry input
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = 1,
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = TRUE,
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = c("Chen", "None"),
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  # Checking empirical_rmw inputs
-  expect_error(checkInputsSb(
+  # Checking empiricalRMW inputs
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = "TRUE",
+    empiricalRMW = "TRUE",
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = 1,
+    empiricalRMW = 1,
     spaceRes = "2.5min",
     tempRes = 1,
     verbose = 2
   ))
 
   # Checking tempRes input
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = TRUE,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = 2.3,
     verbose = 2
   ))
 
-  expect_error(checkInputsSb(
+  expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     spaceRes = "2.5min",
     tempRes = c(0.25, 0.5),
     verbose = 2
@@ -371,349 +371,349 @@ test_that("Test computeDirectionBoose function", {
 
 
 
-test_that("Test checkInputsTempBehaviour function", {
+test_that("Test checkInputsTemporalBehaviour function", {
   suppressWarnings(sds <- defDatabase(verbose = 0))
   pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   # Checking sts input
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
   # Checking points
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = c(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = c(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sds = pam,
     points = data.frame(lon = 169, lat = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sds = pam,
     points = data.frame(x = 400, y = 200),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sds = pam,
     points = data.frame(x = -120, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
   # Checking product input
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = 1,
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "MSW",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = c("TS", "PDI", "Exposure"),
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  # Check wind_threshold input
-  expect_error(checkInputsTempBehaviour(
+  # Check windThreshold input
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "Exposure",
-    wind_threshold = c("18", "33", "42", "49", "58", "70"),
+    windThreshold = c("18", "33", "42", "49", "58", "70"),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "Exposure",
-    wind_threshold = c(-3, -45),
+    windThreshold = c(-3, -45),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
   # Checking method input
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = 1,
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = TRUE,
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = c("Willoughby", "Holland"),
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
   # Checking asymmetry input
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = 1,
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = TRUE,
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = c("Chen", "None"),
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 1
   ))
 
-  # Checking empirical_rmw inputs
-  expect_error(checkInputsTempBehaviour(
+  # Checking empiricalRMW inputs
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = "TRUE",
+    empiricalRMW = "TRUE",
     tempRes = 1,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = 1,
+    empiricalRMW = 1,
     tempRes = 1
   ))
 
   # Checking tempRes input
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = TRUE,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 2.3,
     verbose = 1
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = c(0.25, 0.5),
     verbose = 1
   ))
 
   # Checking verbose
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = TRUE
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = "1"
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = c(1, 2)
   ))
 
-  expect_error(checkInputsTempBehaviour(
+  expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
     product = "TS",
-    wind_threshold = c(18, 33, 42, 49, 58, 70),
+    windThreshold = c(18, 33, 42, 49, 58, 70),
     method = "Willoughby",
     asymmetry = "Chen",
-    empirical_rmw = FALSE,
+    empiricalRMW = FALSE,
     tempRes = 1,
     verbose = 3
   ))

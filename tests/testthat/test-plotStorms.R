@@ -24,12 +24,12 @@ test_that("Test getColors function", {
 
 
 
-test_that("Test checkInputsPs function", {
+test_that("Test checkInputsPlotStorms function", {
   suppressWarnings(sds <- defDatabase(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   # Checking sts input
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     names = NULL,
     category = NULL,
     labels = TRUE,
@@ -42,7 +42,7 @@ test_that("Test checkInputsPs function", {
   ))
 
   # Checking names input
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = 2,
     category = NULL,
@@ -55,7 +55,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = "JULIA",
     category = NULL,
@@ -69,7 +69,7 @@ test_that("Test checkInputsPs function", {
   ))
 
   # Checking category input
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = c(1, 6),
@@ -82,7 +82,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = c(-10, 5),
@@ -95,7 +95,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = 2.5,
@@ -108,7 +108,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = "1",
@@ -121,7 +121,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = TRUE,
@@ -136,7 +136,7 @@ test_that("Test checkInputsPs function", {
 
 
   # Checking xlim/ylim input
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -149,7 +149,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -162,7 +162,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -175,7 +175,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -188,7 +188,7 @@ test_that("Test checkInputsPs function", {
     ylim = "-50"
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -201,7 +201,7 @@ test_that("Test checkInputsPs function", {
     ylim = 60
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -214,7 +214,7 @@ test_that("Test checkInputsPs function", {
     ylim = c(-100, 100)
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -227,7 +227,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -240,7 +240,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -253,7 +253,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -267,7 +267,7 @@ test_that("Test checkInputsPs function", {
   ))
 
   # Checking by input
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -280,7 +280,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -293,7 +293,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -306,7 +306,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -320,7 +320,7 @@ test_that("Test checkInputsPs function", {
   ))
 
   # Checking pos input
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -333,7 +333,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -346,7 +346,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -359,7 +359,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -372,7 +372,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -385,7 +385,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -399,7 +399,7 @@ test_that("Test checkInputsPs function", {
   ))
 
   # Checking legends input
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -412,7 +412,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -425,7 +425,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,
@@ -438,7 +438,7 @@ test_that("Test checkInputsPs function", {
     ylim = NULL
   ))
 
-  expect_error(checkInputsPs(
+  expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
     category = NULL,

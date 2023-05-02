@@ -17,7 +17,7 @@
 #' @param main character
 #' @param legends character
 #' @return NULL
-checkInputsPb <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends) {
+checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -141,7 +141,7 @@ plotBehaviour <- function(sts,
                           by = 8,
                           pos = 3,
                           legends = "topleft") {
-  checkInputsPb(
+  checkInputsPlotBehaviour(
     sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette,
     main, legends
   )

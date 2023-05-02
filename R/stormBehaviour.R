@@ -162,7 +162,7 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #' @param tempRes numeric
 #' @param verbose numeric
 #' @return NULL
-checkInputsSb <- function(sts, product, windThreshold, method, asymmetry,
+checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asymmetry,
                           empiricalRMW, spaceRes, tempRes, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -1231,7 +1231,7 @@ spatialBehaviour <- function(sts,
                              verbose = 2) {
   startTime <- Sys.time()
 
-  checkInputsSb(
+  checkInputsSpatialBehaviour(
     sts, product, windThreshold, method, asymmetry,
     empiricalRMW, spaceRes, tempRes, verbose
   )
@@ -1475,7 +1475,7 @@ spatialBehaviour <- function(sts,
 #' @param tempRes numeric
 #' @param verbose logical
 #' @return NULL
-checkInputsTempBehaviour <- function(sts, points, product, windThreshold, method, asymmetry,
+checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, method, asymmetry,
                                      empiricalRMW, tempRes, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
@@ -1890,7 +1890,7 @@ temporalBehaviour <- function(sts,
                               empiricalRMW = FALSE,
                               tempRes = 1,
                               verbose = 1) {
-  checkInputsTempBehaviour(sts, points, product, windThreshold, method, asymmetry, empiricalRMW, tempRes, verbose)
+  checkInputsTemporalBehaviour(sts, points, product, windThreshold, method, asymmetry, empiricalRMW, tempRes, verbose)
 
 
   if (verbose > 0) {

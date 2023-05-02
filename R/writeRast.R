@@ -11,7 +11,7 @@
 #' @param path character
 #'
 #' @return NULL
-checkInputsWr <- function(rast, filename, path) {
+checkInputsWriteRast <- function(rast, filename, path) {
   # Check rast input
   stopifnot("no data to write" = !missing(rast))
 
@@ -210,7 +210,7 @@ writeRast <- function(rast, filename = NULL, path = "./") {
     fName <- paste0(paste(stormNames, collapse = "_"), "_", paste(unique(products), collapse = "_"), ".tiff")
   }
 
-  checkInputsWr(rast, fName, path)
+  checkInputsWriteRast(rast, fName, path)
 
   # Check output format
   format <- strsplit(fName, split = ".", fixed = TRUE)[[1]][2]
