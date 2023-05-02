@@ -3,29 +3,29 @@
 \docType{methods}
 \name{getLOI}
 \alias{getLOI}
-\alias{getLOI,StormsList-method}
+\alias{getLOI,stormsList-method}
 \title{Getting the location of interest}
 \usage{
 getLOI(sts)
 
-\S4method{getLOI}{StormsList}(sts)
+\S4method{getLOI}{stormsList}(sts)
 }
 \arguments{
-\item{sts}{\code{StormsList} object}
+\item{sts}{\code{stormsList} object}
 }
 \value{
 sf object.
 }
 \description{
-The \code{getLOI()} functions returns the location of interest for the given \code{StormsList}.
+The \code{getLOI()} functions returns the location of interest for the given \code{stormsList}.
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+#Creating a stormsDataset
 sds <- defDatabase()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- Storms(sds=sds, loi = "New Caledonia")
+sts <- storms(sds=sds, loi = "New Caledonia")
 
 #Getting the location of interest for the sts object
 loi <- getLOI(sts)

@@ -5,14 +5,14 @@
 
 
 #############
-#Storm Class#
+#storm Class#
 #############
 
 
 
 
 
-#' `Storm`  object
+#' `storm`  object
 #'
 #' Gather all the needed informations to model a single storm
 #'
@@ -21,7 +21,7 @@
 #' @slot  sshs numeric. Maximum category reached in the Saffir Simpson Hurricane
 #'   Scale
 #' @slot obs numeric vector. Indices of observations within the location of
-#'   interest extented with its corresponding buffer (See `StormsList` class)
+#'   interest extented with its corresponding buffer (See `stormsList` class)
 #' @slot obs.all  data.frame. Contains all of the observations available. An
 #'   observation is made up of several fields which are:
 #' \itemize{
@@ -43,7 +43,7 @@
 #' }
 #' @importFrom methods new
 #' @export
-Storm <- methods::setClass("Storm",
+storm <- methods::setClass("storm",
                            slots = c(name = "character",
                                      season = "numeric",
                                      sshs = "numeric",
@@ -56,7 +56,7 @@ Storm <- methods::setClass("Storm",
 
 
 ##############
-#StormsList Class#
+#stormsList Class#
 ##############
 
 
@@ -64,23 +64,23 @@ Storm <- methods::setClass("Storm",
 
 
 setOldClass("sf")
-#' `StormsList` object
+#' `stormsList` object
 #'
 #' Gather all the needed informations to model a set of storms
 #'
-#' @slot data A list of `Storm` (See `Storm` class)
-#' @slot buffer numeric. Buffer used to extent `spatial.loi` (km)
-#' @slot spatial.loi sf object. Represents the location of interest. Projection
+#' @slot data A list of `storm` (See `storm` class)
+#' @slot buffer numeric. Buffer used to extent `spatialLoi` (km)
+#' @slot spatialLoi sf object. Represents the location of interest. Projection
 #'   is EPSG:4326
-#' @slot spatial.loi.buffer sf object. Buffer extension of `spatial.loi`
+#' @slot spatialLoiBuffer sf object. Buffer extension of `spatialLoi`
 #' @importFrom methods new
 #' @import sp
 #' @export
-StormsList <- methods::setClass("StormsList",
+stormsList <- methods::setClass("stormsList",
                                 slots = c(data = "list",
                                           buffer = "numeric",
-                                          spatial.loi = "sf",
-                                          spatial.loi.buffer = "sf"))
+                                          spatialLoi = "sf",
+                                          spatialLoiBuffer = "sf"))
 
 
 
@@ -94,19 +94,19 @@ StormsList <- methods::setClass("StormsList",
 
 
 
-#' Show a `Storm`/`StormsList`
+#' Show a `storm`/`stormsList`
 #'
-#' Display the `Storm`/`StormsList` object
+#' Display the `storm`/`stormsList` object
 #'
 #' @noRd
-#' @param object `Storm`/StormList object
+#' @param object `storm`/stormsList object
 #'
 #' @return NULL
 #' @docType methods
 #' @rdname show-methods
 #' @examples
 #' \dontrun{
-#' sts <- Storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+#' sts <- storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
 #' ## Display information about Niran in sts
 #' getStorm(sts, name = "NIRAN")
 #'
@@ -114,28 +114,28 @@ StormsList <- methods::setClass("StormsList",
 #' sts
 #' }
 setMethod("show",
-          signature("Storm"),
-          function(object){
-            cat("Name:",object@name,"\n")
-            cat("Season:",object@season,"\n")
-            cat("Maximum category reached (SSHS):", object@sshs,"\n")
-            cat("Indices of observations within buffer:", object@obs,"\n")
+          signature("storm"),
+          function(object) {
+            cat("Name:", object@name, "\n")
+            cat("Season:", object@season, "\n")
+            cat("Maximum category reached (SSHS):", object@sshs, "\n")
+            cat("Indices of observations within buffer:", object@obs, "\n")
             cat("Observations:\n")
             print(object@obs.all)
           })
 #' @rdname show-methods
 setMethod("show",
-          signature("StormsList"),
-          function(object){
-            cat("***** StormList *****\n\n")
-            cat("Number of Storms:", getNbStorms(object),"\n")
+          signature("stormsList"),
+          function(object) {
+            cat("***** stormsList *****\n\n")
+            cat("Number of storms:", getNbStorms(object), "\n")
             cat("Storms availables:\n\n")
-            for(i in 1:getNbStorms(object)){
-              cat("*",i,"\n")
+            for (i in 1:getNbStorms(object)) {
+              cat("*", i, "\n")
               show(object@data[[i]])
               cat("\n")
             }
-            cat("\n***** End StormList *****\n")
+            cat("\n***** End stormsList *****\n")
           })
 
 
@@ -143,50 +143,54 @@ setMethod("show",
 
 
 ##############################
-#Getters for StormsList class#
+#Getters for stormsList class#
 ##############################
 
 
 
 
 
-#' Extracting a `Storm`
+#' Extracting a `storm`
 #'
-#' The `getStorm()` function extracts a specific `Storm` object from a `StormsList` object.
+#' The `getStorm()` function extracts a specific `storm` object
+#'  from a `stormsList` object.
 #'
-#' @param sts `StormsList`
+#' @param sts `stormsList`
 #' @param name character. Name of the storm to extract.
-#' @param season numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere, 
-#' the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both 
-#' years should be specified, with cyclones assigned for the year that originated in. By default all storms occurring since 
+#' @param season numeric vector. Seasons of occurrence of the storms
+#' (e.g., c(2020,2022)). In the Southern Hemisphere,
+#' the cyclone season extends across two consecutive years.
+#' Therefore, to capture the 2021 to 2022 cyclone season both
+#' years should be specified, with cyclones assigned for the year
+#' #'  that originated in. By default all storms occurring since
 #' 1980 are extracted.
-#' @return The `getStorm()` function returns a `Storm` object.
+#' @return The `getStorm()` function returns a `storm` object.
 #' @export
 #' @docType methods
 #' @rdname getStorm-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
-#' #Getting `Storm` for the tropical cyclone Niran
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
+#' #Getting `storm` for the tropical cyclone Niran
 #' st <- getStorm(sts, name = "NIRAN")
 #' }
 setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getStorm"))
 #' @rdname getStorm-methods
-setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL){
-  if(!is.null(season)){
-    if (getSeasons(sts)[[name]] == season){
+setMethod("getStorm", signature("stormsList"), function(sts, name, season = NULL) {
+  if (!is.null(season)) {
+    if (getSeasons(sts)[[name]] == season) {
       sts@data[[name]]
     } else {
-      stop(paste("No cyclone named", name, "for season", season)) 
+      stop(paste("No cyclone named", name, "for season", season))
     }
-  }else{
-    if(length(which(getNames(sts) == name)) > 1)
-      stop(paste("More than 1 storm named",name, ".Please specify season\n"))
+  }else {
+    if (length(which(getNames(sts) == name)) > 1)
+      stop(paste("More than 1 storm named", name, ".Please specify season\n"))
     sts@data[[which(getNames(sts) == name)]]
   }
 })
@@ -195,11 +199,12 @@ setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL
 
 
 
-#' Getting the number of `Storm`
+#' Getting the number of `storm`
 #'
-#' The `getNbStorms()` returns the number of `Storm` objects in the given `StormsList` object.
+#' The `getNbStorms()` returns the number of `storm` objects
+#'  in the given `stormsList` object.
 #'
-#' @param sts `StormsList`
+#' @param sts `stormsList`
 #'
 #' @return numeric.
 #' @export
@@ -207,18 +212,18 @@ setMethod("getStorm", signature("StormsList"), function(sts, name, season = NULL
 #' @rdname getNbStorms-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
 #' #Getting the number of storms in the sts object
 #' getNbStorms(sts)
 #' }
 setGeneric("getNbStorms", function(sts) standardGeneric("getNbStorms"))
 #' @rdname getNbStorms-methods
-setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data))
+setMethod("getNbStorms", signature("stormsList"), function(sts) length(sts@data))
 
 
 
@@ -226,28 +231,28 @@ setMethod("getNbStorms", signature("StormsList"), function(sts) length(sts@data)
 
 #' Getting the location of interest
 #'
-#' The `getLOI()` functions returns the location of interest for the given `StormsList`.
+#' The `getLOI()` functions returns the location of interest for the given `stormsList`.
 #'
-#' @param sts `StormsList` object
+#' @param sts `stormsList` object
 #'
-#' @return sf object. 
+#' @return sf object.
 #' @export
 #' @docType methods
 #' @rdname getLOI-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
 #' #Getting the location of interest for the sts object
 #' loi <- getLOI(sts)
 #' }
 setGeneric("getLOI", function(sts) standardGeneric("getLOI"))
 #' @rdname getLOI-methods
-setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
+setMethod("getLOI", signature("stormsList"), function(sts) sts@spatialLoi)
 
 
 
@@ -255,9 +260,10 @@ setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 
 #' Getting the buffered location of interest
 #'
-#' The `getBuffer()` function returns the buffered location of interest from a `StormsList` object.
+#' The `getBuffer()` function returns the buffered location
+#'  of interest from a `stormsList` object.
 #'
-#' @param sts `StormsList`
+#' @param sts `stormsList`
 #'
 #' @return The `getBuffer()` returns a `sf` object.
 #'
@@ -266,18 +272,18 @@ setMethod("getLOI", signature("StormsList"), function(sts) sts@spatial.loi)
 #' @rdname getBuffer-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
 #' #Getting the buffered location of interest from the sts object
 #' buff <- getBuffer(sts)
 #' }
 setGeneric("getBuffer", function(sts) standardGeneric("getBuffer"))
 #' @rdname getBuffer-methods
-setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.buffer)
+setMethod("getBuffer", signature("stormsList"), function(sts) sts@spatialLoiBuffer)
 
 
 
@@ -285,35 +291,36 @@ setMethod("getBuffer", signature("StormsList"), function(sts) sts@spatial.loi.bu
 
 #' Getting the buffer size
 #'
-#' The `getBufferSize()` returns the buffer size used to generate the buffered location of interest for a `StormsList` object.
+#' The `getBufferSize()` returns the buffer size used to generate
+#' the buffered location of interest for a `stormsList` object.
 #'
-#' @param sts `StormsList`
+#' @param sts `stormsList`
 #'
-#' @return numeric. 
+#' @return numeric.
 #' @export
 #' @docType methods
 #' @rdname getBufferSize-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
 #' #Getting the buffer size from the sts object
 #' buffsize <- getBufferSize(sts)
 #' }
 setGeneric("getBufferSize", function(sts) standardGeneric("getBufferSize"))
 #' @rdname getBufferSize-methods
-setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
+setMethod("getBufferSize", signature("stormsList"), function(sts) sts@buffer)
 
 
 
 
 
 ###############################################
-#Getters for both StormsList and Storm classes#
+#Getters for both stormsList and storm classes#
 ###############################################
 
 
@@ -322,9 +329,10 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 
 #' Getting the names of the storms
 #'
-#' The `getNames()` function returns the names of the storms in a `Storm` or a `StormsList` object.
+#' The `getNames()` function returns the names of the storms
+#'  in a `storm` or a `stormsList` object.
 #'
-#' @param s `Storm` or `StormsList` object.
+#' @param s `storm` or `stormsList` object.
 #'
 #' @return character vector.
 #' @export
@@ -332,21 +340,21 @@ setMethod("getBufferSize", signature("StormsList"), function(sts) sts@buffer)
 #' @rdname getNames-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
 #' #Getting the names of the storms from the sts object
 #' getNames(sts)
 #' }
 setGeneric("getNames", function(s) standardGeneric("getNames"))
 #' @rdname getNames-methods
-setMethod("getNames", signature("Storm"), function(s) s@name)
+setMethod("getNames", signature("storm"), function(s) s@name)
 #' @rdname getNames-methods
-setMethod("getNames", signature("StormsList"), function(s){
-  l <-unlist(lapply(s@data, getNames))
+setMethod("getNames", signature("stormsList"), function(s) {
+  l <- unlist(lapply(s@data, getNames))
   names(l) <- NULL
   l
 })
@@ -357,9 +365,10 @@ setMethod("getNames", signature("StormsList"), function(s){
 
 #' Getting cyclonic seasons of the storms
 #'
-#' The `getSeasons()` function  returns the cyclonic season of each storm in a `Storm` or `StormsList` object.
+#' The `getSeasons()` function  returns the cyclonic season
+#' of each storm in a `storm` or `stormsList` object.
 #'
-#' @param s `Storm` or `StormsList` object.
+#' @param s `storm` or `stormsList` object.
 #'
 #' @return numeric vector.
 #' @export
@@ -367,20 +376,20 @@ setMethod("getNames", signature("StormsList"), function(s){
 #' @rdname getSeasons-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
-#' #Getting the cyclonic seasons of the storms from the sts object 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
+#' #Getting the cyclonic seasons of the storms from the sts object
 #' getSeasons(sts)
 #' }
 setGeneric("getSeasons", function(s) standardGeneric("getSeasons"))
 #' @rdname getSeasons-methods
-setMethod("getSeasons", signature("Storm"), function(s) s@season)
+setMethod("getSeasons", signature("storm"), function(s) s@season)
 #' @rdname getSeasons-methods
-setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@data, getSeasons)))
+setMethod("getSeasons", signature("stormsList"), function(s) unlist(lapply(s@data, getSeasons)))
 
 
 
@@ -388,9 +397,10 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 
 #' Getting maximum Saffir-Simpson hurricane wind scale category
 #'
-#' The `getSSHS()` function return the maximum Saffir-Simpson hurricane wind scale category reached by each storm in the `Storm` or `StormsList` object.
+#' The `getSSHS()` function return the maximum Saffir-Simpson hurricane
+#' wind scale category reached by each storm in the `storm` or `stormsList` object.
 #'
-#' @param s `Storm` or `StormsList` object.
+#' @param s `storm` or `stormsList` object.
 #'
 #' @return numeric vector.
 #' @export
@@ -398,21 +408,21 @@ setMethod("getSeasons", signature("StormsList"), function(s) unlist(lapply(s@dat
 #' @rdname getSSHS-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
-#' #Getting maximum Saffir-Simpson hurricane wind scale category 
-#' #reached by each storm in the sts object 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
+#' #Getting maximum Saffir-Simpson hurricane wind scale category
+#' #reached by each storm in the sts object
 #' getSSHS(sts)
 #' }
 setGeneric("getSSHS", function(s) standardGeneric("getSSHS"))
 #' @rdname getSSHS-methods
-setMethod("getSSHS", signature("Storm"), function(s) s@sshs)
+setMethod("getSSHS", signature("storm"), function(s) s@sshs)
 #' @rdname getSSHS-methods
-setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, getSSHS)))
+setMethod("getSSHS", signature("stormsList"), function(s) unlist(lapply(s@data, getSSHS)))
 
 
 
@@ -421,36 +431,40 @@ setMethod("getSSHS", signature("StormsList"), function(s) unlist(lapply(s@data, 
 
 #' Getting the number of observations
 #'
-#' The getNbObs() function returns the number of observations for a storm in a `Storm` or `StormsList` object.
+#' The getNbObs() function returns the number of observations
+#' for a storm in a `storm` or `stormsList` object.
 #'
-#' @param ... extra arguments for `StormsList`
-#' @param s  `Storm` or `StormsList` object.
+#' @param ... extra arguments for `stormsList`
+#' @param s  `storm` or `stormsList` object.
 #' @param name character. Name of the storm in capital letters.
-#' @param season numeric. Cyclonic season of the `Storm`. Required only
-#'   if several `Storm` in the `s` have the same name. Default value is set to
+#' @param season numeric. Cyclonic season of the `storm`. Required only
+#'   if several `storm` in the `s` have the same name. Default value is set to
 #'   `NULL`.
 #'
-#' @return numeric. 
+#' @return numeric.
 #' @export
 #' @docType methods
 #' @rdname getNbObs-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
-#' #Getting the number of observations for the tropical cyclone Niran in the sts object 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
+#' #Getting the number of observations for the tropical
+#' cyclone Niran in the sts object
 #' getNbObs(getStorm(sts, name = "NIRAN"))
 #' getNbObs(sts, name = "NIRAN")
 #' }
 setGeneric("getNbObs", function(s, ...) standardGeneric("getNbObs"))
 #' @rdname getNbObs-methods
-setMethod("getNbObs", signature("Storm"), function(s) dim(s@obs.all)[1])
+setMethod("getNbObs", signature("storm"),
+          function(s) dim(s@obs.all)[1])
 #' @rdname getNbObs-methods
-setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) dim(getStorm(s, name, season)@obs.all)[1])
+setMethod("getNbObs", signature("stormsList"),
+          function(s, name, season = NULL) dim(getStorm(s, name, season)@obs.all)[1])
 
 
 
@@ -459,36 +473,38 @@ setMethod("getNbObs", signature("StormsList"), function(s, name, season = NULL) 
 
 #' Getting observations
 #'
-#' The `getObs()` function returns observed track data for a storm in a `Storm` or `StormsList` object.
+#' The `getObs()` function returns observed track data for a storm
+#' in a `storm` or `stormsList` object.
 #'
-#' @param ... extra argument for `StormsList`
-#' @param s `Storm` or `StormsList` object
+#' @param ... extra argument for `stormsList`
+#' @param s `storm` or `stormsList` object
 #' @param name character. Name of the storm in capital letters.
-#' @param season numeric. Cyclonic season of the `Storm`. Required only
-#'   if several `Storm` in the `s` object have the same name. Default value is set
-#'   to `NULL`.
+#' @param season numeric. Cyclonic season of the `storm`. Required only
+#'   if several `storm` in the `s` object have the same name.
+#' Default value is set to `NULL`.
 #'
-#' @return data.frame. 
+#' @return data.frame.
 #' @export
 #' @docType methods
 #' @rdname getObs-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
-#' #Getting the observed track data for the tropical cyclone Niran in the sts object 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
+#' #Getting the observed track data for the tropical
+#' cyclone Niran in the sts object
 #' getObs(getStorm(sts, name = "NIRAN"))
 #' getObs(sts, name = "NIRAN")
 #' }
 setGeneric("getObs", function(s, ...) standardGeneric("getObs"))
 #' @rdname getObs-methods
-setMethod("getObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs.all)
+setMethod("getObs", signature("stormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs.all)
 #' @rdname getObs-methods
-setMethod("getObs", signature("Storm"), function(s) s@obs.all)
+setMethod("getObs", signature("storm"), function(s) s@obs.all)
 
 
 
@@ -496,13 +512,14 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 
 #' Getting the number of the observations
 #'
-#' The `getInObs()` function returns the number of the observations in a given `Storm` or `StormsList` object.
+#' The `getInObs()` function returns the number of the
+#' observations in a given `storm` or `stormsList` object.
 #'
-#' @param ... extra argument for `StormsList`
-#' @param s `Storm` or `StormsList` object.
+#' @param ... extra argument for `stormsList`
+#' @param s `storm` or `stormsList` object.
 #' @param name character. Name of the storm in capital letters.
-#' @param season numeric. Cyclonic season of the `Storm`. Required only
-#'   if several `Storm` in `s` object have the same name. Default value is set
+#' @param season numeric. Cyclonic season of the `storm`. Required only
+#'   if several `storm` in `s` object have the same name. Default value is set
 #'   to `NULL`
 #'
 #' @return numeric vector.
@@ -512,38 +529,39 @@ setMethod("getObs", signature("Storm"), function(s) s@obs.all)
 #' @rdname getInObs-methods
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- Storms(sds=sds, loi = "New Caledonia")
-#' 
-#' #Getting the number of the observation for the tropical cyclone Niran in the sts object 
+#' sts <- storms(sds=sds, loi = "New Caledonia")
+#'
+#' #Getting the number of the observation for the tropical
+#' cyclone Niran in the sts object
 #' getInObs(getStorm(sts, name = "NIRAN"))
 #' getInObs(sts, name = "NIRAN")
 #' }
 setGeneric("getInObs", function(s, ...) standardGeneric("getInObs"))
 #' @rdname getInObs-methods
-setMethod("getInObs", signature("StormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs)
+setMethod("getInObs", signature("stormsList"), function(s, name, season = NULL) getStorm(s, name, season)@obs)
 #' @rdname getInObs-methods
-setMethod("getInObs", signature("Storm"), function(s) s@obs)
+setMethod("getInObs", signature("storm"), function(s) s@obs)
 
 
 
 
 
 ########
-#Storms#
+#storms#
 ########
 
 
 
 
 
-#' Check inputs for Storms function
+#' Check inputs for storms function
 #'
 #' @noRd
-#' @param sds StormsDataset object
+#' @param sds stormsDataset object
 #' @param loi Either:
 #'   \itemize{
 #'     \item a SpatialPolygon (shapefile)
@@ -553,17 +571,17 @@ setMethod("getInObs", signature("Storm"), function(s) s@obs)
 #'   }
 #' @param seasons, numeric vector
 #' @param names character vector
-#' @param max_dist numeric
+#' @param maxDist numeric
 #' @param verbose logical
-#' @param remove_TD logical
+#' @param removeTD logical
 #' @return NULL
-checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD){
+checkInputsGs <- function(sds, loi, seasons, names, maxDist, verbose, removeTD) {
 
   #checking sds input
   stopifnot("sds is missing" = !missing(sds))
 
   #Checking loi input
-  if(!missing(loi)){
+  if (!missing(loi)) {
 
     stopifnot("Invalid class for loi" = identical(class(loi), c("sf", "data.frame")) ||
                 identical(class(loi)[1], "SpatialPolygonsDataFrame") ||
@@ -571,15 +589,15 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
                 identical(class(loi), "character"))
 
 
-    if(identical(class(loi), "numeric")){
+    if (identical(class(loi), "numeric")) {
       stopifnot("loi must have valid lon/lat coordinates " = length(loi) == 2
                 & loi[1] >= -180 & loi[1] <= 360 & loi[2] >= -90 & loi[2] <= 90)
     }
 
-    if(identical(class(loi), "character"))
+    if (identical(class(loi), "character"))
       stopifnot("loi must be length 1 " = length(loi) == 1)
 
-  }else{
+  }else {
     stop("loi is missing")
   }
 
@@ -593,23 +611,23 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
   #Checking names input
   if (!is.null(names)) {
     stopifnot("names must be a vector of character" = identical(class(names), "character"))
-  } else{
+  } else {
     stopifnot("Incompatible format for seasons (must be either length 1 or 2)" = length(seasons) == 1 ||
                 length(seasons) == 2)
   }
 
-  #Checking max_dist input
-  stopifnot("max_dist must be numeric " = identical(class(max_dist), "numeric"))
-  stopifnot("max_dist must be a length 1 vector " = length(max_dist) == 1)
-  stopifnot("max_dist must > 0 " = max_dist > 0)
+  #Checking maxDist input
+  stopifnot("maxDist must be numeric " = identical(class(maxDist), "numeric"))
+  stopifnot("maxDist must be a length 1 vector " = length(maxDist) == 1)
+  stopifnot("maxDist must > 0 " = maxDist > 0)
 
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
   stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 
-  #Checking remove_TD input
-  stopifnot("remove_TD must be logical" = identical(class(remove_TD), "logical"))
+  #Checking removeTD input
+  stopifnot("removeTD must be logical" = identical(class(removeTD), "logical"))
 
 }
 
@@ -620,64 +638,66 @@ checkInputsGs <- function(sds, loi, seasons, names, max_dist, verbose, remove_TD
 #' Convert loi into a sf object
 #'
 #' @noRd
-#' @param loi loi input from `StormsList`
+#' @param loi loi input from `stormsList`
 #'
 #' @return loi in a sf format
-convertLoi <- function(loi){
+convertLoi <- function(loi) {
 
   if (identical(class(loi)[1], c("SpatialPolygonsDataFrame"))) {
 
-    loi.sf <- sf::st_as_sf(loi)
-    loi.sf = sf::st_geometry(loi.sf)
-    loi.sf = sf::st_sf(loi.sf)
-    loi.sf <- sf::st_as_sf(loi.sf)
-    if (sf::st_crs(loi.sf) != wgs84) {
-      loi.sf = sf::st_transform(loi.sf, crs = wgs84)
+    loiSf <- sf::st_as_sf(loi)
+    loiSf <- sf::st_geometry(loiSf)
+    loiSf <- sf::st_sf(loiSf)
+    loiSf <- sf::st_as_sf(loiSf)
+    if (sf::st_crs(loiSf) != wgs84) {
+      loiSf <- sf::st_transform(loiSf, crs = wgs84)
     }
 
   } else if (identical(class(loi), c("sf", "data.frame"))) {
 
-    loi.sf = sf::st_geometry(loi)
-    loi.sf = sf::st_sf(loi.sf)
-    loi.sf <- sf::st_as_sf(loi.sf)
-    if (sf::st_crs(loi.sf) != wgs84) {
-      loi.sf <- sf::st_transform(loi.sf, crs = wgs84)
+    loiSf <- sf::st_geometry(loi)
+    loiSf <- sf::st_sf(loiSf)
+    loiSf <- sf::st_as_sf(loiSf)
+    if (sf::st_crs(loiSf) != wgs84) {
+      loiSf <- sf::st_transform(loiSf, crs = wgs84)
     }
 
-  } else if (identical(class(loi), c("numeric"))){
+  } else if (identical(class(loi), c("numeric"))) {
 
-    if(loi[1] < 0){
+    if (loi[1] < 0) {
       loi[1] <- loi[1] + 360
       warning("longitude coordinate for loi has been corrected and set between 0 and 360 degree")
     }
-    loi.df <- data.frame(lon = loi[1], lat = loi[2])
-    loi.sf <- sf::st_as_sf(loi.df, coords = c("lon", "lat"))
-    sf::st_crs(loi.sf) = wgs84
-    loi.sf <- sf::st_transform(loi.sf, crs = wgs84)
+    loiDf <- data.frame(lon = loi[1], lat = loi[2])
+    loiSf <- sf::st_as_sf(loiDf, coords = c("lon", "lat"))
+    sf::st_crs(loiSf) <- wgs84
+    loiSf <- sf::st_transform(loiSf, crs = wgs84)
 
-  } else if (identical(class(loi), c("character"))){
-    
-    if(loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL")){
-      poly <- cbind(c(Basins[loi,]$xmin, Basins[loi,]$xmax, Basins[loi,]$xmax, Basins[loi,]$xmin, Basins[loi,]$xmin),
-                    c(Basins[loi,]$ymin, Basins[loi,]$ymin, Basins[loi,]$ymax, Basins[loi,]$ymax, Basins[loi,]$ymin))
-      loi.sf <- sf::st_polygon(list(poly))
-      loi.sf <- sf::st_sfc(loi.sf, crs = 4326)
-      loi.sf <- sf::st_as_sf(loi.sf)
-      
-    }else{
+  } else if (identical(class(loi), c("character"))) {
+
+    if (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL")) {
+      poly <- cbind(c(Basins[loi, ]$xmin, Basins[loi, ]$xmax, Basins[loi, ]$xmax,
+                      Basins[loi, ]$xmin, Basins[loi, ]$xmin),
+                    c(Basins[loi, ]$ymin, Basins[loi, ]$ymin, Basins[loi, ]$ymax,
+                      Basins[loi, ]$ymax, Basins[loi, ]$ymin))
+      loiSf <- sf::st_polygon(list(poly))
+      loiSf <- sf::st_sfc(loiSf, crs = 4326)
+      loiSf <- sf::st_as_sf(loiSf)
+
+    }else {
       map <- rworldmap::getMap(resolution = "high")
-      id.country <- which(map@data$ADMIN == loi)
-      stopifnot("invalid entry for loi" = length(id.country) > 0)
-      loi.sf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[id.country]])))
-      sf::st_crs(loi.sf) = wgs84
+      idCountry <- which(map@data$ADMIN == loi)
+      stopifnot("invalid entry for loi" = length(idCountry) > 0)
+      loiSf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[idCountry]])))
+      sf::st_crs(loiSf) <- wgs84
     }
 
   }
-  
-  #Handling time line for Fiji
-  loi.sf <- sf::st_shift_longitude(loi.sf)
 
-  return(loi.sf)
+  #Handling time line for Fiji
+  loiSf <- sf::st_shift_longitude(loiSf)
+
+  return(loiSf)
 }
 
 
@@ -687,23 +707,23 @@ convertLoi <- function(loi){
 #' make loi buffer
 #'
 #' @noRd
-#' @param loi character. loi input from `Storms` 
-#' @param loi.sf sf object. loi input from `Storms` already converted into sf
+#' @param loi character. loi input from `storms`
+#' @param loiSf sf object. loi input from `storms` already converted into sf
 #'   object
 #' @param buffer numeric. Buffer size to use (in km)
 #'
 #' @return loi extended with buffer in a sf format
-makeBuffer <- function(loi, loi.sf, buffer){
+makeBuffer <- function(loi, loiSf, buffer) {
 
-  if((identical(class(loi), c("character"))) && (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))){
-    loi.buffer <- loi.sf
-  }else{
-    loi.buffer <- sf::st_buffer(loi.sf, dist = buffer)
-    loi.buffer <- sf::st_shift_longitude(loi.buffer)
+  if ((identical(class(loi), c("character"))) && (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))) {
+    loiBuffer <- loiSf
+  }else {
+    loiBuffer <- sf::st_buffer(loiSf, dist = buffer)
+    loiBuffer <- sf::st_shift_longitude(loiBuffer)
   }
-   
-    return(loi.buffer)
-    
+
+    return(loiBuffer)
+
 }
 
 
@@ -713,36 +733,36 @@ makeBuffer <- function(loi, loi.sf, buffer){
 #' Retrieving the matching indices of storms
 #'
 #' @noRd
-#' @param database Storms database
-#' @param filter_names character vector. Contains names input from the Storms
-#' @param filter_seasons numeric vector.  Contains seasons input from the Storms
-#' @param remove_TD logical. Whether or not to remove tropical depressions (< 18
+#' @param database storms database
+#' @param filterNames character vector. Contains names input from the storms
+#' @param filterSeasons numeric vector.  Contains seasons input from the storms
+#' @param removeTD logical. Whether or not to remove tropical depressions (< 18
 #'   m/s) and include cyclones only. Default value is set to TRUE.
 #'
 #' @return indices of storms in the database, that match the filter inputs
-retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
+retrieveStorms <- function(database, filterNames, filterSeasons, removeTD) {
 
-  if (length(filter_seasons) == 1) {
+  if (length(filterSeasons) == 1) {
     #We are interested in only one cyclonic season
-    indices <- which(database$seasons == filter_seasons)
-  } else{
+    indices <- which(database$seasons == filterSeasons)
+  } else {
     #We are interested in successive cyclonic seasons
-    indices <- seq(from = which(database$seasons == filter_seasons[1])[1],
-                   to = max(which(database$seasons == filter_seasons[2])))
+    indices <- seq(from = which(database$seasons == filterSeasons[1])[1],
+                   to = max(which(database$seasons == filterSeasons[2])))
   }
 
-  if (!is.null(filter_names)) {
+  if (!is.null(filterNames)) {
     #We are interested in one or several storms given by their name (and season)
     ind <- c()
-    for (n in 1:length(filter_names)) {
+    for (n in 1:seq_along(filterNames)) {
       id <- NULL
-      id <- which(database$names == filter_names[n])
+      id <- which(database$names == filterNames[n])
       stopifnot("Storm not found, invalid name ?" = !is.null(id))
       ind <- c(ind, id)
     }
 
-    indices = intersect(indices,ind)
-    stopifnot("No storm(s) found "= !is.null(indices))
+    indices <- intersect(indices, ind)
+    stopifnot("No storm(s) found " = !is.null(indices))
 
 
 
@@ -751,10 +771,12 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
   #Removing NOT_NAMED storms
   indices <- indices[which(database$names[indices] != "NOT_NAMED")]
 
-  #Removing TD if remove_TD == T
-  if(remove_TD){
+  #Removing TD if removeTD == T
+  if (removeTD) {
     suppressWarnings({
-      suppressWarnings(i <- which(apply(array(database$msw[,indices], dim = c(dim(database$msw)[1], length(indices))),2, max, na.rm = T) >= 18 * knt2ms))
+      suppressWarnings(i <- which(apply(array(database$msw[, indices],
+                                              dim = c(dim(database$msw)[1], length(indices))),
+                                        2, max, na.rm = TRUE) >= 18 * knt2msC))
       indices <- indices[i]
     })
   }
@@ -771,10 +793,11 @@ retrieveStorms <- function(database, filter_names, filter_seasons, remove_TD){
 #'
 #' @noRd
 #' @param msw numeric maximum sustained wind
-#' @param scale list of values that defines the scale intensity of the storm, e.g. `sshs`
+#' @param scale list of values that defines the scale
+#' intensity of the storm, e.g. `sshs`
 #'
 #' @return numeric, sshs
-computeScaleIndice <- function(msw, scale){
+computeScaleIndice <- function(msw, scale) {
 
   if (is.na(msw)) {
     res <- NA
@@ -791,26 +814,26 @@ computeScaleIndice <- function(msw, scale){
 
 
 
-#' Write data to initialize a `Storm` object
+#' Write data to initialize a `storm` object
 #'
 #' Whether or not to add a storm (with id index in database) in the upcoming
-#' Storms object
+#' storms object
 #'
 #' @noRd
-#' @param storm_list list of `Storm` object. To further integrate in a
-#'   `StormsList` object
-#' @param storm_names list of storm names. To further integrate in a
-#'   `StormsList` object
-#' @param sds StormsDataset object. sds input from Storms
+#' @param stormList list of `storm` object. To further integrate in a
+#'   `stormsList` object
+#' @param stormNames list of storm names. To further integrate in a
+#'   `stormsList` object
+#' @param sds stormsDataset object. sds input from storms
 #' @param index numeric, index of the storm in the database
-#' @param loi_sf_buffer sf object. Location of interest extended with buffer
+#' @param loiSfBuffer sf object. Location of interest extended with buffer
 #'
 #' @return a list with 2 slots:
 #'   \itemize{
 #'     \item list of storm objects
 #'     \item list of character (names of storms)
 #'   }
-writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
+writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 
   #Getting lon/lat coordinates
   lon <- sds@database$longitude[, index]
@@ -818,58 +841,59 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
   coords <- data.frame(lon = lon, lat = lat)
 
   #Keep only non NA data (that are either the first or last observations)
-  valid_indices <- which(!is.na(coords$lon))
-  coords <- coords[valid_indices,]
+  validIndices <- which(!is.na(coords$lon))
+  coords <- coords[validIndices, ]
 
   #Removing invalid iso_time
-  isotime <- sds@database$isotimes[valid_indices, index]
-  list.isotime <- as.numeric(stringr::str_sub(isotime,12,13))
+  isotime <- sds@database$isotimes[validIndices, index]
+  listIsotime <- as.numeric(stringr::str_sub(isotime, 12, 13))
   #Keep only 03H 06H 09H 12H 15H 18h 21H 00h iso times
-  ind.isotime <- which(list.isotime %% 3 == 0)
-  coords <- coords[ind.isotime,]
+  indIsotime <- which(listIsotime %% 3 == 0)
+  coords <- coords[indIsotime, ]
 
-  if(dim(coords)[1] == 0){
+  if (dim(coords)[1] == 0) {
     #ERROR
-    return(list(NULL,NULL,NULL,NULL,NULL))
+    return(list(NULL, NULL, NULL, NULL, NULL))
   }
-  row.names(coords) <- seq(1,dim(coords)[1])
+  row.names(coords) <- seq(1, dim(coords)[1])
 
 
-  #Creating sf point coordinates to intersect with loi_sf_buffer
+  #Creating sf point coordinates to intersect with loiSfBuffer
   pts <- sf::st_as_sf(coords, coords = c("lon", "lat"))
   sf::st_crs(pts) <- wgs84
 
-  #Intersect points coordinates with loi_sf_buffer
-  ind <- which(sf::st_intersects(pts, loi_sf_buffer, sparse = FALSE) == TRUE)
+  #Intersect points coordinates with loiSfBuffer
+  ind <- which(sf::st_intersects(pts, loiSfBuffer, sparse = FALSE) == TRUE)
 
 
-  #Add TC only if it intersects with loi_sf_buffer
+  #Add TC only if it intersects with loiSfBuffer
   if (length(ind) > 0) {
 
-    storm <- Storm()
+    storm <- storm()
     storm@name <- sds@database$names[index]
     storm@season <- sds@database$seasons[index]
     storm@obs.all <- data.frame(iso.time = isotime,
-                                lon = lon[valid_indices],
-                                lat = lat[valid_indices],
-                                msw = zoo::na.approx(round(sds@database$msw[valid_indices, index]), na.rm = F, rule = 2))
+                                lon = lon[validIndices],
+                                lat = lat[validIndices],
+                                msw = zoo::na.approx(round(sds@database$msw[validIndices, index]),
+                                                     na.rm = FALSE, rule = 2))
 
 
-    if("sshs" %in% names(sds@fields)){
-      storm@obs.all$sshs <- sds@database$sshs[valid_indices, index]
-    }else{
+    if ("sshs" %in% names(sds@fields)) {
+      storm@obs.all$sshs <- sds@database$sshs[validIndices, index]
+    }else {
       storm@obs.all$sshs <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = sshs))
     }
 
-    if("rmw" %in% names(sds@fields))
-      storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[valid_indices, index]), na.rm = F, rule = 2)
+    if ("rmw" %in% names(sds@fields))
+      storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[validIndices, index]), na.rm = FALSE, rule = 2)
 
 
-    if("pressure" %in% names(sds@fields))
-      storm@obs.all$pres <- storm@obs.all$pres <- zoo::na.approx(sds@database$pres[valid_indices, index], na.rm = F, rule = 2)
+    if ("pressure" %in% names(sds@fields))
+      storm@obs.all$pres <- zoo::na.approx(sds@database$pres[validIndices, index], na.rm = FALSE, rule = 2)
 
-    if("poci" %in% names(sds@fields))
-      storm@obs.all$poci <- zoo::na.approx(sds@database$poci[valid_indices, index], na.rm = F, rule = 2)
+    if ("poci" %in% names(sds@fields))
+      storm@obs.all$poci <- zoo::na.approx(sds@database$poci[validIndices, index], na.rm = FALSE, rule = 2)
 
 
     #Wrapping longitudes from -180/180 to 0/360
@@ -877,18 +901,18 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
     storm@obs.all$lon[lg] <- storm@obs.all$lon[lg] + 360
 
     #Removing invalid isotime from obs.all
-    storm@obs.all <- storm@obs.all[ind.isotime,]
-    row.names(storm@obs.all) <- seq(1,dim(storm@obs.all)[1])
+    storm@obs.all <- storm@obs.all[indIsotime, ]
+    row.names(storm@obs.all) <- seq(1, dim(storm@obs.all)[1])
 
     storm@obs <- ind
-    storm@sshs <- max(storm@obs.all$sshs,na.rm = T)
+    storm@sshs <- max(storm@obs.all$sshs, na.rm = TRUE)
 
-    return(list(append(storm_list, storm),
-                append(storm_names, storm@name)))
+    return(list(append(stormList, storm),
+                append(stormNames, storm@name)))
 
-  }else{
+  }else {
 
-    return(list(NULL,NULL))
+    return(list(NULL, NULL))
 
   }
 
@@ -898,13 +922,13 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 
 
 
-#' Creating a `StormsList` object
+#' Creating a `stormsList` object
 #'
-#' The `Storms()` function extracts storm track data from a `StormsDataset`
-#' and creates a `StormsList` object based on specified arguments relating to location of interest, 
+#' The `defStormsList()` function extracts storm track data from a `stormsDataset`
+#' and creates a `stormsList` object based on specified arguments relating to location of interest,
 #' seasons, and names of the storms.
 #'
-#' @param sds `StormsDataset` object.
+#' @param sds `stormsDataset` object.
 #' @param loi Location of interest. Can be defined using,
 #' \itemize{
 #' \item character, a country name (e.g., "Vanuatu")
@@ -912,14 +936,15 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' \item numeric vector, a point coordinate (lon, lat in decimal degrees, e.g., c(169.5, -19.2))
 #' \item sp (SpatialPolygon) or a sf (simple features) object (e.g., created from a shapefile)
 #' }
-#' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere, 
-#' the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both 
-#' years should be specified, with cyclones assigned for the year that originated in. By default all storms from `sds` are extracted.
+#' @param seasons numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)).
+#' In the Southern Hemisphere, the cyclone season extends across two consecutive years.
+#' Therefore, to capture the 2021 to 2022 cyclone season both years should be specified,
+#' with cyclones assigned for the year that originated in. By default all storms from `sds` are extracted.
 #' @param names character vector. Names of specific storms (in capital letters).
-#' @param max_dist numeric. Maximum distance between the location of interest and the storm for which track data are extracted.
-#' Default `max_dist` is set to 300 km.
-#' @param remove_TD logical. Whether (TRUE) or not (FALSE) removing tropical depressions (\eqn{msw < 18
-#'   m.s^{-1}}, not considered to be stormed in Saffir-Simpson hurricane wind scale) are removed. 
+#' @param maxDist numeric. Maximum distance between the location of interest and the
+#' storm for which track data are extracted. Default `maxDist` is set to 300 km.
+#' @param removeTD logical. Whether (TRUE) or not (FALSE) removing tropical depressions (\eqn{msw < 18
+#'   m.s^{-1}}, not considered to be stormed in Saffir-Simpson hurricane wind scale) are removed.
 #'   Default value is set to `TRUE`.
 #' @param verbose numeric. Type of information the function displays. Can be:
 #' \itemize{
@@ -928,7 +953,7 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #' \item `0`, nothing is displayed.
 #' }
 #'
-#' @returns The `Storms()` function returns a `StormsList` object containing track data for all storms
+#' @returns The `defStormsList()` function returns a `stormsList` object containing track data for all storms
 #' meeting the specified criteria (e.g., name, season, location).
 #'
 #' @details The available countries for the `loi` are those provided in the
@@ -936,49 +961,51 @@ writeStorm <- function(storm_list, storm_names, sds, index, loi_sf_buffer){
 #'   boundaries derived from Natural Earth data. More informations on the Natural Earth data
 #'   here: [http://www.naturalearthdata.com/downloads/10m-cultural-vectors/](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/).
 #'
-#'@references 
-#'Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). 
-#'Bulletin of the American Meteorological Society, 91(3), Article 3. [https://doi.org/10.1175/2009bams2755.1](https://doi.org/10.1175/2009bams2755.1)
+#'@references
+#'Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
+#'The International Best Track Archive for Climate Stewardship (IBTrACS).
+#'Bulletin of the American Meteorological Society, 91(3), Article 3.
+#'[https://doi.org/10.1175/2009bams2755.1](https://doi.org/10.1175/2009bams2755.1)
 #'
 #' @examples
 #' \dontrun{
-#' #Creating a StormsDataset
+#' #Creating a stormsDataset
 #' sds <- defDatabase()
-#' 
+#'
 #' #Getting data using country names
-#' vanuatu.st <- Storms(sds = sds, loi = "Vanuatu")
+#' vanuatu.st <- storms(sds = sds, loi = "Vanuatu")
 #'
 #' #Getting data using a specific point location
 #' pt <- c(169, -19)
-#' pam.pt <- Storms(sds = sds, loi = pt, names = "PAM")
+#' pam.pt <- storms(sds = sds, loi = pt, names = "PAM")
 #'
 #' #Getting data using country and storm names
-#' niran.nc <- Storms(sds = sds, loi = "New Caledonia", names = c("NIRAN"))
+#' niran.nc <- storms(sds = sds, loi = "New Caledonia", names = c("NIRAN"))
 #'
 #' #Getting data using a user defined spatial polygon
 #' poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
 #' sp <- sf::st_polygon(list(poly))
 #' sp <- sf::st_sfc(sp, crs = 4326)
 #' sp <- sf::st_as_sf(sp)
-#' sts_sp <- Storms(sds = sds, loi = sp)
+#' sts_sp <- storms(sds = sds, loi = sp)
 #' }
 #'
 #'
 #' @importFrom methods as
 #' @export
-Storms <- function(sds,
+defStormsList <- function(sds,
                    loi,
                    seasons = c(sds@seasons["min"], sds@seasons["max"]),
                    names = NULL,
-                   max_dist = 300,
-                   remove_TD = TRUE,
-                   verbose = 2){
+                   maxDist = 300,
+                   removeTD = TRUE,
+                   verbose = 2) {
 
-  start_time <- Sys.time()
+  startTime <- Sys.time()
 
-  checkInputsGs(sds, loi, seasons, names, max_dist, verbose, remove_TD)
+  checkInputsGs(sds, loi, seasons, names, maxDist, verbose, removeTD)
 
-  if(length(seasons) == 2)
+  if (length(seasons) == 2)
     seasons <- seasons[order(seasons)]
 
 
@@ -986,24 +1013,24 @@ Storms <- function(sds,
     cat("=== Storms processing ... ===\n\n-> Making buffer: ")
 
   #Converting loi
-  loi.sf <- convertLoi(loi)
-  
- 
+  loiSf <- convertLoi(loi)
+
+
    #Handling buffer
-   loi.sf.buffer <- makeBuffer(loi, loi.sf, max_dist * km)
+   spatialBuffer <- makeBuffer(loi, loiSf, maxDist * km)
 
 
-  if (verbose){
+  if (verbose) {
     cat("Done\n")
-    if(is.null(names) & length(seasons) == 2){
-      cat("-> Searching storms from",seasons[1],"to",seasons[2],"...\n")
-    }else if(is.null(names) & length(seasons) == 1){
-      cat("-> Searching for Storms for the ",seasons,"tropical season...\n")
-    }else if(!is.null(names)){
-      if(length(names) == 1){
-        cat("-> Searching for", names,"storm ...\n")
-      }else{
-        cat("-> Searching for", names,"storms ...\n")
+    if (is.null(names) && length(seasons) == 2) {
+      cat("-> Searching storms from", seasons[1], "to", seasons[2], "...\n")
+    }else if (is.null(names) && length(seasons) == 1) {
+      cat("-> Searching for Storms for the ", seasons, "tropical season...\n")
+    }else if (!is.null(names)) {
+      if (length(names) == 1) {
+        cat("-> Searching for", names, "storm ...\n")
+      }else {
+        cat("-> Searching for", names, "storms ...\n")
       }
     }
     cat("   -> Identifying Storms: ")
@@ -1012,18 +1039,18 @@ Storms <- function(sds,
 
   #Retrieving the matching indices, handling names, seasons and remove TD
   indices <- retrieveStorms(sds@database,
-                            filter_names = names,
-                            filter_seasons = seasons,
-                            remove_TD = remove_TD)
+                            filterNames = names,
+                            filterSeasons = seasons,
+                            removeTD = removeTD)
 
-  if (verbose > 0 & length(indices) >= 1) {
-    if(is.null(names) & length(seasons) == 2){
-      cat(length(indices),"potential candidates...\n")
-    }else{
+  if (verbose > 0 && length(indices) >= 1) {
+    if (is.null(names) && length(seasons) == 2) {
+      cat(length(indices), "potential candidates...\n")
+    }else {
       cat("Done\n")
     }
     cat("-> Gathering storm(s) ... \n")
-    if(length(indices) > 1){
+    if (length(indices) > 1) {
       count <- 1 #initializing count for progression bar
       pb <- utils::txtProgressBar(min = count,
                                   max = length(indices),
@@ -1031,72 +1058,72 @@ Storms <- function(sds,
     }
   }
 
-  if(length(indices) > 0){
+  if (length(indices) > 0) {
 
-    storm.list <- list()
-    storm.names <- list()
+    stormList <- list()
+    stormNames <- list()
 
     for (i in indices) {
-      sts.output <- writeStorm(storm_list = storm.list,
-                               storm_names = storm.names,
+      stsOutput <- writeStorm(stormList = stormList,
+                               stormNames = stormNames,
                                sds = sds,
                                index = i,
-                               loi_sf_buffer = loi.sf.buffer)
+                               loiSfBuffer = spatialBuffer)
 
-      if(!is.null(sts.output[[1]])){
-        storm.list <- sts.output[[1]]
-        storm.names <- sts.output[[2]]
+      if (!is.null(stsOutput[[1]])) {
+        stormList <- stsOutput[[1]]
+        stormNames <- stsOutput[[2]]
       }
 
-      if (verbose > 0 & length(indices) > 1){
+      if (verbose > 0 && length(indices) > 1) {
         utils::setTxtProgressBar(pb, count)
         count <- count + 1
       }
     }
 
-    if (verbose > 0 & length(indices) > 1)
+    if (verbose > 0 && length(indices) > 1)
       close(pb)
 
-    stopifnot("No storms found. Please check compatibilities between inputs" = !is.null(unlist(storm.names)))
+    stopifnot("No storms found. Please check compatibilities between inputs" = !is.null(unlist(stormNames)))
 
-    #Initializing StormsList object
-    sts <- new(Class = "StormsList",
-               data = storm.list,
-               buffer = max_dist,
-               spatial.loi = loi.sf,
-               spatial.loi.buffer = loi.sf.buffer)
+    #Initializing stormsList object
+    sts <- new(Class = "stormsList",
+               data = stormList,
+               buffer = maxDist,
+               spatialLoi = loiSf,
+               spatialLoiBuffer = spatialBuffer)
 
-    names(sts@data) <- unlist(storm.names)
+    names(sts@data) <- unlist(stormNames)
 
-    end_time <- Sys.time()
+    endTime <- Sys.time()
 
-    if(verbose > 0){
-      cat("\n=== DONE with run time",as.numeric(end_time - start_time),"sec ===\n\n")
-      if(verbose > 1){
+    if (verbose > 0) {
+      cat("\n=== DONE with run time", as.numeric(endTime - startTime), "sec ===\n\n")
+      if (verbose > 1) {
         cat("SUMMARY:\n")
         cat("(*) LOI: ")
-        if(identical(class(loi),"character")){
-          cat(loi,"\n")
-        }else if(identical(class(loi),"numeric")){
+        if (identical(class(loi), "character")) {
+          cat(loi, "\n")
+        }else if (identical(class(loi), "numeric")) {
           cat(loi, "lon-lat\n")
-        }else{
+        }else {
           cat("sf object (use getLOI function for further informations")
         }
-        cat("(*) Buffer size:", getBufferSize(sts),"km\n")
+        cat("(*) Buffer size:", getBufferSize(sts), "km\n")
         cat("(*) Remove Tropical Depressions (< 18 m/s in sshs):")
-        if(remove_TD){
+        if (removeTD) {
           cat(" yes\n")
-        }else{
+        }else {
           cat(" no\n")
         }
-        cat("(*) Number of Storms:", getNbStorms(sts),"\n")
+        cat("(*) Number of storms:", getNbStorms(sts), "\n")
         cat("        Name - Tropical season - SSHS - Number of observation within buffer:\n")
-        i = 1
-        for(i in 1:getNbStorms(sts)){
-          n = getNames(sts@data[[i]])
-          s = getSeasons(sts@data[[i]])
-          sshsv = getSSHS(sts@data[[i]])
-          cat("       ",n,"-", s, "-", sshsv, "-",length(getInObs(sts, n, s)),"\n")
+        i <- 1
+        for (i in 1:getNbStorms(sts)){
+          n <- getNames(sts@data[[i]])
+          s <- getSeasons(sts@data[[i]])
+          sshsv <- getSSHS(sts@data[[i]])
+          cat("       ", n, "-", s, "-", sshsv, "-", length(getInObs(sts, n, s)), "\n")
         }
         cat("\n")
       }
@@ -1104,7 +1131,7 @@ Storms <- function(sds,
 
     return(sts)
 
-  }else{
+  }else {
     stop("No storms found. Please check inputs ...")
   }
 }

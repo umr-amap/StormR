@@ -2,7 +2,7 @@
 % Please edit documentation in R/stormsDataset.R
 \name{defDatabase}
 \alias{defDatabase}
-\title{Creating a \code{StormsDataset} object}
+\title{Creating a \code{stormsDataset} object}
 \usage{
 defDatabase(
   filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
@@ -11,9 +11,8 @@ defDatabase(
     "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
   basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
-  unit_conversion = c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci =
-    "mb_to_pa"),
-  verbose = TRUE
+  unitConversion = c(msw = "knt2ms", rmw = "nm2km", pressure = "mb2pa", poci = "mb2pa"),
+  verbose = 1
 )
 }
 \arguments{
@@ -24,9 +23,10 @@ from the IBTrACS.SP.v04r00.nc file and provides all the tropical cyclones that o
 from 2015 to 2016 and around New Caledonia from 2020 to 2021.}
 
 \item{fields}{named character vector. This argument allows to specify the corresponding variable names
-in the input NetCDF file for each field in the output \code{StormsDataset}. By default, the corresponding
-variable names are set up to import data from a NetCDF file from the IBTrACS database (Knapp et al., 2010). Corresponding variable
-names for following fields have to (mandatory fields) or can be (recommended or optional fields) provided:
+in the input NetCDF file for each field in the output \code{stormsDataset}. By default, the corresponding
+variable names are set up to import data from a NetCDF file from the IBTrACS database (Knapp et al., 2010).
+Corresponding variable names for following fields have to (mandatory fields) or can be
+(recommended or optional fields) provided:
 \itemize{
 \item "\verb{names"}, names of the storms (mandatory),
 \item \code{"seasons"}, years of observations (mandatory),
@@ -35,14 +35,16 @@ names for following fields have to (mandatory fields) or can be (recommended or 
 \item \code{"lat"}, latitude of the observations (mandatory),
 \item \code{"msw"}, maximum sustained wind speed (mandatory),
 \item \code{"basin"}, name of the area where the storm originated (recommended),
-\item \code{"rmw"}, radius of maximum winds: distance between the centre of the storm and its band of strongest winds (recommended),
+\item \code{"rmw"}, radius of maximum winds: distance between the centre of the storm and
+its band of strongest winds (recommended),
 \item \code{"pressure"}, central pressure (recommended),
 \item \code{"poci"}, pressure of the last closed isobar (recommended), and
 \item \code{"sshs"}, Saffir-Simpson hurricane wind scale rating based on msw (optional).
 }}
 
-\item{basin}{character. If the basin field is provided, then storm track data will only be extracted for the named basin.
-By default \code{basin=NULL}, meaning that all storms irrespective of the basin they originated in are extracted.
+\item{basin}{character. If the basin field is provided, then storm track data will
+only be extracted for the named basin. By default \code{basin=NULL}, meaning that all storms
+irrespective of the basin they originated in are extracted.
 Seven basins can be used to filter the data set:
 \itemize{
 \item \code{"NA"}, for North Atlantic basin,
@@ -56,21 +58,20 @@ Seven basins can be used to filter the data set:
 
 \item{seasons}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere,
 the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both
-years should be specified, with cyclones assigned for the year that originated in. By default all storms occurring since
-1980 are extracted.}
+years should be specified, with cyclones assigned for the year that originated in.
+By default all storms occurring since 1980 are extracted.}
 
-\item{unit_conversion}{named character vector. \code{StormR} functions use the metric system (international system of units), therefore
-\code{msw} has to be provided in \eqn{m.s^{-1}}, \code{rmw} in \eqn{km}, \code{pressure} and \code{poci} in \eqn{Pa}. By default
-\code{unit_conversion=c(msw = "knt_to_ms", rmw = "nm_to_km", pressure = "mb_to_pa", poci = "mb_to_pa")}
-to meet the requirements when importing a NetCDF file from the IBTrACS database.
+\item{unitConversion}{named character vector. \code{StormR} functions use the metric system (international
+system of units), therefore \code{msw} has to be provided in \eqn{m.s^{-1}}, \code{rmw} in \eqn{km}, \code{pressure}
+and \code{poci} in \eqn{Pa}. By default \code{unitConversion=c(msw = "knt2ms", rmw = "nm2km", pressure = "mb2pa", poci = "mb2pa")} to meet the requirements when importing a NetCDF file from the IBTrACS database.
 This argument is mandatory even if no conversion is needed. If no conversion is needed then
 use \code{"None"} in the corresponding fields. The following unit conversions are implemented:
 
 For \code{msw},
 \itemize{
-\item \code{"knt_to_ms"}, to convert knot to meter per second (default setting),
-\item \code{"kmh_to_ms"}, to convert kilometre per hour to meter per second,
-\item "\verb{mph_to_ms"}, to convert miles per hour to meter per second, or
+\item \code{"knt2ms"}, to convert knot to meter per second (default setting),
+\item \code{"kmh2ms"}, to convert kilometre per hour to meter per second,
+\item "\verb{mph2ms"}, to convert miles per hour to meter per second, or
 \item \code{"None"}, if no conversion is needed.
 }
 
@@ -81,32 +82,33 @@ For \code{rmw},
 }
 For \code{pressure} and \code{poci},
 \itemize{
-\item "\verb{mb_to_pa"}, to convert  millibar to Pascal  (default setting),
-\item \code{"b_to_pa"}, to convert bar to Pascal,
-\item \code{"atm_to_pa"}, to convert  atmosphere to Pascal,
-\item \code{"psi_to_pa"}, to convert  psi to Pascal, or
+\item "\verb{mb2pa"}, to convert  millibar to Pascal  (default setting),
+\item \code{"b2pa"}, to convert bar to Pascal,
+\item \code{"atm2pa"}, to convert  atmosphere to Pascal,
+\item \code{"psi2pa"}, to convert  psi to Pascal, or
 \item \code{"None"}, if no conversion is needed.
 }}
 
-\item{verbose}{logical. Whether (TRUE) or not (FALSE) the function should display
-information about the processes.}
+\item{verbose}{numeric. Whether the function should display (\verb{= 1})
+or not (\verb{= 0}) information about the processes.}
 }
 \value{
-The \code{defDatabase()} function returns a \code{StormsDataset} object.
+The \code{defDatabase()} function returns a \code{stormsDataset} object.
 }
 \description{
-The \code{defDatabase()} function creates a \code{StormsDataset} object from a NetCDF file.
+The \code{defDatabase()} function creates a \code{stormsDataset} object from a NetCDF file.
 This is an essential first step before other \code{stormR} functions can be used.
 }
 \examples{
 \dontrun{
-#Creating a `StormsDataset` object with storms between 2010 and 2015 
-#in the South Pacific using the NetCDF provided with the package
-SP_2015_2020<-defDatabase(seasons=c(2010-2015))
+# Creating a `stormsDataset` object with storms between 2010 and 2015
+# in the South Pacific using the NetCDF provided with the package
+SP_2015_2020 <- defDatabase(seasons = c(2010 - 2015))
 str(SP_2015_2020)
 }
 }
 \references{
-Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS).
+Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
+The International Best Track Archive for Climate Stewardship (IBTrACS).
 Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
 }
