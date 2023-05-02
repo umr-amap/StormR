@@ -4,6 +4,7 @@
 
 <!-- badges: start -->
 [![codecov](https://codecov.io/github/umr-amap/StormR/branch/master/graph/badge.svg?token=5YMVL4TFB5)](https://codecov.io/github/umr-amap/StormR)
+[![Github All Releases](https://img.shields.io/github/downloads/umr-amap/StormR/total.svg)]()
 <!-- badges: end -->
 
 ## Overview
