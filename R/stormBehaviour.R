@@ -1518,7 +1518,7 @@ checkInputsTempBehaviour <- function(sts, points, product, windThreshold, method
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
-  stopifnot("verbose must be either 0 or 1" = verbose %in% c(0, 1))
+  stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 }
 
 
@@ -1998,7 +1998,28 @@ temporalBehaviour <- function(sts,
 
   if (verbose > 0) {
     cat("\n=== DONE ===\n\n")
-  }
+
+    if (verbose > 1) {
+      cat("Output:\n")
+      cat("DataFrame with", length(finalResult), "storm:\n")
+      cat("index - name of the storm - Observation Point - Point indices\n")
+      stormNames <- names(finalResult)
+      for (i in seq_along(stormNames)) {
+        stormName <- stormNames[i]
+        pointNames <- names(finalResult[[stormName]])
+        for (j in seq_along(pointNames)) {
+          pointName <- pointNames[j]
+          cat(" ", i, "   ",
+              stormName, "                ",
+              pointName, "            ",
+              finalResult[[stormName]][[pointName]]$indices, "\n")
+        }
+      }
+      cat("\n")
+
+    }
+
+      }
 
   return(finalResult)
 }
