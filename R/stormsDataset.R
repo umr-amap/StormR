@@ -150,7 +150,7 @@ stormsDataset <- methods::setClass(
 #' @param verbose numeric
 #'
 #' @return NULL
-checkInputsIDb <- function(filename, fields, basin, seasons, unitConversion, verbose) {
+checkInputsdefDatabase <- function(filename, fields, basin, seasons, unitConversion, verbose) {
   # Checking filename input
   stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename), "character"))
@@ -356,7 +356,7 @@ defDatabase <- function(filename = system.file("extdata", "test_dataset.nc", pac
                           poci = "mb2pa"
                         ),
                         verbose = 1) {
-  checkInputsIDb(filename, fields, basin, seasons, unitConversion, verbose)
+  checkInputsdefDatabase(filename, fields, basin, seasons, unitConversion, verbose)
 
 
   if (verbose) {

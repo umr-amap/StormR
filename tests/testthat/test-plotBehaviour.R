@@ -2,13 +2,13 @@
 
 
 
-test_that("Tests checkInputsPb function", {
+test_that("Tests checkInputsPlotBehaviour function", {
   suppressWarnings(sds <- defDatabase(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
   msw <- spatialBehaviour(pam, verbose = 0)
 
   # Checking sts input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     raster_product = msw,
     color_palette = NULL,
     main = NULL,
@@ -21,7 +21,7 @@ test_that("Tests checkInputsPb function", {
   ))
 
   # Checking raster_product input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     color_palette = NULL,
     main = NULL,
@@ -34,7 +34,7 @@ test_that("Tests checkInputsPb function", {
   ))
 
   # Checking color_palette input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = TRUE,
@@ -47,7 +47,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = c(1, 2, 3),
@@ -61,7 +61,7 @@ test_that("Tests checkInputsPb function", {
   ))
 
   # Checking xlim/ylim input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -74,7 +74,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -87,7 +87,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -100,7 +100,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -113,7 +113,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -126,7 +126,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -140,7 +140,7 @@ test_that("Tests checkInputsPb function", {
   ))
 
   # Checking labels input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -153,7 +153,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -167,7 +167,7 @@ test_that("Tests checkInputsPb function", {
   ))
 
   # Checking by input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -180,7 +180,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -193,7 +193,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -206,7 +206,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -220,7 +220,7 @@ test_that("Tests checkInputsPb function", {
   ))
 
   # Checking pos input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -233,7 +233,7 @@ test_that("Tests checkInputsPb function", {
     pos = TRUE
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -246,7 +246,7 @@ test_that("Tests checkInputsPb function", {
     pos = "hui"
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -259,7 +259,7 @@ test_that("Tests checkInputsPb function", {
     pos = 5.6
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -272,7 +272,7 @@ test_that("Tests checkInputsPb function", {
     pos = -2
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -285,7 +285,7 @@ test_that("Tests checkInputsPb function", {
     pos = 5
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -299,7 +299,7 @@ test_that("Tests checkInputsPb function", {
   ))
 
   # Checking main input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -312,7 +312,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -325,7 +325,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -339,7 +339,7 @@ test_that("Tests checkInputsPb function", {
   ))
 
   # Checking legends input
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -352,7 +352,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -365,7 +365,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,
@@ -378,7 +378,7 @@ test_that("Tests checkInputsPb function", {
     pos = 3
   ))
 
-  expect_error(checkInputsPb(
+  expect_error(checkInputsPlotBehaviour(
     sts = pam,
     raster_product = msw,
     color_palette = NULL,

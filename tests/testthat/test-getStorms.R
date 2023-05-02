@@ -5,260 +5,260 @@ test_that("Tests invalid inputs", {
   suppressWarnings(sds <- defDatabase(verbose = 0))
 
   # Checking sdb input
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     loi = NULL,
     seasons = c(1980, 2022),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
   # Checking loi input
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     seasons = c(1980, 2022),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = c("Vanuatu", "New Caledonia"),
     seasons = c(1980, 2022),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = 169,
     seasons = c(1980, 2022),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = c(169, 170, -15, -14),
     seasons = c(1980, 2022),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = c(169, 170, -15, -14),
     seasons = c(1980, 2022),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = c(169, -100),
     seasons = c(1980, 2022),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
 
   # Checking seasons input
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1960, 2022),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2024),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = 2015.7,
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = TRUE,
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = "2015",
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
   # Checking names input
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = TRUE,
     names = 123,
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = TRUE,
     names = TRUE,
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2000, 2020),
     names = NULL,
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
 
-  # Checking max_dist input
-  expect_error(checkInputsGs(
+  # Checking maxDist input
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = "hui",
+    maxDist = "hui",
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = c(1, 3),
+    maxDist = c(1, 3),
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = -10,
+    maxDist = -10,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = TRUE,
+    maxDist = TRUE,
     verbose = 2,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
   # Checking verbose input
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = -1,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = c(1, 3),
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = "hui",
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = TRUE,
-    remove_TD = TRUE
+    removeTD = TRUE
   ))
 
   # Checking remove_TC input
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = 1
+    removeTD = 1
   ))
 
-  expect_error(checkInputsGs(
+  expect_error(checkInputsDefStormsList(
     sds = sds,
     loi = "Vanuatu",
     seasons = c(1980, 2020),
     names = "PAM",
-    max_dist = 300,
+    maxDist = 300,
     verbose = 2,
-    remove_TD = "hui"
+    removeTD = "hui"
   ))
 })
 

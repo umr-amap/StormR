@@ -2,9 +2,9 @@
 
 
 
-test_that("Test checkInputsIDb function", {
+test_that("Test checkInputsdefDatabase function", {
   # Checking filename input
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     fields = c(
       "basin" = "basin",
       "names" = "name",
@@ -29,7 +29,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = 1,
     fields = c(
       "basin" = "basin",
@@ -55,7 +55,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = TRUE,
     fields = c(
       "basin" = "basin",
@@ -82,7 +82,7 @@ test_that("Test checkInputsIDb function", {
   ))
 
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = c("data", ".nc"),
     fields = c(
       "basin" = "basin",
@@ -109,7 +109,7 @@ test_that("Test checkInputsIDb function", {
   ))
 
   # Checking fields input
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = 1,
     basin = "SP",
@@ -123,7 +123,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = TRUE,
     basin = "SP",
@@ -137,7 +137,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -162,7 +162,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -187,7 +187,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -212,7 +212,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -237,7 +237,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -263,7 +263,7 @@ test_that("Test checkInputsIDb function", {
   ))
 
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -288,7 +288,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -313,7 +313,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -339,7 +339,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -364,7 +364,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -390,7 +390,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -415,7 +415,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -441,7 +441,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -466,7 +466,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -493,7 +493,7 @@ test_that("Test checkInputsIDb function", {
   ))
 
   # Checking basin input
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -519,7 +519,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "names" = "name",
@@ -544,7 +544,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -570,7 +570,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -596,7 +596,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -623,7 +623,7 @@ test_that("Test checkInputsIDb function", {
   ))
 
   # Checking seasons
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -649,7 +649,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -675,7 +675,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -701,7 +701,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -729,7 +729,7 @@ test_that("Test checkInputsIDb function", {
 
 
   # Checking unitConversion input
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -750,7 +750,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -773,7 +773,7 @@ test_that("Test checkInputsIDb function", {
 
 
   # Checking verbose input
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -799,7 +799,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_error(checkInputsIDb(
+  expect_error(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -826,7 +826,7 @@ test_that("Test checkInputsIDb function", {
   ))
 
   # Warnings
-  expect_warning(checkInputsIDb(
+  expect_warning(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -851,7 +851,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_warning(checkInputsIDb(
+  expect_warning(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",
@@ -876,7 +876,7 @@ test_that("Test checkInputsIDb function", {
     verbose = 1
   ))
 
-  expect_warning(checkInputsIDb(
+  expect_warning(checkInputsdefDatabase(
     filename = "database.nc",
     fields = c(
       "basin" = "basin",

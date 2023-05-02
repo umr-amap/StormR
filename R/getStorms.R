@@ -558,7 +558,7 @@ setMethod("getInObs", signature("storm"), function(s) s@obs)
 
 
 
-#' Check inputs for storms function
+#' Check inputs for defStormsList function
 #'
 #' @noRd
 #' @param sds stormsDataset object
@@ -575,7 +575,7 @@ setMethod("getInObs", signature("storm"), function(s) s@obs)
 #' @param verbose logical
 #' @param removeTD logical
 #' @return NULL
-checkInputsGs <- function(sds, loi, seasons, names, maxDist, verbose, removeTD) {
+checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, verbose, removeTD) {
 
   #checking sds input
   stopifnot("sds is missing" = !missing(sds))
@@ -1003,7 +1003,7 @@ defStormsList <- function(sds,
 
   startTime <- Sys.time()
 
-  checkInputsGs(sds, loi, seasons, names, maxDist, verbose, removeTD)
+  checkInputsDefStormsList(sds, loi, seasons, names, maxDist, verbose, removeTD)
 
   if (length(seasons) == 2)
     seasons <- seasons[order(seasons)]
