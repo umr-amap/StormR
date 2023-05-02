@@ -3,38 +3,42 @@
 \docType{methods}
 \name{getStorm}
 \alias{getStorm}
-\alias{getStorm,StormsList-method}
-\title{Extracting a \code{Storm}}
+\alias{getStorm,stormsList-method}
+\title{Extracting a \code{storm}}
 \usage{
 getStorm(sts, name, season = NULL)
 
-\S4method{getStorm}{StormsList}(sts, name, season = NULL)
+\S4method{getStorm}{stormsList}(sts, name, season = NULL)
 }
 \arguments{
-\item{sts}{\code{StormsList}}
+\item{sts}{\code{stormsList}}
 
 \item{name}{character. Name of the storm to extract.}
 
-\item{season}{numeric vector. Seasons of occurrence of the storms (e.g., c(2020,2022)). In the Southern Hemisphere,
-the cyclone season extends across two consecutive years. Therefore, to capture the 2021 to 2022 cyclone season both
-years should be specified, with cyclones assigned for the year that originated in. By default all storms occurring since
+\item{season}{numeric vector. Seasons of occurrence of the storms
+(e.g., c(2020,2022)). In the Southern Hemisphere,
+the cyclone season extends across two consecutive years.
+Therefore, to capture the 2021 to 2022 cyclone season both
+years should be specified, with cyclones assigned for the year
+#'  that originated in. By default all storms occurring since
 1980 are extracted.}
 }
 \value{
-The \code{getStorm()} function returns a \code{Storm} object.
+The \code{getStorm()} function returns a \code{storm} object.
 }
 \description{
-The \code{getStorm()} function extracts a specific \code{Storm} object from a \code{StormsList} object.
+The \code{getStorm()} function extracts a specific \code{storm} object
+from a \code{stormsList} object.
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+#Creating a stormsDataset
 sds <- defDatabase()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- Storms(sds=sds, loi = "New Caledonia")
+sts <- storms(sds=sds, loi = "New Caledonia")
 
-#Getting `Storm` for the tropical cyclone Niran
+#Getting `storm` for the tropical cyclone Niran
 st <- getStorm(sts, name = "NIRAN")
 }
 }

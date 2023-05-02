@@ -6,8 +6,8 @@
 \usage{
 plotBehaviour(
   sts,
-  raster_product,
-  color_palette = NULL,
+  rasterProduct,
+  colorPalette = NULL,
   main = NULL,
   xlim = NULL,
   ylim = NULL,
@@ -20,16 +20,19 @@ plotBehaviour(
 \arguments{
 \item{sts}{\code{StormsList} object.}
 
-\item{raster_product}{layer name in a \code{SpatRaster} object. The names of the layers follow
+\item{rasterProduct}{layer name in a \code{SpatRaster} object. The names of the layers follow
 the following terminology:
 \itemize{
-\item for "MSW" or "PDI", the name of the storm in capital letters and the name of the statistic separated by underscores (e.g., "PAM_MSW", "PAM_PDI"),
-\item for duration of exposure, the name of the storm in capital letters, "Exposure", and the threshold value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...).
-\item for wind profiles, the name of the storm in capital letters, "Speed" or "Direction", and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41",...).
+\item for "MSW" or "PDI", the name of the storm in capital letters and the name of the
+statistic separated by underscores (e.g., "PAM_MSW", "PAM_PDI"),
+\item for duration of exposure, the name of the storm in capital letters, "Exposure",
+and the threshold value separated by underscores (e.g., "PAM_Exposure_18", "PAM_Exposure_33", ...).
+\item for wind profiles, the name of the storm in capital letters, "Speed" or "Direction",
+and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41",...).
 }}
 
-\item{color_palette}{character vector. The color palette used to plot the raster layer. If \code{color_palette=NULL} (default setting),
-the default color palette is used.}
+\item{colorPalette}{character vector. The color palette used to plot the raster layer.
+If \code{colorPalette=NULL} (default setting), the default color palette is used.}
 
 \item{main}{character. Title of the plot. If \code{main=NULL} (default setting),
 a default title is generated based on the name of the layer.}
@@ -57,20 +60,19 @@ the \code{spatialBehaviour()} function and stored in \code{SpatRaster} objects.
 }
 \examples{
 \dontrun{
-#Creating a StormsDataset
+# Creating a stormsDataset
 sds <- defDatabase()
 
-#Getting storm track data for tropical cyclone Pam (2015)
-pam <- Storms(sds = sds, loi = "Vanuatu", names = "PAM")
+# Getting storm track data for tropical cyclone Pam (2015)
+pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
-#Plotting maximum sustained wind speed for Pam (2015) near Vanuatu
+# Plotting maximum sustained wind speed for Pam (2015) near Vanuatu
 pam.msw <- spatialBehaviour(pam, verbose = 0)
 plotBehaviour(pam, pam.msw)
 
-#Plotting 2D wind speed profile for Pam (2015) near Vanuatu
+# Plotting 2D wind speed profile for Pam (2015) near Vanuatu
 pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 }
-
 
 }

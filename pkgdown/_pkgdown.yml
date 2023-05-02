@@ -27,18 +27,18 @@ navbar:
 
 reference:
 
-- title: Initialize Storms
-  desc: Functions for initializing Storm/StormsList objects
+- title: Initialize storms
+  desc: Functions for initializing storm/stormsList objects
   contents:  
-  - '`StormsDataset-class`'
+  - '`stormsDataset-class`'
   - '`defDatabase`'
-  - '`Storm-class`'
-  - '`StormsList-class`'
-  - '`Storms`'
+  - '`storm-class`'
+  - '`stormsList-class`'
+  - '`defStormsList`'
   
   
 - title: Getters
-  desc: Functions for getting data associated with Storm/StormsList objects
+  desc: Functions for getting data associated with storm/stormsList objects
   contents:
   - '`getStorm`'
   - '`getNames`'

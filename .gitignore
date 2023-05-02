@@ -1,4 +1,5 @@
 *.Rproj*
+.lintr
 .Rhistory
 .Rdata
 .RData

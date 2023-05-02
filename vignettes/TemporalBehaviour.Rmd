@@ -34,27 +34,27 @@ latitude = -15.53). The coordinates of the two locations of interest are
 provided in a data frame as follows:
 
 ``` {r}
-df<-data.frame(x=c(168.33,167.17),y=c(-17.73,-15.53))
-rownames(df)<-c("Port_Vila","Luganville")
+df <- data.frame(x = c(168.33, 167.17), y = c(-17.73, -15.53))
+rownames(df) <- c("Port_Vila", "Luganville")
 ```
 
 The track data for Pam nearby Vanuatu are extracted as follows:
 
 ``` {r}
-sds<-defDatabase()
-st<-Storms(sds=sds,loi = "Vanuatu", names = "PAM", verbose=0)
+sds <- defDatabase()
+st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 plotStorms(st)
-points(df$x,df$y,pch=3,col=c("blue","red"))
-text(df$x,df$y,labels = c("Port Vila","Luganville"),pos=2,col=c("blue","red"),cex=0.8)
+points(df$x, df$y, pch = 3, col = c("blue", "red"))
+text(df$x, df$y, labels = c("Port Vila", "Luganville"), pos = 2, col = c("blue", "red"), cex = 0.8)
 ```
 
 Then the `temporalBehaviour()` function with the `product = "TS"` argument is
 used to compute time series. By default the temporal resolution of is set to 1
-hour but can be changed using the `temp_res` argument. Here we set the temporal
-resolution to 30 min with `temp_res=0.5` as follows:
+hour but can be changed using the `tempRes` argument. Here we set the temporal
+resolution to 30 min with `tempRes=0.5` as follows:
 
 ``` {r}
-TS<-temporalBehaviour(st, points = df, product = "TS",temp_res=0.5,verbose=0)
+TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 0.5, verbose = 0)
 ```
 
 With the above specification the `temporalBehaviour()` function returns a list
@@ -70,14 +70,14 @@ We use the data frame to draw time series plots for wind speed and wind
 direction as follows:
 
 ``` {r}
-par(mar=c(10,4,4,2))
-plot(TS$PAM$Port_Vila$speed,type="l",ylim=c(0,60),xlab="",ylab="Wind speed (m/s)",axes=FALSE,col="blue")
-points(TS$PAM$Port_Vila$speed,col="blue",pch=3)
-lines(TS$PAM$Luganville$speed,col="red")
-points(TS$PAM$Luganville$speed,col="red",pch=3)
-legend("topleft",pch=3,col=c("blue","red"),legend=c("Port Vila","Luganville"),bty="n")
-axis(1,at=seq(1,length(TS$PAM$Port_Vila$speed)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
-axis(2,at=seq(0,60,10),labels=seq(0,60,10),las=2)
+par(mar = c(10, 4, 4, 2))
+plot(TS$PAM$Port_Vila$speed, type = "l", ylim = c(0, 60), xlab = "", ylab = "Wind speed (m/s)", axes = FALSE, col = "blue")
+points(TS$PAM$Port_Vila$speed, col = "blue", pch = 3)
+lines(TS$PAM$Luganville$speed, col = "red")
+points(TS$PAM$Luganville$speed, col = "red", pch = 3)
+legend("topleft", pch = 3, col = c("blue", "red"), legend = c("Port Vila", "Luganville"), bty = "n")
+axis(1, at = seq(1, length(TS$PAM$Port_Vila$speed)), labels = TS$PAM$Port_Vila$isoTimes, las = 2)
+axis(2, at = seq(0, 60, 10), labels = seq(0, 60, 10), las = 2)
 ```
 
 ``` {r , include = FALSE}
@@ -85,14 +85,14 @@ dev.off()
 ```
 
 ``` {r}
-par(mar=c(10,4,4,2))
-plot(TS$PAM$Port_Vila$direction,type="l",ylim=c(0,360),xlab="",ylab="Wind direction (degree north)",axes=FALSE,col="blue")
-points(TS$PAM$Port_Vila$direction,col="blue",pch=3)
-lines(TS$PAM$Luganville$direction,col="red")
-points(TS$PAM$Luganville$direction,col="red",pch=3)
-legend("topleft",pch=3,col=c("blue","red"),legend=c("Port Vila","Luganville"),bty="n")
-axis(1,at=seq(1,length(TS$PAM$Port_Vila$speed)),labels=TS$PAM$Port_Vila$isoTimes,las=2)
-axis(2,at=seq(0,360,90),labels=seq(0,360,90),las=2)
+par(mar = c(10, 4, 4, 2))
+plot(TS$PAM$Port_Vila$direction, type = "l", ylim = c(0, 360), xlab = "", ylab = "Wind direction (degree north)", axes = FALSE, col = "blue")
+points(TS$PAM$Port_Vila$direction, col = "blue", pch = 3)
+lines(TS$PAM$Luganville$direction, col = "red")
+points(TS$PAM$Luganville$direction, col = "red", pch = 3)
+legend("topleft", pch = 3, col = c("blue", "red"), legend = c("Port Vila", "Luganville"), bty = "n")
+axis(1, at = seq(1, length(TS$PAM$Port_Vila$speed)), labels = TS$PAM$Port_Vila$isoTimes, las = 2)
+axis(2, at = seq(0, 360, 90), labels = seq(0, 360, 90), las = 2)
 ```
 
 ``` {r , include = FALSE}
@@ -103,8 +103,8 @@ Maximum sustained wind speed for Port Vila and Luganville can be computed as
 follows:
 
 ``` {r}
-max(TS$PAM$Port_Vila$speed,na.rm=TRUE)
-max(TS$PAM$Luganville$speed,na.rm=TRUE)
+max(TS$PAM$Port_Vila$speed, na.rm = TRUE)
+max(TS$PAM$Luganville$speed, na.rm = TRUE)
 ```
 
 ### Getting power dissipation index
@@ -113,7 +113,7 @@ The power dissipation index is computed using the `product = "PDI"` argument as
 follows:
 
 ``` {r}
-PDI <- temporalBehaviour(st, points = df, product = "PDI", temp_res=0.5,verbose=0)
+PDI <- temporalBehaviour(st, points = df, product = "PDI", tempRes = 0.5, verbose = 0)
 PDI
 ```
 
@@ -123,7 +123,7 @@ The duration of exposure is computed using the `product = "Exposure"` argument
 as follows:
 
 ``` {r}
-exposure_SS <- temporalBehaviour(st, points = df, product = "Exposure", temp_res=0.5,verbose=0)
+exposure_SS <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 0.5, verbose = 0)
 exposure_SS
 ```
 
@@ -135,7 +135,7 @@ the Australian Bureau of Meteorology to rank tropical cyclones intensity as
 follow:
 
 ``` {r}
-wt <- c(17.2,24.4,32.5,44.2,55.0)
-exposure_BOM<- temporalBehaviour(st, points = df, product = "Exposure", temp_res=0.5, wind_threshold=wt, verbose=0)
+wt <- c(17.2, 24.4, 32.5, 44.2, 55.0)
+exposure_BOM <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 0.5, windThreshold = wt, verbose = 0)
 exposure_BOM
 ```
