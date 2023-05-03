@@ -171,6 +171,9 @@ writeNC <- function(rastds, filename) {
 #'  By default `filename=NULL` and the name of the file is generated based on
 #'  raster information (storms and products) with the '.tiff' extension.
 #' @param path character. Path to the directory where the file is exported to. By default `path=./'`.
+#' @param ... Additional arguments to be passed to
+#'  [`terra::writeRaster`](https://rdrr.io/cran/terra/man/writeRaster.html)
+#'  function when saving to `".tiff"` format.
 #' @returns `NULL`
 #' @examples
 #' \dontrun{
@@ -195,7 +198,7 @@ writeNC <- function(rastds, filename) {
 #' }
 #'
 #' @export
-writeRast <- function(rast, filename = NULL, path = "./") {
+writeRast <- function(rast, filename = NULL, path = "./", ...) {
   productsInfo <- strsplit(names(rast), split = "_", fixed = TRUE)
   varNames <- unique(rapply(productsInfo, function(x) paste0(x[1:2], collapse = "_")))
   # Gather all storms inside raster
@@ -220,7 +223,7 @@ writeRast <- function(rast, filename = NULL, path = "./") {
     terra::writeRaster(
       x = rast,
       filename = paste0(path, fName),
-      overwrite = TRUE
+      ...
     )
   } else if (format == "nc") {
     # Write netcdf file. More tricky !
