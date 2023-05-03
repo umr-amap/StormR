@@ -52,6 +52,12 @@ test_that("Tests checkInputsWriteRastiteRast function", {
 test_that("Function correctly writes a tiff file", {
   writeRast(msw)
   expect_true(file.exists("./PAM_MSW.tiff"))
+  # Check that default is overwrite = FALSE)
+  expect_error(writeRast(msw))
+  # Check that setting overwrite = TRUE works
+  writeRast(msw, overwrite = TRUE)
+  # Check that additional arguments are compatible with terra::writeRaster()
+  writeRast(msw, overwrite = TRUE, verbose = TRUE, scale = 10, steps = 2)
   file.remove("./PAM_MSW.tiff")
 })
 
