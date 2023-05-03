@@ -88,7 +88,7 @@
             
             <h4 data-toc-skip class="date">2023-05-03</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/vignettes/DataSource.Rmd" class="external-link"><code>vignettes/DataSource.Rmd</code></a></small>
       <div class="d-none name"><code>DataSource.Rmd</code></div>
     </div>
 
@@ -257,13 +257,13 @@ follows,</p>
 object can be created using the <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function as
 follows,</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>, basin <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"./IBTrACS_ALL_3yrs.nc"</span>, basin <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in checkInputsdefDatabase(filename, fields, basin, seasons, unitConversion, : No basin argument specified. StormR will work as expected</span></span>
 <span><span class="co">##              but cannot use basin filtering for speed-up when collecting data</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sds</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Formal class 'stormsDataset' [package "StormR"] with 5 slots</span></span>
-<span><span class="co">##   ..@ filename: chr "IBTrACS_ALL_3yrs.nc"</span></span>
+<span><span class="co">##   ..@ filename: chr "./IBTrACS_ALL_3yrs.nc"</span></span>
 <span><span class="co">##   ..@ fields  : Named chr [1:11] "name" "season" "iso_time" "usa_lon" ...</span></span>
 <span><span class="co">##   .. ..- attr(*, "names")= chr [1:11] "names" "seasons" "isoTime" "lon" ...</span></span>
 <span><span class="co">##   ..@ basin   : chr "None"</span></span>
