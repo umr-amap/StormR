@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Storms</h1>
             
-            <h4 data-toc-skip class="date">2023-05-02</h4>
+            <h4 data-toc-skip class="date">2023-05-03</h4>
       
       
       <div class="d-none name"><code>Storms.Rmd</code></div>
@@ -124,7 +124,7 @@ locations, and polygon shapefiles, as described below.</p>
 follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in checkInputsIDb(filename, fields, basin, seasons, unitConversion, : No basin argument specified. StormR will work as expected</span></span>
+<pre><code><span><span class="co">## Warning in checkInputsdefDatabase(filename, fields, basin, seasons, unitConversion, : No basin argument specified. StormR will work as expected</span></span>
 <span><span class="co">##              but cannot use basin filtering for speed-up when collecting data</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defStormsList.html">defStormsList</a></span><span class="op">(</span>sds <span class="op">=</span> <span class="va">sds</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
