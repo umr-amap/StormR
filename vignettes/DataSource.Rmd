@@ -77,7 +77,7 @@ Once a storm track data set is available a `stormsDataset` object can be created
 using the `defDatabase()` function as follows,
 
 ```{r defDatabase}
-sds <- defDatabase(filename = "IBTrACS_ALL_3yrs.nc", basin = NULL, verbose = 0)
+sds <- defDatabase(filename = "./IBTrACS_ALL_3yrs.nc", basin = NULL, verbose = 0)
 str(sds)
 length(unique(paste(sds@database$names, sds@database$seasons, " ")))
 ```
