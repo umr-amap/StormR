@@ -116,7 +116,7 @@ plotLabels <- function(st, by, pos) {
 #' @param ylim numeric vector
 #' @return NULL
 checkInputsPlotStorms <- function(sts, names, category, labels, by,
-                          pos, legends, loi, xlim, ylim) {
+                                  pos, legends, loi, xlim, ylim) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -207,7 +207,6 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 #' extent of the buffered location of interest on the map.
-#' @import rworldxtra
 #'
 #' @examples
 #' \dontrun{

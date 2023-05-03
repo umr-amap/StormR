@@ -74,7 +74,7 @@ setOldClass("sf")
 #'   is EPSG:4326
 #' @slot spatialLoiBuffer sf object. Buffer extension of `spatialLoi`
 #' @importFrom methods new
-#' @import sp
+#' @importFrom methods show
 #' @export
 stormsList <- methods::setClass("stormsList",
                                 slots = c(data = "list",
