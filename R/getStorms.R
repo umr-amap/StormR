@@ -605,8 +605,12 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, verbose,
   #Checking seasons input
   stopifnot("seasons must be numeric" = identical(class(as.numeric(seasons)), "numeric"))
   stopifnot("seasons must be as integer" = all(round(seasons) == seasons))
-  stopifnot("lower bound of time range is not valid" = seasons >= sds@seasons["min"])
-  stopifnot("upper bound of time range is not valid" = seasons <= sds@seasons["max"])
+  stopifnot("lower bound of seasons is lower than the minimum season of the stormsDataset.
+            This is not allowed. Please correct your seasons bounds or check your
+            stormsDataset if this is not expected" = seasons >= sds@seasons["min"])
+  stopifnot("upper bound of seasons is larger than the maximum season of the stormsDataset.
+            This is not allowed. Please correct your seasons bounds or check your
+            stormsDataset if this is not expected" = seasons <= sds@seasons["max"])
 
   #Checking names input
   if (!is.null(names)) {
