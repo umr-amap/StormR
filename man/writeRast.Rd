@@ -4,7 +4,7 @@
 \alias{writeRast}
 \title{Exporting rasters to GeoTIFF or NetCDF files}
 \usage{
-writeRast(rast, filename = NULL, path = "./")
+writeRast(rast, filename = NULL, path = "./", ...)
 }
 \arguments{
 \item{rast}{\code{SpatRaster} object.}
@@ -14,6 +14,10 @@ By default \code{filename=NULL} and the name of the file is generated based on
 raster information (storms and products) with the '.tiff' extension.}
 
 \item{path}{character. Path to the directory where the file is exported to. By default \verb{path=./'}.}
+
+\item{...}{Additional arguments to be passed to
+\href{https://rdrr.io/cran/terra/man/writeRaster.html}{\code{terra::writeRaster}}
+function when saving to \code{".tiff"} format.}
 }
 \value{
 \code{NULL}
