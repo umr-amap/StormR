@@ -963,13 +963,13 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 #' @details The available countries for the `loi` are those provided in the
 #'   `rwolrdxtra` package. This package provide high resolution vector country
 #'   boundaries derived from Natural Earth data. More informations on the Natural Earth data
-#'   here: [http://www.naturalearthdata.com/downloads/10m-cultural-vectors/](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/).
+#'   here: https://www.naturalearthdata.com/downloads/10m-cultural-vectors/ .
 #'
 #'@references
 #'Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
 #'The International Best Track Archive for Climate Stewardship (IBTrACS).
 #'Bulletin of the American Meteorological Society, 91(3), Article 3.
-#'[https://doi.org/10.1175/2009bams2755.1](https://doi.org/10.1175/2009bams2755.1)
+#'https://doi.org/10.1175/2009bams2755.1
 #'
 #' @examples
 #' \dontrun{

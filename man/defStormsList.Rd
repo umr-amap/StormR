@@ -59,7 +59,7 @@ seasons, and names of the storms.
 The available countries for the \code{loi} are those provided in the
 \code{rwolrdxtra} package. This package provide high resolution vector country
 boundaries derived from Natural Earth data. More informations on the Natural Earth data
-here: \url{http://www.naturalearthdata.com/downloads/10m-cultural-vectors/}.
+here: https://www.naturalearthdata.com/downloads/10m-cultural-vectors/ .
 }
 \examples{
 \dontrun{
@@ -90,5 +90,5 @@ sts_sp <- storms(sds = sds, loi = sp)
 Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
 The International Best Track Archive for Climate Stewardship (IBTrACS).
 Bulletin of the American Meteorological Society, 91(3), Article 3.
-\url{https://doi.org/10.1175/2009bams2755.1}
+https://doi.org/10.1175/2009bams2755.1
 }

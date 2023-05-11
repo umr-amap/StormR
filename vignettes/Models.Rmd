@@ -241,11 +241,11 @@ lines(PAM$lon, PAM$lat, lty = 3)
 
 * Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic Oceanology, 13(2), 41–48.
  
-* Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
+* Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. https://doi.org/10.1175/1520-0493(1980)108%3C1212:AAMOTW%3E2.0.CO;2
 
 * Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical investigations of typhoon surges along the Japanese coast (II). Oceanographical Magazine, 13(2), 103–117.
 
-* Willoughby, H. E. (1995). Normal-Mode Initialization of Barotropic Vortex Motion Models. Journal of the Atmospheric Sciences, 52(24), 4501–4514. https://doi.org/10.1175/1520-0469(1995)052<4501:NMIOBV>2.0.CO;2
+* Willoughby, H. E. (1995). Normal-Mode Initialization of Barotropic Vortex Motion Models. Journal of the Atmospheric Sciences, 52(24), 4501–4514. https://doi.org/10.1175/1520-0469(1995)052%3C4501:NMIOBV%3E2.0.CO;2
 
 * Willoughby, H. E., & Rahn, M. E. (2004). Parametric Representation of the Primary Hurricane Vortex. Part I: Observations and Evaluation of the Holland (1980) Model. Monthly Weather Review, 132(12), 3033–3048. https://doi.org/10.1175/MWR2831.1
 
