@@ -33,7 +33,7 @@ getRmw <- function(msw, lat) {
 #' Compute radial wind speed according to Willoughby et al. (2006) model
 #'
 #' @noRd
-#' @param r numeric. Distance to the eye of the storm (km) where the value must
+#' @param r numeric array. Distance to the eye of the storm (km) where the value must
 #'   be computed
 #' @param rmw numeric. Radius of Maximum Wind (km)
 #' @param msw numeric. Maximum Sustained Wind (m/s)
@@ -57,7 +57,43 @@ willoughby <- function(r, rmw, msw, lat) {
 }
 
 
+#' Willoughby et al. (2006) model
+#'
+#' Compute radial wind speed according to Willoughby et al. (2006) model in cpp
+#'
+#' @noRd
+#' @param r numeric. Distance to the eye of the storm (km) where the value must
+#'   be computed
+#' @param rmw numeric. Radius of Maximum Wind (km)
+#' @param msw numeric. Maximum Sustained Wind (m/s)
+#' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the
+#'   storm
+#'
+#' @returns radial wind speed value (m/s) according to Willoughby model at
+#'   distance `r` to the eye of the storm located in latitude `lat`
+#' @importFrom Rcpp cppFunction
+#'
 
+Rcpp::cppFunction("
+  NumericVector willoughby_cpp(NumericVector r, double rmw,
+            double msw, double lat) {
+  int s = r.size();
+  NumericVector vr(s);
+  double x2 = 25;
+  double x1 = 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat);
+  double a = 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat);
+  double n = 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat);
+  for(int i = 0; i < s; ++i) {
+    if (r[i] >= rmw) {
+      vr[i] = msw * ((1 - a) * exp(-abs((r[i] - rmw) / x1)) +
+              a * exp(-abs(r[i] - rmw) / x2));
+    } else {
+      vr[i] = msw * abs(pow(r[i] / rmw,n));
+    }
+    vr[i] = std::round(vr[i]* 1000.0) / 1000.0;
+  }
+  return vr;
+}")
 
 
 #' Holland (1980) model
@@ -163,7 +199,7 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #' @param verbose numeric
 #' @return NULL
 checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asymmetry,
-                          empiricalRMW, spaceRes, tempRes, verbose) {
+                                        empiricalRMW, spaceRes, tempRes, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
 
@@ -400,21 +436,18 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
   vyDeg <- rep(NA, lenIndices)
 
   # Computing storm velocity (m/s)
-  for (i in 1:(lenIndices - 1)) {
-    stormSpeed[i] <- terra::distance(
-      x = cbind(lon[i], lat[i]),
-      y = cbind(lon[i + 1], lat[i + 1]),
-      lonlat = TRUE
-    ) * (0.001 / 3) / 3.6
+  stormSpeed[1:lenIndices - 1] <- terra::distance(
+    x = cbind(lon[1:lenIndices - 1], lat[1:lenIndices - 1]),
+    y = cbind(lon[2:lenIndices], lat[2:lenIndices]),
+    lonlat = TRUE,
+    pairwise = TRUE
+  ) * (0.001 / 3) / 3.6
 
-    # component wise velocity in both x and y direction (degree/h)
-    vxDeg[i] <- (lon[i + 1] - lon[i]) / 3
-    vyDeg[i] <- (lat[i + 1] - lat[i]) / 3
-  }
-
+  # component wise velocity in both x and y direction (degree/h)
+  vxDeg[1:lenIndices - 1] <- (lon[2:lenIndices] - lon[1:lenIndices - 1]) / 3
+  vyDeg[1:lenIndices - 1] <- (lat[2:lenIndices] - lat[1:lenIndices - 1]) / 3
 
   data$msw[indicesObs] <- st@obs.all$msw[indices]
-
 
   if (empiricalRMW) {
     data$rmw[indicesObs] <- getRmw(data$msw[indicesObs], lat)
@@ -507,7 +540,7 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
 computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distEye, buffer, loi, world, indCountries) {
   # Computing wind speed according to the input model
   if (method == "Willoughby") {
-    wind <- willoughby(
+    wind <- willoughby_cpp(
       msw = data$msw[index],
       lat = data$lat[index],
       r = distEye * 0.001,
@@ -651,7 +684,63 @@ computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rm
   return(list(wind = round(wind, 3), direction = round(direction, 3)))
 }
 
+code <- "
+NumericVector computeAsymmetry_cpp(
+      CharacterVector asymmetry,
+      NumericVector wind,
+      NumericVector x,
+      NumericVector y,
+      double vx,
+      double vy,
+      double vh,
+      double r,
+      double rmw,
+      double lat) {
+  double pi = 3.141592653589793238463 ;
+  int s = wind.size();
+  NumericVector dir = -(atan(y / x) - pi / 2);
+  if (lat >= 0) {
+    dir = dir - pi / 2;
+  } else {
+    dir = dir + pi / 2;
+  }
 
+  for(int i = 0; i < s; i++) {
+    if (dir[i] < 0) {
+      dir[i] += 2 * pi;
+    } else if (dir[i] > 2 * pi) {
+      dir[i] -= 2 * pi;
+    }
+  }
+
+  NumericVector windX = wind * cos(dir);
+  NumericVector windY = wind * sin(dir);
+
+  double stormDir = -(atan(vy / vx) - pi / 2);
+  if (stormDir < 0) {stormDir += 2 * pi;}
+  double mWindX = vh * cos(stormDir);
+  double mWindY = vh * sin(stormDir);
+
+  if (asymmetry == CharacterVector::create(\"Chen\")) {
+    double formula = 3 * pow(rmw, 3 / 2) * pow(r, 3 / 2) / (pow(rmw, 3) + pow(r, 3) + pow(rmw, 3 / 2) * pow(r, 3 / 2));
+  } else if (asymmetry == CharacterVector::create(\"Miyazaki\")) {
+    double formula = exp(-r / 500 * pi);
+  }
+
+  NumericVector tWindX = windX + formula * mWindX;
+  NumericVector tWindY = windY + formula * mWindY;
+
+  NumericVector twind = sqrt(pow(tWindX, 2) + pow(tWindY, 2));
+  NumericVector direction = atan(tWindY / tWindX) * 180 / pi;
+
+  for(int i = 0; i < s; i++) {
+    if (direction[i] < 0) {
+      direction[i] += 360;
+    }
+  }
+
+  return List::create(std::round(twind * 1000.0) / 1000.0, std::round(direction * 1000.0) / 1000.0);
+}"
 
 
 
@@ -1476,7 +1565,7 @@ spatialBehaviour <- function(sts,
 #' @param verbose logical
 #' @return NULL
 checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, method, asymmetry,
-                                     empiricalRMW, tempRes, verbose) {
+                                         empiricalRMW, tempRes, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
 
@@ -2009,17 +2098,17 @@ temporalBehaviour <- function(sts,
         pointNames <- names(finalResult[[stormName]])
         for (j in seq_along(pointNames)) {
           pointName <- pointNames[j]
-          cat(" ", i, "   ",
-              stormName, "                ",
-              pointName, "            ",
-              finalResult[[stormName]][[pointName]]$indices, "\n")
+          cat(
+            " ", i, "   ",
+            stormName, "                ",
+            pointName, "            ",
+            finalResult[[stormName]][[pointName]]$indices, "\n"
+          )
         }
       }
       cat("\n")
-
     }
-
-      }
+  }
 
   return(finalResult)
 }

@@ -22,7 +22,9 @@ Description: A set of functions to quantify and map the
 License: GPL (>= 3)
 Depends: 
     R (>= 2.10)
+LinkingTo: Rcpp
 Imports: 
+    Rcpp,
     graphics,
     maps,
     methods,
