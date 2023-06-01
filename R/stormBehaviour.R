@@ -30,7 +30,7 @@ getRmw <- function(msw, lat) {
 
 #' Willoughby et al. (2006) model
 #'
-#' Compute radial wind speed according to Willoughby et al. (2006) model
+#' Compute tangential wind speed according to Willoughby et al. (2006) model
 #'
 #' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must
@@ -40,7 +40,7 @@ getRmw <- function(msw, lat) {
 #' @param lat numeric. Should be between -60 and 60. Latitude of the eye of the
 #'   storm
 #'
-#' @returns radial wind speed value (m/s) according to Willoughby model at
+#' @returns tangential wind speed value (m/s) according to Willoughby model at
 #'   distance `r` to the eye of the storm located in latitude `lat`
 willoughby <- function(r, rmw, msw, lat) {
   x1 <- 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat)
@@ -62,7 +62,7 @@ willoughby <- function(r, rmw, msw, lat) {
 
 #' Holland (1980) model
 #'
-#' Compute radial wind speed according to Holland (1980) model
+#' Compute tangential wind speed according to Holland (1980) model
 #'
 #' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must
@@ -73,7 +73,7 @@ willoughby <- function(r, rmw, msw, lat) {
 #' @param poci Pressure at the Outermost Closed Isobar (hPa)
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
 #'   storm
-#' @returns radial wind speed value (m/s) according to Holland 80 model at
+#' @returns tangential wind speed value (m/s) according to Holland 80 model at
 #'   distance `r` to the eye of the storm located in latitude `lat`
 holland <- function(r, rmw, msw, pc, poci, lat) {
   rho <- 1.15 # air densiy
@@ -92,7 +92,7 @@ holland <- function(r, rmw, msw, pc, poci, lat) {
 
 #' Boose et al. (2004) model
 #'
-#' Compute radial wind speed according to Boose et al. (2004) model
+#' Compute tangential wind speed according to Boose et al. (2004) model
 #'
 #' @noRd
 #' @param r numeric. Distance to the eye of the storm (km) where the value must
@@ -112,7 +112,7 @@ holland <- function(r, rmw, msw, pc, poci, lat) {
 #' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
 #'   storm
 #'
-#' @returns radial wind speed value (m/s) according to Boose04 model at distance
+#' @returns tangential wind speed value (m/s) according to Boose04 model at distance
 #'   `r` to the eye of the storm located in latitude
 boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
   rho <- 1 # air densiy
@@ -1087,7 +1087,7 @@ maskProduct <- function(finalStack, loi, template) {
 #'
 #'   \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)}
 #'
-#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+#'   where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{b} is the shape parameter,
 #'   \eqn{\rho} is the air density set to \eqn{1.15 kg.m^{-3}},
 #'   \eqn{e} being the base of natural logarithms (~2.718282),
@@ -1122,7 +1122,7 @@ maskProduct <- function(finalStack, loi, template) {
 #'
 #'    \eqn{A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|} and \eqn{A\ge0}
 #'
-#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+#'   where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{r} is the distance to the eye of the storm (in \eqn{km}),
 #'   \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}),
@@ -1161,7 +1161,7 @@ maskProduct <- function(finalStack, loi, template) {
 #'
 #'   \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}}
 #'
-#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+#'   where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land),
 #'   \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{S} is a scaling parameter for asymmetry (usually set to \eqn{1}),
@@ -1746,7 +1746,7 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #'
 #'   \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)}
 #'
-#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+#'   where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{b} is the shape parameter,
 #'   \eqn{\rho} is the air density set to \eqn{1.15 kg.m^{-3}},
 #'   \eqn{e} being the base of natural logarithms (~2.718282),
@@ -1781,7 +1781,7 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #'
 #'    \eqn{A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|} and \eqn{A\ge0}
 #'
-#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+#'   where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{r} is the distance to the eye of the storm (in \eqn{km}),
 #'   \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}),
@@ -1820,7 +1820,7 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #'
 #'   \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}}
 #'
-#'   where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+#'   where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land),
 #'   \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
 #'   \eqn{S} is a scaling parameter for asymmetry (usually set to \eqn{1}),
