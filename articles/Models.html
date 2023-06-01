@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Models</h1>
             
-            <h4 data-toc-skip class="date">2023-05-11</h4>
+            <h4 data-toc-skip class="date">2023-06-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/vignettes/Models.Rmd" class="external-link"><code>vignettes/Models.Rmd</code></a></small>
       <div class="d-none name"><code>Models.Rmd</code></div>
@@ -139,9 +139,8 @@ b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
 \]</span> <span class="math display">\[
 f = 2 \times 7.29 \times 10^{-5} \sin(\phi)
 \]</span></p>
-<p>where, <br><span class="math inline">\(v_r\)</span> is the radial
-wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(b\)</span> is the shape parameter, <br><span class="math inline">\(\rho\)</span> is the air density set to
-<span class="math inline">\(1.15 kg.m^{-3}\)</span>, <br><span class="math inline">\(e\)</span> is the base of natural logarithms
+<p>where, <br><span class="math inline">\(v_r\)</span> is the
+tangential wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(b\)</span> is the shape parameter, <br><span class="math inline">\(\rho\)</span> is the air density set to <span class="math inline">\(1.15 kg.m^{-3}\)</span>, <br><span class="math inline">\(e\)</span> is the base of natural logarithms
 (~2.718282), <br><span class="math inline">\(v_m\)</span> the maximum
 sustained wind speed (in <span class="math inline">\(m.s^{-1}\)</span>),
 <br><span class="math inline">\(p_{oci}\)</span> is the pressure at
@@ -181,9 +180,9 @@ X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times
 A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times
 |\phi| \quad and \quad A\ge0
 \]</span></p>
-<p>where, <br><span class="math inline">\(v_r\)</span> is the radial
-wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(v_m\)</span> is the maximum sustained wind
-speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(r\)</span> is the distance to the eye of the storm
+<p>where, <br><span class="math inline">\(v_r\)</span> is the
+tangential wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(v_m\)</span> is the maximum sustained wind speed
+(in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(r\)</span> is the distance to the eye of the storm
 (in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(R_m\)</span> is the radius of maximum sustained
 wind speed (in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(\phi\)</span> is the latitude of the centre of the
 storm, and <br><span class="math inline">\(X2 = 25\)</span>.
@@ -240,9 +239,9 @@ v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right)
 <p>with, <span class="math display">\[
 b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
 \]</span></p>
-<p>where, <br><span class="math inline">\(v_r\)</span> is the radial
-wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(F\)</span> is a scaling parameter for
-friction (<span class="math inline">\(1.0\)</span> in water, <span class="math inline">\(0.8\)</span> in land), <br><span class="math inline">\(v_m\)</span> is the maximum sustained wind speed
+<p>where, <br><span class="math inline">\(v_r\)</span> is the
+tangential wind speed (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(F\)</span> is a scaling parameter for friction
+(<span class="math inline">\(1.0\)</span> in water, <span class="math inline">\(0.8\)</span> in land), <br><span class="math inline">\(v_m\)</span> is the maximum sustained wind speed
 (in <span class="math inline">\(m.s^{-1}\)</span>), <br><span class="math inline">\(S\)</span> is a scaling parameter for asymmetry
 (usually set to <span class="math inline">\(1\)</span>), <br><span class="math inline">\(T\)</span> is the oriented angle
 (clockwise/counter clockwise in Northern/Southern Hemisphere) between
@@ -326,8 +325,14 @@ cyclone Pam near Vanuatu)</p>
 <p><img src="Models_files/figure-html/unnamed-chunk-1-3.png" width="700"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">pf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="st">"Profiles"</span>, method <span class="op">=</span> <span class="st">"Boose"</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pf</span><span class="op">$</span><span class="va">PAM_Speed_41</span>, main <span class="op">=</span> <span class="st">"Boose et al. (2004)"</span>, cex.main <span class="op">=</span> <span class="fl">0.8</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">90</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">pf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatialBehaviour.html">spatialBehaviour</a></span><span class="op">(</span><span class="va">st</span>, product <span class="op">=</span> <span class="st">"Profiles"</span>, method <span class="op">=</span> <span class="st">"Boose"</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Please note that 'maptools' will be retired during October 2023,</span></span>
+<span><span class="co">## plan transition at your earliest convenience (see</span></span>
+<span><span class="co">## https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs</span></span>
+<span><span class="co">## for guidance);some functionality will be moved to 'sp'.</span></span>
+<span><span class="co">##  Checking rgeos availability: FALSE</span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pf</span><span class="op">$</span><span class="va">PAM_Speed_41</span>, main <span class="op">=</span> <span class="st">"Boose et al. (2004)"</span>, cex.main <span class="op">=</span> <span class="fl">0.8</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">90</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">countriesHigh</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">PAM</span><span class="op">$</span><span class="va">lon</span>, <span class="va">PAM</span><span class="op">$</span><span class="va">lat</span>, lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Models_files/figure-html/unnamed-chunk-1-4.png" width="700"></p>
