@@ -62,7 +62,7 @@ f = 2 \times 7.29 \times 10^{-5} \sin(\phi)
 $$
 
 where, <br />
-$v_r$ is the radial wind speed (in $m.s^{-1}$), <br />
+$v_r$ is the tangential wind speed (in $m.s^{-1}$), <br />
 $b$ is the shape parameter, <br />
 $\rho$ is the air density set to $1.15 kg.m^{-3}$, <br />
 $e$ is the base of natural logarithms (~2.718282), <br />
@@ -106,7 +106,7 @@ A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi| \
 $$
 
 where, <br />
-$v_r$ is the radial wind speed (in $m.s^{-1}$), <br />
+$v_r$ is the tangential wind speed (in $m.s^{-1}$), <br />
 $v_m$ is the maximum sustained wind speed (in $m.s^{-1}$), <br />
 $r$ is the distance to the eye of the storm (in $km$), <br />
 $R_m$ is the radius of maximum sustained wind speed (in $km$), <br />
@@ -159,7 +159,7 @@ b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
 $$
 
 where, <br />
-$v_r$ is the radial wind speed (in $m.s^{-1}$), <br />
+$v_r$ is the tangential wind speed (in $m.s^{-1}$), <br />
 $F$ is a scaling parameter for friction ($1.0$ in water, $0.8$ in land), <br />
 $v_m$ is the maximum sustained wind speed (in $m.s^{-1}$), <br />
 $S$ is a scaling parameter for asymmetry (usually set to $1$), <br /> 
