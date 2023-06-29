@@ -73,28 +73,7 @@ willoughby <- function(r, rmw, msw, lat) {
 #'   distance `r` to the eye of the storm located in latitude `lat`
 #' @importFrom Rcpp cppFunction
 #'
-
-Rcpp::cppFunction("
-  NumericVector willoughby_cpp(NumericVector r, double rmw,
-            double msw, double lat) {
-  int s = r.size();
-  NumericVector vr(s);
-  double x2 = 25;
-  double x1 = 287.6 - 1.942 * msw + 7.799 * log(rmw) + 1.819 * abs(lat);
-  double a = 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat);
-  double n = 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat);
-  for(int i = 0; i < s; ++i) {
-    if (r[i] >= rmw) {
-      vr[i] = msw * ((1 - a) * exp(-abs((r[i] - rmw) / x1)) +
-              a * exp(-abs(r[i] - rmw) / x2));
-    } else {
-      vr[i] = msw * abs(pow(r[i] / rmw,n));
-    }
-    vr[i] = std::round(vr[i]* 1000.0) / 1000.0;
-  }
-  return vr;
-}")
-
+#Rcpp::sourceCpp("src/stormBehaviour.cpp")
 
 #' Holland (1980) model
 #'
@@ -595,7 +574,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
 
   # Adding asymmetry
   if (asymmetry != "None") {
-    output <- computeAsymmetry(
+    output <- computeAsymmetry_cpp(
       asymmetry, wind, direction, x, y,
       data$vxDeg[index], data$vyDeg[index],
       data$stormSpeed[index],
@@ -682,65 +661,6 @@ computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rm
 
   return(list(wind = round(wind, 3), direction = round(direction, 3)))
 }
-
-code <- "
-NumericVector computeAsymmetry_cpp(
-      CharacterVector asymmetry,
-      NumericVector wind,
-      NumericVector x,
-      NumericVector y,
-      double vx,
-      double vy,
-      double vh,
-      double r,
-      double rmw,
-      double lat) {
-  double pi = 3.141592653589793238463 ;
-  int s = wind.size();
-  NumericVector dir = -(atan(y / x) - pi / 2);
-  if (lat >= 0) {
-    dir = dir - pi / 2;
-  } else {
-    dir = dir + pi / 2;
-  }
-
-  for(int i = 0; i < s; i++) {
-    if (dir[i] < 0) {
-      dir[i] += 2 * pi;
-    } else if (dir[i] > 2 * pi) {
-      dir[i] -= 2 * pi;
-    }
-  }
-
-  NumericVector windX = wind * cos(dir);
-  NumericVector windY = wind * sin(dir);
-
-  double stormDir = -(atan(vy / vx) - pi / 2);
-  if (stormDir < 0) {stormDir += 2 * pi;}
-  double mWindX = vh * cos(stormDir);
-  double mWindY = vh * sin(stormDir);
-
-  if (asymmetry == CharacterVector::create(\"Chen\")) {
-    double formula = 3 * pow(rmw, 3 / 2) * pow(r, 3 / 2) / (pow(rmw, 3) + pow(r, 3) + pow(rmw, 3 / 2) * pow(r, 3 / 2));
-  } else if (asymmetry == CharacterVector::create(\"Miyazaki\")) {
-    double formula = exp(-r / 500 * pi);
-  }
-
-  NumericVector tWindX = windX + formula * mWindX;
-  NumericVector tWindY = windY + formula * mWindY;
-
-  NumericVector twind = sqrt(pow(tWindX, 2) + pow(tWindY, 2));
-  NumericVector direction = atan(tWindY / tWindX) * 180 / pi;
-
-  for(int i = 0; i < s; i++) {
-    if (direction[i] < 0) {
-      direction[i] += 360;
-    }
-  }
-
-  return List::create(std::round(twind * 1000.0) / 1000.0, std::round(direction * 1000.0) / 1000.0);
-}"
-
 
 
 #' Compute wind direction according to Boose et al. (2004) model
@@ -1392,12 +1312,11 @@ spatialBehaviour <- function(sts,
   }
 
   # Handle the indice of layer
-  i <- 0
+  i <- 1
   # Loop over storms
   for (st in sts@data) {
     # Handling indices inside loi.buffer or not
     ind <- getIndices(st, 2, product)
-
 
     it1 <- st@obs.all$iso.time[1]
     it2 <- st@obs.all$iso.time[2]
@@ -1417,9 +1336,9 @@ spatialBehaviour <- function(sts,
     }
 
 
-    # Making template to compute wind profiles
-    rasterWind <- rep(rasterTemplate, nbStep)
-    rasterDirection <- rep(rasterTemplate, nbStep)
+    # Making template to compute wind profiles (speed + direction)
+    rasterWind <- rep(rasterTemplate, 2 * nbStep)
+    #rasterDirection <- rep(rasterTemplate, nbStep)
 
     # Computing coordinates of raster
     crds <- terra::crds(rasterWind, na.rm = FALSE)
@@ -1445,9 +1364,9 @@ spatialBehaviour <- function(sts,
       )
 
       terra::values(rasterWind[[j]]) <- output$wind
-      terra::values(rasterDirection[[j]]) <- output$direction
+      terra::values(rasterWind[[j + nbStep]]) <- output$direction
       names(rasterWind[[j]]) <- paste0(st@name, "_", "Speed", "_", dataTC$indices[j])
-      names(rasterDirection[[j]]) <- paste0(st@name, "_", "Direction", "_", dataTC$indices[j])
+      names(rasterWind[[j + nbStep]]) <- paste0(st@name, "_", "Direction", "_", dataTC$indices[j])
 
       if (verbose > 0) {
         utils::setTxtProgressBar(pb, step)
@@ -1493,44 +1412,15 @@ spatialBehaviour <- function(sts,
 
     if (verbose > 0) {
       close(pb)
-    }
-
-
-    if ("Exposure" %in% product) {
-      auxStackEXP <- terra::rast(auxStackEXP)
-      finalStackEXP <- rasterizeProduct(
-        "Exposure", finalStackEXP, auxStackEXP,
-        tempRes, spaceRes, st@name, windThreshold
-      )
-    }
-    if ("Profiles" %in% product) {
-      auxStackSpeed <- terra::rast(auxStackSpeed)
-      auxStackDirection <- terra::rast(auxStackDirection)
-      finalStackWind <- c(finalStackWind, auxStackSpeed, auxStackDirection)
-    }
-
-    if (verbose > 0) {
       s <- s + 1
     }
   }
 
-  finalStack <- c()
-
-  if ("MSW" %in% product) {
-    finalStack <- c(finalStack, finalStackMSW)
-  }
-  if ("PDI" %in% product) {
-    finalStack <- c(finalStack, finalStackPDI)
-  }
-  if ("Exposure" %in% product) {
-    finalStack <- c(finalStack, finalStackEXP)
-  }
   if ("Profiles" %in% product) {
-    finalStack <- c(finalStack, finalStackWind)
+    finalRaster <- c(finalRaster, rasterWind)
   }
 
-  finalStack <- terra::rast(finalStack)
-  finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, rasterTemplate)
+  finalRaster <- maskProduct(finalRaster, sts@spatialLoiBuffer, rasterTemplate)
 
   endTime <- Sys.time()
 
@@ -1539,10 +1429,10 @@ spatialBehaviour <- function(sts,
 
     if (verbose > 1) {
       cat("Output:\n")
-      cat("SpatRaster stack with", terra::nlyr(finalStack), "layers:\n")
+      cat("SpatRaster stack with", terra::nlyr(finalRaster), "layers:\n")
       cat("index - name of layers\n")
-      n <- names(finalStack)
-      names(n) <- seq(1, terra::nlyr(finalStack))
+      n <- names(finalRaster)
+      names(n) <- seq(1, terra::nlyr(finalRaster))
       for (i in seq_along(n)) {
         cat(" ", names(n[i]), "   ", n[i], "\n")
       }
@@ -1550,7 +1440,7 @@ spatialBehaviour <- function(sts,
     }
   }
 
-  return(finalStack)
+  return(finalRaster)
 }
 
 
