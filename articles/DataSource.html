@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Data source</h1>
             
-            <h4 data-toc-skip class="date">2023-06-09</h4>
+            <h4 data-toc-skip class="date">2023-06-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/vignettes/DataSource.Rmd" class="external-link"><code>vignettes/DataSource.Rmd</code></a></small>
       <div class="d-none name"><code>DataSource.Rmd</code></div>
@@ -102,11 +102,11 @@ object using the <code><a href="../reference/defDatabase.html">defDatabase()</a>
 arguments of <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function are set up to create a
 <code>stormsDataset</code> object using the USA fields in the IBTrACS
 database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International
-Best Track Archive for Climate Stewardship</a> (Knapp et al., 2010).
-This database provides a fairly comprehensive record of worldwide
-tropical storms and cyclones with a 3-hours temporal resolution since
-1841. Other databases can be used as long as the following fields are
-provided:</p>
+Best Track Archive for Climate Stewardship</a> (Knapp <em>et al.</em>,
+<span class="citation">(2010)</span>, <span class="citation">(2018)</span>). This database provides a fairly
+comprehensive record of worldwide tropical storms and cyclones with a
+3-hours temporal resolution since 1841. Other databases can be used as
+long as the following fields are provided:</p>
 <table class="table">
 <colgroup>
 <col width="11%">
@@ -226,10 +226,10 @@ function. <br><span class="math inline">\(^{2}\)</span> Providing
 the <code>temporatlBehaviour()</code> and
 <code><a href="../reference/spatialBehaviour.html">spatialBehaviour()</a></code> functions. If not provided,
 <code>rmw</code> is approximated using an empirical formula derived from
-Willoughby et al. (2006) as follows, <span class="math inline">\(R_m =
-46.4e^{(-0.0155 \times v_m + 0.0169 \times |\phi|)}\)</span>. <br><span class="math inline">\(^{3}\)</span> If the <code>pressure</code>
-and <code>poci</code> fields are not provided, both Holland (1980) and
-Boose et al. (2004) wind field models cannot be used in the
+Willoughby <em>et al.</em> <span class="citation">(2006)</span> as
+follows, <span class="math inline">\(R_m = 46.4e^{(-0.0155 \times v_m +
+0.0169 \times |\phi|)}\)</span>. <br><span class="math inline">\(^{3}\)</span> If the <code>pressure</code> and
+<code>poci</code> fields are not provided, both <span class="citation">Holland (1980)</span> and Boose <em>et al.</em> <span class="citation">(2004)</span> wind field models cannot be used in the
 <code>temporatlBehaviour()</code> and <code><a href="../reference/spatialBehaviour.html">spatialBehaviour()</a></code>
 functions. <br><span class="math inline">\(^{4}\)</span> The
 <code>sshs</code> field is optional, if not provided this field is
@@ -242,11 +242,10 @@ following example we illustrate how a storm track data set can be
 downloaded on the IBTrACKS website. Different “.nc” (NetCDF) files
 containing storm track data sets can be downloaded <a href="https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/" class="external-link">here</a>.
 Please, follow the IBTrACS citation recommendations when using these
-datasets (including citing Knapp et al., 2010 and Knapp et al., 2018,
-and providing the access date for the later). For example, track data
-for all the storms that occurred over the last three years over the
-different basins world wide can be download to the working directory as
-follows,</p>
+datasets (including citing Knapp <em>et al.</em> <span class="citation">(2010, 2018)</span>, and providing the access date for
+the later). For example, track data for all the storms that occurred
+over the last three years over the different basins world wide can be
+download to the working directory as follows,</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.last3years.v04r00.nc"</span>, destfile <span class="op">=</span> <span class="st">"./IBTrACS_ALL_3yrs.nc"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -270,19 +269,19 @@ follows,</p>
 <span><span class="co">##   ..@ seasons : Named int [1:2] 2020 2023</span></span>
 <span><span class="co">##   .. ..- attr(*, "names")= chr [1:2] "min" "max"</span></span>
 <span><span class="co">##   ..@ database:List of 10</span></span>
-<span><span class="co">##   .. ..$ names    : chr [1:352(1d)] "BLAKE" "CLAUDIA" "TINO" "NOT_NAMED" ...</span></span>
-<span><span class="co">##   .. ..$ seasons  : int [1:352(1d)] 2020 2020 2020 2020 2020 2020 2020 2020 2020 2020 ...</span></span>
-<span><span class="co">##   .. ..$ isotimes : chr [1:360, 1:352] "2020-01-04 00:00:00" "2020-01-04 03:00:00" "2020-01-04 06:00:00" "2020-01-04 09:00:00" ...</span></span>
-<span><span class="co">##   .. ..$ longitude: num [1:360, 1:352] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ latitude : num [1:360, 1:352] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ msw      : num [1:360, 1:352] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ sshs     : int [1:360, 1:352] -5 -5 -5 -5 -5 -5 -5 -5 -3 -3 ...</span></span>
-<span><span class="co">##   .. ..$ rmw      : num [1:360, 1:352] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ pressure : num [1:360, 1:352] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ poci     : num [1:360, 1:352] NA NA NA NA NA ...</span></span></code></pre>
+<span><span class="co">##   .. ..$ names    : chr [1:357(1d)] "BLAKE" "CLAUDIA" "TINO" "NOT_NAMED" ...</span></span>
+<span><span class="co">##   .. ..$ seasons  : int [1:357(1d)] 2020 2020 2020 2020 2020 2020 2020 2020 2020 2020 ...</span></span>
+<span><span class="co">##   .. ..$ isotimes : chr [1:360, 1:357] "2020-01-04 00:00:00" "2020-01-04 03:00:00" "2020-01-04 06:00:00" "2020-01-04 09:00:00" ...</span></span>
+<span><span class="co">##   .. ..$ longitude: num [1:360, 1:357] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ latitude : num [1:360, 1:357] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ msw      : num [1:360, 1:357] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ sshs     : int [1:360, 1:357] -5 -5 -5 -5 -5 -5 -5 -5 -3 -3 ...</span></span>
+<span><span class="co">##   .. ..$ rmw      : num [1:360, 1:357] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ pressure : num [1:360, 1:357] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ poci     : num [1:360, 1:357] NA NA NA NA NA ...</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">names</span>, <span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">seasons</span>, <span class="st">" "</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 284</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 287</span></span></code></pre>
 <p>This <code>stormsDataset</code> object contains track data for 275
 storms. When using an IBTrACKS storm track data set, default arguments
 can be used. By default, data provided by USA agencies (starting with
@@ -332,7 +331,7 @@ kilometre per hour in meter per second <br><code>mph2ms</code>:
 converts miles per hour in meter per second <br><code>None</code>: no
 conversion <br></p>
 <p>For <code>rmw</code>: <br><code>nm2ms</code>: converts nautical
-miles in kilometre (default setting) <br><code>None</code>: no
+miles in kilometer (default setting) <br><code>None</code>: no
 conversion <br></p>
 <p>For both <code>pressure</code> and <code>poci</code>: <br><code>mb2pa</code>: converts millibar in Pascal (default setting) <br><code>b2pa</code>: converts bar in Pascal <br><code>atm2pa</code>:
 converts atmosphere in Pascal <br><code>psi2pa</code>: converts psi
@@ -346,28 +345,49 @@ package. This test data set comprises the track data of nine storms that
 occurred near Vanuatu and New Caledonia between 2015-2016 and 2020-2021,
 respectively.</p>
 </div>
-<div class="section level2">
-<h2 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
 </h2>
-<ul>
-<li><p>Boose, E. R., Serrano, M. I., &amp; Foster, D. R. (2004).
-Landscape and regional impacts of hurricanes in Puerto Rico. Ecological
-Monographs, 74(2), Article 2. <a href="https://doi.org/10.1890/02-4057" class="external-link uri">https://doi.org/10.1890/02-4057</a></p></li>
-<li><p>Holland, G. J. (1980). An Analytic Model of the Wind and Pressure
-Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. <a href="https://doi.org/10.1175/1520-0493(1980)108" class="external-link uri">https://doi.org/10.1175/1520-0493(1980)108</a>&lt;1212:AAMOTW&gt;2.0.CO;2</p></li>
-<li><p>Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., &amp;
-Neumann, C. J. (2010). The International Best Track Archive for Climate
-Stewardship (IBTrACS). Bulletin of the American Meteorological Society,
-91(3), Article 3. <a href="https://doi.org/10.1175/2009bams2755.1" class="external-link uri">https://doi.org/10.1175/2009bams2755.1</a></p></li>
-<li><p>Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, &amp;
-Schreck, C. J. (2018) International Best Track Archive for Climate
-Stewardship (IBTrACS) Project, Version 4. [indicate subset used]. NOAA
-National Centers for Environmental Information. <a href="https://doi:10.25921/82ty-9e16" class="external-link uri">https://doi:10.25921/82ty-9e16</a> [2023-03-15]</p></li>
-<li><p>Willoughby, H. E., Darling, R. W. R., &amp; Rahn, M. E. (2006).
-Parametric Representation of the Primary Hurricane Vortex. Part II: A
-New Family of Sectionally Continuous Profiles. Monthly Weather Review,
-134(4), 1102–1120. <a href="https://doi.org/10.1175/MWR3106.1" class="external-link uri">https://doi.org/10.1175/MWR3106.1</a></p></li>
-</ul>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-boose_landscape_2004" class="csl-entry">
+Boose, Emery R., Mayra I. Serrano, and David R. Foster. 2004.
+<span>“Landscape and <span>Regional</span> <span>Impacts</span> of
+<span>Hurricanes</span> in <span>Puerto</span>
+<span>Rico</span>.”</span> <em>Ecological Monographs</em> 74 (2):
+335–52. <a href="https://doi.org/10.1890/02-4057" class="external-link">https://doi.org/10.1890/02-4057</a>.
+</div>
+<div id="ref-holland_analytic_1980" class="csl-entry">
+Holland, Greg J. 1980. <span>“An <span>Analytic</span>
+<span>Model</span> of the <span>Wind</span> and <span>Pressure</span>
+<span>Profiles</span> in <span>Hurricanes</span>.”</span> <em>Monthly
+Weather Review</em> 108 (8): 1212–18. <a href="https://doi.org/10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2" class="external-link">https://doi.org/10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2</a>.
+</div>
+<div id="ref-knapp_international_2018" class="csl-entry">
+Knapp, Kenneth R., Howard J. Diamond, James P. Kossin, Michael C. Kruk,
+and Carl J. III Schreck. 2018. <span>“International <span>Best</span>
+<span>Track</span> <span>Archive</span> for <span>Climate</span>
+<span>Stewardship</span> (<span>IBTrACS</span>) <span>Project</span>,
+<span>Version</span> 4.”</span> https://doi.org/<a href="https://doi.org/10.25921/82ty-9e16" class="external-link">https://doi.org/10.25921/82ty-9e16</a>.
+</div>
+<div id="ref-knapp_international_2010" class="csl-entry">
+Knapp, Kenneth R., Michael C. Kruk, David H. Levinson, Howard J.
+Diamond, and Charles J. Neumann. 2010. <span>“The
+<span>International</span> <span>Best</span> <span>Track</span>
+<span>Archive</span> for <span>Climate</span> <span>Stewardship</span>
+(<span>IBTrACS</span>): <span>Unifying</span> <span>Tropical</span>
+<span>Cyclone</span> <span>Data</span>.”</span> <em>Bulletin of the
+American Meteorological Society</em> 91 (3): 363–76. <a href="https://doi.org/10.1175/2009BAMS2755.1" class="external-link">https://doi.org/10.1175/2009BAMS2755.1</a>.
+</div>
+<div id="ref-willoughby_parametric_2006" class="csl-entry">
+Willoughby, H. E., R. W. R. Darling, and M. E. Rahn. 2006.
+<span>“Parametric <span>Representation</span> of the
+<span>Primary</span> <span>Hurricane</span> <span>Vortex</span>.
+<span>Part</span> <span>II</span>: <span>A</span> <span>New</span>
+<span>Family</span> of <span>Sectionally</span> <span>Continuous</span>
+<span>Profiles</span>.”</span> <em>Monthly Weather Review</em> 134 (4):
+1102–20. <a href="https://doi.org/10.1175/MWR3106.1" class="external-link">https://doi.org/10.1175/MWR3106.1</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

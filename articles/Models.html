@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Models</h1>
             
-            <h4 data-toc-skip class="date">2023-06-09</h4>
+            <h4 data-toc-skip class="date">2023-06-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/vignettes/Models.Rmd" class="external-link"><code>vignettes/Models.Rmd</code></a></small>
       <div class="d-none name"><code>Models.Rmd</code></div>
@@ -98,37 +98,41 @@
 <code><a href="../reference/spatialBehaviour.html">spatialBehaviour()</a></code> and <code><a href="../reference/temporalBehaviour.html">temporalBehaviour()</a></code>,
 allow to compute characteristics of the storm surface wind field, as
 re-constructed from storm track data and a parametric cyclone model.
-Three parametric models are implemented in this package: Holland (1980),
-Willoughby et al. (2006), and Boose et al. (2004). The use of one model
-or the other is defined using the <code>method</code> argument in
+Three parametric models are implemented in this package: Holland <span class="citation">(1980)</span>, Willoughby <em>et al.</em> <span class="citation">(2006)</span>, and Boose <em>et al.</em> <span class="citation">(2004)</span>. The use of one model or the other is
+defined using the <code>method</code> argument in
 <code><a href="../reference/spatialBehaviour.html">spatialBehaviour()</a></code> and <code><a href="../reference/temporalBehaviour.html">temporalBehaviour()</a></code>
 functions.</p>
-<p>The original Holland (1980) and Willoughby et al. (2006) models
+<p>The original <span class="citation">Holland (1980)</span> and
+Willoughby <em>et al.</em> <span class="citation">(2006)</span> models
 provide a symmetrical wind field around the cyclone centre. However,
 cyclonic winds are not symmetric, and an order zero asymmetry is caused
 by the storm translation (forward motion). We therefore suggest using an
 asymmetric version of the parametric wind fields that takes into account
 storm motion. In the <code>StormR</code> package the methods developed
-by Miyazaki et al. (1962) and Chen (1994) that allow to take this
+by Miyazaki <em>et al.</em> <span class="citation">(1962)</span> and
+<span class="citation">Chen (1994)</span> that allow to take this
 asymmetry into account can be used to adjust the outputs of the
 symmetrical models accordingly. These can be activated by using the
 <code>asymmetry</code> argument of the <code><a href="../reference/spatialBehaviour.html">spatialBehaviour()</a></code>
-and <code><a href="../reference/temporalBehaviour.html">temporalBehaviour()</a></code> functions. The model of Boose et
-al. (2004) is already an asymmetrical version of the Holland (1980)
-model. Contrary to the Holland (1980) and Willoughby et al. (2006), this
+and <code><a href="../reference/temporalBehaviour.html">temporalBehaviour()</a></code> functions. The model of Boose
+<em>et al.</em> <span class="citation">(2004)</span> is already an
+asymmetrical version of the <span class="citation">Holland (1980)</span>
+model. Contrary to the <span class="citation">Holland (1980)</span> and
+Willoughby <em>et al.</em> <span class="citation">(2006)</span>, this
 model considers different parameter settings over water or over
 lands.</p>
 <p>By default the <code><a href="../reference/spatialBehaviour.html">spatialBehaviour()</a></code> and
-<code><a href="../reference/temporalBehaviour.html">temporalBehaviour()</a></code> functions use the Willoughby et
-al. (2006) model adjusted using the Chen (1994) method.</p>
+<code><a href="../reference/temporalBehaviour.html">temporalBehaviour()</a></code> functions use the Willoughby <em>et
+al.</em> <span class="citation">(2006)</span> model adjusted using the
+<span class="citation">Chen (1994)</span> method.</p>
 <div class="section level3">
 <h3 id="holland-1980-symmetric-wind-field">Holland (1980) symmetric wind field<a class="anchor" aria-label="anchor" href="#holland-1980-symmetric-wind-field"></a>
 </h3>
-<p>The Holland (1980) model, widely used in the literature, is based on
-the gradient wind balance in mature tropical cyclones. The wind speed
-distribution is computed from the circular air pressure field, which can
-be derived from the central and environmental pressure and the radius of
-maximum winds.</p>
+<p>The Holland model <span class="citation">(1980)</span>, widely used
+in the literature, is based on the gradient wind balance in mature
+tropical cyclones. The wind speed distribution is computed from the
+circular air pressure field, which can be derived from the central and
+environmental pressure and the radius of maximum winds.</p>
 <p><span class="math display">\[
 v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times
 (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r
@@ -150,16 +154,18 @@ storm (in <span class="math inline">\(Pa\)</span>), <br><span class="math inline
 wind speed (in <span class="math inline">\(km\)</span>), <br><span class="math inline">\(f\)</span> is the Coriolis force (in <span class="math inline">\(N.kg^{-1}\)</span>), and <br><span class="math inline">\(\phi\)</span> is the latitude. <br><br></p>
 </div>
 <div class="section level3">
-<h3 id="willoughby-et-al--2006-symmetric-wind-field">Willoughby et al. (2006) symmetric wind field<a class="anchor" aria-label="anchor" href="#willoughby-et-al--2006-symmetric-wind-field"></a>
+<h3 id="willoughby-et-al---willoughby_parametric_2006-symmetric-wind-field">Willoughby <em>et al.</em> <span class="citation">(2006)</span>
+symmetric wind field<a class="anchor" aria-label="anchor" href="#willoughby-et-al---willoughby_parametric_2006-symmetric-wind-field"></a>
 </h3>
-<p>The Willoughby et al. (2006) model is an empirical model fitted to
-aircraft observations. The model considers two regions: inside the eye
-and at external radii, for which the wind formulations use different
-exponents to better match observations. In this model, the wind speed
-increases as a power function of the radius inside the eye and decays
-exponentially outside the eye after a smooth polynomial transition
-across the eyewall (see also Willoughby 1995, Willoughby et
-al. 2004).</p>
+<p>The Willoughby <em>et al.</em> <span class="citation">(2006)</span>
+model is an empirical model fitted to aircraft observations. The model
+considers two regions: inside the eye and at external radii, for which
+the wind formulations use different exponents to better match
+observations. In this model, the wind speed increases as a power
+function of the radius inside the eye and decays exponentially outside
+the eye after a smooth polynomial transition across the eyewall (see
+also <span class="citation">Willoughby (1995)</span>, Willoughby <em>et
+al.</em> <span class="citation">(2004)</span>).</p>
 <p><span class="math display">\[
 \left\{
 \begin{aligned}
@@ -189,8 +195,9 @@ storm, and <br><span class="math inline">\(X2 = 25\)</span>.
 <br></p>
 </div>
 <div class="section level3">
-<h3 id="adding-asymmetry-to-holland-1980-and-willoughby-et-al--2006-wind-fields">Adding asymmetry to Holland (1980) and Willoughby et al. (2006) wind
-fields<a class="anchor" aria-label="anchor" href="#adding-asymmetry-to-holland-1980-and-willoughby-et-al--2006-wind-fields"></a>
+<h3 id="adding-asymmetry-to-holland_analytic_1980-and-willoughby-et-al---willoughby_parametric_2006-wind-fields">Adding asymmetry to <span class="citation">Holland (1980)</span> and
+Willoughby <em>et al.</em> <span class="citation">(2006)</span> wind
+fields<a class="anchor" aria-label="anchor" href="#adding-asymmetry-to-holland_analytic_1980-and-willoughby-et-al---willoughby_parametric_2006-wind-fields"></a>
 </h3>
 <p>The asymmetry caused by the translation of the storm can be added as
 follows,</p>
@@ -202,16 +209,17 @@ of the storm, and <br><span class="math inline">\(C\)</span> is
 function of <span class="math inline">\(r\)</span>, the distance to the
 eye of the storm (in <span class="math inline">\(km\)</span>).
 <br></p>
-<p>Two formulations of C proposed by Miyazaki et al. (1962) and Chen
-(1994) are implemented.</p>
+<p>Two formulations of C proposed by Miyazaki <em>et al.</em> <span class="citation">(1962)</span> and <span class="citation">Chen
+(1994)</span> are implemented.</p>
 <div class="section level4">
-<h4 id="miyazaki-et-al--1962">Miyazaki et al. 1962<a class="anchor" aria-label="anchor" href="#miyazaki-et-al--1962"></a>
+<h4 id="miyazaki-et-al---miyazaki_typhoon_1962">Miyazaki <em>et al.</em> <span class="citation">(1962)</span><a class="anchor" aria-label="anchor" href="#miyazaki-et-al---miyazaki_typhoon_1962"></a>
 </h4>
 <p><span class="math inline">\(C = e^{(-\frac{r}{500} \times
 \pi)}\)</span> <br></p>
 </div>
 <div class="section level4">
-<h4 id="chen-1994">Chen 1994<a class="anchor" aria-label="anchor" href="#chen-1994"></a>
+<h4 id="chen1994computation">
+<span class="citation">Chen (1994)</span><a class="anchor" aria-label="anchor" href="#chen1994computation"></a>
 </h4>
 <p><span class="math inline">\(C = \frac{3 \times R_m^{\frac{3}{2}}
 \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times
@@ -221,12 +229,14 @@ of maximum sustained wind speed (in <span class="math inline">\(km\)</span>). <b
 </div>
 </div>
 <div class="section level3">
-<h3 id="boose-et-al--2004-asymmetric-model">Boose et al. (2004) asymmetric model<a class="anchor" aria-label="anchor" href="#boose-et-al--2004-asymmetric-model"></a>
+<h3 id="boose-et-al---boose_landscape_2004-asymmetric-model">Boose <em>et al.</em> <span class="citation">(2004)</span>
+asymmetric model<a class="anchor" aria-label="anchor" href="#boose-et-al---boose_landscape_2004-asymmetric-model"></a>
 </h3>
-<p>The Boose et al. (2004) model, or “HURRECON” model, is a modification
-of the Holland (1980) model (see also Boose et al., 2001). In addition
-to adding asymmetry, this model treats of water and land differently,
-using different surface friction coefficient for each.</p>
+<p>The Boose <em>et al.</em> <span class="citation">(2004)</span> model,
+or “HURRECON” model, is a modification of the <span class="citation">Holland (1980)</span> model (see also Boose <em>et
+al.</em> <span class="citation">(2001)</span>). In addition to adding
+asymmetry, this model treats of water and land differently, using
+different surface friction coefficient for each.</p>
 <div class="section level4">
 <h4 id="wind-speed">Wind speed<a class="anchor" aria-label="anchor" href="#wind-speed"></a>
 </h4>
@@ -337,38 +347,63 @@ cyclone Pam near Vanuatu)</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">PAM</span><span class="op">$</span><span class="va">lon</span>, <span class="va">PAM</span><span class="op">$</span><span class="va">lat</span>, lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Models_files/figure-html/unnamed-chunk-1-4.png" width="700"></p>
 </div>
-<div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<ul>
-<li><p>Boose, E. R., Chamberlin, K. E., &amp; Foster, D. R. (2001).
-Landscape and Regional Impacts of Hurricanes in New England. Ecological
-Monographs, 71(1), Article 1. <a href="https://doi.org/10.1890/0012-9615(2001)071%5B0027:LARIOH%5D2.0.CO;2" class="external-link uri">https://doi.org/10.1890/0012-9615(2001)071[0027:LARIOH]2.0.CO;2</a></p></li>
-<li><p>Boose, E. R., Serrano, M. I., &amp; Foster, D. R. (2004).
-Landscape and regional impacts of hurricanes in Puerto Rico. Ecological
-Monographs, 74(2), Article 2. <a href="https://doi.org/10.1890/02-4057" class="external-link uri">https://doi.org/10.1890/02-4057</a></p></li>
-<li><p>Chen, K.-M. (1994). A computation method for typhoon wind field.
-Tropic Oceanology, 13(2), 41–48.</p></li>
-<li><p>Holland, G. J. (1980). An Analytic Model of the Wind and Pressure
-Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. <a href="https://doi.org/10.1175/1520-0493(1980)108" class="external-link uri">https://doi.org/10.1175/1520-0493(1980)108</a>&lt;1212:AAMOTW&gt;2.0.CO;2</p></li>
-<li><p>Miyazaki, M., Ueno, T., &amp; Unoki, S. (1962). The theoretical
-investigations of typhoon surges along the Japanese coast (II).
-Oceanographical Magazine, 13(2), 103–117.</p></li>
-<li><p>Willoughby, H. E. (1995). Normal-Mode Initialization of
-Barotropic Vortex Motion Models. Journal of the Atmospheric Sciences,
-52(24), 4501–4514. <a href="https://doi.org/10.1175/1520-0469(1995)052" class="external-link uri">https://doi.org/10.1175/1520-0469(1995)052</a>&lt;4501:NMIOBV&gt;2.0.CO;2</p></li>
-<li><p>Willoughby, H. E., &amp; Rahn, M. E. (2004). Parametric
-Representation of the Primary Hurricane Vortex. Part I: Observations and
-Evaluation of the Holland (1980) Model. Monthly Weather Review, 132(12),
-3033–3048. <a href="https://doi.org/10.1175/MWR2831.1" class="external-link uri">https://doi.org/10.1175/MWR2831.1</a></p></li>
-<li><p>Willoughby, H. E., Darling, R. W. R., &amp; Rahn, M. E. (2006).
-Parametric Representation of the Primary Hurricane Vortex. Part II: A
-New Family of Sectionally Continuous Profiles. Monthly Weather Review,
-134(4), 1102–1120. <a href="https://doi.org/10.1175/MWR3106.1" class="external-link uri">https://doi.org/10.1175/MWR3106.1</a></p></li>
-<li><p>Yan, D., &amp; Zhang, T. (2022). Research progress on tropical
-cyclone parametric wind field models and their application. Regional
-Studies in Marine Science, 51, 102207. <a href="https://doi.org/10.1016/j.rsma.2022.102207" class="external-link uri">https://doi.org/10.1016/j.rsma.2022.102207</a></p></li>
-</ul>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-boose_landscape_2001" class="csl-entry">
+Boose, Emery R., Kristen E. Chamberlin, and David R. Foster. 2001.
+<span>“Landscape and <span>Regional</span> <span>Impacts</span> of
+<span>Hurricanes</span> in <span>New</span>
+<span>England</span>.”</span> <em>Ecological Monographs</em> 71 (1):
+27–48. <a href="https://doi.org/10.1890/0012-9615(2001)071%5B0027:LARIOH%5D2.0.CO;2" class="external-link">https://doi.org/10.1890/0012-9615(2001)071[0027:LARIOH]2.0.CO;2</a>.
+</div>
+<div id="ref-boose_landscape_2004" class="csl-entry">
+Boose, Emery R., Mayra I. Serrano, and David R. Foster. 2004.
+<span>“Landscape and <span>Regional</span> <span>Impacts</span> of
+<span>Hurricanes</span> in <span>Puerto</span>
+<span>Rico</span>.”</span> <em>Ecological Monographs</em> 74 (2):
+335–52. <a href="https://doi.org/10.1890/02-4057" class="external-link">https://doi.org/10.1890/02-4057</a>.
+</div>
+<div id="ref-chen1994computation" class="csl-entry">
+Chen, KM. 1994. <span>“A Computation Method for Typhoon Wind
+Field.”</span> <em>Tropic Oceanology</em> 13 (2): 41–48.
+</div>
+<div id="ref-holland_analytic_1980" class="csl-entry">
+Holland, Greg J. 1980. <span>“An <span>Analytic</span>
+<span>Model</span> of the <span>Wind</span> and <span>Pressure</span>
+<span>Profiles</span> in <span>Hurricanes</span>.”</span> <em>Monthly
+Weather Review</em> 108 (8): 1212–18. <a href="https://doi.org/10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2" class="external-link">https://doi.org/10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2</a>.
+</div>
+<div id="ref-Miyazaki_typhoon_1962" class="csl-entry">
+Miyazaki, M., T. Ueno, and S. Unoki. 1962. <span>“The Theoretical
+Investigations of Typhoon Surges Along the Japanese Coast (II).”</span>
+<em>Oceanographical Magazine</em> 13 (2): 103–17. <a href="https://cir.nii.ac.jp/crid/1573105975206118656" class="external-link">https://cir.nii.ac.jp/crid/1573105975206118656</a>.
+</div>
+<div id="ref-willoughby_normal-mode_1995" class="csl-entry">
+Willoughby, H. E. 1995. <span>“Normal-<span>Mode</span>
+<span>Initialization</span> of <span>Barotropic</span>
+<span>Vortex</span> <span>Motion</span> <span>Models</span>.”</span>
+<em>Journal of the Atmospheric Sciences</em> 52 (24): 4501–14. <a href="https://doi.org/10.1175/1520-0469(1995)052&lt;4501:NMIOBV&gt;2.0.CO;2" class="external-link">https://doi.org/10.1175/1520-0469(1995)052&lt;4501:NMIOBV&gt;2.0.CO;2</a>.
+</div>
+<div id="ref-willoughby_parametric_2006" class="csl-entry">
+Willoughby, H. E., R. W. R. Darling, and M. E. Rahn. 2006.
+<span>“Parametric <span>Representation</span> of the
+<span>Primary</span> <span>Hurricane</span> <span>Vortex</span>.
+<span>Part</span> <span>II</span>: <span>A</span> <span>New</span>
+<span>Family</span> of <span>Sectionally</span> <span>Continuous</span>
+<span>Profiles</span>.”</span> <em>Monthly Weather Review</em> 134 (4):
+1102–20. <a href="https://doi.org/10.1175/MWR3106.1" class="external-link">https://doi.org/10.1175/MWR3106.1</a>.
+</div>
+<div id="ref-willoughby_parametric_2004" class="csl-entry">
+Willoughby, H. E., and M. E. Rahn. 2004. <span>“Parametric
+<span>Representation</span> of the <span>Primary</span>
+<span>Hurricane</span> <span>Vortex</span>. <span>Part</span>
+<span>I</span>: <span>Observations</span> and <span>Evaluation</span> of
+the <span>Holland</span> (1980) <span>Model</span>.”</span> <em>Monthly
+Weather Review</em> 132 (12): 3033–48. <a href="https://doi.org/10.1175/MWR2831.1" class="external-link">https://doi.org/10.1175/MWR2831.1</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

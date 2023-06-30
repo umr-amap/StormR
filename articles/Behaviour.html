@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Behaviour</h1>
             
-            <h4 data-toc-skip class="date">2023-06-09</h4>
+            <h4 data-toc-skip class="date">2023-06-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/vignettes/Behaviour.Rmd" class="external-link"><code>vignettes/Behaviour.Rmd</code></a></small>
       <div class="d-none name"><code>Behaviour.Rmd</code></div>
@@ -121,16 +121,16 @@ of the storm<br></p>
 <h3 id="power-dissipation-index">Power Dissipation Index<a class="anchor" aria-label="anchor" href="#power-dissipation-index"></a>
 </h3>
 <p>The power dissipation index (PDI, in <span class="math inline">\(J.m^{2}\)</span>) or total power dissipated by a
-tropical storm over its lifespan (Emanuel, 1999, 2005) is computed as
-follows:</p>
+tropical storm over its lifespan <span class="citation">(Emanuel 1999,
+2005)</span> is computed as follows:</p>
 <p><span class="math display">\[
 \int_T \rho \times C_d \times v_r^3 \ dt
 \]</span></p>
 <p>where <span class="math inline">\(t\)</span> is the time of the
 observation<br><span class="math inline">\(T\)</span> is the lifespan
 of the storm<br><span class="math inline">\(\rho\)</span> is the air
-density fixed to <span class="math inline">\(1\)</span> <span class="math inline">\(kg.m^{-3}\)</span> as in Emanuel (1999)<br><span class="math inline">\(C_d\)</span> is the drag coefficient of the
-storm fixed to <span class="math inline">\(2\)</span> X <span class="math inline">\(10^{-3}\)</span> as in Emanuel (1999)<br></p>
+density fixed to <span class="math inline">\(1\)</span> <span class="math inline">\(kg.m^{-3}\)</span> as in <span class="citation">Emanuel (1999)</span> <br><span class="math inline">\(C_d\)</span> is the drag coefficient of the storm
+fixed to <span class="math inline">\(2\)</span> X <span class="math inline">\(10^{-3}\)</span> as in <span class="citation">Emanuel (1999)</span> <br></p>
 </div>
 <div class="section level3">
 <h3 id="duration-of-exposure">Duration of exposure<a class="anchor" aria-label="anchor" href="#duration-of-exposure"></a>
@@ -155,21 +155,29 @@ maximum sustained wind speed at time <span class="math inline">\(t\)</span> (in 
 (in <span class="math inline">\(m.s^{-1}\)</span>)<br></p>
 <p>By default the duration of exposure is computed for each
 Saffir-Simpson Hurricane Scale threshold values for tropical cyclone
-categories (i.e., <span class="math inline">\(33\)</span>, <span class="math inline">\(43\)</span>, <span class="math inline">\(50\)</span> ,<span class="math inline">\(58\)</span>, and <span class="math inline">\(70\)</span> <span class="math inline">\(m.s^{-1}\)</span>, Simpson, 1974) but can be
-defined using the <code>wind_threshold</code> argument.</p>
+categories (i.e., <span class="math inline">\(33\)</span>, <span class="math inline">\(43\)</span>, <span class="math inline">\(50\)</span> ,<span class="math inline">\(58\)</span>, and <span class="math inline">\(70\)</span> <span class="math inline">\(m.s^{-1}\)</span>, <span class="citation">(Simpson
+1974)</span>) but can be defined using the <code>wind_threshold</code>
+argument.</p>
 </div>
-<div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<ul>
-<li><p>Emanuel, K. A. (1999). The power of a hurricane: An example of
-reckless driving on the information superhighway. Weather, 54(4),
-107–108. <a href="https://doi.org/10.1002/j.1477-8696.1999.tb06435.x" class="external-link uri">https://doi.org/10.1002/j.1477-8696.1999.tb06435.x</a></p></li>
-<li><p>Emanuel, K. (2005). Increasing destructiveness of tropical
-cyclones over the past 30 years. Nature, 436(7051), Article 7051. <a href="https://doi.org/10.1038/nature03906" class="external-link uri">https://doi.org/10.1038/nature03906</a></p></li>
-<li><p>Simpson, R. H. (1974). The hurricane disaster potential scale.
-Weatherwise, 27, 169–186.</p></li>
-</ul>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-emanuel_power_1999" class="csl-entry">
+Emanuel, Kerry A. 1999. <span>“The Power of a Hurricane: <span>An</span>
+Example of Reckless Driving on the Information Superhighway.”</span>
+<em>Weather</em> 54 (4): 107–8. <a href="https://doi.org/10.1002/j.1477-8696.1999.tb06435.x" class="external-link">https://doi.org/10.1002/j.1477-8696.1999.tb06435.x</a>.
+</div>
+<div id="ref-emanuel_increasing_2005" class="csl-entry">
+———. 2005. <span>“Increasing Destructiveness of Tropical Cyclones over
+the Past 30 Years.”</span> <em>Nature</em> 436 (7051): 686–88. <a href="https://doi.org/10.1038/nature03906" class="external-link">https://doi.org/10.1038/nature03906</a>.
+</div>
+<div id="ref-simpson_hurricane_2010" class="csl-entry">
+Simpson, R. H. 1974. <span>“The <span>Hurricane</span>
+<span>Disaster</span>—<span>Potential</span> <span>Scale</span>.”</span>
+<em>Weatherwise</em>, July. <a href="https://www.tandfonline.com/doi/abs/10.1080/00431672.1974.9931702" class="external-link">https://www.tandfonline.com/doi/abs/10.1080/00431672.1974.9931702</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
