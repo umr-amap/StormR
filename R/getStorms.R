@@ -977,21 +977,21 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 #' sds <- defDatabase()
 #'
 #' #Getting data using country names
-#' vanuatu.st <- storms(sds = sds, loi = "Vanuatu")
+#' vanuatu.st <- defStormsList(sds = sds, loi = "Vanuatu")
 #'
 #' #Getting data using a specific point location
 #' pt <- c(169, -19)
-#' pam.pt <- storms(sds = sds, loi = pt, names = "PAM")
+#' pam.pt <- defStormsList(sds = sds, loi = pt, names = "PAM")
 #'
 #' #Getting data using country and storm names
-#' niran.nc <- storms(sds = sds, loi = "New Caledonia", names = c("NIRAN"))
+#' niran.nc <- defStormsList(sds = sds, loi = "New Caledonia", names = c("NIRAN"))
 #'
 #' #Getting data using a user defined spatial polygon
 #' poly <- cbind(c(135, 290, 290, 135, 135),c(-60, -60, 0, 0, -60))
 #' sp <- sf::st_polygon(list(poly))
 #' sp <- sf::st_sfc(sp, crs = 4326)
 #' sp <- sf::st_as_sf(sp)
-#' sts_sp <- storms(sds = sds, loi = sp)
+#' sts_sp <- defStormsList(sds = sds, loi = sp)
 #' }
 #'
 #'
