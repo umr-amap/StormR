@@ -6,6 +6,7 @@ vignette: >
    %\VignetteIndexEntry{Behaviour}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
+bibliography: ../paper.bib
 ---
 
 The `temporalBehaviour()` and the `spatialBehaviour()` functions allow computing wind speed and direction along the lifespan of a tropical cyclone.
@@ -28,7 +29,7 @@ $T$ is the lifespan of the storm<br />
 
 ### Power Dissipation Index
 
-The power dissipation index (PDI, in $J.m^{2}$) or total power dissipated by a tropical storm over its lifespan (Emanuel, 1999, 2005) is computed as follows:
+The power dissipation index (PDI, in $J.m^{2}$) or total power dissipated by a tropical storm over its lifespan [@emanuel_power_1999; @emanuel_increasing_2005] is computed as follows:
 
 $$
 \int_T \rho \times C_d \times v_r^3 \ dt
@@ -37,8 +38,8 @@ $$
 where
 $t$ is the time of the observation<br />
 $T$ is the lifespan of the storm<br />
-$\rho$ is the air density fixed to $1$ $kg.m^{-3}$ as in Emanuel (1999)<br />
-$C_d$ is the drag coefficient of the storm fixed to $2$ X $10^{-3}$ as in Emanuel (1999)<br />
+$\rho$ is the air density fixed to $1$ $kg.m^{-3}$ as in @emanuel_power_1999 <br />
+$C_d$ is the drag coefficient of the storm fixed to $2$ X $10^{-3}$ as in @emanuel_power_1999 <br />
 
 ### Duration of exposure
 
@@ -63,11 +64,6 @@ $T$ is the lifespan of the storm<br/>
 $v_t$ is the maximum sustained wind speed at time $t$ (in $m.s^{-1}$)<br/>
 $Thd$ is the minimum wind sped threshold (in $m.s^{-1}$)<br/>
 
-By default the duration of exposure is computed for each Saffir-Simpson Hurricane Scale threshold values for tropical cyclone categories (i.e., $33$, $43$, $50$ ,$58$, and $70$ $m.s^{-1}$, Simpson, 1974) but can be defined using the `wind_threshold` argument.
+By default the duration of exposure is computed for each Saffir-Simpson Hurricane Scale threshold values for tropical cyclone categories (i.e., $33$, $43$, $50$ ,$58$, and $70$ $m.s^{-1}$, [@simpson_hurricane_2010]) but can be defined using the `wind_threshold` argument.
 
 ## References
-* Emanuel, K. A. (1999). The power of a hurricane: An example of reckless driving on the information superhighway. Weather, 54(4), 107–108. https://doi.org/10.1002/j.1477-8696.1999.tb06435.x
-
-* Emanuel, K. (2005). Increasing destructiveness of tropical cyclones over the past 30 years. Nature, 436(7051), Article 7051. https://doi.org/10.1038/nature03906
-
-* Simpson, R. H. (1974). The hurricane disaster potential scale. Weatherwise, 27, 169–186.

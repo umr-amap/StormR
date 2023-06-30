@@ -963,7 +963,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 #' @details The available countries for the `loi` are those provided in the
 #'   `rwolrdxtra` package. This package provide high resolution vector country
 #'   boundaries derived from Natural Earth data. More informations on the Natural Earth data
-#'   here: [http://www.naturalearthdata.com/downloads/10m-cultural-vectors/](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/).
+#'   here: [http://www.naturalearthdata.com/downloads/10m-cultural-vectors/](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/).
 #'
 #'@references
 #'Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).

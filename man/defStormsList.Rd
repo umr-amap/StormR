@@ -59,7 +59,7 @@ seasons, and names of the storms.
 The available countries for the \code{loi} are those provided in the
 \code{rwolrdxtra} package. This package provide high resolution vector country
 boundaries derived from Natural Earth data. More informations on the Natural Earth data
-here: \url{http://www.naturalearthdata.com/downloads/10m-cultural-vectors/}.
+here: \href{https://www.naturalearthdata.com/downloads/10m-cultural-vectors/}{http://www.naturalearthdata.com/downloads/10m-cultural-vectors/}.
 }
 \examples{
 \dontrun{

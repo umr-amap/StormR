@@ -3,7 +3,7 @@
 # StormR R package <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
-[![codecov](https://codecov.io/github/umr-amap/StormR/branch/master/graph/badge.svg?token=5YMVL4TFB5)](https://codecov.io/github/umr-amap/StormR)
+[![codecov](https://codecov.io/github/umr-amap/StormR/branch/master/graph/badge.svg?token=5YMVL4TFB5)](https://app.codecov.io/github/umr-amap/StormR)
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/umr-amap/StormR/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/umr-amap/StormR)
 <!-- badges: end -->
 

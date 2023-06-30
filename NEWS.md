@@ -4,7 +4,7 @@
 * Use of `vignettes` for detailed use of the package
 * Use of pkgdown for building website
 * Use of `codecoverage`
-* Documentation website available at [umr-amap.github.io/StormR/](umr-amap.github.io/StormR/)
+* Documentation website available at [https://umr-amap.github.io/StormR/](https://umr-amap.github.io/StormR/)
 
 # StormR 0.0.1
 * First implementation of the StormR package

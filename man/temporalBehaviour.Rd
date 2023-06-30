@@ -108,7 +108,7 @@ with,
 
 \eqn{f = 2 \times 7.29 \times 10^{-5} \sin(\phi)}
 
-where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 \eqn{b} is the shape parameter,
 \eqn{\rho} is the air density set to \eqn{1.15 kg.m^{-3}},
 \eqn{e} being the base of natural logarithms (~2.718282),
@@ -143,7 +143,7 @@ with,
 
 \eqn{A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi|} and \eqn{A\ge0}
 
-where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
 \eqn{r} is the distance to the eye of the storm (in \eqn{km}),
 \eqn{R_m} is the radius of maximum sustained wind speed (in \eqn{km}),
@@ -182,7 +182,7 @@ with,
 
 \eqn{b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}}
 
-where, \eqn{v_r} is the radial wind speed (in \eqn{m.s^{-1}}),
+where, \eqn{v_r} is the tangential wind speed (in \eqn{m.s^{-1}}),
 \eqn{F} is a scaling parameter for friction (\eqn{1.0} in water, \eqn{0.8} in land),
 \eqn{v_m} is the maximum sustained wind speed (in \eqn{m.s^{-1}}),
 \eqn{S} is a scaling parameter for asymmetry (usually set to \eqn{1}),

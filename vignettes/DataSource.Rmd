@@ -7,6 +7,7 @@ vignette: >
    %\VignetteIndexEntry{Data source}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
+bibliography: ../paper.bib
 ---
 
 
@@ -23,7 +24,7 @@ arguments of `defDatabase()` function are set up to create a `stormsDataset`
 object using the USA fields in the IBTrACS database [International Best Track
 Archive for Climate
 Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive)
-(Knapp et al., 2010). This database provides a fairly comprehensive record of
+(Knapp *et al.*, [-@knapp_international_2010], [-@knapp_international_2018]). This database provides a fairly comprehensive record of
 worldwide tropical storms and cyclones with a 3-hours temporal resolution since
 1841. Other databases can be used as long as the following fields are provided:
 
@@ -46,10 +47,10 @@ the `basin` argument of the `defDatabase()` function. <br />
 $^{2}$ Providing `rmw` allows better estimates of wind speed and direction in
 the `temporatlBehaviour()` and `spatialBehaviour()` functions. If not provided,
 `rmw` is approximated using an empirical formula derived from
-Willoughby et al. (2006) as follows, $R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times
+Willoughby *et al.* [-@willoughby_parametric_2006] as follows, $R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times
 |\phi|)}$. <br />
-$^{3}$ If the `pressure` and `poci` fields are not provided, both Holland (1980)
-and Boose et al. (2004) wind field models cannot be used in the
+$^{3}$ If the `pressure` and `poci` fields are not provided, both @holland_analytic_1980
+and Boose *et al.* [-@boose_landscape_2004] wind field models cannot be used in the
 `temporatlBehaviour()` and `spatialBehaviour()` functions. <br />
 $^{4}$ The `sshs` field is optional, if not provided this field is automatically
 filled using the `msw` field.
@@ -62,7 +63,7 @@ IBTrACKS website. Different ".nc" (NetCDF) files containing storm track data
 sets can be downloaded
 [here](https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/).
 Please, follow the IBTrACS citation recommendations when using these datasets
-(including citing Knapp et al., 2010 and Knapp et al., 2018, and providing the
+(including citing Knapp *et al.* [-@knapp_international_2010; -@knapp_international_2018], and providing the
 access date for the later). For example, track data for all the storms that
 occurred over the last three years over the different basins world wide can be
 download to the working directory as follows,
@@ -135,7 +136,7 @@ For `msw`: <br />
 `None`: no conversion <br />
 
 For `rmw`: <br />
-`nm2ms`: converts nautical miles in kilometre (default setting) <br />
+`nm2ms`: converts nautical miles in kilometer (default setting) <br />
 `None`: no conversion <br />
 
 For both `pressure` and `poci`: <br />
@@ -152,13 +153,3 @@ comprises the track data of nine storms that occurred near Vanuatu and New
 Caledonia between 2015-2016 and 2020-2021, respectively.
 
 ## Reference
-
-* Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico. Ecological Monographs, 74(2), Article 2. https://doi.org/10.1890/02-4057
- 
-* Holland, G. J. (1980). An Analytic Model of the Wind and Pressure Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218. https://doi.org/10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2
-
-* Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010). The International Best Track Archive for Climate Stewardship (IBTrACS). Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
-
-* Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, & Schreck, C. J. (2018) International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. [indicate subset used]. NOAA National Centers for Environmental Information. https://doi:10.25921/82ty-9e16 [2023-03-15]
- 
-* Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric Representation of the Primary Hurricane Vortex. Part II: A New Family of Sectionally Continuous Profiles. Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
