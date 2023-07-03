@@ -190,7 +190,7 @@ writeNC <- function(rastds, filename) {
 #' writeRast(pam.msw, path = paste0(tempdir(), "/"))
 #'
 #' # Computing power dissipation index for several storms near New Caledonia
-#' sts.nc <- Storms(sds = sds, loi = "New Caledonia")
+#' sts.nc <- defStormsList(sds = sds, loi = "New Caledonia")
 #' pdi.nc <- spatialBehaviour(sts.nc, product = "PDI")
 #'
 #' # Exporting the power dissipation index raster layers to a NetCDF file
