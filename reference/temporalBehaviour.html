@@ -57,7 +57,7 @@ It also allows to compute three associated summary statistics."><meta property="
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Computing wind behaviour time series and summary statistics at given point locations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/R/stormBehaviour.R" class="external-link"><code>R/stormBehaviour.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/R/temporalBehaviour.R" class="external-link"><code>R/temporalBehaviour.R</code></a></small>
       <div class="d-none name"><code>temporalBehaviour.Rd</code></div>
     </div>
 
@@ -267,7 +267,7 @@ Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1</
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># Creating a stormsDataset</span></span></span>
-<span class="r-in"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="defDatabase.html">defDatabase</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="defStormsDataset.html">defStormsDataset</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Geting storm track data for tropical cyclone Pam (2015) near Vanuatu</span></span></span>
 <span class="r-in"><span><span class="va">pam</span> <span class="op">&lt;-</span> <span class="fu"><a href="defStormsList.html">defStormsList</a></span><span class="op">(</span>sds <span class="op">=</span> <span class="va">sds</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span></span>

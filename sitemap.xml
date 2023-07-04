@@ -13,13 +13,13 @@
     <loc>/articles/DataSource.html</loc>
   </url>
   <url>
+    <loc>/articles/ExtractStorms.html</loc>
+  </url>
+  <url>
     <loc>/articles/Models.html</loc>
   </url>
   <url>
     <loc>/articles/SpatialBehaviour.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Storms.html</loc>
   </url>
   <url>
     <loc>/articles/TemporalBehaviour.html</loc>
@@ -49,7 +49,7 @@
     <loc>/reference/StormsList-class.html</loc>
   </url>
   <url>
-    <loc>/reference/defDatabase.html</loc>
+    <loc>/reference/defStormsDataset.html</loc>
   </url>
   <url>
     <loc>/reference/defStormsList.html</loc>

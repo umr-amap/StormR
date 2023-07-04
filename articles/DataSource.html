@@ -98,10 +98,10 @@
 tropical storm track dataset as a “.nc” (NetCDF) file in which the
 location and some characteristics of storms are given across their
 lifespan. This file is used to create a <code>stormsDataset</code>
-object using the <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function. By default, the
-arguments of <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function are set up to create a
-<code>stormsDataset</code> object using the USA fields in the IBTrACS
-database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International
+object using the <code><a href="../reference/defStormsDataset.html">defStormsDataset()</a></code> function. By default,
+the arguments of <code><a href="../reference/defStormsDataset.html">defStormsDataset()</a></code> function are set up to
+create a <code>stormsDataset</code> object using the USA fields in the
+IBTrACS database <a href="https://www.ncei.noaa.gov/products/international-best-track-archive" class="external-link">International
 Best Track Archive for Climate Stewardship</a> (Knapp <em>et al.</em>,
 <span class="citation">(2010)</span>, <span class="citation">(2018)</span>). This database provides a fairly
 comprehensive record of worldwide tropical storms and cyclones with a
@@ -220,7 +220,7 @@ storm (<span class="math inline">\(18 \leq\)</span> <code>msw</code>
 </table>
 <p><span class="math inline">\(^{1}\)</span> Providing the
 <code>basin</code> allows to filter storms in a particular basin using
-the <code>basin</code> argument of the <code><a href="../reference/defDatabase.html">defDatabase()</a></code>
+the <code>basin</code> argument of the <code><a href="../reference/defStormsDataset.html">defStormsDataset()</a></code>
 function. <br><span class="math inline">\(^{2}\)</span> Providing
 <code>rmw</code> allows better estimates of wind speed and direction in
 the <code>temporatlBehaviour()</code> and
@@ -253,11 +253,11 @@ download to the working directory as follows,</p>
 <h3 id="creating-a-stormsdataset">Creating a <code>stormsDataset</code><a class="anchor" aria-label="anchor" href="#creating-a-stormsdataset"></a>
 </h3>
 <p>Once a storm track data set is available a <code>stormsDataset</code>
-object can be created using the <code><a href="../reference/defDatabase.html">defDatabase()</a></code> function as
-follows,</p>
+object can be created using the <code><a href="../reference/defStormsDataset.html">defStormsDataset()</a></code> function
+as follows,</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"./IBTrACS_ALL_3yrs.nc"</span>, basin <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in checkInputsdefDatabase(filename, fields, basin, seasons, unitConversion, : No basin argument specified. StormR will work as expected</span></span>
+<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defStormsDataset.html">defStormsDataset</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"./IBTrACS_ALL_3yrs.nc"</span>, basin <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in checkInputsdefStormsDataset(filename, fields, basin, seasons, : No basin argument specified. StormR will work as expected</span></span>
 <span><span class="co">##              but cannot use basin filtering for speed-up when collecting data</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sds</span><span class="op">)</span></span></code></pre></div>
@@ -290,7 +290,7 @@ South Pacific basin (“SP”), we can choose to use data provided by the
 Australian Bureau of Meteorology (starting with “bom_”) in the IBTrACKS
 data set as follows,</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defStormsDataset.html">defStormsDataset</a></span><span class="op">(</span></span>
 <span>  filename <span class="op">=</span> <span class="st">"IBTrACS_ALL_3yrs.nc"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    names <span class="op">=</span> <span class="st">"name"</span>,</span>
@@ -320,11 +320,11 @@ storms in the South Pacific basin.</p>
 functions compute wind speed, wind direction, and summary statistics
 following the international system of units (SI) or SI-derived units.
 Therefore, by default, when using IBTrACS data sets, the
-<code><a href="../reference/defDatabase.html">defDatabase()</a></code> function converts knots (<span class="math inline">\(knt\)</span>) to meter per second (<span class="math inline">\(m.s^{-1}\)</span>), nautical miles (<span class="math inline">\(nm\)</span>) to kilometres (<span class="math inline">\(km\)</span>), and millibar (<span class="math inline">\(mb\)</span>) to Pascal (<span class="math inline">\(pa\)</span>).</p>
+<code><a href="../reference/defStormsDataset.html">defStormsDataset()</a></code> function converts knots (<span class="math inline">\(knt\)</span>) to meter per second (<span class="math inline">\(m.s^{-1}\)</span>), nautical miles (<span class="math inline">\(nm\)</span>) to kilometres (<span class="math inline">\(km\)</span>), and millibar (<span class="math inline">\(mb\)</span>) to Pascal (<span class="math inline">\(pa\)</span>).</p>
 <p>When using another source of data than IBTrACS, the
-<code>unitConversion</code> argument of the <code><a href="../reference/defDatabase.html">defDatabase()</a></code>
-function can be used to convert the data to the desired units. The
-following conversions are available,</p>
+<code>unitConversion</code> argument of the
+<code><a href="../reference/defStormsDataset.html">defStormsDataset()</a></code> function can be used to convert the data
+to the desired units. The following conversions are available,</p>
 <p>For <code>msw</code>: <br><code>knt2ms</code>: converts knot in
 meter per second (default setting) <br><code>kmh2ms</code>: converts
 kilometre per hour in meter per second <br><code>mph2ms</code>:

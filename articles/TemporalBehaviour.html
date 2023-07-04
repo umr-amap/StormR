@@ -121,8 +121,8 @@ follows:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Port_Vila"</span>, <span class="st">"Luganville"</span><span class="op">)</span></span></code></pre></div>
 <p>The track data for Pam nearby Vanuatu are extracted as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defDatabase.html">defDatabase</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in checkInputsdefDatabase(filename, fields, basin, seasons, unitConversion, : No basin argument specified. StormR will work as expected</span></span>
+<code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defStormsDataset.html">defStormsDataset</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in checkInputsdefStormsDataset(filename, fields, basin, seasons, : No basin argument specified. StormR will work as expected</span></span>
 <span><span class="co">##              but cannot use basin filtering for speed-up when collecting data</span></span></code></pre>
 <pre><code><span><span class="co">## === Loading data  ===</span></span>
 <span><span class="co">## Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened</span></span>
