@@ -139,7 +139,7 @@ stormsDataset <- methods::setClass(
 
 
 
-#' check inputs for defDatabase function
+#' check inputs for defStormsDataset function
 #'
 #' @noRd
 #' @param filename character
@@ -150,7 +150,7 @@ stormsDataset <- methods::setClass(
 #' @param verbose numeric
 #'
 #' @return NULL
-checkInputsdefDatabase <- function(filename, fields, basin, seasons, unitConversion, verbose) {
+checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitConversion, verbose) {
   # Checking filename input
   stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename), "character"))
@@ -243,7 +243,7 @@ checkInputsdefDatabase <- function(filename, fields, basin, seasons, unitConvers
 
 #' Creating a `stormsDataset` object
 #'
-#' The `defDatabase()` function creates a `stormsDataset` object from a NetCDF file.
+#' The `defStormsDataset()` function creates a `stormsDataset` object from a NetCDF file.
 #' This is an essential first step before other `stormR` functions can be used.
 #'
 #' @param filename character. Name of the NetCDF (.nc) file. Default is the `test_dataset.nc`
@@ -318,7 +318,7 @@ checkInputsdefDatabase <- function(filename, fields, basin, seasons, unitConvers
 #'
 #' @param verbose numeric. Whether the function should display (`= 1`)
 #'   or not (`= 0`) information about the processes.
-#' @return The `defDatabase()` function returns a `stormsDataset` object.
+#' @return The `defStormsDataset()` function returns a `stormsDataset` object.
 #'
 #' @references
 #' Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
@@ -329,34 +329,34 @@ checkInputsdefDatabase <- function(filename, fields, basin, seasons, unitConvers
 #' \dontrun{
 #' # Creating a `stormsDataset` object with storms between 2010 and 2015
 #' # in the South Pacific using the NetCDF provided with the package
-#' SP_2015_2020 <- defDatabase(seasons = c(2010 - 2015))
+#' SP_2015_2020 <- defStormsDataset(seasons = c(2010 - 2015))
 #' str(SP_2015_2020)
 #' }
 #' @export
-defDatabase <- function(filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
-                        fields = c(
-                          names = "name",
-                          seasons = "season",
-                          isoTime = "iso_time",
-                          lon = "usa_lon",
-                          lat = "usa_lat",
-                          msw = "usa_wind",
-                          basin = "basin",
-                          sshs = "usa_sshs",
-                          rmw = "usa_rmw",
-                          pressure = "usa_pres",
-                          poci = "usa_poci"
-                        ),
-                        basin = NULL,
-                        seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
-                        unitConversion = c(
-                          msw = "knt2ms",
-                          rmw = "nm2km",
-                          pressure = "mb2pa",
-                          poci = "mb2pa"
-                        ),
-                        verbose = 1) {
-  checkInputsdefDatabase(filename, fields, basin, seasons, unitConversion, verbose)
+defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
+                             fields = c(
+                               names = "name",
+                               seasons = "season",
+                               isoTime = "iso_time",
+                               lon = "usa_lon",
+                               lat = "usa_lat",
+                               msw = "usa_wind",
+                               basin = "basin",
+                               sshs = "usa_sshs",
+                               rmw = "usa_rmw",
+                               pressure = "usa_pres",
+                               poci = "usa_poci"
+                             ),
+                             basin = NULL,
+                             seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
+                             unitConversion = c(
+                               msw = "knt2ms",
+                               rmw = "nm2km",
+                               pressure = "mb2pa",
+                               poci = "mb2pa"
+                             ),
+                             verbose = 1) {
+  checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, verbose)
 
 
   if (verbose) {

@@ -178,7 +178,7 @@ writeNC <- function(rastds, filename) {
 #' @examples
 #' \dontrun{
 #' # Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' # Getting storm track data for tropical cyclone Pam (2015) near Vanuatu
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")

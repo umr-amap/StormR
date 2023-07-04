@@ -1,5 +1,5 @@
 ---
-title: "Storms"
+title: "ExtractStorms"
 output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >
@@ -18,7 +18,7 @@ library(rworldxtra)
 data("countriesHigh")
 ```
 
-The `Storms()` function allows to extract tropical cyclone track data for a
+The `defStormsList()` function allows to extract tropical cyclone track data for a
 given tropical cyclone or set of tropical cyclones nearby a given location of
 interest (`loi`). The `loi` can be defined using a country name, a specific
 point (defined by its longitude and latitude coordinates), or any user imported
@@ -26,7 +26,7 @@ or defined spatial polygon shapefiles. By default only observations located
 within 300 km around the `loi` are extracted but this can be changed using the
 `max_dist` argument. Users can also extract tropical cyclones using the `name`
 of the storm or the `season` during which it occurred. If both the `name` and
-the `season` arguments are not filled then the `Storms()` function extracts all
+the `season` arguments are not filled then the `defStormsList()` function extracts all
 tropical cyclones since the first cyclonic season in the database. Once the data
 are extracted, the `plotStorms()` function can be used to visualize the
 trajectories and points of observation of extracted tropical cyclones on a map.
@@ -43,7 +43,7 @@ described below.
 We extract data on the tropical cyclone Pam (2015) nearby Vanuatu as follows:  
 
 ``` {r chunk1}
-sds <- defDatabase(verbose = 0)
+sds <- defStormsDataset(verbose = 0)
 st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 ```
 

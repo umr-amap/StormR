@@ -9,7 +9,7 @@
 library(testthat)
 library(StormR)
 
-sds <- defDatabase()
+sds <- defStormsDataset()
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
 test_check("StormR")

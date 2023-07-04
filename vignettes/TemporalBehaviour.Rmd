@@ -41,7 +41,7 @@ rownames(df) <- c("Port_Vila", "Luganville")
 The track data for Pam nearby Vanuatu are extracted as follows:
 
 ``` {r}
-sds <- defDatabase()
+sds <- defStormsDataset()
 st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 plotStorms(st)
 points(df$x, df$y, pch = 3, col = c("blue", "red"))

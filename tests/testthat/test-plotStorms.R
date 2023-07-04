@@ -25,7 +25,7 @@ test_that("Test getColors function", {
 
 
 test_that("Test checkInputsPlotStorms function", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   # Checking sts input

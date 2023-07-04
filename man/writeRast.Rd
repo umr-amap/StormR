@@ -29,7 +29,7 @@ GeoTIFF or NetCDF files.
 \examples{
 \dontrun{
 # Creating a stormsDataset
-sds <- defDatabase()
+sds <- defStormsDataset()
 
 # Getting storm track data for tropical cyclone Pam (2015) near Vanuatu
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
@@ -41,7 +41,7 @@ pam.msw <- spatialBehaviour(pam)
 writeRast(pam.msw, path = paste0(tempdir(), "/"))
 
 # Computing power dissipation index for several storms near New Caledonia
-sts.nc <- Storms(sds = sds, loi = "New Caledonia")
+sts.nc <- defStormsList(sds = sds, loi = "New Caledonia")
 pdi.nc <- spatialBehaviour(sts.nc, product = "PDI")
 
 # Exporting the power dissipation index raster layers to a NetCDF file

@@ -116,7 +116,7 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' @examples
 #' \dontrun{
 #' # Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' # Getting storm track data for tropical cyclone Pam (2015)
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")

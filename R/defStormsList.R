@@ -99,7 +99,7 @@ stormsList <- methods::setClass("stormsList",
 #' Display the `storm`/`stormsList` object
 #'
 #' @noRd
-#' @param object `storm`/stormsList object
+#' @param object `storm`/`stormsList` object
 #'
 #' @return NULL
 #' @docType methods
@@ -171,7 +171,7 @@ setMethod("show",
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -215,7 +215,7 @@ setMethod("getStorm", signature("stormsList"), function(sts, name, season = NULL
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -244,7 +244,7 @@ setMethod("getNbStorms", signature("stormsList"), function(sts) length(sts@data)
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -275,7 +275,7 @@ setMethod("getLOI", signature("stormsList"), function(sts) sts@spatialLoi)
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -305,7 +305,7 @@ setMethod("getBuffer", signature("stormsList"), function(sts) sts@spatialLoiBuff
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -343,7 +343,7 @@ setMethod("getBufferSize", signature("stormsList"), function(sts) sts@buffer)
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -379,7 +379,7 @@ setMethod("getNames", signature("stormsList"), function(s) {
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -411,7 +411,7 @@ setMethod("getSeasons", signature("stormsList"), function(s) unlist(lapply(s@dat
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -450,7 +450,7 @@ setMethod("getSSHS", signature("stormsList"), function(s) unlist(lapply(s@data, 
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -492,7 +492,7 @@ setMethod("getNbObs", signature("stormsList"),
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -532,7 +532,7 @@ setMethod("getObs", signature("storm"), function(s) s@obs.all)
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- storms(sds=sds, loi = "New Caledonia")
@@ -976,7 +976,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 #' @examples
 #' \dontrun{
 #' #Creating a stormsDataset
-#' sds <- defDatabase()
+#' sds <- defStormsDataset()
 #'
 #' #Getting data using country names
 #' vanuatu.st <- defStormsList(sds = sds, loi = "Vanuatu")
