@@ -182,20 +182,18 @@ setMethod("show",
 setGeneric("getStorm", function(sts, name, season = NULL) standardGeneric("getStorm"))
 #' @rdname getStorm-methods
 setMethod("getStorm", signature("stormsList"), function(sts, name, season = NULL) {
-  if (length(which(getNames(sts) == name)) > 1)
-    if (!is.null(season)) {
-      seasons <- getSeasons(sts)
-      ind <- which(names(seasons) == name & seasons == season)
-      if (!identical(unname(ind), integer(0))) {
-        sts@data[[ind]]
-      } else {
-        stop(paste("No cyclone named", name, "for season", season))
-      }
-    }else {
-      stop(paste("More than 1 storm named", name, ".Please specify season\n"))
+  if (!is.null(season)) {
+    seasons <- getSeasons(sts)
+    ind <- which(names(seasons) == name & seasons == season)
+    if (!identical(unname(ind), integer(0))) {
+      sts@data[[ind]]
+    } else {
+      stop(paste("No cyclone named", name, "for season", season))
     }
-  else {
-    sts@data[[which(getNames(sts) == name)]]
+  }else {
+    if (length(which(getNames(sts) == name)) > 1)
+      stop(paste("More than 1 storm named", name, ".Please specify season\n"))
+    sts@data[[name]]
   }
 })
 
