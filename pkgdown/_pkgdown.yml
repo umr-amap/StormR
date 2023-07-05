@@ -11,7 +11,7 @@ navbar:
       href: index.html
     intro:
       text: Get started
-      href: articles/Storms.html
+      href: articles/ExtractStorms.html
     articles:
       text: Articles
       href: articles/index.html

@@ -1,9 +1,9 @@
 ---
-title: "ExtractStorms"
+title: "Extract Storms"
 output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >
-   %\VignetteIndexEntry{Storms}
+   %\VignetteIndexEntry{ExtractStorms}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
 ---
