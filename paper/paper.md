@@ -112,6 +112,16 @@ none of these is the best for all tropical cyclones and storms
 allows to reconstruct wind behaviour for tropical storms and cyclones anywhere, 
 anytime, and this with a set of models including those used in `HurreconR` 
 and `hurricaneexposure` packages.
+
+# Package design
+
+Workflow three main steps:
+
+1- 
+
+2-
+
+3-
  
 # Example
 
