@@ -6,7 +6,7 @@ vignette: >
    %\VignetteIndexEntry{Behaviour}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
-bibliography: ../paper.bib
+bibliography: ../paper/paper.bib
 ---
 
 The `temporalBehaviour()` and the `spatialBehaviour()` functions allow computing wind speed and direction along the lifespan of a tropical cyclone.

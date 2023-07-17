@@ -6,7 +6,7 @@ vignette: >
    %\VignetteIndexEntry{Models}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
-bibliography: ../paper.bib
+bibliography: ../paper/paper.bib
 ---
 
 
