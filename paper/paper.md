@@ -86,7 +86,7 @@ tropical cyclone categories, i.e., $33$, $43$, $50$ ,$58$, and $70$ $m.s^{-1}$
 # Statement of need
 
 Globally, an average of 86 tropical cyclones per year occurred over the past 
-four decades [@murakami_detected_2020]. These disturbances can severe 
+four decades [@murakami_detected_2020]. These disturbances cause severe 
 damages to ecosystems, infrastructures, and peoples [@costanza_value_2008; 
 @uriarte_hurricane_2019; @parks_tropical_2021]. Climate change has likely 
 increased the proportion of category 3-5 tropical cyclones on the Saffir–Simpson 
