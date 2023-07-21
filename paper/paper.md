@@ -133,7 +133,7 @@ maximum sustained wind speed, the power dissipation index, and the duration
 of exposure to winds reaching defined speed thresholds along the life span of 
 the cyclones.
 
-![**Figure 1** Simplified workflow and main functions of the `stormR`
+![Simplified workflow and main functions of the `stormR`
 R package. External storm track database in grey, main functions in blue, and 
 R objects created by the `stormR` functions in yellow.](images/stormR_workflow.png)
 
@@ -145,7 +145,7 @@ New Caledonia between 2015-2016 and 2020-2021, respectively.
 Figure 2 shows how the `spatialBehaviour()` function can compute different 
 products for the tropical cyclone Pam (2015) near Vanuatu.
 
-![**Figure 2** Example of outputs for the tropical cyclone Pam (2015) nearby 
+![Example of outputs for the tropical cyclone Pam (2015) nearby 
 Vanuatu with default settings. Storm track data (SSHS=Saffir-Simpson Hurricane 
 Scale, TD=tropical depression, TS=tropical storm), maximum sustained wind (MSW),
 power dissipation index (PDI), and duration of exposure to wind stronger than 
