@@ -694,7 +694,8 @@ convertLoi <- function(loi) {
       map <- rworldmap::getMap(resolution = "high")
       idCountry <- which(map@data$ADMIN == loi)
       stopifnot("invalid entry for loi" = length(idCountry) > 0)
-      loiSf <- sf::st_as_sf(sp::SpatialPolygons(list(map@polygons[[idCountry]])))
+      loiSf <- map[idCountry,] |> sf::st_as_sf()
+      loiSf <- loiSf$geometry |> sf::st_as_sf()
       sf::st_crs(loiSf) <- wgs84
     }
 
