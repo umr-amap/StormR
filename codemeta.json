@@ -39,7 +39,6 @@
         "ncdf4,",
         "rworldmap,",
         "sf,",
-        "sp,",
         "stringr,",
         "terra,",
         "utils,",
