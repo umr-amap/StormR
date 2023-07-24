@@ -74,15 +74,16 @@ equator) or 10 min (~18.6 km at the equator) can be set. The temporal
 resolution is set to 1 hour by default but finer resolutions of 45 min,
 30 min, or 15 min can be set.
 
-Once wind speed is generated for each cell and each time step, `StormR` 
-functions can compute summary statistics on wind speed over the lifespan
-of a storm. Summary statistics encompass the maximum sustained wind speed,
-the power dissipation index or total power dissipated by a tropical storm 
-[@emanuel_power_1999; @emanuel_increasing_2005], and the duration of exposure 
-to winds reaching defined speed thresholds. By default the duration of exposure
-is computed for each Saffir-Simpson Hurricane Scale threshold values for 
-tropical cyclone categories, i.e., $33$, $43$, $50$ ,$58$, and $70$ $m.s^{-1}$ 
-[@simpson_hurricane_2010], but can be defined by the user.
+Once wind speed is generated for each cell or specific location 
+and each time step, `StormR` functions can compute summary statistics on 
+wind speed over the lifespan of a storm. Summary statistics encompass the
+maximum sustained wind speed, the power dissipation index or total power 
+dissipated by a tropical storm [@emanuel_power_1999; @emanuel_increasing_2005], 
+and the duration of exposure to winds reaching defined speed thresholds. 
+By default the duration of exposure is computed for each Saffir-Simpson 
+Hurricane Scale threshold values for tropical cyclone categories, 
+i.e., $33$, $43$, $50$ ,$58$, and $70$ $m.s^{-1}$ [@simpson_hurricane_2010], 
+but can be defined by the user.
 
 # Statement of need
 
@@ -91,7 +92,7 @@ four decades [@murakami_detected_2020]. These disturbances cause severe
 damages to ecosystems, infrastructures, and peoples [@costanza_value_2008; 
 @uriarte_hurricane_2019; @parks_tropical_2021]. Climate change has likely 
 increased the proportion of category 3-5 tropical cyclones on the Saffir–Simpson 
-hurricane wind scale over the past four decades and climate scientists are also
+hurricane wind scale over the past four decades and climate scientists are 
 predicting with high confidence that the proportion of the most intense and 
 potentially the most destructive tropical cyclones (category 4-5) would 
 increase by +10% even if warming is limited to 1.5°C 
@@ -121,12 +122,13 @@ The workflow of the `stormR` R package consists of four main consecutive steps:
 **1**- The `defStormsDataset()` function is used to create a `stormsDataset` 
 object from a NetCDF file, e.g., exported from a storm track database such as
 IBTrACS database (https://www.ncei.noaa.gov/products/international-best-track-archive)
-(Knapp *et al.*, [-@knapp_international_2010], [-@knapp_international_2018]). 
+[@knapp_international_2010; @knapp_international_2018]. 
 
 **2**- The `defStormsList()` function is used to perform queries on the 
 `stormsDataset` object and extract storms of interest based on their location 
 and date of occurrence. The track data for these storms are then stored into a
-`stormsList` object. The `plotStorms()` can be used to see the extracted data. 
+`stormsList` object. The `plotStorms()` function can be used to see the 
+extracted data. 
 
 **3**- The `temporalBehaviour()` and `spatialBehaviour()` functions are 
 used to compute wind speed and direction and three summary statistics: the 
