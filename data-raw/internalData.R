@@ -53,7 +53,7 @@ pdiPalette <- rev(viridis::inferno(50))
 exposurePalette <- rev(viridis::viridis(50))
 
 # Data for test functions
-suppressWarnings(sds <- defDatabase())
+suppressWarnings(sds <- defStormsDataset())
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3, FALSE, "Willoughby")
 

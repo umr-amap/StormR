@@ -4,6 +4,7 @@
 
 <!-- badges: start -->
 [![codecov](https://codecov.io/github/umr-amap/StormR/branch/master/graph/badge.svg?token=5YMVL4TFB5)](https://app.codecov.io/github/umr-amap/StormR)
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/umr-amap/StormR/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/umr-amap/StormR)
 <!-- badges: end -->
 
 ## Overview
@@ -31,7 +32,7 @@ library(StormR)
 
 | **Name** | **Description** | **Inputs** | **Outputs** |
 |:--:|:----:|:-----------:|:-----:|
-|`defDatabase()`|Creates a `stormsDataset` object|".nc" (NetCDF) file|`stormsDataset` object|
+|`defStormsDataset()`|Creates a `stormsDataset` object|".nc" (NetCDF) file|`stormsDataset` object|
 |`defStormsList()`|Extracts storms|`stormsDataset` object|`StormsList` object|
 |`plotStorms()`|Plots storms track data|`StormsList` object||
 |`temporalBehaviour()`|Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |`StormsList` object|lists of data.frame objects|

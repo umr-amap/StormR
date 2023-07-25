@@ -2,7 +2,7 @@
 
 
 test_that("Tests invalid inputs", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
 
   # Checking sdb input
   expect_error(checkInputsDefStormsList(
@@ -264,7 +264,7 @@ test_that("Tests invalid inputs", {
 
 
 test_that("Test numeric vector loi input", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts <- defStormsList(sds = sds, loi = c(168.33, -17.73), verbose = 0)
   expect_identical(getNames(sts), c("PAM", "ZENA", "LUCAS"))
   expect_identical(getObs(getStorm(sts, "LUCAS"))$poci[1:6], c(100100, 100100, 100100, 100200, 100400, 100400))
@@ -274,7 +274,7 @@ test_that("Test numeric vector loi input", {
 
 
 test_that("Storm class getters", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   expect_identical(getNames(pam@data[["PAM"]]), "PAM")
@@ -290,7 +290,7 @@ test_that("Storm class getters", {
 
 
 test_that("StormsList class getters", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <- defStormsList(sds = sds, loi = "New Caledonia", verbose = 0)
 
   expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
@@ -311,9 +311,9 @@ test_that("StormsList class getters", {
 })
 
 test_that("Storm and stormsList class getters", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <- defStormsList(sds = sds, loi = "New Caledonia", verbose = 0)
-  out <- capture_output_lines(sp::show(sts_nc@data$PAM))
+  out <- capture_output_lines(print(sts_nc@data$PAM))
 
   # Check that the Storm output is correct
   expect_match(out[1], "Name: PAM")
@@ -323,7 +323,7 @@ test_that("Storm and stormsList class getters", {
   expect_match(out[7], "1  2015-03-08 12:00:00 168.9000  -7.500000  13   -1  93 100400 100500")
   expect_match(tail(out, n = 1), "57 2015-03-15 12:00:00 178.5000 -33.799999  28   -4  37  98200  99300")
 
-  out <- capture_output_lines(sp::show(sts_nc))
+  out <- capture_output_lines(print(sts_nc))
   # Check that the Storm output is correct
   expect_match(out[3], "Number of storms: 7 ")
   expect_match(out[7], "Name: PAM")
@@ -345,7 +345,7 @@ test_that("Storm and stormsList class getters", {
 
 
 test_that("Storms class getters for storm class", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <- defStormsList(sds = sds, loi = "New Caledonia", verbose = 0)
 
   expect_identical(getNbObs(sts_nc, "NIRAN"), getNbObs(getStorm(sts_nc, "NIRAN")))
@@ -358,7 +358,7 @@ test_that("Storms class getters for storm class", {
 
 
 test_that("Test convert loi function", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   expect_warning(convertLoi(c(-30, 20)))
@@ -366,23 +366,16 @@ test_that("Test convert loi function", {
   expect_identical(sf::st_crs(convertLoi(eezNC))$input, "EPSG:4326")
   expect_identical(
     sf::st_coordinates(convertLoi("SP")),
-    sf::st_coordinates(sf::st_sf(sf::st_sfc(
+    sf::st_coordinates(
       sf::st_polygon(list(rbind(c(135, -60), c(290, -60), c(290, 0), c(135, 0), c(135, -60))))
-    )))
+    )
   )
 
-  sr1 <- sp::Polygon(rbind(c(135, -60), c(290, -60), c(290, 0), c(135, 0), c(135, -60)))
-  sr2 <- sp::Polygon(rbind(c(180, 0), c(290, 0), c(290, 60), c(180, 60), c(180, 0)), hole = TRUE)
-  srs1 <- sp::Polygons(list(sr1), "s1")
-  srs2 <- sp::Polygons(list(sr2), "s2")
-  spP <- sp::SpatialPolygons(list(srs1, srs2), 1:2, proj4string = sp::CRS(as.character("wgs84")))
-  centroids <- sp::coordinates(spP)
-  x <- centroids[, 1]
-  y <- centroids[, 2]
-  z <- 1.4 + 0.1 * x + 0.2 * y + 0.002 * x * x
-  test <- sp::SpatialPolygonsDataFrame(spP,
-    data = data.frame(x = x, y = y, z = z, row.names = row.names(spP))
-  )
+  sr1 <- sf::st_polygon(list(rbind(c(135, -60), c(290, -60), c(290, 0), c(135, 0), c(135, -60))))
+  sr2 <- sf::st_polygon(list(rbind(c(180, 0), c(290, 0), c(290, 60), c(180, 60), c(180, 0))))
+  spP <- sf::st_multipolygon(list(sr1, sr2))
+  test <- sf::st_as_sf(as(spP, "Spatial"))
+  sf::st_crs(test) <- as.character("wgs84")
   expect_identical(sf::st_crs(convertLoi(test))$input, "EPSG:4326")
 })
 
@@ -397,7 +390,7 @@ test_that("Test computeScaleIndice function", {
 
 
 test_that("Test makeBuffer function", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   expect_identical(makeBuffer("Vanuatu", pam@spatialLoi, 300 * km), pam@spatialLoiBuffer)
@@ -408,7 +401,7 @@ test_that("Test makeBuffer function", {
 
 
 test_that("Test retrieveStorms function", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   expect_identical(retrieveStorms(sds@database, "PAM", c(2015, 2021), TRUE), as.integer(1))
@@ -419,7 +412,7 @@ test_that("Test retrieveStorms function", {
 
 
 test_that("Test writeStorm function", {
-  suppressWarnings(sds <- defDatabase(verbose = 0))
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   expect_identical(

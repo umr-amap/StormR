@@ -22,3 +22,5 @@ docs/*
 .Rapp.history
 vignettes/*.pdf
 vignettes/*.html
+paper/*.pdf
+paper/*.html

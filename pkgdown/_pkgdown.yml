@@ -11,7 +11,7 @@ navbar:
       href: index.html
     intro:
       text: Get started
-      href: articles/Storms.html
+      href: articles/ExtractStorms.html
     articles:
       text: Articles
       href: articles/index.html
@@ -31,7 +31,7 @@ reference:
   desc: Functions for initializing storm/stormsList objects
   contents:  
   - '`stormsDataset-class`'
-  - '`defDatabase`'
+  - '`defStormsDataset`'
   - '`storm-class`'
   - '`stormsList-class`'
   - '`defStormsList`'
@@ -89,7 +89,7 @@ articles:
 - title: Getting started
   navbar: Getting_started
   contents: 
-  - '`Storms`' 
+  - '`ExtractStorms`' 
 
 - title: Storms analysis
   navbar: Storms_analysis
