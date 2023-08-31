@@ -30,13 +30,13 @@ Imports:
     methods,
     ncdf4,
     rworldmap,
+    rworldxtra,
     sf,
     stringr,
     terra,
     utils,
     zoo
 Suggests: 
-    rworldxtra,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
