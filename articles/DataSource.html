@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Data source</h1>
             
-            <h4 data-toc-skip class="date">2023-08-08</h4>
+            <h4 data-toc-skip class="date">2023-08-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/vignettes/DataSource.Rmd" class="external-link"><code>vignettes/DataSource.Rmd</code></a></small>
       <div class="d-none name"><code>DataSource.Rmd</code></div>
@@ -269,19 +269,19 @@ as follows,</p>
 <span><span class="co">##   ..@ seasons : Named int [1:2] 2020 2023</span></span>
 <span><span class="co">##   .. ..- attr(*, "names")= chr [1:2] "min" "max"</span></span>
 <span><span class="co">##   ..@ database:List of 10</span></span>
-<span><span class="co">##   .. ..$ names    : chr [1:366(1d)] "BLAKE" "CLAUDIA" "TINO" "NOT_NAMED" ...</span></span>
-<span><span class="co">##   .. ..$ seasons  : int [1:366(1d)] 2020 2020 2020 2020 2020 2020 2020 2020 2020 2020 ...</span></span>
-<span><span class="co">##   .. ..$ isotimes : chr [1:360, 1:366] "2020-01-04 00:00:00" "2020-01-04 03:00:00" "2020-01-04 06:00:00" "2020-01-04 09:00:00" ...</span></span>
-<span><span class="co">##   .. ..$ longitude: num [1:360, 1:366] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ latitude : num [1:360, 1:366] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ msw      : num [1:360, 1:366] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ sshs     : int [1:360, 1:366] -5 -5 -5 -5 -5 -5 -5 -5 -3 -3 ...</span></span>
-<span><span class="co">##   .. ..$ rmw      : num [1:360, 1:366] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ pressure : num [1:360, 1:366] NA NA NA NA NA ...</span></span>
-<span><span class="co">##   .. ..$ poci     : num [1:360, 1:366] NA NA NA NA NA ...</span></span></code></pre>
+<span><span class="co">##   .. ..$ names    : chr [1:380(1d)] "BLAKE" "CLAUDIA" "TINO" "NOT_NAMED" ...</span></span>
+<span><span class="co">##   .. ..$ seasons  : int [1:380(1d)] 2020 2020 2020 2020 2020 2020 2020 2020 2020 2020 ...</span></span>
+<span><span class="co">##   .. ..$ isotimes : chr [1:360, 1:380] "2020-01-04 00:00:00" "2020-01-04 03:00:00" "2020-01-04 06:00:00" "2020-01-04 09:00:00" ...</span></span>
+<span><span class="co">##   .. ..$ longitude: num [1:360, 1:380] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ latitude : num [1:360, 1:380] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ msw      : num [1:360, 1:380] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ sshs     : int [1:360, 1:380] -5 -5 -5 -5 -5 -5 -5 -5 -3 -3 ...</span></span>
+<span><span class="co">##   .. ..$ rmw      : num [1:360, 1:380] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ pressure : num [1:360, 1:380] NA NA NA NA NA ...</span></span>
+<span><span class="co">##   .. ..$ poci     : num [1:360, 1:380] NA NA NA NA NA ...</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">names</span>, <span class="va">sds</span><span class="op">@</span><span class="va">database</span><span class="op">$</span><span class="va">seasons</span>, <span class="st">" "</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 295</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 308</span></span></code></pre>
 <p>This <code>stormsDataset</code> object contains track data for 275
 storms. When using an IBTrACKS storm track data set, default arguments
 can be used. By default, data provided by USA agencies (starting with
