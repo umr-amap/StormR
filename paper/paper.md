@@ -158,7 +158,7 @@ Vanuatu with default settings. Storm track data (SSHS=Saffir-Simpson Hurricane
 Scale, TD=tropical depression, TS=tropical storm), maximum sustained wind (MSW),
 power dissipation index (PDI), and duration of exposure to wind stronger than 
 58 $m.s^{-1}$. Plots were generated with the `plotStorms()` and `plotBehaviour()` 
-functions.](images/stormR_example.png)
+functions as shown in the [`spatialBehaviour` article](https://umr-amap.github.io/StormR/articles/SpatialBehaviour.html).](images/stormR_example.png)
 
 # Acknowledgements
 
