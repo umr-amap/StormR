@@ -40,5 +40,14 @@ library(StormR)
 |`plotBehaviour()`|Plots 2D wind fields and summary statistics|`StormsList` + `SpatRaster` objects||
 |`writeRast()`|Exports wind fields and summary statistics to file|`SpatRaster` object|`.tiff` or `.nc` file|
 
+## Contributing
+You are welcome to contribute to the `StormR` package. Just fork the project and create a pull request with your changes and we will review it as soon as possible.
+
+## Reporting issues
+Issues can be reported [here](https://github.com/umr-amap/StormR/issues/new/choose). Simply choose the appropriate template and fill in the requested information.
+
+## Seeking help
+If you need help with the `StormR` package, please open a new discussion on the [Q&A section on github](https://github.com/umr-amap/StormR/discussions/categories/q-a). We will do our best to answer your questions. Other users are also welcome to help you.
+
 ## Funding
 This work was supported by Hermon Slade Foundation, [grant HSF 19105](http://www.hermonslade.org.au/hsf-19105/).
