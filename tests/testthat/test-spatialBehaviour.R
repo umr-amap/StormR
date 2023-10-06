@@ -69,12 +69,12 @@ test_that("Test spatialBehaviour function", {
   pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
   sb <- spatialBehaviour(pam, method = "Holland", verbose = 0)
 
-  expect_equal(sb@ptr[["range_min"]], 6.846)
-  expect_equal(sb@ptr[["range_max"]], 76.733942)
+  expect_equal(sb@pnt[["range_min"]], 6.846)
+  expect_equal(sb@pnt[["range_max"]], 76.733942)
 
   sb <- spatialBehaviour(pam, method = "Boose", verbose = 0)
-  expect_equal(sb@ptr[["range_min"]], 8.086)
-  expect_equal(sb@ptr[["range_max"]], 73.804678)
+  expect_equal(sb@pnt[["range_min"]], 8.086)
+  expect_equal(sb@pnt[["range_max"]], 73.804678)
 })
 
 
