@@ -1,3 +1,8 @@
+# StormR 0.1.1
+* Adjust vignettes for CRAN submission
+* Remove `sp` dependances
+* Minor bugfixes
+
 # StormR 0.1.0
 * First official release of StormR package
 * Multiple bugfixes (cf. [closed issues](https://github.com/umr-amap/StormR/issues?q=is%3Aissue+is%3Aclosed) section)
