@@ -1,6 +1,6 @@
 # StormR 0.1.1
 * Adjust vignettes for CRAN submission
-* Remove `sp` dependances
+* Remove `sp` dependences
 * Minor bugfixes
 
 # StormR 0.1.0
