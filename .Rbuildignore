@@ -6,3 +6,5 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^vignettes/DataSource.Rmd
+^codemeta.json$
