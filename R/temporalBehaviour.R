@@ -166,11 +166,9 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
   if (product == "TS") {
     l <- list()
     for (i in 1:dim(points)[1]) {
-      if (i > 1) {
-        i <- i + 1
-      }
+      j <- 2 * (i - 1) + 1
 
-      df <- data.frame(result[, i], result[, i:i + 1], indices = indices, isoTimes = isoT)
+      df <- data.frame(result[, j], result[, j:j + 1], indices = indices, isoTimes = isoT)
       colnames(df) <- c("speed", "direction", "indices", "isoTimes")
 
       l <- append(l, list(df))
