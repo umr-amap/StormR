@@ -1,3 +1,8 @@
+
+
+
+
+
 #' Check inputs for writeRast function
 #'
 #' @noRd
@@ -49,7 +54,7 @@ writeNC <- function(rastds, filename) {
     storm <- strsplit(lyr, split = "_")[[1]][1]
     if (product == "Speed") {
       zdimt[[j]] <- ncdf4::ncdim_def(paste0("time_", storm), "seconds since 1970-1-1 00:00:00",
-        rastds[lyr]@pnt$time,
+        as.numeric(terra::time(rastds[lyr])),
         unlim = TRUE
       )
       j <- j + 1
@@ -101,7 +106,7 @@ writeNC <- function(rastds, filename) {
     ncdf4::ncatt_put(ncobj, ncvars[[n + 1]], "crs_wkt", prj, prec = "text")
     # need for older gdal?
     ncdf4::ncatt_put(ncobj, ncvars[[n + 1]], "spatial_ref", prj, prec = "text")
-    prj <- rastds[1]@pnt$get_crs("proj4")
+    prj <- terra::crs(rastds[1], proj = TRUE)
     if (prj != "") {
       ncdf4::ncatt_put(ncobj, ncvars[[n + 1]], "proj4", prj, prec = "text")
     }
@@ -246,8 +251,8 @@ writeRast <- function(rast, filename = NULL, path = "./", ...) {
 
     # We recreate a spatRasterDataset, one subDataset is one product for one storm
     splitVector <- c()
-    for (i in 1:rast@pnt$nlyr()) {
-      ind <- which(paste(c(strsplit(rast[[i]]@pnt$names, split = "_", fixed = TRUE)[[1]][1:2]),
+    for (i in 1:terra::nlyr(rast)) {
+      ind <- which(paste(c(strsplit(names(rast[[i]]), split = "_", fixed = TRUE)[[1]][1:2]),
         collapse = "_"
       ) == varNames)
       splitVector <- c(splitVector, ind)
