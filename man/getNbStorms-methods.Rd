@@ -14,19 +14,19 @@ getNbStorms(sts)
 \item{sts}{\code{stormsList}}
 }
 \value{
-numeric.
+numeric, the number of \code{storm} objects.
 }
 \description{
 The \code{getNbStorms()} returns the number of \code{storm} objects
 in the given \code{stormsList} object.
 }
 \examples{
-\dontrun{
 #Creating a stormsDataset
+\donttest{
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
 #Getting the number of storms in the sts object
 getNbStorms(sts)

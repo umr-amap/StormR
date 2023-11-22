@@ -208,7 +208,7 @@ the forward trajectory of the storm and a radial line from the eye of the storm 
 \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}).
 }
 \examples{
-\dontrun{
+\donttest{
 # Creating a stormsDataset
 sds <- defStormsDataset()
 
@@ -230,7 +230,6 @@ exp.pam <- spatialBehaviour(pam, product = "Exposure")
 # using Boose model
 prof.pam <- spatialBehaviour(pam, product = "Profiles", method = "Boose")
 }
-
 }
 \references{
 Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.

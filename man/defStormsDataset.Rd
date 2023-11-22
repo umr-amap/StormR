@@ -100,12 +100,10 @@ The \code{defStormsDataset()} function creates a \code{stormsDataset} object fro
 This is an essential first step before other \code{stormR} functions can be used.
 }
 \examples{
-\dontrun{
 # Creating a `stormsDataset` object with storms between 2010 and 2015
 # in the South Pacific using the NetCDF provided with the package
-SP_2015_2020 <- defStormsDataset(seasons = c(2010 - 2015))
+SP_2015_2020 <- defStormsDataset(seasons = c(2010, 2015))
 str(SP_2015_2020)
-}
 }
 \references{
 Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).

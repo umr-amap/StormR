@@ -29,7 +29,7 @@ authors:
 - name: Thomas Ibanez
   orcid: "0000-0002-3192-1721"
   affiliation: 3
-bibliography: paper.bib
+bibliography: stormr.bib
 affiliations:
 - name: Independent Researcher, France
   index: 1

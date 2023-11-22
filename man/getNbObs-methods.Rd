@@ -32,15 +32,14 @@ The getNbObs() function returns the number of observations
 for a storm in a \code{storm} or \code{stormsList} object.
 }
 \examples{
-\dontrun{
+\donttest{
 #Creating a stormsDataset
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
-#Getting the number of observations for the tropical
-cyclone Niran in the sts object
+##Getting the number of observations for the tropical cyclone Niran in the sts object
 getNbObs(getStorm(sts, name = "NIRAN"))
 getNbObs(sts, name = "NIRAN")
 }

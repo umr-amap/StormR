@@ -5,6 +5,16 @@
 \alias{storm-class}
 \alias{storm}
 \title{\code{storm}  object}
+\value{
+A \code{storm} object.
+\itemize{
+\item \code{name}, character.
+\item \code{season}, numeric.
+\item \code{sshs}, numeric.
+\item \code{obs}, numeric.
+\item \code{obs.all}, data.frame.
+}
+}
 \description{
 Gather all the needed informations to model a single storm
 }

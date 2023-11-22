@@ -7,7 +7,7 @@ vignette: >
    %\VignetteIndexEntry{Data source}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
-bibliography: ../paper/paper.bib
+bibliography: stormr.bib
 ---
 
 
@@ -26,7 +26,7 @@ Archive for Climate
 Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive)
 (Knapp *et al.*, [-@knapp_international_2010], [-@knapp_international_2018]). This database provides a fairly comprehensive record of
 worldwide tropical storms and cyclones with a 3-hours temporal resolution since
-1841. Other databases can be used as long as the following fields are provided:
+1.    Other databases can be used as long as the following fields are provided:
 
 | **Field name** | **Description** | **Format/Units** | **Example** | **Type** |
 |:--:|:----:|:-----------:|:-----:|:---:|

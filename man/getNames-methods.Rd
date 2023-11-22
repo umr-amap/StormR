@@ -24,12 +24,12 @@ The \code{getNames()} function returns the names of the storms
 in a \code{storm} or a \code{stormsList} object.
 }
 \examples{
-\dontrun{
+\donttest{
 #Creating a stormsDataset
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
 #Getting the names of the storms from the sts object
 getNames(sts)

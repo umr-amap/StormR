@@ -62,7 +62,7 @@ boundaries derived from Natural Earth data. More informations on the Natural Ear
 here: \href{https://www.naturalearthdata.com/downloads/10m-cultural-vectors/}{http://www.naturalearthdata.com/downloads/10m-cultural-vectors/}.
 }
 \examples{
-\dontrun{
+\donttest{
 #Creating a stormsDataset
 sds <- defStormsDataset()
 
@@ -82,9 +82,8 @@ sp <- sf::st_polygon(list(poly))
 sp <- sf::st_sfc(sp, crs = 4326)
 sp <- sf::st_as_sf(sp)
 sts_sp <- defStormsList(sds = sds, loi = sp)
+
 }
-
-
 }
 \references{
 Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).

@@ -36,7 +36,7 @@ getColors <- function(msw, scale) {
 #' @noRd
 #' @param st Storm object
 #'
-#' @return NULL
+#' @return A plot with the track of the storm
 plotTrack <- function(st) {
   cexL <- 1
   cexP <- 0.6
@@ -79,7 +79,7 @@ plotTrack <- function(st) {
 #' @param pos numeric. Must be between 1 and 4. Corresponds to the position of
 #'   labels according to the observation: 1 (up), 2 (left), 3 (down), 4 (right)
 #'
-#' @return NULL
+#' @return A plot with added labels
 plotLabels <- function(st, by, pos) {
   cex <- 0.5
   ind <- round(seq(1, getNbObs(st), by))
@@ -114,7 +114,7 @@ plotLabels <- function(st, by, pos) {
 #' @param loi logical
 #' @param xlim numeric vector
 #' @param ylim numeric vector
-#' @return NULL
+#' @return NULL, just stops the function if an error is found
 checkInputsPlotStorms <- function(sts, names, category, labels, by,
                                   pos, legends, loi, xlim, ylim) {
   # Checking sts input
@@ -208,9 +208,11 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 #' extent of the buffered location of interest on the map.
 #'
+#' @return A plot of the storm track data.
+#' 
 #' @examples
-#' \dontrun{
 #' #' #Creating a stormsDataset
+#' \donttest{
 #' sds <- defStormsDataset()
 #'
 #' # Getting storm track data for tropical cyclone Pam (2015)
@@ -222,7 +224,6 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 #' plotStorms(pam, labels = TRUE, by = 2, pos = 4)
 #' }
-#'
 #' @export
 plotStorms <- function(sts,
                        names = NULL,

@@ -20,12 +20,12 @@ sf object.
 The \code{getLOI()} functions returns the location of interest for the given \code{stormsList}.
 }
 \examples{
-\dontrun{
 #Creating a stormsDataset
+\donttest{
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
 #Getting the location of interest for the sts object
 loi <- getLOI(sts)

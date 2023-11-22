@@ -5,6 +5,15 @@
 \alias{stormsList-class}
 \alias{stormsList}
 \title{\code{stormsList} object}
+\value{
+A \code{stormsList} object.
+\itemize{
+\item \code{data}, list.
+\item \code{buffer}, numeric.
+\item \code{spatialLoi}, sf.
+\item \code{spatialLoiBuffer}, sf.
+}
+}
 \description{
 Gather all the needed informations to model a set of storms
 }

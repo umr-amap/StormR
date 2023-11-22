@@ -25,22 +25,21 @@ if several \code{storm} in \code{s} object have the same name. Default value is 
 to \code{NULL}}
 }
 \value{
-numeric vector.
+Numeric vector.
 }
 \description{
 The \code{getInObs()} function returns the number of the
 observations in a given \code{storm} or \code{stormsList} object.
 }
 \examples{
-\dontrun{
 #Creating a stormsDataset
+\donttest{
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
-#Getting the number of the observation for the tropical
-cyclone Niran in the sts object
+#Getting the number of the observation for the tropical cyclone Niran in the sts object
 getInObs(getStorm(sts, name = "NIRAN"))
 getInObs(sts, name = "NIRAN")
 }

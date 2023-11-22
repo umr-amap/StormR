@@ -139,3 +139,7 @@ wt <- c(17.2, 24.4, 32.5, 44.2, 55.0)
 exposure_BOM <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 0.5, windThreshold = wt, verbose = 0)
 exposure_BOM
 ```
+
+``` {r ending, include = FALSE}
+par()
+```

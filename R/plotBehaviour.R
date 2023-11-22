@@ -16,7 +16,7 @@
 #' @param colorPalette character vector
 #' @param main character
 #' @param legends character
-#' @return NULL
+#' @return NULL, just stops the function if an error is found
 checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
@@ -111,10 +111,10 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' @param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting),
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #'
-#' @returns NULL
+#' @returns A plot of the storm track data with the raster layer.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
@@ -129,7 +129,6 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 #' plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 #' }
-#'
 #' @export
 plotBehaviour <- function(sts,
                           rasterProduct,

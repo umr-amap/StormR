@@ -6,7 +6,7 @@ vignette: >
    %\VignetteIndexEntry{Models}
    %\VignetteEngine{knitr::rmarkdown}
    %\VignetteEncoding{UTF-8}
-bibliography: ../paper/paper.bib
+bibliography: stormr.bib
 ---
 
 
@@ -235,5 +235,8 @@ terra::plot(countriesHigh, add = TRUE)
 lines(PAM$lon, PAM$lat, lty = 3)
 ```
 
+``` {r ending, include = FALSE}
+par()
+```
 ## References
 

@@ -27,8 +27,8 @@ The \code{writeRast()} function exports rasters stored in SpatRaster objects to
 GeoTIFF or NetCDF files.
 }
 \examples{
-\dontrun{
 # Creating a stormsDataset
+\donttest{
 sds <- defStormsDataset()
 
 # Getting storm track data for tropical cyclone Pam (2015) near Vanuatu
@@ -47,5 +47,4 @@ pdi.nc <- spatialBehaviour(sts.nc, product = "PDI")
 # Exporting the power dissipation index raster layers to a NetCDF file
 writeRast(pdi.nc, path = paste0(tempdir(), "/"))
 }
-
 }

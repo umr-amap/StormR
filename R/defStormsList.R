@@ -41,6 +41,14 @@
 #'   \item `pres`, Pressure at the center (pa)
 #'   \item `poci`, Pressure of the Outermost Closed Isobar (pa)
 #' }
+#' @return A `storm` object.
+#' \itemize{
+#'  \item `name`, character.
+#'  \item `season`, numeric.
+#'  \item `sshs`, numeric.
+#'  \item `obs`, numeric.
+#'  \item `obs.all`, data.frame.
+#' }
 #' @importFrom methods new
 #' @export
 storm <- methods::setClass("storm",
@@ -73,6 +81,13 @@ setOldClass("sf")
 #' @slot spatialLoi sf object. Represents the location of interest. Projection
 #'   is EPSG:4326
 #' @slot spatialLoiBuffer sf object. Buffer extension of `spatialLoi`
+#' @return A `stormsList` object.
+#' \itemize{
+#'  \item `data`, list.
+#'  \item `buffer`, numeric.
+#'  \item `spatialLoi`, sf.
+#'  \item `spatialLoiBuffer`, sf.
+#' }
 #' @importFrom methods new
 #' @importFrom methods show
 #' @export
@@ -98,15 +113,17 @@ stormsList <- methods::setClass("stormsList",
 #'
 #' Display the `storm`/`stormsList` object
 #'
-#' @noRd
 #' @param object `storm`/`stormsList` object
 #'
-#' @return NULL
+#' @return NULL, only display information about the object
+#'
+#' @export
 #' @docType methods
 #' @rdname show-methods
 #' @examples
-#' \dontrun{
-#' sts <- storms(loi = "New Caledonia", names = c("ERICA","NIRAN"))
+#' \donttest{
+#' sds <- defStormsDataset()
+#' sts <- defStormsList(sds = sds, loi = "New Caledonia", names = c("LUCAS","NIRAN"))
 #' ## Display information about Niran in sts
 #' getStorm(sts, name = "NIRAN")
 #'
@@ -164,17 +181,17 @@ setMethod("show",
 #' years should be specified, with cyclones assigned for the year
 #' #'  that originated in. By default all storms occurring since
 #' 1980 are extracted.
-#' @return The `getStorm()` function returns a `storm` object.
+#' @return A `storm` object.
 #' @export
 #' @docType methods
 #' @rdname getStorm-methods
 #' @examples
-#' \dontrun{
 #' #Creating a stormsDataset
+#' \donttest{
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting `storm` for the tropical cyclone Niran
 #' st <- getStorm(sts, name = "NIRAN")
@@ -208,17 +225,17 @@ setMethod("getStorm", signature("stormsList"), function(sts, name, season = NULL
 #'
 #' @param sts `stormsList`
 #'
-#' @return numeric.
+#' @return numeric, the number of `storm` objects.
 #' @export
 #' @docType methods
 #' @rdname getNbStorms-methods
 #' @examples
-#' \dontrun{
 #' #Creating a stormsDataset
+#' \donttest{
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting the number of storms in the sts object
 #' getNbStorms(sts)
@@ -242,12 +259,12 @@ setMethod("getNbStorms", signature("stormsList"), function(sts) length(sts@data)
 #' @docType methods
 #' @rdname getLOI-methods
 #' @examples
-#' \dontrun{
 #' #Creating a stormsDataset
+#' \donttest{
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting the location of interest for the sts object
 #' loi <- getLOI(sts)
@@ -267,18 +284,18 @@ setMethod("getLOI", signature("stormsList"), function(sts) sts@spatialLoi)
 #'
 #' @param sts `stormsList`
 #'
-#' @return The `getBuffer()` returns a `sf` object.
+#' @return A `sf` object.
 #'
 #' @export
 #' @docType methods
 #' @rdname getBuffer-methods
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' #Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting the buffered location of interest from the sts object
 #' buff <- getBuffer(sts)
@@ -303,12 +320,12 @@ setMethod("getBuffer", signature("stormsList"), function(sts) sts@spatialLoiBuff
 #' @docType methods
 #' @rdname getBufferSize-methods
 #' @examples
-#' \dontrun{
 #' #Creating a stormsDataset
+#' \donttest{
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting the buffer size from the sts object
 #' buffsize <- getBufferSize(sts)
@@ -341,12 +358,12 @@ setMethod("getBufferSize", signature("stormsList"), function(sts) sts@buffer)
 #' @docType methods
 #' @rdname getNames-methods
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' #Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting the names of the storms from the sts object
 #' getNames(sts)
@@ -377,12 +394,12 @@ setMethod("getNames", signature("stormsList"), function(s) {
 #' @docType methods
 #' @rdname getSeasons-methods
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' #Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting the cyclonic seasons of the storms from the sts object
 #' getSeasons(sts)
@@ -409,12 +426,12 @@ setMethod("getSeasons", signature("stormsList"), function(s) unlist(lapply(s@dat
 #' @docType methods
 #' @rdname getSSHS-methods
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' #Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting maximum Saffir-Simpson hurricane wind scale category
 #' #reached by each storm in the sts object
@@ -448,15 +465,14 @@ setMethod("getSSHS", signature("stormsList"), function(s) unlist(lapply(s@data, 
 #' @docType methods
 #' @rdname getNbObs-methods
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' #Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
-#' #Getting the number of observations for the tropical
-#' cyclone Niran in the sts object
+#' ##Getting the number of observations for the tropical cyclone Niran in the sts object
 #' getNbObs(getStorm(sts, name = "NIRAN"))
 #' getNbObs(sts, name = "NIRAN")
 #' }
@@ -485,20 +501,20 @@ setMethod("getNbObs", signature("stormsList"),
 #'   if several `storm` in the `s` object have the same name.
 #' Default value is set to `NULL`.
 #'
-#' @return data.frame.
+#' @return A data.frame.
 #' @export
 #' @docType methods
 #' @rdname getObs-methods
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' #Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
 #' #Getting the observed track data for the tropical
-#' cyclone Niran in the sts object
+#' #cyclone Niran in the sts object
 #' getObs(getStorm(sts, name = "NIRAN"))
 #' getObs(sts, name = "NIRAN")
 #' }
@@ -524,21 +540,20 @@ setMethod("getObs", signature("storm"), function(s) s@obs.all)
 #'   if several `storm` in `s` object have the same name. Default value is set
 #'   to `NULL`
 #'
-#' @return numeric vector.
+#' @return Numeric vector.
 #'
 #' @export
 #' @docType methods
 #' @rdname getInObs-methods
 #' @examples
-#' \dontrun{
 #' #Creating a stormsDataset
+#' \donttest{
 #' sds <- defStormsDataset()
 #'
 #' #Getting storm track data for all storms near New Caledonia
-#' sts <- storms(sds=sds, loi = "New Caledonia")
+#' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
-#' #Getting the number of the observation for the tropical
-#' cyclone Niran in the sts object
+#' #Getting the number of the observation for the tropical cyclone Niran in the sts object
 #' getInObs(getStorm(sts, name = "NIRAN"))
 #' getInObs(sts, name = "NIRAN")
 #' }
@@ -576,7 +591,7 @@ setMethod("getInObs", signature("storm"), function(s) s@obs)
 #' @param maxDist numeric
 #' @param verbose logical
 #' @param removeTD logical
-#' @return NULL
+#' @return NULL, stops the function if an error is detected
 checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, verbose, removeTD) {
 
   #checking sds input
@@ -975,7 +990,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 #'<doi:10.1175/2009bams2755.1>
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' #Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
@@ -995,9 +1010,8 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 #' sp <- sf::st_sfc(sp, crs = 4326)
 #' sp <- sf::st_as_sf(sp)
 #' sts_sp <- defStormsList(sds = sds, loi = sp)
+#'
 #' }
-#'
-#'
 #' @importFrom methods as
 #' @export
 defStormsList <- function(sds,

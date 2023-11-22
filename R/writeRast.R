@@ -176,8 +176,8 @@ writeNC <- function(rastds, filename) {
 #'  function when saving to `".tiff"` format.
 #' @returns `NULL`
 #' @examples
-#' \dontrun{
 #' # Creating a stormsDataset
+#' \donttest{
 #' sds <- defStormsDataset()
 #'
 #' # Getting storm track data for tropical cyclone Pam (2015) near Vanuatu
@@ -196,7 +196,6 @@ writeNC <- function(rastds, filename) {
 #' # Exporting the power dissipation index raster layers to a NetCDF file
 #' writeRast(pdi.nc, path = paste0(tempdir(), "/"))
 #' }
-#'
 #' @export
 writeRast <- function(rast, filename = NULL, path = "./", ...) {
   productsInfo <- strsplit(names(rast), split = "_", fixed = TRUE)

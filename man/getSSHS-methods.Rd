@@ -24,12 +24,12 @@ The \code{getSSHS()} function return the maximum Saffir-Simpson hurricane
 wind scale category reached by each storm in the \code{storm} or \code{stormsList} object.
 }
 \examples{
-\dontrun{
+\donttest{
 #Creating a stormsDataset
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
 #Getting maximum Saffir-Simpson hurricane wind scale category
 #reached by each storm in the sts object

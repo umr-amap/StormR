@@ -25,22 +25,22 @@ if several \code{storm} in the \code{s} object have the same name.
 Default value is set to \code{NULL}.}
 }
 \value{
-data.frame.
+A data.frame.
 }
 \description{
 The \code{getObs()} function returns observed track data for a storm
 in a \code{storm} or \code{stormsList} object.
 }
 \examples{
-\dontrun{
+\donttest{
 #Creating a stormsDataset
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
 #Getting the observed track data for the tropical
-cyclone Niran in the sts object
+#cyclone Niran in the sts object
 getObs(getStorm(sts, name = "NIRAN"))
 getObs(sts, name = "NIRAN")
 }

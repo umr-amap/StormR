@@ -326,12 +326,10 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
 #' Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
 #'
 #' @examples
-#' \dontrun{
 #' # Creating a `stormsDataset` object with storms between 2010 and 2015
 #' # in the South Pacific using the NetCDF provided with the package
-#' SP_2015_2020 <- defStormsDataset(seasons = c(2010 - 2015))
+#' SP_2015_2020 <- defStormsDataset(seasons = c(2010, 2015))
 #' str(SP_2015_2020)
-#' }
 #' @export
 defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
                              fields = c(

@@ -14,19 +14,19 @@ getBuffer(sts)
 \item{sts}{\code{stormsList}}
 }
 \value{
-The \code{getBuffer()} returns a \code{sf} object.
+A \code{sf} object.
 }
 \description{
 The \code{getBuffer()} function returns the buffered location
 of interest from a \code{stormsList} object.
 }
 \examples{
-\dontrun{
+\donttest{
 #Creating a stormsDataset
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
 #Getting the buffered location of interest from the sts object
 buff <- getBuffer(sts)

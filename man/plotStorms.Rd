@@ -56,12 +56,15 @@ when observations are made every 3 (or 6) hours.}
 \item{loi}{logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 extent of the buffered location of interest on the map.}
 }
+\value{
+A plot of the storm track data.
+}
 \description{
 This \code{plotStorms()} function allows plotting storm track data stored in a \code{StormsList} object.
 }
 \examples{
-\dontrun{
 #' #Creating a stormsDataset
+\donttest{
 sds <- defStormsDataset()
 
 # Getting storm track data for tropical cyclone Pam (2015)
@@ -73,5 +76,4 @@ plotStorms(pam, labels = TRUE)
 # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 plotStorms(pam, labels = TRUE, by = 2, pos = 4)
 }
-
 }

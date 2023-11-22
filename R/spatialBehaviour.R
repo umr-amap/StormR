@@ -161,7 +161,7 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #' @param spaceRes character
 #' @param tempRes numeric
 #' @param verbose numeric
-#' @return NULL
+#' @return NULL, just stops the function if inputs are not valid
 checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asymmetry,
                                         empiricalRMW, spaceRes, tempRes, verbose) {
   # Checking sts input
@@ -268,7 +268,7 @@ makeTemplateRaster <- function(buffer, res) {
 #' @param index numeric. Index of interpolated observation in data to use to
 #'   generate raster
 #'
-#' @return SpatRaster
+#' @return a SpatRaster
 makeTemplateModel <- function(rasterTemplate, buffer, data, index) {
   template <- terra::rast(
     xmin = data$lon[index] - buffer,
@@ -1196,7 +1196,7 @@ maskProduct <- function(finalStack, loi, template) {
 #' Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
@@ -1218,7 +1218,6 @@ maskProduct <- function(finalStack, loi, template) {
 #' # using Boose model
 #' prof.pam <- spatialBehaviour(pam, product = "Profiles", method = "Boose")
 #' }
-#'
 #' @export
 spatialBehaviour <- function(sts,
                              product = "MSW",

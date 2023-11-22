@@ -54,12 +54,15 @@ when observations are made every 3 (or 6) hours.}
 \item{legends}{character. Indicates where to plot the legend, \code{"topright"}, \code{"topleft"} (default setting),
 \code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
 }
+\value{
+A plot of the storm track data with the raster layer.
+}
 \description{
 The \code{plotBehaviour()} function allows plotting spatial statistics generated using
 the \code{spatialBehaviour()} function and stored in \code{SpatRaster} objects.
 }
 \examples{
-\dontrun{
+\donttest{
 # Creating a stormsDataset
 sds <- defStormsDataset()
 
@@ -74,5 +77,4 @@ plotBehaviour(pam, pam.msw)
 pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 }
-
 }

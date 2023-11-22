@@ -21,12 +21,12 @@ The \code{getBufferSize()} returns the buffer size used to generate
 the buffered location of interest for a \code{stormsList} object.
 }
 \examples{
-\dontrun{
 #Creating a stormsDataset
+\donttest{
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
 #Getting the buffer size from the sts object
 buffsize <- getBufferSize(sts)

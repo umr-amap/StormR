@@ -197,8 +197,8 @@ the forward trajectory of the storm and a radial line from the eye of the storm 
 \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}).
 }
 \examples{
-\dontrun{
 # Creating a stormsDataset
+\donttest{
 sds <- defStormsDataset()
 
 # Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
@@ -219,7 +219,6 @@ pdi.pam <- temporalBehaviour(pam, points = pts, product = "PDI")
 # over points 1 and 2 defined above
 exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
 }
-
 }
 \references{
 Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.

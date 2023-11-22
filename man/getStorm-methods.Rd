@@ -24,19 +24,19 @@ years should be specified, with cyclones assigned for the year
 1980 are extracted.}
 }
 \value{
-The \code{getStorm()} function returns a \code{storm} object.
+A \code{storm} object.
 }
 \description{
 The \code{getStorm()} function extracts a specific \code{storm} object
 from a \code{stormsList} object.
 }
 \examples{
-\dontrun{
 #Creating a stormsDataset
+\donttest{
 sds <- defStormsDataset()
 
 #Getting storm track data for all storms near New Caledonia
-sts <- storms(sds=sds, loi = "New Caledonia")
+sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
 #Getting `storm` for the tropical cyclone Niran
 st <- getStorm(sts, name = "NIRAN")

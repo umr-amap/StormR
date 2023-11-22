@@ -393,8 +393,8 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #' Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
 #'
 #' @examples
-#' \dontrun{
 #' # Creating a stormsDataset
+#' \donttest{
 #' sds <- defStormsDataset()
 #'
 #' # Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
@@ -415,7 +415,6 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #' # over points 1 and 2 defined above
 #' exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
 #' }
-#'
 #' @export
 temporalBehaviour <- function(sts,
                               points,
