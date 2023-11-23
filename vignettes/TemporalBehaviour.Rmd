@@ -69,8 +69,11 @@ str(TS)
 We use the data frame to draw time series plots for wind speed and wind
 direction as follows:
 
+``` {r , include = FALSE}
+oldpar <- par(mar = c(10, 4, 4, 2))
+```
+
 ``` {r}
-par(mar = c(10, 4, 4, 2))
 plot(TS$PAM$Port_Vila$speed, type = "l", ylim = c(0, 60), xlab = "", ylab = "Wind speed (m/s)", axes = FALSE, col = "blue")
 points(TS$PAM$Port_Vila$speed, col = "blue", pch = 3)
 lines(TS$PAM$Luganville$speed, col = "red")
@@ -85,7 +88,6 @@ dev.off()
 ```
 
 ``` {r}
-par(mar = c(10, 4, 4, 2))
 plot(TS$PAM$Port_Vila$direction, type = "l", ylim = c(0, 360), xlab = "", ylab = "Wind direction (degree north)", axes = FALSE, col = "blue")
 points(TS$PAM$Port_Vila$direction, col = "blue", pch = 3)
 lines(TS$PAM$Luganville$direction, col = "red")
@@ -96,6 +98,7 @@ axis(2, at = seq(0, 360, 90), labels = seq(0, 360, 90), las = 2)
 ```
 
 ``` {r , include = FALSE}
+par(oldpar)
 dev.off()
 ```
 
@@ -140,6 +143,3 @@ exposure_BOM <- temporalBehaviour(st, points = df, product = "Exposure", tempRes
 exposure_BOM
 ```
 
-``` {r ending, include = FALSE}
-par()
-```
