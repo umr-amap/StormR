@@ -99,12 +99,186 @@ Default value is set to <code>NULL</code>.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>data.frame.</p>
+<p>A data.frame.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co">#Creating a stormsDataset</span></span></span>
+<span class="r-in"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="defStormsDataset.html">defStormsDataset</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No basin argument specified. StormR will work as expected</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>              but cannot use basin filtering for speed-up when collecting data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Loading data  ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Collecting data ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE ===</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Getting storm track data for all storms near New Caledonia</span></span></span>
+<span class="r-in"><span><span class="va">sts</span> <span class="op">&lt;-</span> <span class="fu"><a href="defStormsList.html">defStormsList</a></span><span class="op">(</span>sds<span class="op">=</span><span class="va">sds</span>, loi <span class="op">=</span> <span class="st">"New Caledonia"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Storms processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Making buffer: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Searching storms from 2015 to 2021 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -&gt; Identifying Storms: 9 potential candidates...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Gathering storm(s) ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 0.5245113 sec ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SUMMARY:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) LOI: New Caledonia </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Buffer size: 300 km</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs): yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Number of storms: 7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - SSHS - Number of observation within buffer:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PAM - 2015 - 5 - 5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         SOLO - 2015 - 0 - 15 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ULA - 2016 - 4 - 9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         UESI - 2020 - 1 - 16 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         GRETEL - 2020 - 1 - 11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         LUCAS - 2021 - 1 - 16 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         NIRAN - 2021 - 5 - 10 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Getting the observed track data for the tropical</span></span></span>
+<span class="r-in"><span><span class="co">#cyclone Niran in the sts object</span></span></span>
+<span class="r-in"><span><span class="fu">getObs</span><span class="op">(</span><span class="fu"><a href="getStorm-methods.html">getStorm</a></span><span class="op">(</span><span class="va">sts</span>, name <span class="op">=</span> <span class="st">"NIRAN"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               iso.time      lon       lat msw sshs rmw   pres   poci</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  2021-02-27 06:00:00 150.0000 -15.70000  10   -3  74 100000 100500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2021-02-27 09:00:00 149.6901 -15.84261  10   -3  74 100100 100500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  2021-02-27 12:00:00 149.4000 -16.00000  10   -3  74 100200 100500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  2021-02-27 15:00:00 149.1424 -16.18494  10   -3  74 100200 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  2021-02-27 18:00:00 148.9000 -16.40000  10   -3  74 100200 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  2021-02-27 21:00:00 148.6201 -16.67255  11   -3  74 100100 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  2021-02-28 00:00:00 148.4000 -16.90000  13   -1  74 100000 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2021-02-28 03:00:00 148.3199 -16.97994  14   -1  74  99800 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  2021-02-28 06:00:00 148.3000 -17.00000  15   -1  74  99600 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 2021-02-28 09:00:00 148.2800 -17.04245  16   -1  74  99600 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 2021-02-28 12:00:00 148.2000 -17.10000  18    0  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 2021-02-28 15:00:00 147.9726 -17.20757  16   -1  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 2021-02-28 18:00:00 147.7000 -17.30000  15   -1  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 2021-02-28 21:00:00 147.4850 -17.35247  16   -1  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 2021-03-01 00:00:00 147.3000 -17.30000  18    0  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 2021-03-01 03:00:00 147.1274 -17.10249  19    0  74  99400 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 2021-03-01 06:00:00 147.0000 -16.80000  21    0  74  99200 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 2021-03-01 09:00:00 146.8974 -16.45746  21    0  69  99300 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 2021-03-01 12:00:00 146.9000 -16.10000  21    0  65  99400 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 2021-03-01 15:00:00 147.0627 -15.77754  22    0  50  98900 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 2021-03-01 18:00:00 147.3000 -15.50000  23    0  37  98400 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 2021-03-01 21:00:00 147.5075 -15.27000  23    0  41  98900 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 2021-03-02 00:00:00 147.7000 -15.10000  23    0  46  99400 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 2021-03-02 03:00:00 147.8725 -14.97750  26    0  46  99100 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 2021-03-02 06:00:00 148.0000 -14.90000  28    0  46  98800 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 2021-03-02 09:00:00 148.1025 -14.84246  28    0  50  98700 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27 2021-03-02 12:00:00 148.1000 -14.80000  28    0  56  98600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28 2021-03-02 15:00:00 147.8850 -14.73510  28    0  56  98400 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29 2021-03-02 18:00:00 147.7000 -14.70000  28    0  56  98300 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30 2021-03-02 21:00:00 147.8275 -14.74254  29    0  56  98300 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31 2021-03-03 00:00:00 148.0000 -14.80000  31    0  56  98300 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32 2021-03-03 03:00:00 147.9650 -14.79999  33    1  46  97600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33 2021-03-03 06:00:00 147.9000 -14.80000  36    1  37  97000 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 2021-03-03 09:00:00 147.9275 -14.84999  33    1  37  97700 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 2021-03-03 12:00:00 148.0000 -14.90000  31    0  37  98400 100500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36 2021-03-03 15:00:00 148.0776 -14.88498  36    1  30  97500 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37 2021-03-03 18:00:00 148.2000 -14.90000  41    1  22  96600 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38 2021-03-03 21:00:00 148.3475 -15.02737  42    1  24  96400 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39 2021-03-04 00:00:00 148.6000 -15.20000  44    2  28  96200 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40 2021-03-04 03:00:00 149.0049 -15.36504  46    2  24  95800 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 2021-03-04 06:00:00 149.5000 -15.50000  49    2  22  95400 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42 2021-03-04 09:00:00 149.9179 -15.54925  47    2  22  95700 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43 2021-03-04 12:00:00 150.5000 -15.60000  46    2  22  96100 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44 2021-03-04 15:00:00 151.4181 -15.69779  47    2  22  95900 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45 2021-03-04 18:00:00 152.5000 -15.90000  49    2  22  95800 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46 2021-03-04 21:00:00 153.5280 -16.23189  54    3  22  95000 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47 2021-03-05 00:00:00 154.6000 -16.70000  59    4  22  94200 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48 2021-03-05 03:00:00 155.7347 -17.29210  63    4  15  93400 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49 2021-03-05 06:00:00 156.9000 -17.90000  67    4   9  92600  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50 2021-03-05 09:00:00 158.0513 -18.35680  69    4   9  92100 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51 2021-03-05 12:00:00 159.2000 -18.80000  72    5   9  91700 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52 2021-03-05 15:00:00 160.3366 -19.29653  69    4   9  92100 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53 2021-03-05 18:00:00 161.5000 -19.90000  67    4   9  92600  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54 2021-03-05 21:00:00 162.7202 -20.67662  62    4   9  93500  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55 2021-03-06 00:00:00 164.0000 -21.50000  57    3   9  94500  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56 2021-03-06 03:00:00 165.3370 -22.19925  55    3   9  94600  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57 2021-03-06 06:00:00 166.7000 -22.90000  54    3   9  94800 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58 2021-03-06 09:00:00 167.9782 -23.67420  50    3   9  95300 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59 2021-03-06 12:00:00 169.4000 -24.50000  46    2   9  95800 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60 2021-03-06 15:00:00 171.2547 -25.39050  40    1   9  96700 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61 2021-03-06 18:00:00 173.1000 -26.20000  33    1   9  97600 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62 2021-03-06 21:00:00 174.4512 -26.75260  31    0  59  98200 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63 2021-03-07 00:00:00 175.7000 -27.30000  28    0 111  98800 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64 2021-03-07 03:00:00 177.1642 -28.04104  24    0 111  98900 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65 2021-03-07 06:00:00 178.8000 -28.90000  21   -2 111  99100 100300</span>
+<span class="r-in"><span><span class="fu">getObs</span><span class="op">(</span><span class="va">sts</span>, name <span class="op">=</span> <span class="st">"NIRAN"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               iso.time      lon       lat msw sshs rmw   pres   poci</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  2021-02-27 06:00:00 150.0000 -15.70000  10   -3  74 100000 100500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2021-02-27 09:00:00 149.6901 -15.84261  10   -3  74 100100 100500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  2021-02-27 12:00:00 149.4000 -16.00000  10   -3  74 100200 100500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  2021-02-27 15:00:00 149.1424 -16.18494  10   -3  74 100200 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  2021-02-27 18:00:00 148.9000 -16.40000  10   -3  74 100200 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  2021-02-27 21:00:00 148.6201 -16.67255  11   -3  74 100100 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  2021-02-28 00:00:00 148.4000 -16.90000  13   -1  74 100000 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2021-02-28 03:00:00 148.3199 -16.97994  14   -1  74  99800 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  2021-02-28 06:00:00 148.3000 -17.00000  15   -1  74  99600 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 2021-02-28 09:00:00 148.2800 -17.04245  16   -1  74  99600 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 2021-02-28 12:00:00 148.2000 -17.10000  18    0  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 2021-02-28 15:00:00 147.9726 -17.20757  16   -1  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 2021-02-28 18:00:00 147.7000 -17.30000  15   -1  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 2021-02-28 21:00:00 147.4850 -17.35247  16   -1  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 2021-03-01 00:00:00 147.3000 -17.30000  18    0  74  99600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 2021-03-01 03:00:00 147.1274 -17.10249  19    0  74  99400 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 2021-03-01 06:00:00 147.0000 -16.80000  21    0  74  99200 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 2021-03-01 09:00:00 146.8974 -16.45746  21    0  69  99300 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 2021-03-01 12:00:00 146.9000 -16.10000  21    0  65  99400 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 2021-03-01 15:00:00 147.0627 -15.77754  22    0  50  98900 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 2021-03-01 18:00:00 147.3000 -15.50000  23    0  37  98400 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 2021-03-01 21:00:00 147.5075 -15.27000  23    0  41  98900 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 2021-03-02 00:00:00 147.7000 -15.10000  23    0  46  99400 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 2021-03-02 03:00:00 147.8725 -14.97750  26    0  46  99100 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 2021-03-02 06:00:00 148.0000 -14.90000  28    0  46  98800 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 2021-03-02 09:00:00 148.1025 -14.84246  28    0  50  98700 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27 2021-03-02 12:00:00 148.1000 -14.80000  28    0  56  98600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28 2021-03-02 15:00:00 147.8850 -14.73510  28    0  56  98400 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29 2021-03-02 18:00:00 147.7000 -14.70000  28    0  56  98300 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30 2021-03-02 21:00:00 147.8275 -14.74254  29    0  56  98300 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31 2021-03-03 00:00:00 148.0000 -14.80000  31    0  56  98300 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32 2021-03-03 03:00:00 147.9650 -14.79999  33    1  46  97600 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33 2021-03-03 06:00:00 147.9000 -14.80000  36    1  37  97000 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 2021-03-03 09:00:00 147.9275 -14.84999  33    1  37  97700 100400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 2021-03-03 12:00:00 148.0000 -14.90000  31    0  37  98400 100500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36 2021-03-03 15:00:00 148.0776 -14.88498  36    1  30  97500 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37 2021-03-03 18:00:00 148.2000 -14.90000  41    1  22  96600 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38 2021-03-03 21:00:00 148.3475 -15.02737  42    1  24  96400 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39 2021-03-04 00:00:00 148.6000 -15.20000  44    2  28  96200 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40 2021-03-04 03:00:00 149.0049 -15.36504  46    2  24  95800 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 2021-03-04 06:00:00 149.5000 -15.50000  49    2  22  95400 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42 2021-03-04 09:00:00 149.9179 -15.54925  47    2  22  95700 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43 2021-03-04 12:00:00 150.5000 -15.60000  46    2  22  96100 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44 2021-03-04 15:00:00 151.4181 -15.69779  47    2  22  95900 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45 2021-03-04 18:00:00 152.5000 -15.90000  49    2  22  95800 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46 2021-03-04 21:00:00 153.5280 -16.23189  54    3  22  95000 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47 2021-03-05 00:00:00 154.6000 -16.70000  59    4  22  94200 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48 2021-03-05 03:00:00 155.7347 -17.29210  63    4  15  93400 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49 2021-03-05 06:00:00 156.9000 -17.90000  67    4   9  92600  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50 2021-03-05 09:00:00 158.0513 -18.35680  69    4   9  92100 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51 2021-03-05 12:00:00 159.2000 -18.80000  72    5   9  91700 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52 2021-03-05 15:00:00 160.3366 -19.29653  69    4   9  92100 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53 2021-03-05 18:00:00 161.5000 -19.90000  67    4   9  92600  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54 2021-03-05 21:00:00 162.7202 -20.67662  62    4   9  93500  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55 2021-03-06 00:00:00 164.0000 -21.50000  57    3   9  94500  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56 2021-03-06 03:00:00 165.3370 -22.19925  55    3   9  94600  99900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57 2021-03-06 06:00:00 166.7000 -22.90000  54    3   9  94800 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58 2021-03-06 09:00:00 167.9782 -23.67420  50    3   9  95300 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59 2021-03-06 12:00:00 169.4000 -24.50000  46    2   9  95800 100000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60 2021-03-06 15:00:00 171.2547 -25.39050  40    1   9  96700 100100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61 2021-03-06 18:00:00 173.1000 -26.20000  33    1   9  97600 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62 2021-03-06 21:00:00 174.4512 -26.75260  31    0  59  98200 100200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63 2021-03-07 00:00:00 175.7000 -27.30000  28    0 111  98800 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64 2021-03-07 03:00:00 177.1642 -28.04104  24    0 111  98900 100300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65 2021-03-07 06:00:00 178.8000 -28.90000  21   -2 111  99100 100300</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

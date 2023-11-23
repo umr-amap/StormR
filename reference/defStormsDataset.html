@@ -169,12 +169,34 @@ Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.o
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Creating a `stormsDataset` object with storms between 2010 and 2015</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Creating a `stormsDataset` object with storms between 2010 and 2015</span></span></span>
 <span class="r-in"><span><span class="co"># in the South Pacific using the NetCDF provided with the package</span></span></span>
-<span class="r-in"><span><span class="va">SP_2015_2020</span> <span class="op">&lt;-</span> <span class="fu">defStormsDataset</span><span class="op">(</span>seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span> <span class="op">-</span> <span class="fl">2015</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">SP_2015_2020</span> <span class="op">&lt;-</span> <span class="fu">defStormsDataset</span><span class="op">(</span>seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>, <span class="fl">2015</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No basin argument specified. StormR will work as expected</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>              but cannot use basin filtering for speed-up when collecting data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Loading data  ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Collecting data ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE ===</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">SP_2015_2020</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Formal class 'stormsDataset' [package "StormR"] with 5 slots</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ filename: chr "/home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ fields  : Named chr [1:11] "name" "season" "iso_time" "usa_lon" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "names")= chr [1:11] "names" "seasons" "isoTime" "lon" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ basin   : chr "None"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ seasons : Named num [1:2] 2015 2015</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "names")= chr [1:2] "min" "max"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ database:List of 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ names    : chr [1:2(1d)] "PAM" "SOLO"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ seasons  : num [1:2(1d)] 2015 2015</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ isotimes : chr [1:360, 1:2] "2015-03-07 06:00:00" "2015-03-07 09:00:00" "2015-03-07 12:00:00" "2015-03-07 15:00:00" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ longitude: num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ latitude : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ msw      : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ sshs     : num [1:360, 1:2] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ rmw      : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ pressure : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ poci     : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

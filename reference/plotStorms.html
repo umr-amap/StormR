@@ -134,23 +134,54 @@ when observations are made every 3 (or 6) hours.</p></dd>
 extent of the buffered location of interest on the map.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>A plot of the storm track data.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co">#' #Creating a stormsDataset</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#' #Creating a stormsDataset</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> null device </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           1 </span>
 <span class="r-in"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="defStormsDataset.html">defStormsDataset</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No basin argument specified. StormR will work as expected</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>              but cannot use basin filtering for speed-up when collecting data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Loading data  ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Collecting data ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE ===</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Getting storm track data for tropical cyclone Pam (2015)</span></span></span>
 <span class="r-in"><span><span class="va">pam</span> <span class="op">&lt;-</span> <span class="fu"><a href="defStormsList.html">defStormsList</a></span><span class="op">(</span>sds <span class="op">=</span> <span class="va">sds</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Storms processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Making buffer: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Searching for PAM storm ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -&gt; Identifying Storms: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Gathering storm(s) ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 0.7039289 sec ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SUMMARY:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) LOI: Vanuatu </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Buffer size: 300 km</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs): yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Number of storms: 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - SSHS - Number of observation within buffer:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PAM - 2015 - 5 - 20 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plotting Pam over Vanuatu with labels every 24h</span></span></span>
 <span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span><span class="va">pam</span>, labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plotting Pam over Vanuatu with labels every 6h on the right side of the observations</span></span></span>
 <span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span><span class="va">pam</span>, labels <span class="op">=</span> <span class="cn">TRUE</span>, by <span class="op">=</span> <span class="fl">2</span>, pos <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -265,12 +265,35 @@ Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1</
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Creating a stormsDataset</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Creating a stormsDataset</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="defStormsDataset.html">defStormsDataset</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No basin argument specified. StormR will work as expected</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>              but cannot use basin filtering for speed-up when collecting data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Loading data  ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Collecting data ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE ===</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Geting storm track data for tropical cyclone Pam (2015) near Vanuatu</span></span></span>
 <span class="r-in"><span><span class="va">pam</span> <span class="op">&lt;-</span> <span class="fu"><a href="defStormsList.html">defStormsList</a></span><span class="op">(</span>sds <span class="op">=</span> <span class="va">sds</span>, loi <span class="op">=</span> <span class="st">"Vanuatu"</span>, names <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Storms processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Making buffer: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Searching for PAM storm ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -&gt; Identifying Storms: Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Gathering storm(s) ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 0.4706652 sec ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SUMMARY:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) LOI: Vanuatu </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Buffer size: 300 km</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs): yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Number of storms: 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - SSHS - Number of observation within buffer:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PAM - 2015 - 5 - 20 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">168.5</span>, <span class="fl">168</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">17.9</span>, <span class="op">-</span><span class="fl">16.3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">pts</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point_1"</span>, <span class="st">"point_2"</span><span class="op">)</span></span></span>
@@ -278,16 +301,75 @@ Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1</
 <span class="r-in"><span><span class="co"># Computing time series of wind speed and direction for Pam</span></span></span>
 <span class="r-in"><span><span class="co"># over points 1 and 2 defined above</span></span></span>
 <span class="r-in"><span><span class="va">ts.pam</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">pam</span>, points <span class="op">=</span> <span class="va">pts</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === temporalBehaviour processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Initializing data ... Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Computation settings:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Temporal resolution: Every 60 min</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Method used: Willoughby </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Product(s) to compute: TS </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Asymmetry used: Chen </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Points: lon-lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        168.5   -17.9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        168   -16.3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Storm(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ( 1 )  PAM </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Computing PDI for Pam over points 1 and 2 defined above</span></span></span>
 <span class="r-in"><span><span class="va">pdi.pam</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">pam</span>, points <span class="op">=</span> <span class="va">pts</span>, product <span class="op">=</span> <span class="st">"PDI"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === temporalBehaviour processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Initializing data ... Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Computation settings:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Temporal resolution: Every 60 min</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Method used: Willoughby </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Product(s) to compute: PDI </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Asymmetry used: Chen </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Points: lon-lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        168.5   -17.9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        168   -16.3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Storm(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ( 1 )  PAM </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Computing the duration of exposure to wind speeds above the thresholds</span></span></span>
 <span class="r-in"><span><span class="co"># used by the Saffir-Simpson hurricane wind scale for Pam</span></span></span>
 <span class="r-in"><span><span class="co"># over points 1 and 2 defined above</span></span></span>
 <span class="r-in"><span><span class="va">exp.pam</span> <span class="op">&lt;-</span> <span class="fu">temporalBehaviour</span><span class="op">(</span><span class="va">pam</span>, points <span class="op">=</span> <span class="va">pts</span>, product <span class="op">=</span> <span class="st">"Exposure"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === temporalBehaviour processing ... ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Initializing data ... Done</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Computation settings:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Temporal resolution: Every 60 min</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Method used: Willoughby </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Product(s) to compute: Exposure </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Asymmetry used: Chen </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (*) Points: lon-lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        168.5   -17.9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        168   -16.3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Storm(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ( 1 )  PAM </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
