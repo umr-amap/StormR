@@ -116,7 +116,7 @@ stormsList <- methods::setClass("stormsList",
 #' @param object `storm`/`stormsList` object
 #'
 #' @return NULL, only display information about the object
-#'
+#' @keywords internal
 #' @export
 #' @docType methods
 #' @rdname show-methods
