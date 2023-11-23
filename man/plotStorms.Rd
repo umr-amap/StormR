@@ -65,6 +65,7 @@ This \code{plotStorms()} function allows plotting storm track data stored in a \
 \examples{
 #' #Creating a stormsDataset
 \donttest{
+dev.off()
 sds <- defStormsDataset()
 
 # Getting storm track data for tropical cyclone Pam (2015)

@@ -29,14 +29,14 @@ reference:
 
 - title: Initialize storms
   desc: Functions for initializing storm/stormsList objects
-  contents:  
+  contents:
   - '`stormsDataset-class`'
   - '`defStormsDataset`'
   - '`storm-class`'
   - '`stormsList-class`'
   - '`defStormsList`'
-  
-  
+
+
 - title: Getters
   desc: Functions for getting data associated with storm/stormsList objects
   contents:
@@ -51,51 +51,50 @@ reference:
   - '`getLOI`'
   - '`getBuffer`'
   - '`getBufferSize`'
-  
-  
+
+
 - title: Compute products
   desc: Functions for computing products
   contents:
   - '`spatialBehaviour`'
   - '`temporalBehaviour`'
-  
-  
+
+
 - title: Plot
   desc: Functions for plotting tracks and products
   contents:
   - '`plotStorms`'
   - '`plotBehaviour`'
-  
-  
+
+
 - title: Write
   desc: Function for writing data in .GeoTiff or .nc format
   contents:
   - '`writeRast`'
-  
-  
+
+
 - title: Data
   desc: Examples data provided by this package
   contents:
   - '`eezNC`'
-  
+
 
 articles:
 
 - title: Load Data
   navbar: Load_data
-  contents: 
-  - '`DataSource`' 
+  contents:
+  - '`DataSource`'
 
 - title: Getting started
   navbar: Getting_started
-  contents: 
-  - '`ExtractStorms`' 
+  contents:
+  - '`ExtractStorms`'
 
 - title: Storms analysis
   navbar: Storms_analysis
-  contents: 
-  - '`Behaviour`' 
+  contents:
+  - '`Behaviour`'
   - '`Models`'
   - '`SpatialBehaviour`'
   - '`TemporalBehaviour`'
-  

@@ -213,6 +213,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' @examples
 #' #' #Creating a stormsDataset
 #' \donttest{
+#' dev.off()
 #' sds <- defStormsDataset()
 #'
 #' # Getting storm track data for tropical cyclone Pam (2015)
