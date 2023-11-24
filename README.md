@@ -15,7 +15,14 @@
 
 ### Installing StormR
 
-The development version can be installed from GitHub as follows,
+`StormR` is now [available on CRAN](https://cran.r-project.org/web/packages/StormR/index.html) on version `0.1.1`.
+You can install it as follows:
+
+``` r
+install.packages("StormR")
+```
+
+The latest development version can be installed from GitHub as follows,
 
 ``` r
 #install.packages("devtools")
