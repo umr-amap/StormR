@@ -3,8 +3,10 @@
 # StormR R package <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
+[![](https://www.r-pkg.org/badges/version/StormR?color=green)](https://cran.r-project.org/package=StormR)
 [![codecov](https://codecov.io/github/umr-amap/StormR/branch/master/graph/badge.svg?token=5YMVL4TFB5)](https://app.codecov.io/github/umr-amap/StormR)
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/umr-amap/StormR/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/umr-amap/StormR)
+![R-CMD-check](https://github.com/umr-amap/StormR/actions/workflows/check-standard.yaml/badge.svg)
 <!-- badges: end -->
 
 ## Overview
@@ -40,11 +42,11 @@ library(StormR)
 | **Name** | **Description** | **Inputs** | **Outputs** |
 |:--:|:----:|:-----------:|:-----:|
 |`defStormsDataset()`|Creates a `stormsDataset` object|".nc" (NetCDF) file|`stormsDataset` object|
-|`defStormsList()`|Extracts storms|`stormsDataset` object|`StormsList` object|
-|`plotStorms()`|Plots storms track data|`StormsList` object||
-|`temporalBehaviour()`|Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |`StormsList` object|lists of data.frame objects|
-|`spatialBehaviour()`|Computes 2D wind fields and summary statistics over a given location of interest |`StormsList` object|`SpatRaster` object|
-|`plotBehaviour()`|Plots 2D wind fields and summary statistics|`StormsList` + `SpatRaster` objects||
+|`defStormsList()`|Extracts storms|`stormsDataset` object|`stormsList` object|
+|`plotStorms()`|Plots storms track data|`stormsList` object||
+|`temporalBehaviour()`|Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |`stormsList` object|lists of data.frame objects|
+|`spatialBehaviour()`|Computes 2D wind fields and summary statistics over a given location of interest |`stormsList` object|`SpatRaster` object|
+|`plotBehaviour()`|Plots 2D wind fields and summary statistics|`stormsList` + `SpatRaster` objects||
 |`writeRast()`|Exports wind fields and summary statistics to file|`SpatRaster` object|`.tiff` or `.nc` file|
 
 ## Contributing
