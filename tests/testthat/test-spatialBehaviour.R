@@ -30,7 +30,7 @@ test_that("Test Willougbhy / Holland / Boose functions", {
       28.131, 27.988, 27.846, 27.706, 27.567, 27.430, 27.294, 27.159, 27.026, 26.895
     )
   )
-
+  
   expect_equal(
     holland(seq(1, 100), 20, 50, 1020 * 100, 915 * 100, -15),
     c(
@@ -46,7 +46,7 @@ test_that("Test Willougbhy / Holland / Boose functions", {
       30.931, 30.667, 30.406, 30.147, 29.890, 29.635, 29.381, 29.130, 28.881, 28.633
     )
   )
-
+  
   expect_equal(
     boose(seq(1, 100), 20, 50, 1020 * 100, 915 * 100, 0.1, 0.1, 0.25, 0.25, 15, 1, -15),
     c(
@@ -68,7 +68,7 @@ test_that("Test spatialBehaviour function", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
   sb <- spatialBehaviour(pam, method = "Holland", verbose = 0)
-
+  
   expect_equal(
     terra::minmax(sb[["PAM_MSW"]]),
     matrix(
@@ -76,7 +76,7 @@ test_that("Test spatialBehaviour function", {
       dimnames =list(c('min', 'max'), c('PAM_MSW'))
     )
   )
-
+  
   sb <- spatialBehaviour(pam, method = "Boose", verbose = 0)
   expect_equal(
     terra::minmax(sb[["PAM_MSW"]]),
@@ -98,10 +98,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   # Checking product input
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
@@ -111,10 +111,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = "TS",
@@ -123,10 +123,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   # Check windThreshold input
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
@@ -136,10 +136,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -148,10 +148,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   # Checking method input
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
@@ -161,10 +161,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -173,10 +173,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -185,10 +185,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -197,10 +197,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   # Checking asymmetry input
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
@@ -210,10 +210,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "chen",
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -222,10 +222,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = 1,
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -234,10 +234,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = TRUE,
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -246,10 +246,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = c("Chen", "None"),
     empiricalRMW = FALSE,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   # Checking empiricalRMW inputs
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
@@ -259,10 +259,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = "TRUE",
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -271,10 +271,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     asymmetry = "Chen",
     empiricalRMW = 1,
     spaceRes = "2.5min",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 2
   ))
-
+  
   # Checking tempRes input
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
@@ -287,7 +287,7 @@ test_that("Test checkInputsSpatialBehaviour function", {
     tempRes = TRUE,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -299,7 +299,7 @@ test_that("Test checkInputsSpatialBehaviour function", {
     tempRes = 2.3,
     verbose = 2
   ))
-
+  
   expect_error(checkInputsSpatialBehaviour(
     sts = pam,
     product = c("MSW", "PDI", "Exposure"),
@@ -320,7 +320,7 @@ test_that("Test checkInputsSpatialBehaviour function", {
 test_that("Test getIndices function", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-
+  
   expect_equal(getIndices(pam@data[["PAM"]], 2, "MSW"), seq(26, 49))
   expect_equal(getIndices(pam@data[["PAM"]], 20, "MSW"), seq(8, 57))
   expect_equal(getIndices(pam@data[["PAM"]], 30, "MSW"), seq(1, 57))
@@ -334,7 +334,7 @@ test_that("Test getIndices function", {
 test_that("Test getDataInterpolate function", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-
+  
   expect_equal(getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3, FALSE, "Willoughby"), dfGetDataInterpolate)
 })
 
@@ -347,17 +347,17 @@ test_that("Test computeDirection function", {
   expect_equal(computeDirection(1, -1, 30), 45)
   expect_equal(computeDirection(-1, -1, 30), 135)
   expect_equal(computeDirection(-1, 1, 30), 225)
-
+  
   expect_equal(computeDirection(0, 1, 30), 270)
   expect_equal(computeDirection(1, 0, 30), 0)
   expect_equal(computeDirection(0, -1, 30), 90)
   expect_equal(computeDirection(-1, 0, 30), 180)
-
+  
   expect_equal(computeDirection(1, 1, -30), 135)
   expect_equal(computeDirection(1, -1, -30), 225)
   expect_equal(computeDirection(-1, -1, -30), 315)
   expect_equal(computeDirection(-1, 1, -30), 45)
-
+  
   expect_equal(computeDirection(0, 1, -30), 90)
   expect_equal(computeDirection(1, 0, -30), 180)
   expect_equal(computeDirection(0, -1, -30), 270)
@@ -372,7 +372,7 @@ test_that("Test computeDirectionBoose function", {
   expect_equal(computeDirectionBoose(1, -1, 30, 0), 25)
   expect_equal(computeDirectionBoose(-1, 1, 30, 1), 185)
   expect_equal(computeDirectionBoose(-1, 1, 30, 0), 205)
-
+  
   expect_equal(computeDirectionBoose(1, 1, -30, 1), 175)
   expect_equal(computeDirectionBoose(1, 1, -30, 0), 155)
   expect_equal(computeDirectionBoose(-1, -1, -30, 1), 355)

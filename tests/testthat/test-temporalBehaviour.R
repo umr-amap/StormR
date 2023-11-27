@@ -3,7 +3,7 @@
 test_that("Test checkInputsTemporalBehaviour function", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-
+  
   # Checking sts input
   expect_error(checkInputsTemporalBehaviour(
     points = data.frame(x = 169, y = -19),
@@ -12,10 +12,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   # Checking points
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
@@ -25,10 +25,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = c(x = 169, y = -19),
@@ -37,10 +37,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sds = pam,
     points = data.frame(lon = 169, lat = -19),
@@ -49,10 +49,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sds = pam,
     points = data.frame(x = 400, y = 200),
@@ -61,10 +61,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sds = pam,
     points = data.frame(x = -120, y = -19),
@@ -73,10 +73,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   # Checking product input
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
@@ -86,10 +86,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -98,10 +98,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -110,10 +110,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   # Check windThreshold input
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
@@ -123,10 +123,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -135,10 +135,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   # Checking method input
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
@@ -148,10 +148,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -160,10 +160,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = 1,
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -172,10 +172,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = TRUE,
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -184,10 +184,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = c("Willoughby", "Holland"),
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   # Checking asymmetry input
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
@@ -197,10 +197,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -209,10 +209,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = 1,
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -221,10 +221,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = TRUE,
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -233,10 +233,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = c("Chen", "None"),
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   # Checking empiricalRMW inputs
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
@@ -246,10 +246,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = "TRUE",
-    tempRes = 1,
+    tempRes = 60,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -258,9 +258,9 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = 1,
-    tempRes = 1
+    tempRes = 60
   ))
-
+  
   # Checking tempRes input
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
@@ -273,7 +273,7 @@ test_that("Test checkInputsTemporalBehaviour function", {
     tempRes = TRUE,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -285,7 +285,7 @@ test_that("Test checkInputsTemporalBehaviour function", {
     tempRes = 2.3,
     verbose = 1
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -297,7 +297,7 @@ test_that("Test checkInputsTemporalBehaviour function", {
     tempRes = c(0.25, 0.5),
     verbose = 1
   ))
-
+  
   # Checking verbose
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
@@ -307,10 +307,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = TRUE
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -319,10 +319,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = "1"
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -331,10 +331,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = c(1, 2)
   ))
-
+  
   expect_error(checkInputsTemporalBehaviour(
     sts = pam,
     points = data.frame(x = 169, y = -19),
@@ -343,7 +343,7 @@ test_that("Test checkInputsTemporalBehaviour function", {
     method = "Willoughby",
     asymmetry = "Chen",
     empiricalRMW = FALSE,
-    tempRes = 1,
+    tempRes = 60,
     verbose = 3
   ))
 })
