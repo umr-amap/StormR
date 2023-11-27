@@ -36,16 +36,24 @@ checkInputsPlotTemporal <- function(data, storm, var) {
 
 
 
-#' plotting wind behaviour time series and summary statistics at given point locations
+#' Plotting wind behaviour time series and summary statistics at given point
+#' locations
 #'
-#' @param data 
-#' @param storm 
-#' @param var 
+#' @param data time series generated with `temporalBehaviour` with `product=TS`
+#'   input
+#' @param storm list of characters. Storm names. The storm must be available in
+#'   `data` input. It can also be a vector of integer corresponding to the
+#'   indices of storms stored in `data`input.
+#' @param var character. Represent the type of variable to plot. Must be either
+#'   `speed` or `direction`. Default value is set to `speed`.
 #'
-#' @return
+#' @return null
 #' @export
 #'
 #' @examples
+#' \donttest{
+#' #Add example here
+#' }
 plotTemporal <- function(data, storm, var = 'speed'){
   
   checkInputsPlotTemporal(data, storm, var)
