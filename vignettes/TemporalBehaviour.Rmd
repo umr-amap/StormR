@@ -54,7 +54,7 @@ hour but can be changed using the `tempRes` argument. Here we set the temporal
 resolution to 30 min with `tempRes=0.5` as follows:
 
 ``` {r}
-TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 0.5, verbose = 0)
+TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)
 ```
 
 With the above specification the `temporalBehaviour()` function returns a list
@@ -116,7 +116,7 @@ The power dissipation index is computed using the `product = "PDI"` argument as
 follows:
 
 ``` {r}
-PDI <- temporalBehaviour(st, points = df, product = "PDI", tempRes = 0.5, verbose = 0)
+PDI <- temporalBehaviour(st, points = df, product = "PDI", tempRes = 30, verbose = 0)
 PDI
 ```
 
@@ -126,7 +126,7 @@ The duration of exposure is computed using the `product = "Exposure"` argument
 as follows:
 
 ``` {r}
-exposure_SS <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 0.5, verbose = 0)
+exposure_SS <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 30, verbose = 0)
 exposure_SS
 ```
 
@@ -139,7 +139,7 @@ follow:
 
 ``` {r}
 wt <- c(17.2, 24.4, 32.5, 44.2, 55.0)
-exposure_BOM <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 0.5, windThreshold = wt, verbose = 0)
+exposure_BOM <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 30, windThreshold = wt, verbose = 0)
 exposure_BOM
 ```
 

@@ -3,9 +3,9 @@
 
 
 
-########
-# MODELS#
-########
+##########
+# MODELS #
+##########
 
 
 
@@ -481,9 +481,6 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
 ##############################################
 # Helpers to handle Models/Asymmetry/Direction#
 ##############################################
-
-
-
 
 
 #' Compute wind profile according to the selected method and asymmetry

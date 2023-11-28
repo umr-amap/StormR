@@ -123,7 +123,7 @@ Maximum sustained wind speed can be computed at a 10 min spatial resolution and
 a 30 min temporal resolution as follows:
 
 ```{r}
-ss <- spatialBehaviour(st, product = c("MSW"), verbose = 0, spaceRes = "10min", tempRes = 0.5)
+ss <- spatialBehaviour(st, product = c("MSW"), verbose = 0, spaceRes = "10min", tempRes = 30)
 plotBehaviour(st, ss$PAM_MSW)
 ```
 

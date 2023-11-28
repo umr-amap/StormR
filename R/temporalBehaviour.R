@@ -424,10 +424,12 @@ temporalBehaviour <- function(sts,
                               method = "Willoughby",
                               asymmetry = "Chen",
                               empiricalRMW = FALSE,
-                              tempRes = 1,
+                              tempRes = 60,
                               verbose = 1) {
   checkInputsTemporalBehaviour(sts, points, product, windThreshold, method, asymmetry, empiricalRMW, tempRes, verbose)
   
+  # Convert minutes to hour
+  tempRes <- tempRes / 60
   
   if (verbose > 0) {
     cat("=== temporalBehaviour processing ... ===\n\n")

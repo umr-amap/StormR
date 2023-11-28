@@ -12,7 +12,7 @@ temporalBehaviour(
   method = "Willoughby",
   asymmetry = "Chen",
   empiricalRMW = FALSE,
-  tempRes = 1,
+  tempRes = 60,
   verbose = 1
 )
 }
