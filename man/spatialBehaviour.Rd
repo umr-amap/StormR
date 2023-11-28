@@ -12,7 +12,7 @@ spatialBehaviour(
   asymmetry = "Chen",
   empiricalRMW = FALSE,
   spaceRes = "2.5min",
-  tempRes = 1,
+  tempRes = 60,
   verbose = 2
 )
 }
@@ -56,8 +56,8 @@ Willoughby et al. (2006). If \code{empiricalRMW==FALSE} (default setting) then t
 \code{"2.5 min"} (~4.5 km at the equator), \code{"5 min"} (~9 km at the equator) or \code{"10 min"} (~18.6 km at the equator).
 Default setting is \code{"2.5 min"}.}
 
-\item{tempRes}{numeric. Temporal resolution. Can be \code{1} (for 60 min, default setting),
-\code{0.75} (for 45min), \code{0.5} (for 30 min), and \code{0.25} (15 for min).}
+\item{tempRes}{numeric. Temporal resolution (min). Can be \code{60} ( default setting),
+\code{30} or \code{15}.}
 
 \item{verbose}{numeric. Whether or not the function should display
 informations about the process and/or outputs. Can be:
@@ -100,7 +100,7 @@ Storm track data sets, such as those extracted from IBRTrACKS (Knapp et
 al., 2010), usually provide observation at a 3- or 6-hours temporal
 resolution. In the spatialBehaviour() function, linear interpolations are
 used to reach the temporal resolution specified in the \code{tempRes} argument
-(default value = 1 hour). When \code{product = "MSW"}, \code{product = "PDI"},
+(default value = 60 min). When \code{product = "MSW"}, \code{product = "PDI"},
 or \code{product = "Exposure"} the \code{focal()} function from the \code{terra} R package
 is used to smooth the results using moving windows.
 
@@ -208,7 +208,7 @@ the forward trajectory of the storm and a radial line from the eye of the storm 
 \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}).
 }
 \examples{
-\donttest{
+\dontrun{
 # Creating a stormsDataset
 sds <- defStormsDataset()
 
@@ -230,6 +230,7 @@ exp.pam <- spatialBehaviour(pam, product = "Exposure")
 # using Boose model
 prof.pam <- spatialBehaviour(pam, product = "Profiles", method = "Boose")
 }
+
 }
 \references{
 Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.
