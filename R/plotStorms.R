@@ -268,10 +268,10 @@ plotStorms <- function(sts,
       category <- category[order(category)]
       catInf <- category[1]
       catSup <- category[2]
-      ind <- which(getSSHS(sts) >= catInf & getSSHS(sts) <= catSup)
+      ind <- which(getScale(sts) >= catInf & getScale(sts) <= catSup)
     } else {
       # length category == 1
-      ind <- which(getSSHS(sts) == category)
+      ind <- which(getScale(sts) == category)
     }
 
     stsAux <- unlist(sts@data)[ind]

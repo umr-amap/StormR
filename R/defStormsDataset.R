@@ -149,7 +149,7 @@ stormsDataset <- methods::setClass(
 #' @param verbose numeric
 #'
 #' @return NULL
-checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitConversion, verbose) {
+checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitConversion, scale, verbose) {
   # Checking filename input
   stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename), "character"))
@@ -230,6 +230,8 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
   stopifnot("seasons must be numeric" = identical(class(seasons), "numeric"))
   stopifnot("seasons must be a range of calendar year" = length(seasons) == 2 & seasons[1] <= seasons[2])
 
+  # Checking scale input
+  stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
 
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -315,6 +317,8 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
 #'    \item `"None"`, if no conversion is needed.
 #'  }
 #'
+#' @param scale numeric. List of storm scale thresholds used for the database.
+#'   Default value is set to the Saffir Simpson Hurricane Scale
 #' @param verbose numeric. Whether the function should display (`= 1`)
 #'   or not (`= 0`) information about the processes.
 #' @return The `defStormsDataset()` function returns a `stormsDataset` object.
@@ -352,8 +356,10 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                                pressure = "mb2pa",
                                poci = "mb2pa"
                              ),
+                             scale = sshs,
                              verbose = 1) {
-  checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, verbose)
+  
+  checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, scale, verbose)
 
 
   if (verbose) {

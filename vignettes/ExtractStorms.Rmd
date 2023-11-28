@@ -129,10 +129,10 @@ terra::plot(countriesHigh, add = TRUE)
 ```
 
 The maximum category of each cyclone on the Saffir-Simpson hurricane wind scale
-can be obtained using the `getSSHS()` function as follows:
+can be obtained using the `getScale()` function as follows:
 
 ``` {r chunk11}
-getSSHS(st)
+getScale(st)
 ```
 
 We can only plot category 4 and 5 tropical cyclones using the `category`

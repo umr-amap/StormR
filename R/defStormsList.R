@@ -18,8 +18,7 @@
 #'
 #' @slot name character. Name of the storm
 #' @slot season  numeric. Cyclonic season in which the storm has occured
-#' @slot  sshs numeric. Maximum category reached in the Saffir Simpson Hurricane
-#'   Scale
+#' @slot  scale numeric. Maximum scale category reached
 #' @slot obs numeric vector. Indices of observations within the location of
 #'   interest extented with its corresponding buffer (See `stormsList` class)
 #' @slot obs.all  data.frame. Contains all of the observations available. An
@@ -29,7 +28,7 @@
 #'   \item `lon`, Longitude coordinate (Eastern degree)
 #'   \item `lat`, Latitude coordinate (Northern degree)
 #'   \item `msw`, Maximum Sustained Wind (m/s)
-#'   \item `sshs`, Category in the Saffir Simpson Hurricane Scale
+#'   \item `scale`, Category in the chosen scale
 #'  }
 #'   The following field is not mandatory but highly recommended
 #'  \itemize{
@@ -45,7 +44,7 @@
 #' \itemize{
 #'  \item `name`, character.
 #'  \item `season`, numeric.
-#'  \item `sshs`, numeric.
+#'  \item `scale`, numeric.
 #'  \item `obs`, numeric.
 #'  \item `obs.all`, data.frame.
 #' }
@@ -54,7 +53,7 @@
 storm <- methods::setClass("storm",
                            slots = c(name = "character",
                                      season = "numeric",
-                                     sshs = "numeric",
+                                     scale = "numeric",
                                      obs = "numeric",
                                      obs.all = "data.frame"))
 
@@ -135,7 +134,7 @@ setMethod("show",
           function(object) {
             cat("Name:", object@name, "\n")
             cat("Season:", object@season, "\n")
-            cat("Maximum category reached (SSHS):", object@sshs, "\n")
+            cat("Maximum category reached:", object@scale, "\n")
             cat("Indices of observations within buffer:", object@obs, "\n")
             cat("Observations:\n")
             print(object@obs.all)
@@ -416,15 +415,15 @@ setMethod("getSeasons", signature("stormsList"), function(s) unlist(lapply(s@dat
 
 #' Getting maximum Saffir-Simpson hurricane wind scale category
 #'
-#' The `getSSHS()` function return the maximum Saffir-Simpson hurricane
-#' wind scale category reached by each storm in the `storm` or `stormsList` object.
+#' The `getScale()` function return the maximum wind scale category reached by 
+#' each storm in the `storm` or `stormsList` object.
 #'
 #' @param s `storm` or `stormsList` object.
 #'
 #' @return numeric vector.
 #' @export
 #' @docType methods
-#' @rdname getSSHS-methods
+#' @rdname getScale-methods
 #' @examples
 #' \donttest{
 #' #Creating a stormsDataset
@@ -435,13 +434,13 @@ setMethod("getSeasons", signature("stormsList"), function(s) unlist(lapply(s@dat
 #'
 #' #Getting maximum Saffir-Simpson hurricane wind scale category
 #' #reached by each storm in the sts object
-#' getSSHS(sts)
+#' getScale(sts)
 #' }
-setGeneric("getSSHS", function(s) standardGeneric("getSSHS"))
-#' @rdname getSSHS-methods
-setMethod("getSSHS", signature("storm"), function(s) s@sshs)
-#' @rdname getSSHS-methods
-setMethod("getSSHS", signature("stormsList"), function(s) unlist(lapply(s@data, getSSHS)))
+setGeneric("getScale", function(s) standardGeneric("getScale"))
+#' @rdname getScale-methods
+setMethod("getScale", signature("storm"), function(s) s@scale)
+#' @rdname getScale-methods
+setMethod("getScale", signature("stormsList"), function(s) unlist(lapply(s@data, getScale)))
 
 
 
@@ -811,14 +810,14 @@ retrieveStorms <- function(database, filterNames, filterSeasons, removeTD) {
 
 
 
-#' Get the sshs associated with a msw
+#' Get the scale associated with a msw
 #'
 #' @noRd
 #' @param msw numeric maximum sustained wind
 #' @param scale list of values that defines the scale
 #' intensity of the storm, e.g. `sshs`
 #'
-#' @return numeric, sshs
+#' @return numeric, scale
 computeScaleIndice <- function(msw, scale) {
 
   if (is.na(msw)) {
@@ -901,10 +900,12 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
                                                      na.rm = FALSE, rule = 2))
 
 
-    if ("sshs" %in% names(sds@fields)) {
-      storm@obs.all$sshs <- sds@database$sshs[validIndices, index]
+    if ("scale" %in% names(sds@fields)) {
+      # scale is directly loaded from the sds database
+      storm@obs.all$scale <- sds@database$scale[validIndices, index]
     }else {
-      storm@obs.all$sshs <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = sshs))
+      # scale is calculated using the sds scale input and the wind speed data
+      storm@obs.all$scale <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = sds@scale))
     }
 
     if ("rmw" %in% names(sds@fields))
@@ -927,7 +928,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
     row.names(storm@obs.all) <- seq(1, dim(storm@obs.all)[1])
 
     storm@obs <- ind
-    storm@sshs <- max(storm@obs.all$sshs, na.rm = TRUE)
+    storm@scale <- max(storm@obs.all$scale, na.rm = TRUE)
 
     return(list(append(stormList, storm),
                 append(stormNames, storm@name)))
@@ -1138,13 +1139,13 @@ defStormsList <- function(sds,
           cat(" no\n")
         }
         cat("(*) Number of storms:", getNbStorms(sts), "\n")
-        cat("        Name - Tropical season - SSHS - Number of observation within buffer:\n")
+        cat("        Name - Tropical season - Scale - Number of observation within buffer:\n")
         i <- 1
         for (i in 1:getNbStorms(sts)){
           n <- getNames(sts@data[[i]])
           s <- getSeasons(sts@data[[i]])
-          sshsv <- getSSHS(sts@data[[i]])
-          cat("       ", n, "-", s, "-", sshsv, "-", length(getInObs(sts, n, s)), "\n")
+          scalev <- getScale(sts@data[[i]])
+          cat("       ", n, "-", s, "-", scalev, "-", length(getInObs(sts, n, s)), "\n")
         }
         cat("\n")
       }
