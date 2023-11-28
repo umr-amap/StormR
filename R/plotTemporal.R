@@ -1,4 +1,5 @@
 
+# TODO non ASCII character somewhere ...?
 
 ##' Check inputs for plotTemporal function
 #'
@@ -26,11 +27,7 @@ checkInputsPlotTemporal <- function(data, storm, var) {
   # Checking var input
   stopifnot("invalid var input, must be either 'speed' or 'direction'" = 
               var == 'speed' | var == 'direction')
-  
-  
-  
-  
-  
+
 }
 
 
@@ -64,6 +61,8 @@ plotTemporal <- function(data, storm, var = 'speed'){
   nbOfPositions <- length(sub_data[[1]])
   
   # Generate a sequence of colors
+  
+  # TODO pb of dependencies here...
   palette <- colorRampPalette(colors=c("red", "green","blue"))
   cols <- palette(nbOfPositions)
   
@@ -104,7 +103,7 @@ plotTemporal <- function(data, storm, var = 'speed'){
        axes = FALSE,
        col = cols[1])
   
-  points(dat, col = cols[1], pch = symbols[1])
+  graphics::points(dat, col = cols[1], pch = symbols[1])
   
   i = 2
   for(location in sub_data[[1]][c(2:nbOfPositions)]){
@@ -115,32 +114,32 @@ plotTemporal <- function(data, storm, var = 'speed'){
       dat = location$direction
     }
     
-    lines(dat, col = cols[i])
-    points(dat, col = cols[i], pch = symbols[i])
+    graphics::lines(dat, col = cols[i])
+    graphics::points(dat, col = cols[i], pch = symbols[i])
     i <- i + 1
   }
   
-  legend("topleft",
+  graphics::legend("topleft",
          pch = symbols,
          col = cols,
          legend = paste(names(sub_data), names(sub_data[[1]])),
          bty = "n")
-  axis(1,
-       at = seq(1, length(sub_data[[1]][[1]]$speed)),
-       labels = sub_data[[1]][[1]]$isoTimes,
-       las = 2, 
-       cex.axis = 0.5)
+  graphics::axis(1,
+                 at = seq(1, length(sub_data[[1]][[1]]$speed)),
+                 labels = sub_data[[1]][[1]]$isoTimes,
+                 las = 2, 
+                 cex.axis = 0.5)
   
   
-  axis(2,
-       at = seq(0, range[2], dy), 
-       labels = seq(0, range[2], dy),
-       las = 2) 
+  graphics::axis(2,
+                 at = seq(0, range[2], dy), 
+                 labels = seq(0, range[2], dy),
+                 las = 2) 
   
   #abline(v=seq(1, length(sub_data[[1]][[1]]$speed)),
   #       lty = 2)
-  abline(h=seq(0, range[2], dy),
-         lty = 2)
+  graphics::abline(h=seq(0, range[2], dy),
+                   lty = 2)
   
 }
 
