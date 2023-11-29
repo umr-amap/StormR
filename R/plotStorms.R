@@ -320,8 +320,8 @@ plotStorms <- function(sts,
 
   # Adding legends
   if (legends != "none") {
-    leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
-    col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
+    leg <- names(SSHS_PALETTE)
+    col <- SSHS_PALETTE
 
     lty <- rep(0, 7)
     pch <- rep(19, 7)

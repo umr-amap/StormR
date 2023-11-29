@@ -73,6 +73,11 @@ atm2pa <- function(x) {
 #' `seasons` fields, or a 2D array of dimension
 #' (Maximum number of observations:number of storms), for the remaining fields
 #' which are `isoTime`, `lon`, `lat`, `msw`, `rmw`, `pressure`, `poci`, `scale`
+#' 
+#' @slot scale numeric. List of storm scale thresholds to use in all functions of 
+#' the package. Default value is set to the Saffir Simpson Hurricane Scale
+#' @slot scalePalette character. Named vector containing the color hex code 
+#' corresponding to each category in `scale` slot
 #'
 #' @details
 #' The fields input must provide at least 6 mandatory fields (and at most 11) in
@@ -130,7 +135,9 @@ stormsDataset <- methods::setClass(
     fields = "character",
     basin = "character",
     seasons = "numeric",
-    database = "list"
+    database = "list", 
+    scale = "numeric",
+    scalePalette = "character"
   )
 )
 
@@ -149,7 +156,7 @@ stormsDataset <- methods::setClass(
 #' @param verbose numeric
 #'
 #' @return NULL
-checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitConversion, scale, verbose) {
+checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitConversion, scale, scalePalette, verbose) {
   # Checking filename input
   stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename), "character"))
@@ -224,14 +231,15 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
     )
   }
 
-
-
   # Checking seasons input
   stopifnot("seasons must be numeric" = identical(class(seasons), "numeric"))
   stopifnot("seasons must be a range of calendar year" = length(seasons) == 2 & seasons[1] <= seasons[2])
 
   # Checking scale input
   stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
+  
+  # Checking scalePalette input
+  stopifnot("scale must be a named vector of character" = identical(class(scalePalette), "character"))
 
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -319,6 +327,9 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
 #'
 #' @param scale numeric. List of storm scale thresholds used for the database.
 #'   Default value is set to the Saffir Simpson Hurricane Scale
+#' @param scalePalette character. Named vector containing the color hex code 
+#' corresponding to each category in `scale` input
+#' 
 #' @param verbose numeric. Whether the function should display (`= 1`)
 #'   or not (`= 0`) information about the processes.
 #' @return The `defStormsDataset()` function returns a `stormsDataset` object.
@@ -357,9 +368,10 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                                poci = "mb2pa"
                              ),
                              scale = sshs,
+                             scalePalette = SSHS_PALETTE,
                              verbose = 1) {
   
-  checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, scale, verbose)
+  checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, scale, scalePalette, verbose)
 
 
   if (verbose) {
@@ -497,7 +509,9 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
     fields = fields,
     database = data,
     basin = basin,
-    seasons = c(min = min(data$seasons, na.rm = TRUE), max = max(data$seasons, na.rm = TRUE))
+    seasons = c(min = min(data$seasons, na.rm = TRUE), max = max(data$seasons, na.rm = TRUE)),
+    scale = scale,
+    scalePalette = scalePalette
   )
 
 

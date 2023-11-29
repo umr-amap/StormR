@@ -84,5 +84,11 @@ is either a 1D array of dimension (number of storms) for \code{names} and
 \code{seasons} fields, or a 2D array of dimension
 (Maximum number of observations:number of storms), for the remaining fields
 which are \code{isoTime}, \code{lon}, \code{lat}, \code{msw}, \code{rmw}, \code{pressure}, \code{poci}, \code{scale}}
+
+\item{\code{scale}}{numeric. List of storm scale thresholds to use in all functions of
+the package. Default value is set to the Saffir Simpson Hurricane Scale}
+
+\item{\code{scalePalette}}{character. Named vector containing the color hex code
+corresponding to each category in \code{scale} slot}
 }}
 

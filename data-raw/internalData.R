@@ -15,7 +15,26 @@ atm2paC <- 101300
 km <- 1000
 
 wgs84 <- 4326
+
+# SSHS constants
+
 sshs <- c(18, 33, 42, 49, 58, 70)
+SSHS_PALETTE = c("#00CCFF",
+                 "#00CCCC",
+                 "#FFFFB2",
+                 "#FECC5C",
+                 "#FD8D3C",
+                 "#F03B20",
+                 "#BD0026")
+
+names(SSHS_PALETTE) = c("TD",
+                        "TS",
+                        "Cat. 1",
+                        "Cat. 2",
+                        "Cat. 3",
+                        "Cat. 4",
+                        "Cat. 5")
+
 
 basins <- data.frame(
     row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"),
@@ -59,7 +78,7 @@ dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3,
 
 usethis::use_data(resolutions,
     mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
-    km, wgs84, Basins, sshs,
+    km, wgs84, Basins, sshs, SSHS_PALETTE,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
     dfGetDataInterpolate,

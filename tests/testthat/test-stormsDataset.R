@@ -3,6 +3,7 @@
 
 
 
+
 test_that("Test checkInputsdefStormsDataset function", {
   # Checking filename input
   expect_error(
@@ -22,6 +23,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -30,6 +32,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -52,6 +55,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -60,6 +64,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -82,6 +87,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -90,6 +96,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -113,6 +120,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -121,6 +129,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -132,6 +141,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       fields = 1,
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -140,6 +150,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -150,6 +161,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       fields = TRUE,
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -158,6 +170,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -179,6 +192,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -187,6 +201,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -208,6 +223,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -216,6 +232,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -237,6 +254,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -245,6 +263,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -266,6 +285,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -274,6 +294,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -295,6 +316,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -303,6 +325,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -325,6 +348,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -333,35 +357,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
-      verbose = 1
-    )
-  )
-  
-  expect_error(
-    checkInputsdefStormsDataset(
-      filename = "database.nc",
-      fields = c(
-        "basin" = "basin",
-        "names" = "name",
-        "seasons" = "season",
-        "isoTime" = "iso_time",
-        "lon" = "usa_lon",
-        "lat" = "usa_lat",
-        "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
-        "rmw" = "usa_rmw",
-        "pressure" = "usa_pres",
-        "poci" = "usa_poci"
-      ),
-      basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-      ), "%Y"))),
-      unitConversion = c(
-        rmw = "nm2km",
-        pressure = "mb2pa",
-        poci = "mb2pa"
-      ),
-      scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -384,6 +380,38 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      scale = sshs,
+      scalePalette = SSHS_PALETTE,
+      verbose = 1
+    )
+  )
+  
+  expect_error(
+    checkInputsdefStormsDataset(
+      filename = "database.nc",
+      fields = c(
+        "basin" = "basin",
+        "names" = "name",
+        "seasons" = "season",
+        "isoTime" = "iso_time",
+        "lon" = "usa_lon",
+        "lat" = "usa_lat",
+        "msw" = "usa_wind",
+        "sshs" = "usa_sshs",
+        "rmw" = "usa_rmw",
+        "pressure" = "usa_pres",
+        "poci" = "usa_poci"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -392,6 +420,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -414,6 +443,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -421,6 +451,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -443,6 +474,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -451,6 +483,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb_to_pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -473,11 +506,13 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(msw = "knt2ms",
                          rmw = "nm2km",
                          poci = "mb2pa"),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -500,6 +535,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = TRUE,
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -508,6 +544,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -530,6 +567,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -537,6 +575,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -559,6 +598,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -590,6 +630,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = 1,
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -598,6 +639,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -619,6 +661,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -627,6 +670,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -649,6 +693,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = TRUE,
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -657,6 +702,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -679,6 +725,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = c("NA", "WP"),
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -687,6 +734,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -709,6 +757,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "basin",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -717,6 +766,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -747,6 +797,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -776,6 +827,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -805,6 +857,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -834,6 +887,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -858,9 +912,11 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = 1,
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -883,9 +939,11 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
+        
       ), "%Y"))),
       unitConversion = TRUE,
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -907,7 +965,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "usa_pres",
         poci = "usa_poci"
       ),
-      basin = NULL,
+      basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
         
       ), "%Y"))),
@@ -919,187 +977,232 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       scale = c("1", "2"),
       scale = sshs,
+      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
-    
-    expect_error(
-      checkInputsdefStormsDataset(
-        filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
-        fields = c(
-          names = "name",
-          seasons = "season",
-          isoTime = "iso_time",
-          lon = "usa_lon",
-          lat = "usa_lat",
-          msw = "usa_wind",
-          basin = "basin",
-          scale = "usa_sshs",
-          rmw = "usa_rmw",
-          pressure = "usa_pres",
-          poci = "usa_poci"
-        ),
-        basin = NULL,
-        seasons = c(1980, as.numeric(format(Sys.time(
-          
-        ), "%Y"))),
-        unitConversion = c(
-          msw = "knt2ms",
-          rmw = "nm2km",
-          pressure = "mb2pa",
-          poci = "mb2pa"
-        ),
-        scale = TRUE,
-        verbose = 1
-      )
+  
+  expect_error(
+    checkInputsdefStormsDataset(
+      filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
+      fields = c(
+        names = "name",
+        seasons = "season",
+        isoTime = "iso_time",
+        lon = "usa_lon",
+        lat = "usa_lat",
+        msw = "usa_wind",
+        basin = "basin",
+        scale = "usa_sshs",
+        rmw = "usa_rmw",
+        pressure = "usa_pres",
+        poci = "usa_poci"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        msw = "knt2ms",
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      scale = TRUE,
+      scalePalette = SSHS_PALETTE,
+      verbose = 1
     )
-      
-      # Checking verbose input
-      expect_error(
-        checkInputsdefStormsDataset(
-          filename = "database.nc",
-          fields = c(
-            "basin" = "basin",
-            "names" = "name",
-            "seasons" = "season",
-            "isoTime" = "iso_time",
-            "lon" = "usa_lon",
-            "lat" = "usa_lat",
-            "msw" = "usa_wind",
-            "sshs" = "usa_sshs",
-            "rmw" = "usa_rmw",
-            "pressure" = "usa_pres",
-            "poci" = "usa_poci"
-          ),
-          basin = 1,
-          seasons = c(1980, as.numeric(format(Sys.time(
-          ), "%Y"))),
-          unitConversion = c(
-            msw = "knt2ms",
-            rmw = "nm2km",
-            pressure = "mb2pa",
-            poci = "mb2pa"
-          ),
-          scale = sshs,
-          verbose = 1
-        )
-      )
-      
-      expect_error(
-        checkInputsdefStormsDataset(
-          filename = "database.nc",
-          fields = c(
-            "basin" = "basin",
-            "names" = "name",
-            "seasons" = "season",
-            "isoTime" = "iso_time",
-            "lon" = "usa_lon",
-            "lat" = "usa_lat",
-            "msw" = "usa_wind",
-            "sshs" = "usa_sshs",
-            "rmw" = "usa_rmw",
-            "pressure" = "usa_pres",
-            "poci" = "usa_poci"
-          ),
-          basin = 1,
-          seasons = c(1980, as.numeric(format(Sys.time(
-          ), "%Y"))),
-          unitConversion = c(
-            msw = "knt2ms",
-            rmw = "nm2km",
-            pressure = "mb2pa",
-            poci = "mb2pa"
-          ),
-          verbose = "1"
-        )
-      )
-      
-      # Warnings
-      expect_warning(
-        checkInputsdefStormsDataset(
-          filename = "database.nc",
-          fields = c(
-            "basin" = "basin",
-            "names" = "name",
-            "seasons" = "season",
-            "isoTime" = "iso_time",
-            "lon" = "usa_lon",
-            "lat" = "usa_lat",
-            "msw" = "usa_wind",
-            "sshs" = "usa_sshs",
-            "pressure" = "usa_pres",
-            "poci" = "usa_poci"
-          ),
-          basin = "SP",
-          seasons = c(1980, as.numeric(format(Sys.time(
-          ), "%Y"))),
-          unitConversion = c(
-            msw = "knt2ms",
-            rmw = "nm2km",
-            pressure = "mb2pa",
-            poci = "mb2pa"
-          ),
-          scale = sshs,
-          verbose = 1
-        )
-      )
-      
-      expect_warning(
-        checkInputsdefStormsDataset(
-          filename = "database.nc",
-          fields = c(
-            "basin" = "basin",
-            "names" = "name",
-            "seasons" = "season",
-            "isoTime" = "iso_time",
-            "lon" = "usa_lon",
-            "lat" = "usa_lat",
-            "msw" = "usa_wind",
-            "sshs" = "usa_sshs",
-            "rmw" = "usa_rmw",
-            "poci" = "usa_poci"
-          ),
-          basin = "SP",
-          seasons = c(1980, as.numeric(format(Sys.time(
-          ), "%Y"))),
-          unitConversion = c(
-            msw = "knt2ms",
-            rmw = "nm2km",
-            pressure = "mb2pa",
-            poci = "mb2pa"
-          ),
-          scale = sshs,
-          verbose = 1
-        )
-      )
-      
-      expect_warning(
-        checkInputsdefStormsDataset(
-          filename = "database.nc",
-          fields = c(
-            "basin" = "basin",
-            "names" = "name",
-            "seasons" = "season",
-            "isoTime" = "iso_time",
-            "lon" = "usa_lon",
-            "lat" = "usa_lat",
-            "msw" = "usa_wind",
-            "sshs" = "usa_sshs",
-            "rmw" = "usa_rmw",
-            "pressure" = "usa_pres"
-          ),
-          basin = "SP",
-          seasons = c(1980, as.numeric(format(Sys.time(
-          ), "%Y"))),
-          unitConversion = c(
-            msw = "knt2ms",
-            rmw = "nm2km",
-            pressure = "mb2pa",
-            poci = "mb2pa"
-          ),
-          scale = sshs,
-          verbose = 1
-        )
-      )
+  )
+  
+  # Checking scalePalette input
+  expect_error(
+    checkInputsdefStormsDataset(
+      filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
+      fields = c(
+        names = "name",
+        seasons = "season",
+        isoTime = "iso_time",
+        lon = "usa_lon",
+        lat = "usa_lat",
+        msw = "usa_wind",
+        basin = "basin",
+        scale = "usa_sshs",
+        rmw = "usa_rmw",
+        pressure = "usa_pres",
+        poci = "usa_poci"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        msw = "knt2ms",
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      scale = sshs,
+      scale = sshs,
+      scalePalette = c(1,2,2,3),
+      verbose = 1
+    )
+  )
+  
+  expect_error(
+    checkInputsdefStormsDataset(
+      filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
+      fields = c(
+        names = "name",
+        seasons = "season",
+        isoTime = "iso_time",
+        lon = "usa_lon",
+        lat = "usa_lat",
+        msw = "usa_wind",
+        basin = "basin",
+        scale = "usa_sshs",
+        rmw = "usa_rmw",
+        pressure = "usa_pres",
+        poci = "usa_poci"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        msw = "knt2ms",
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      scale = sshs,
+      scale = sshs,
+      scalePalette = TRUE,
+      verbose = 1
+    )
+  )
+  
+  # Checking verbose input
+  expect_error(
+    checkInputsdefStormsDataset(
+      filename = "database.nc",
+      fields = c(
+        "basin" = "basin",
+        "names" = "name",
+        "seasons" = "season",
+        "isoTime" = "iso_time",
+        "lon" = "usa_lon",
+        "lat" = "usa_lat",
+        "msw" = "usa_wind",
+        "sshs" = "usa_sshs",
+        "rmw" = "usa_rmw",
+        "pressure" = "usa_pres",
+        "poci" = "usa_poci"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        msw = "knt2ms",
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      verbose = "1"
+    )
+  )
+  
+  # Warnings
+  expect_warning(
+    checkInputsdefStormsDataset(
+      filename = "database.nc",
+      fields = c(
+        "basin" = "basin",
+        "names" = "name",
+        "seasons" = "season",
+        "isoTime" = "iso_time",
+        "lon" = "usa_lon",
+        "lat" = "usa_lat",
+        "msw" = "usa_wind",
+        "sshs" = "usa_sshs",
+        "pressure" = "usa_pres",
+        "poci" = "usa_poci"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        msw = "knt2ms",
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      scale = sshs,
+      scalePalette = SSHS_PALETTE,
+      verbose = 1
+    )
+  )
+  
+  expect_warning(
+    checkInputsdefStormsDataset(
+      filename = "database.nc",
+      fields = c(
+        "basin" = "basin",
+        "names" = "name",
+        "seasons" = "season",
+        "isoTime" = "iso_time",
+        "lon" = "usa_lon",
+        "lat" = "usa_lat",
+        "msw" = "usa_wind",
+        "sshs" = "usa_sshs",
+        "rmw" = "usa_rmw",
+        "poci" = "usa_poci"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        msw = "knt2ms",
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      scale = sshs,
+      scalePalette = SSHS_PALETTE,
+      verbose = 1
+    )
+  )
+  
+  expect_warning(
+    checkInputsdefStormsDataset(
+      filename = "database.nc",
+      fields = c(
+        "basin" = "basin",
+        "names" = "name",
+        "seasons" = "season",
+        "isoTime" = "iso_time",
+        "lon" = "usa_lon",
+        "lat" = "usa_lat",
+        "msw" = "usa_wind",
+        "sshs" = "usa_sshs",
+        "rmw" = "usa_rmw",
+        "pressure" = "usa_pres"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        msw = "knt2ms",
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      scale = sshs,
+      scalePalette = SSHS_PALETTE,
+      verbose = 1
+    )
+  )
 })
-    
