@@ -67,7 +67,7 @@ getInObs(st, name = "PAM")
 The data can be visualised on a map as follows:
 
 ``` {r chunk4}
-plotStorms(st, labels = TRUE)
+plotStorms(st, sds, labels = TRUE)
 ```
 
 #### Using a specified point location
@@ -94,7 +94,7 @@ We can plot track data for the topical cyclone Niran only using the `names`
 argument of the `plotStorms()` function as follows:
 
 ``` {r chunk7}
-plotStorms(st, names = "NIRAN", labels = TRUE, legends = "bottomleft")
+plotStorms(st, sds, names = "NIRAN", labels = TRUE, legends = "bottomleft")
 ```
 
 The track data for Niran can also be extracted and stored in a new object using
@@ -139,5 +139,5 @@ We can only plot category 4 and 5 tropical cyclones using the `category`
 argument of the `plotStorms()` function as follows:
 
 ``` {r chunk12}
-plotStorms(st, category = c(4, 5), labels = FALSE, legends = "topright")
+plotStorms(st, sds, category = c(4, 5), labels = FALSE, legends = "topright")
 ```

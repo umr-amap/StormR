@@ -9,7 +9,7 @@
 Choose the database to use within the package's functions
 }
 \details{
-The fields input must provide at least 6 mandatory fields (and at most 11) in
+The fields input must provide at least 6 mandatory fields (and at most 10) in
 order to benefit from all the functionalities of this package:
 \itemize{
 \item A field \code{names}: which dimension contains the names of storms
@@ -36,8 +36,6 @@ database
 \item A field \code{rmw}: which dimension contains the radius of maximum
 wind speed of each observations for all storms in the netcdf
 database (See spatialBehaviour, temporalBehaviour)
-\item A field \code{scale}: which dimension contains the storm scale index of
-each observations for all storms in the netcdf database
 }
 Finally these following fields are optional but mandatory to perform Holland
 model (See \code{spatialBehaviour}, \code{temporalBehaviour})
@@ -52,7 +50,7 @@ in the nectdf database
 
 Default value is set according to the most relevant dimensions of IBTrACS
 databases:
-\code{fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres", poci = "usa_poci", scale = "usa_sshs")}
+\code{fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres", poci = "usa_poci")}
 }
 \section{Slots}{
 

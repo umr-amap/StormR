@@ -6,6 +6,7 @@
 \usage{
 temporalBehaviour(
   sts,
+  sds,
   points,
   product = "TS",
   windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -19,6 +20,8 @@ temporalBehaviour(
 \arguments{
 \item{sts}{\code{StormsList} object.}
 
+\item{sds}{\code{stormsDataset} object used to generate \code{sts} input}
+
 \item{points}{data.frame. Consisting of two columns names as "x" (for the longitude) and
 "y" (for the latitude), providing the coordinates in decimal degrees of the point locations. Row names
 can also be provided to named the locations.}
@@ -31,8 +34,8 @@ can also be provided to named the locations.}
 }}
 
 \item{windThreshold}{numeric vector. Minimal wind threshold(s) (in \eqn{m.s^{-1}}) used to
-compute the duration of exposure when \code{product="Exposure"}. By default the thresholds
-used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 \eqn{m.s^{-1}}).}
+compute the duration of exposure when \code{product="Exposure"}. Default value is to set NULL, in this
+case, the windthresholds are the one used in the scale defined in the stormdatabase}
 
 \item{method}{character. Model used to compute wind speed and direction.
 Three different models are implemented:
@@ -209,15 +212,15 @@ row.names(pts) <- c("point_1", "point_2")
 
 # Computing time series of wind speed and direction for Pam
 # over points 1 and 2 defined above
-ts.pam <- temporalBehaviour(pam, points = pts)
+ts.pam <- temporalBehaviour(pam, sds, points = pts)
 
 # Computing PDI for Pam over points 1 and 2 defined above
-pdi.pam <- temporalBehaviour(pam, points = pts, product = "PDI")
+pdi.pam <- temporalBehaviour(pam, sds, points = pts, product = "PDI")
 
 # Computing the duration of exposure to wind speeds above the thresholds
 # used by the Saffir-Simpson hurricane wind scale for Pam
 # over points 1 and 2 defined above
-exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
+exp.pam <- temporalBehaviour(pam, sds, points = pts, product = "Exposure")
 }
 }
 \references{

@@ -4,6 +4,7 @@
 #'
 #' @noRd
 #' @param sts StormsList object
+#' @param sds `stormsDataset` object
 #' @param points data.frame
 #' @param product character
 #' @param windThreshold numeric
@@ -13,10 +14,13 @@
 #' @param tempRes numeric
 #' @param verbose logical
 #' @return NULL
-checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, method, asymmetry,
+checkInputsTemporalBehaviour <- function(sts, sds, points, product, windThreshold, method, asymmetry,
                                          empiricalRMW, tempRes, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
+  
+  # Checking sts input
+  stopifnot("no data found" = !missing(sds))
 
   # Checking points input
   stopifnot("no data found" = !missing(points))
@@ -208,6 +212,7 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #' It also allows to compute three associated summary statistics.
 #'
 #' @param sts `StormsList` object.
+#' @param sds `stormsDataset` object used to generate `sts` input
 #' @param points data.frame. Consisting of two columns names as "x" (for the longitude) and
 #' "y" (for the latitude), providing the coordinates in decimal degrees of the point locations. Row names
 #' can also be provided to named the locations.
@@ -218,8 +223,8 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #'     \item `"Exposure"`, for the duration of exposure to defined wind thresholds.
 #'   }
 #' @param windThreshold numeric vector. Minimal wind threshold(s) (in \eqn{m.s^{-1}}) used to
-#'   compute the duration of exposure when `product="Exposure"`. By default the thresholds
-#'   used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 \eqn{m.s^{-1}}).
+#'   compute the duration of exposure when `product="Exposure"`. Default value is to set NULL, in this 
+#'   case, the windthresholds are the one used in the scale defined in the stormdatabase 
 #' @param method character. Model used to compute wind speed and direction.
 #' Three different models are implemented:
 #'   \itemize{
@@ -405,18 +410,19 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #'
 #' # Computing time series of wind speed and direction for Pam
 #' # over points 1 and 2 defined above
-#' ts.pam <- temporalBehaviour(pam, points = pts)
+#' ts.pam <- temporalBehaviour(pam, sds, points = pts)
 #'
 #' # Computing PDI for Pam over points 1 and 2 defined above
-#' pdi.pam <- temporalBehaviour(pam, points = pts, product = "PDI")
+#' pdi.pam <- temporalBehaviour(pam, sds, points = pts, product = "PDI")
 #'
 #' # Computing the duration of exposure to wind speeds above the thresholds
 #' # used by the Saffir-Simpson hurricane wind scale for Pam
 #' # over points 1 and 2 defined above
-#' exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
+#' exp.pam <- temporalBehaviour(pam, sds, points = pts, product = "Exposure")
 #' }
 #' @export
 temporalBehaviour <- function(sts,
+                              sds,
                               points,
                               product = "TS",
                               windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -425,7 +431,12 @@ temporalBehaviour <- function(sts,
                               empiricalRMW = FALSE,
                               tempRes = 1,
                               verbose = 1) {
-  checkInputsTemporalBehaviour(sts, points, product, windThreshold, method, asymmetry, empiricalRMW, tempRes, verbose)
+  
+  if(is.null(windThreshold)){
+    windThreshold = sshs
+  }
+  
+  checkInputsTemporalBehaviour(sts, sds, points, product, windThreshold, method, asymmetry, empiricalRMW, tempRes, verbose)
 
 
   if (verbose > 0) {

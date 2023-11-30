@@ -11,7 +11,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   # Checking loi input
@@ -21,7 +21,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -31,7 +31,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -41,7 +41,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -51,7 +51,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -61,7 +61,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -71,7 +71,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
 
@@ -83,7 +83,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -93,7 +93,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -103,7 +103,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -113,7 +113,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -123,7 +123,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   # Checking names input
@@ -134,7 +134,7 @@ test_that("Tests invalid inputs", {
     names = 123,
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -144,7 +144,7 @@ test_that("Tests invalid inputs", {
     names = TRUE,
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -154,7 +154,7 @@ test_that("Tests invalid inputs", {
     names = NULL,
     maxDist = 300,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
 
@@ -166,7 +166,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = "hui",
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -176,7 +176,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = c(1, 3),
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -186,7 +186,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = -10,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -196,7 +196,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = TRUE,
     verbose = 2,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   # Checking verbose input
@@ -207,7 +207,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = -1,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -217,7 +217,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = c(1, 3),
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -227,7 +227,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = "hui",
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -237,7 +237,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = TRUE,
-    removeTD = TRUE
+    removeUnder = NULL
   ))
 
   # Checking remove_TC input
@@ -248,7 +248,7 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = 1
+    removeUnder = c(1,2)
   ))
 
   expect_error(checkInputsDefStormsList(
@@ -258,7 +258,27 @@ test_that("Tests invalid inputs", {
     names = "PAM",
     maxDist = 300,
     verbose = 2,
-    removeTD = "hui"
+    removeUnder = "hui"
+  ))
+  
+  expect_error(checkInputsDefStormsList(
+    sds = sds,
+    loi = "Vanuatu",
+    seasons = c(1980, 2020),
+    names = "PAM",
+    maxDist = 300,
+    verbose = 2,
+    removeUnder = NULL
+  ))
+  
+  expect_error(checkInputsDefStormsList(
+    sds = sds,
+    loi = "Vanuatu",
+    seasons = c(1980, 2020),
+    names = "PAM",
+    maxDist = 300,
+    verbose = 2,
+    removeUnder = -1
   ))
 })
 
@@ -279,7 +299,7 @@ test_that("Storm class getters", {
 
   expect_identical(getNames(pam@data[["PAM"]]), "PAM")
   expect_identical(getSeasons(pam@data[["PAM"]]), 2015)
-  expect_identical(getScale(pam@data[["PAM"]]), 5)
+  expect_identical(getScale(pam@data[["PAM"]]), as.integer(6))
   expect_identical(getNbObs(pam@data[["PAM"]]), as.integer(57))
   expect_identical(getObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs.all)
   expect_identical(getInObs(pam@data[["PAM"]]), pam@data[["PAM"]]@obs)
@@ -302,7 +322,7 @@ test_that("StormsList class getters", {
   )
   expect_identical(
     getScale(sts_nc),
-    c("PAM" = 5, "SOLO" = 0, "ULA" = 4, "UESI" = 1, "GRETEL" = 1, "LUCAS" = 1, "NIRAN" = 5)
+    c("PAM" = as.integer(6), "SOLO" = as.integer(1), "ULA" = as.integer(5), "UESI" = as.integer(2), "GRETEL" = as.integer(2), "LUCAS" = as.integer(2), "NIRAN" = as.integer(6))
   )
   expect_identical(getBufferSize(sts_nc), sts_nc@buffer)
   expect_identical(getLOI(sts_nc), sts_nc@spatialLoi)
@@ -318,7 +338,7 @@ test_that("Storm and stormsList class getters", {
   # Check that the Storm output is correct
   expect_match(out[1], "Name: PAM")
   expect_match(out[2], "Season: 2015")
-  expect_match(out[3], "Maximum category reached: 5")
+  expect_match(out[3], "Maximum level reached in scale: 6")
   expect_match(out[4], "Indices of observations within buffer: 43 44 45 46 47")
   #expect_match(out[7], "1  2015-03-08 12:00:00 168.9000  -7.500000  13   -1  93 100400 100500")
   #expect_match(tail(out, n = 1), "57 2015-03-15 12:00:00 178.5000 -33.799999  28   -4  37  98200  99300")
@@ -382,9 +402,9 @@ test_that("Test convert loi function", {
 
 
 test_that("Test computeScaleIndice function", {
-  expect_equal(computeScaleIndice(49, sshs), 3)
-  expect_equal(computeScaleIndice(10, sshs), -1)
-  expect_equal(computeScaleIndice(100, sshs), 5)
+  expect_equal(computeScaleIndice(49, sshs), 4)
+  expect_equal(computeScaleIndice(10, sshs), 0)
+  expect_equal(computeScaleIndice(100, sshs), 6)
 })
 
 
@@ -405,7 +425,7 @@ test_that("Test retrieveStorms function", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
-  expect_identical(retrieveStorms(sds@database, "PAM", c(2015, 2021), TRUE), as.integer(1))
+  expect_identical(retrieveStorms(sds@database, "PAM", c(2015, 2021), NULL), as.integer(1))
 })
 
 

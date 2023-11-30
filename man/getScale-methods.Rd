@@ -5,7 +5,7 @@
 \alias{getScale}
 \alias{getScale,storm-method}
 \alias{getScale,stormsList-method}
-\title{Getting maximum Saffir-Simpson hurricane wind scale category}
+\title{Getting maximum level in the wind scale}
 \usage{
 getScale(s)
 
@@ -31,7 +31,7 @@ sds <- defStormsDataset()
 #Getting storm track data for all storms near New Caledonia
 sts <- defStormsList(sds=sds, loi = "New Caledonia")
 
-#Getting maximum Saffir-Simpson hurricane wind scale category
+#Getting maximum level in the wind scale
 #reached by each storm in the sts object
 getScale(sts)
 }

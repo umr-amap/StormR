@@ -80,7 +80,7 @@ atm2pa <- function(x) {
 #' corresponding to each category in `scale` slot
 #'
 #' @details
-#' The fields input must provide at least 6 mandatory fields (and at most 11) in
+#' The fields input must provide at least 6 mandatory fields (and at most 10) in
 #' order to benefit from all the functionalities of this package:
 #' \itemize{
 #'   \item A field `names`: which dimension contains the names of storms
@@ -107,8 +107,6 @@ atm2pa <- function(x) {
 #'  \item A field `rmw`: which dimension contains the radius of maximum
 #'        wind speed of each observations for all storms in the netcdf
 #'        database (See spatialBehaviour, temporalBehaviour)
-#'  \item A field `scale`: which dimension contains the storm scale index of
-#'        each observations for all storms in the netcdf database
 #' }
 #' Finally these following fields are optional but mandatory to perform Holland
 #' model (See `spatialBehaviour`, `temporalBehaviour`)
@@ -125,7 +123,7 @@ atm2pa <- function(x) {
 #' databases:
 #' `fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time",
 #' lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres",
-#' poci = "usa_poci", scale = "usa_sshs")`
+#' poci = "usa_poci")`
 #'
 #' @export
 stormsDataset <- methods::setClass(
@@ -153,6 +151,8 @@ stormsDataset <- methods::setClass(
 #' @param basin character
 #' @param seasons numeric vector
 #' @param unitConversion character vector
+#' @param scale numeric vector
+#' @param scalePalette character vector
 #' @param verbose numeric
 #'
 #' @return NULL
@@ -241,6 +241,9 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
   # Checking scalePalette input
   stopifnot("scale must be a named vector of character" = identical(class(scalePalette), "character"))
 
+  stopifnot("invalid length of either scale or scalePalette input (lenght(scalePalette) must be equal to lenght(scalePalette) + 1)" = 
+              length(scalePalette) == length(scale) + 1)
+  
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
@@ -276,8 +279,7 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
 #'    \item `"rmw"`, radius of maximum winds: distance between the centre of the storm and
 #'        its band of strongest winds (recommended),
 #'    \item `"pressure"`, central pressure (recommended),
-#'    \item `"poci"`, pressure of the last closed isobar (recommended), and
-#'    \item `"scale"`, Storm scale rating (optional).
+#'    \item `"poci"`, pressure of the last closed isobar (recommended)
 #'  }
 #' @param basin character. If the basin field is provided, then storm track data will
 #' only be extracted for the named basin. By default `basin=NULL`, meaning that all storms
@@ -354,7 +356,6 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                                lat = "usa_lat",
                                msw = "usa_wind",
                                basin = "basin",
-                               scale = "usa_sshs",
                                rmw = "usa_rmw",
                                pressure = "usa_pres",
                                poci = "usa_poci"
@@ -373,7 +374,9 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
   
   checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, scale, scalePalette, verbose)
 
-
+  # order scale
+  scale = scale[order(scale)]
+  
   if (verbose) {
     cat("=== Loading data  ===\nOpen database... ")
   }
@@ -450,10 +453,6 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
   data$latitude <- data$latitude[, o]
   data$msw <- data$msw[, o]
 
-  if ("scale" %in% names(fields)) {
-    data$scale <- array(ncdf4::ncvar_get(dataBase, fields["scale"])[, ind], dim = c(row, len))
-    data$scale <- data$scale[, o]
-  }
 
   if ("rmw" %in% names(fields)) {
     if (unitConversion["rmw"] == "nm2km") {

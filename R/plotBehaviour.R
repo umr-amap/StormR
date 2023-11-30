@@ -7,6 +7,7 @@
 #'
 #' @noRd
 #' @param sts StormsList object
+#' @param sds stormsDataset object
 #' @param rasterProduct Spatraster
 #' @param xlim numeric vector
 #' @param ylim numeric vector
@@ -17,9 +18,12 @@
 #' @param main character
 #' @param legends character
 #' @return NULL, just stops the function if an error is found
-checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends) {
+checkInputsPlotBehaviour <- function(sts, sds, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
+  
+  #checking sds input
+  stopifnot("sds is missing" = !missing(sds))
 
   # Checking rasterProduct
   stopifnot("no data to plot" = !missing(rasterProduct))
@@ -85,6 +89,7 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' the `spatialBehaviour()` function and stored in `SpatRaster` objects.
 #'
 #' @param sts `StormsList` object.
+#' @param sds `stormsDataset` object used to generate `sts` input
 #' @param rasterProduct layer name in a `SpatRaster` object. The names of the layers follow
 #' the following terminology:
 #' \itemize{
@@ -122,15 +127,16 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #'
 #' # Plotting maximum sustained wind speed for Pam (2015) near Vanuatu
-#' pam.msw <- spatialBehaviour(pam, verbose = 0)
-#' plotBehaviour(pam, pam.msw)
+#' pam.msw <- spatialBehaviour(pam, sds, verbose = 0)
+#' plotBehaviour(pam, sds, pam.msw)
 #'
 #' # Plotting 2D wind speed profile for Pam (2015) near Vanuatu
-#' pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-#' plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
+#' pam.prof <- spatialBehaviour(pam, sds, product = "Profiles", verbose = 0)
+#' plotBehaviour(pam, sds, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 #' }
 #' @export
 plotBehaviour <- function(sts,
+                          sds,
                           rasterProduct,
                           colorPalette = NULL,
                           main = NULL,
@@ -141,7 +147,7 @@ plotBehaviour <- function(sts,
                           pos = 3,
                           legends = "topleft") {
   checkInputsPlotBehaviour(
-    sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette,
+    sts, sds, rasterProduct, xlim, ylim, labels, by, pos, colorPalette,
     main, legends
   )
 
@@ -174,7 +180,7 @@ plotBehaviour <- function(sts,
 
   # Plotting track
   plotStorms(
-    sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
+    sts = sts, sds = sds, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
     legends = legends
   )
 
@@ -227,7 +233,7 @@ plotBehaviour <- function(sts,
 
 
   # Adding track again (to emphazise)
-  plotTrack(sts@data[[name]])
+  plotTrack(sts@data[[name]], sds)
 
   # Adding labels
   if (labels && product != "Profiles" && product != "WindDirection") {

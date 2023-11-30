@@ -11,14 +11,14 @@
 #' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param scale list of values that defines the scale intensity of the storm, e.g. `sshs`
-#'
+#' @param palette list of colors that defines the scale intensity of the storm
 #' @return color associated with the observation
-getColors <- function(msw, scale) {
+getColors <- function(msw, scale, palette) {
   if (is.na(msw)) {
     color <- NA
   } else {
     i <- findInterval(msw, scale)
-    color <- sshsPalette[i + 1]
+    color <- palette[i + 1]
   }
 
   return(color)
@@ -35,15 +35,16 @@ getColors <- function(msw, scale) {
 #'
 #' @noRd
 #' @param st Storm object
+#' @param sds stormsDataset object
 #'
 #' @return A plot with the track of the storm
-plotTrack <- function(st) {
+plotTrack <- function(st, sds) {
   cexL <- 1
   cexP <- 0.6
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
-  colors <- unlist(lapply(msw, getColors, scale = sshs))
+  colors <- unlist(lapply(msw, getColors, scale = sds@scale, palette = sds@scalePalette))
 
   graphics::lines(
     lon,
@@ -105,6 +106,7 @@ plotLabels <- function(st, by, pos) {
 #'
 #' @noRd
 #' @param sts StormsList object
+#' @param sds stormsDataset object
 #' @param names character vector
 #' @param category numeric vector
 #' @param labels logical
@@ -115,10 +117,13 @@ plotLabels <- function(st, by, pos) {
 #' @param xlim numeric vector
 #' @param ylim numeric vector
 #' @return NULL, just stops the function if an error is found
-checkInputsPlotStorms <- function(sts, names, category, labels, by,
+checkInputsPlotStorms <- function(sts, sds, names, category, labels, by,
                                   pos, legends, loi, xlim, ylim) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
+  
+  #checking sds input
+  stopifnot("sds is missing" = !missing(sds))
 
   # Checking names input
   if (!is.null(names)) {
@@ -180,6 +185,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' This `plotStorms()` function allows plotting storm track data stored in a `StormsList` object.
 #'
 #' @param sts `StormsList` object
+#' @param sds `stormsDataset` object used to generate `sts` input
 #' @param names character vector. Name(s) of the storm(s) in capital letters.
 #'  If `names = NULL` (default setting), all storms are plotted.
 #' @param category numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
@@ -220,13 +226,14 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #'
 #' # Plotting Pam over Vanuatu with labels every 24h
-#' plotStorms(pam, labels = TRUE)
+#' plotStorms(sts =pam, sds = sds, labels = TRUE)
 #'
 #' # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
-#' plotStorms(pam, labels = TRUE, by = 2, pos = 4)
+#' plotStorms(sts = pam, sds = sds, labels = TRUE, by = 2, pos = 4)
 #' }
 #' @export
 plotStorms <- function(sts,
+                       sds,
                        names = NULL,
                        category = NULL,
                        xlim = NULL,
@@ -236,8 +243,9 @@ plotStorms <- function(sts,
                        pos = 3,
                        legends = "topleft",
                        loi = TRUE) {
+  
   checkInputsPlotStorms(
-    sts, names, category, labels, by, pos, legends,
+    sts, sds, names, category, labels, by, pos, legends,
     loi, xlim, ylim
   )
 
@@ -313,22 +321,23 @@ plotStorms <- function(sts,
   }
 
   # Plotting track(s) and labels
-  lapply(stsAux, plotTrack)
+  lapply(stsAux, plotTrack, sds)
   if (labels) {
     lapply(stsAux, plotLabels, by, pos)
   }
 
   # Adding legends
   if (legends != "none") {
-    leg <- names(SSHS_PALETTE)
-    col <- SSHS_PALETTE
-
-    lty <- rep(0, 7)
-    pch <- rep(19, 7)
-    lwd <- rep(1, 7)
+    
+    leg <- names(sds@scalePalette)
+    col <- sds@scalePalette
+    
+    lty <- rep(0, length(col))
+    pch <- rep(19, length(col))
+    lwd <- rep(1, length(col))
 
     graphics::legend(legends,
-      title = "SSHS",
+      title = "Scale",
       legend = leg,
       col = col,
       lty = lty,

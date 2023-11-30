@@ -37,7 +37,7 @@ observation is made up of several fields which are:
 \item \code{lon}, Longitude coordinate (Eastern degree)
 \item \code{lat}, Latitude coordinate (Northern degree)
 \item \code{msw}, Maximum Sustained Wind (m/s)
-\item \code{scale}, Category in the chosen scale
+\item \code{scale}, Level in the chosen scale
 }
 The following field is not mandatory but highly recommended
 \itemize{

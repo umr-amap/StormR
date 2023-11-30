@@ -976,7 +976,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = c("1", "2"),
-      scale = sshs,
       scalePalette = SSHS_PALETTE,
       verbose = 1
     )
@@ -1042,7 +1041,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
-      scale = sshs,
       scalePalette = c(1,2,2,3),
       verbose = 1
     )
@@ -1075,11 +1073,44 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = sshs,
-      scale = sshs,
       scalePalette = TRUE,
       verbose = 1
     )
   )
+  
+  # Checking length of scale/scalePalette
+  expect_error(
+    checkInputsdefStormsDataset(
+      filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
+      fields = c(
+        names = "name",
+        seasons = "season",
+        isoTime = "iso_time",
+        lon = "usa_lon",
+        lat = "usa_lat",
+        msw = "usa_wind",
+        basin = "basin",
+        scale = "usa_sshs",
+        rmw = "usa_rmw",
+        pressure = "usa_pres",
+        poci = "usa_poci"
+      ),
+      basin = "SP",
+      seasons = c(1980, as.numeric(format(Sys.time(
+        
+      ), "%Y"))),
+      unitConversion = c(
+        msw = "knt2ms",
+        rmw = "nm2km",
+        pressure = "mb2pa",
+        poci = "mb2pa"
+      ),
+      scale = c(18,30),
+      scalePalette = SSHS_PALETTE,
+      verbose = 1
+    )
+  )
+  
   
   # Checking verbose input
   expect_error(

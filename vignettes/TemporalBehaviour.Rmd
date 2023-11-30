@@ -43,7 +43,7 @@ The track data for Pam nearby Vanuatu are extracted as follows:
 ``` {r}
 sds <- defStormsDataset()
 st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-plotStorms(st)
+plotStorms(st, sds)
 points(df$x, df$y, pch = 3, col = c("blue", "red"))
 text(df$x, df$y, labels = c("Port Vila", "Luganville"), pos = 2, col = c("blue", "red"), cex = 0.8)
 ```
@@ -54,7 +54,7 @@ hour but can be changed using the `tempRes` argument. Here we set the temporal
 resolution to 30 min with `tempRes=0.5` as follows:
 
 ``` {r}
-TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 0.5, verbose = 0)
+TS <- temporalBehaviour(st, sds, points = df, product = "TS", tempRes = 0.5, verbose = 0)
 ```
 
 With the above specification the `temporalBehaviour()` function returns a list
@@ -116,7 +116,7 @@ The power dissipation index is computed using the `product = "PDI"` argument as
 follows:
 
 ``` {r}
-PDI <- temporalBehaviour(st, points = df, product = "PDI", tempRes = 0.5, verbose = 0)
+PDI <- temporalBehaviour(st, sds, points = df, product = "PDI", tempRes = 0.5, verbose = 0)
 PDI
 ```
 
@@ -126,7 +126,7 @@ The duration of exposure is computed using the `product = "Exposure"` argument
 as follows:
 
 ``` {r}
-exposure_SS <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 0.5, verbose = 0)
+exposure_SS <- temporalBehaviour(st, sds, points = df, product = "Exposure", tempRes = 0.5, verbose = 0)
 exposure_SS
 ```
 
@@ -139,7 +139,7 @@ follow:
 
 ``` {r}
 wt <- c(17.2, 24.4, 32.5, 44.2, 55.0)
-exposure_BOM <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 0.5, windThreshold = wt, verbose = 0)
+exposure_BOM <- temporalBehaviour(st, sds, points = df, product = "Exposure", tempRes = 0.5, windThreshold = wt, verbose = 0)
 exposure_BOM
 ```
 
