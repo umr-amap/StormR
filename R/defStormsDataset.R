@@ -172,6 +172,10 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
     "Invalid unitConversion directive for 'msw'" =
       unitConversion["msw"] %in% c("None", "mph2ms", "knt2ms", "kmh2ms")
   )
+  
+  if(tail(strsplit(filename, "\\.")[[1]], 1) == "csv"){
+    stopifnot("No 'sid' selection in fields" = "sid" %in% names(fields))
+  }
 
   # Optional fields
   if (("basin" %in% names(fields)) && is.null(basin)) {
@@ -225,8 +229,6 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
     )
   }
 
-
-
   # Checking seasons input
   stopifnot("seasons must be numeric" = identical(class(seasons), "numeric"))
   stopifnot("seasons must be a range of calendar year" = length(seasons) == 2 & seasons[1] <= seasons[2])
@@ -247,14 +249,14 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
     cat("=== Loading data  ===\nOpen database... ")
   }
   
-  
-  dataBase <- utils::read.csv(filename)
+  dataBase <- ncdf4::nc_open(filename)
   
   if (verbose) {
     cat(filename, "opened\nCollecting data ...\n")
   }
   
-  
+  lon <- ncdf4::ncvar_get(dataBase, fields["lon"])
+  season <- ncdf4::ncvar_get(dataBase, fields["seasons"])
   
   row <- dim(lon)[1] 
   len <- dim(lon)[2] # ??
@@ -347,32 +349,28 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
     data$pressure <- data$pressure[, o]
   }
   
-  
   if ("poci" %in% names(fields)) {
     if (unitConversion["poci"] == "mb2pa") {
       data$poci <- array(mb2pa(ncdf4::ncvar_get(dataBase, fields["poci"])[, ind]), dim = c(row, len))
+    } else if (unitConversion["poci"] == "b2pa") {
+      data$poci <- array(b2pa(ncdf4::ncvar_get(dataBase, fields["poci"])[, ind]), dim = c(row, len))
+    } else if (unitConversion["poci"] == "psi2pa") {
+      data$poci <- array(psi2pa(ncdf4::ncvar_get(dataBase, fields["poci"])[, ind]), dim = c(row, len))
+    } else if (unitConversion["poci"] == "atm2pa") {
+      data$poci <- array(atm2pa(ncdf4::ncvar_get(dataBase, fields["poci"])[, ind]), dim = c(row, len))
     } else {
       data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[, ind], dim = c(row, len))
     }
     data$poci <- data$poci[, o]
   }
   
+  
   ncdf4::nc_close(dataBase)
-  
-  
-  
-  if (verbose) {
-    cat("=== DONE ===\n")
-  }
-  
-  if (is.null(basin)) {
-    basin <- "None"
-  }
   
   return(data)
 }
 
-getDateFromCsvFile <- function(filename, fields, basin, seasons, unitConversion, verbose){
+getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion, verbose){
   
   if (verbose) {
     cat("=== Loading data  ===\nOpen database... ")
@@ -388,10 +386,13 @@ getDateFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
   filter <- which(colnames(dataBase) %in% fields)
   dataBaseFiltered <- dataBase[, filter]
   
-
+  
+  # Remove sub header
+  dataBaseFiltered <- dataBase[2:dim(dataBaseFiltered)[1], filter]
+ 
   
   # filter by season
-  filter <- which(dataBaseFiltered[,fields["seasons"]] >= seasons[1] & dataBaseFiltered[,fields["seasons"]] <= seasons[2])
+  filter <- which(as.numeric(dataBaseFiltered[,fields["seasons"]]) >= seasons[1] & as.numeric(dataBaseFiltered[,fields["seasons"]]) <= seasons[2])
   dataBaseFiltered <- dataBaseFiltered[filter,]
   
   # filter by basin
@@ -420,6 +421,7 @@ getDateFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
   msw <- templateArray
   
   # Optional fields
+  sshs <- templateArray # TODO Remove later
   rmw <- templateArray
   pressure <- templateArray
   poci <- templateArray
@@ -437,7 +439,7 @@ getDateFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
     # Fill data
     
     names[i] <- dataBaseFiltered[start, fields["names"]]
-    seasons[i] <- dataBaseFiltered[start, fields["seasons"]]
+    seasons[i] <- as.numeric(dataBaseFiltered[start, fields["seasons"]])
     isotimes[,i] <- c(dataBaseFiltered[start:end, fields["isoTime"]], rep(NaN, row-countObs[i]))
     longitude[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["lon"]], rep(NaN, row-countObs[i])))
     latitude[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["lat"]], rep(NaN, row-countObs[i])))
@@ -450,6 +452,11 @@ getDateFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
       msw[,i] <- as.numeric(c(kmh2ms(as.numeric(dataBaseFiltered[start:end, fields["msw"]])), rep(NaN, row-countObs[i])))
     } else {
       msw[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["msw"]], rep(NaN, row-countObs[i])))
+    }
+    
+    # TODO Remove later
+    if ("sshs" %in% names(fields)) {
+      sshs[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["sshs"]], rep(NaN, row-countObs[i])))
     }
     
     if ("rmw" %in% names(fields)) {
@@ -508,6 +515,11 @@ getDateFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
     msw = msw
   )
   
+  # TODO Remove later
+  if("sshs" %in% names(fields)){
+    data$sshs <- sshs
+  }
+  
   if("rmw" %in% names(fields)){
     data$rmw <- rmw
   }
@@ -529,21 +541,22 @@ getDateFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
 
 #' Creating a `stormsDataset` object
 #'
-#' The `defStormsDataset()` function creates a `stormsDataset` object from a NetCDF file.
+#' The `defStormsDataset()` function creates a `stormsDataset` object from either a NetCDF or a CSV file.
 #' This is an essential first step before other `stormR` functions can be used.
 #'
-#' @param filename character. Name of the NetCDF (.nc) file. Default is the `test_dataset.nc`
+#' @param filename character. Name of the NetCDF (.nc)/CSV (.csv) file. Default is the `test_dataset.nc`
 #' file located in the `inst/extdata` repository of the directory (accessible by
 #' `system.file("extdata", "test_dataset.nc", package = "StormR")`). This test dataset is extracted
 #' from the IBTrACS.SP.v04r00.nc file and provides all the tropical cyclones that occurred around Vanuatu
 #' from 2015 to 2016 and around New Caledonia from 2020 to 2021.
-#' @param fields named character vector. This argument allows to specify the corresponding variable names
-#'  in the input NetCDF file for each field in the output `stormsDataset`. By default, the corresponding
-#'  variable names are set up to import data from a NetCDF file from the IBTrACS database (Knapp et al., 2010).
+#' @param fields named character vector. This argument allows to specify the corresponding variable names (NetCDF) or
+#' headers (CSV) in the input file for each field in the output `stormsDataset`. By default, the corresponding
+#' variable names are set up to import data from a NetCDF file from the IBTrACS database (Knapp et al., 2010).
 #' Corresponding variable names for following fields have to (mandatory fields) or can be
 #' (recommended or optional fields) provided:
 #'  \itemize{
-#'    \item "`names"`, names of the storms (mandatory),
+#'    \item `"sid"`, unique identifiers of the storms (mandatory if `filename` is a CSV)
+#'    \item `"names"`, names of the storms (mandatory),
 #'    \item `"seasons"`, years of observations (mandatory),
 #'    \item `"isoTime"`, date and time of observations (mandatory),
 #'    \item `"lon"`, longitude of the observations (mandatory),
@@ -619,6 +632,7 @@ getDateFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
 #' @export
 defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
                              fields = c(
+                               sid = "sid",
                                names = "name",
                                seasons = "season",
                                isoTime = "iso_time",
@@ -642,130 +656,15 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                              verbose = 1) {
   checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, verbose)
 
-
-  if (verbose) {
-    cat("=== Loading data  ===\nOpen database... ")
-  }
-
-
-  dataBase <- ncdf4::nc_open(filename)
-
-  if (verbose) {
-    cat(filename, "opened\nCollecting data ...\n")
-  }
-
-  lon <- ncdf4::ncvar_get(dataBase, fields["lon"])
-  season <- ncdf4::ncvar_get(dataBase, fields["seasons"])
-
-  # Get dimensions
-  row <- dim(lon)[1]
-  len <- dim(lon)[2]
-  ind <- seq(1, len)
-
-  # Filter by season
-  ind <- which(season %in% seq(seasons[1], seasons[2], 1))
-  len <- length(ind)
-
-  if (!is.null(basin)) {
-    # Filter by basin ID
-    basins <- ncdf4::ncvar_get(dataBase, fields["basin"])
-    indB <- which(basins[1, ] == basin)
-    ind <- intersect(ind, indB)
-    len <- length(ind)
-  }
-
-
-  if (unitConversion["msw"] == "mph2ms") {
-    msw <- array(mph2ms(ncdf4::ncvar_get(dataBase, fields["msw"])[, ind]),
-      dim = c(row, len)
-    )
-  } else if (unitConversion["msw"] == "knt2ms") {
-    msw <- array(knt2ms(ncdf4::ncvar_get(dataBase, fields["msw"])[, ind]),
-      dim = c(row, len)
-    )
-  } else if (unitConversion["msw"] == "kmh2ms") {
-    msw <- array(kmh2ms(ncdf4::ncvar_get(dataBase, fields["msw"])[, ind]),
-      dim = c(row, len)
-    )
-  } else {
-    msw <- array(ncdf4::ncvar_get(dataBase, fields["msw"])[, ind],
-      dim = c(row, len)
-    )
-  }
   
-  # print(str(msw))
-  # print(class(msw))
-  # str(msw)
-  # print(msw)
+  extension <- tail(strsplit(filename, "\\.")[[1]], 1)
 
-  # Collect data
-  data <- list(
-    names = ncdf4::ncvar_get(dataBase, fields["names"])[ind],
-    seasons = season[ind],
-    isotimes = array(ncdf4::ncvar_get(dataBase, fields["isoTime"])[, ind],
-      dim = c(row, len)
-    ),
-    longitude = array(ncdf4::ncvar_get(dataBase, fields["lon"])[, ind],
-      dim = c(row, len)
-    ),
-    latitude = array(ncdf4::ncvar_get(dataBase, fields["lat"])[, ind],
-      dim = c(row, len)
-    ),
-    msw = msw
-  )
-
-  # Sort by Date
-  o <- order(data$isotimes[1, ])
-
-  data$names <- data$names[o]
-  data$seasons <- data$seasons[o]
-  data$isotimes <- data$isotimes[, o]
-  data$longitude <- data$longitude[, o]
-  data$latitude <- data$latitude[, o]
-  data$msw <- data$msw[, o]
-
-  if ("sshs" %in% names(fields)) {
-    data$sshs <- array(ncdf4::ncvar_get(dataBase, fields["sshs"])[, ind], dim = c(row, len))
-    data$sshs <- data$sshs[, o]
+  
+  if(extension == "csv"){
+    data <- getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, verbose)
+  }else{
+    data <- getDataFromNcdfFile(filename, fields, basin, seasons, unitConversion, verbose)
   }
-
-  if ("rmw" %in% names(fields)) {
-    if (unitConversion["rmw"] == "nm2km") {
-      data$rmw <- array(nm2km(ncdf4::ncvar_get(dataBase, fields["rmw"])[, ind]), dim = c(row, len))
-    } else {
-      data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[, ind], dim = c(row, len))
-    }
-    data$rmw <- data$rmw[, o]
-  }
-
-
-  if ("pressure" %in% names(fields)) {
-    if (unitConversion["pressure"] == "mb2pa") {
-      data$pressure <- array(mb2pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[, ind]), dim = c(row, len))
-    } else if (unitConversion["pressure"] == "b2pa") {
-      data$pressure <- array(b2pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[, ind]), dim = c(row, len))
-    } else if (unitConversion["pressure"] == "psi2pa") {
-      data$pressure <- array(psi2pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[, ind]), dim = c(row, len))
-    } else if (unitConversion["pressure"] == "atm2pa") {
-      data$pressure <- array(atm2pa(ncdf4::ncvar_get(dataBase, fields["pressure"])[, ind]), dim = c(row, len))
-    } else {
-      data$pressure <- array(ncdf4::ncvar_get(dataBase, fields["pressure"])[, ind], dim = c(row, len))
-    }
-    data$pressure <- data$pressure[, o]
-  }
-
-
-  if ("poci" %in% names(fields)) {
-    if (unitConversion["poci"] == "mb2pa") {
-      data$poci <- array(mb2pa(ncdf4::ncvar_get(dataBase, fields["poci"])[, ind]), dim = c(row, len))
-    } else {
-      data$poci <- array(ncdf4::ncvar_get(dataBase, fields["poci"])[, ind], dim = c(row, len))
-    }
-    data$poci <- data$poci[, o]
-  }
-
-  ncdf4::nc_close(dataBase)
-
 
 
   if (verbose) {
@@ -775,7 +674,6 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
   if (is.null(basin)) {
     basin <- "None"
   }
-
 
   sds <- new(
     Class = "stormsDataset",
