@@ -6,9 +6,9 @@
 \usage{
 defStormsDataset(
   filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
-  fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
-    lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw =
-    "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
+  fields = c(sid = "sid", names = "name", seasons = "season", isoTime = "iso_time", lon =
+    "usa_lon", lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw
+    = "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
   basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unitConversion = c(msw = "knt2ms", rmw = "nm2km", pressure = "mb2pa", poci = "mb2pa"),
@@ -16,19 +16,20 @@ defStormsDataset(
 )
 }
 \arguments{
-\item{filename}{character. Name of the NetCDF (.nc) file. Default is the \code{test_dataset.nc}
+\item{filename}{character. Name of the NetCDF (.nc)/CSV (.csv) file. Default is the \code{test_dataset.nc}
 file located in the \code{inst/extdata} repository of the directory (accessible by
 \code{system.file("extdata", "test_dataset.nc", package = "StormR")}). This test dataset is extracted
 from the IBTrACS.SP.v04r00.nc file and provides all the tropical cyclones that occurred around Vanuatu
 from 2015 to 2016 and around New Caledonia from 2020 to 2021.}
 
-\item{fields}{named character vector. This argument allows to specify the corresponding variable names
-in the input NetCDF file for each field in the output \code{stormsDataset}. By default, the corresponding
+\item{fields}{named character vector. This argument allows to specify the corresponding variable names (NetCDF) or
+headers (CSV) in the input file for each field in the output \code{stormsDataset}. By default, the corresponding
 variable names are set up to import data from a NetCDF file from the IBTrACS database (Knapp et al., 2010).
 Corresponding variable names for following fields have to (mandatory fields) or can be
 (recommended or optional fields) provided:
 \itemize{
-\item "\verb{names"}, names of the storms (mandatory),
+\item \code{"sid"}, unique identifiers of the storms (mandatory if \code{filename} is a CSV)
+\item \code{"names"}, names of the storms (mandatory),
 \item \code{"seasons"}, years of observations (mandatory),
 \item \code{"isoTime"}, date and time of observations (mandatory),
 \item \code{"lon"}, longitude of the observations (mandatory),
@@ -96,7 +97,7 @@ or not (\verb{= 0}) information about the processes.}
 The \code{defStormsDataset()} function returns a \code{stormsDataset} object.
 }
 \description{
-The \code{defStormsDataset()} function creates a \code{stormsDataset} object from a NetCDF file.
+The \code{defStormsDataset()} function creates a \code{stormsDataset} object from either a NetCDF or a CSV file.
 This is an essential first step before other \code{stormR} functions can be used.
 }
 \examples{

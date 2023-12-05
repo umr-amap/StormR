@@ -1,11 +1,6 @@
-
-
-
-
-
-###########################
+############################
 # Unit conversion functions#
-###########################
+############################
 
 # For msw
 knt2ms <- function(x) {
@@ -43,7 +38,9 @@ atm2pa <- function(x) {
 }
 
 
-
+########
+# Class#
+########
 
 
 #' stormsDataset
@@ -137,6 +134,9 @@ stormsDataset <- methods::setClass(
 
 
 
+####################
+# Helper functions#
+###################
 
 
 #' check inputs for defStormsDataset function
@@ -155,6 +155,11 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
   stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename), "character"))
   stopifnot("filename must be length one" = length(filename) == 1)
+  
+  # Checking extension
+  splitedFilename <- strsplit(filename, "\\.")[[1]]
+  extension <- splitedFilename[length(splitedFilename)]
+  stopifnot("filename must be either a NetCDF (.nc) or a CSV (.csv) file" = extension %in% c("nc", "csv"))
 
   # Checking fields input
   stopifnot("fields must be character" = identical(class(fields), "character"))
@@ -173,7 +178,7 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
       unitConversion["msw"] %in% c("None", "mph2ms", "knt2ms", "kmh2ms")
   )
   
-  if(tail(strsplit(filename, "\\.")[[1]], 1) == "csv"){
+  if(extension == "csv"){
     stopifnot("No 'sid' selection in fields" = "sid" %in% names(fields))
   }
 
@@ -243,6 +248,17 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
 
 
 
+#' Load database when filename is a NetCDF
+#' (CF defStormsDataset for additional informations about parameters)
+#'
+#' @param filename character
+#' @param fields named character vecor
+#' @param basin character
+#' @param seasons numeric vector
+#' @param unitConversion named character vector
+#' @param verbose numeric
+#'
+#' @return list of arrays
 getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion, verbose){
   
   if (verbose) {
@@ -370,6 +386,20 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
   return(data)
 }
 
+
+
+
+#' Load database when filename is a NetCDF
+#' (CF defStormsDataset for additional informations about parameters)
+#'
+#' @param filename character
+#' @param fields named character vecor
+#' @param basin character
+#' @param seasons numeric vector
+#' @param unitConversion named character vector
+#' @param verbose numeric
+#'
+#' @return list of arrays
 getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion, verbose){
   
   if (verbose) {
@@ -539,6 +569,11 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
 
 
 
+
+################
+# Main function#
+################
+
 #' Creating a `stormsDataset` object
 #'
 #' The `defStormsDataset()` function creates a `stormsDataset` object from either a NetCDF or a CSV file.
@@ -657,8 +692,9 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
   checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, verbose)
 
   
-  extension <- tail(strsplit(filename, "\\.")[[1]], 1)
-
+  splitedFilename <- strsplit(filename, "\\.")[[1]]
+  extension <- splitedFilename[length(splitedFilename)]
+  
   
   if(extension == "csv"){
     data <- getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, verbose)
