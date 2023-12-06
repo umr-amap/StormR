@@ -47,7 +47,7 @@ atm2pa <- function(x) {
 #'
 #' Choose the database to use within the package's functions
 #'
-#' @slot filename character. Name of the database to load. Must be a netcdf file
+#' @slot filename character. Name of the database to load. Must be a netcdf or a csv file
 #' @slot fields named character vector. Dictionary that provides all the name of
 #' dimensions to extract from the netcdf database (See `Details`)
 #' @slot basin character. Basin name to filter the database within its
