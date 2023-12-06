@@ -275,8 +275,6 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
   season <- ncdf4::ncvar_get(dataBase, fields["seasons"])
   
   row <- dim(lon)[1] 
-  len <- dim(lon)[2] # ??
-  ind <- seq(1, len) # ??
   
   # Filter by season
   ind <- which(season %in% seq(seasons[1], seasons[2], 1))
