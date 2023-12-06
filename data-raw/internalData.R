@@ -34,6 +34,15 @@ groundColor <- "grey"
 
 sshsPalette <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 
+SSHS_PALETTE <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
+names(SSHS_PALETTE) <- c("Tropical Depression",
+                         "Tropical Storm",
+                         "Category 1",
+                         "Category 2",
+                         "Category 3",
+                         "Category 4",
+                         "Category 5")
+
 
 palette <- c("#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 xsup <- 95
@@ -62,6 +71,7 @@ usethis::use_data(resolutions,
     km, wgs84, Basins, sshs,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
+    SSHS_PALETTE,
     dfGetDataInterpolate,
     internal = TRUE, overwrite = TRUE
 )

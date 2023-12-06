@@ -2,6 +2,42 @@
 
 
 
+#' Get type for icon (leaflet)
+#'
+#' @noRd
+#' @param msw numeric
+#'
+#' @return corresponding icon
+getType <- function(msw) {
+  
+  if (is.na(msw)) {
+    type <- NA
+    
+  } else if (msw < sshs[1]) {
+    type <- "TD"
+    
+  } else if (msw >= sshs[1] & msw < sshs[2]) {
+    type <- "TS"
+    
+  } else if (msw >= sshs[2] & msw < sshs[3]) {
+    type <- "cat1"
+    
+  } else if (msw >= sshs[3] & msw < sshs[4]) {
+    type <- "cat2"
+    
+  } else if (msw >= sshs[4] & msw < sshs[5]) {
+    type <- "cat3"
+    
+  } else if (msw >= sshs[5] & msw < sshs[6]) {
+    type <- "cat4"
+    
+  } else if (msw >= sshs[6]) {
+    type <- "cat5"
+  }
+  
+  return(type)
+}
+
 
 #' Get the right color associated with a wind observation
 #'
@@ -114,9 +150,10 @@ plotLabels <- function(st, by, pos) {
 #' @param loi logical
 #' @param xlim numeric vector
 #' @param ylim numeric vector
+#' @param interactive logical
 #' @return NULL, just stops the function if an error is found
 checkInputsPlotStorms <- function(sts, names, category, labels, by,
-                                  pos, legends, loi, xlim, ylim) {
+                                  pos, legends, loi, xlim, ylim, interactive) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -169,6 +206,10 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
     "legends must be either topright, topleft, bottomleft, bottomright, or none" =
       legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none")
   )
+  
+  #Checking mode input
+  stopifnot("interactive must be logical" = identical(class(interactive), "logical"))
+  stopifnot("interactive must length 1" = length(mode) == 1)
 }
 
 
@@ -207,6 +248,8 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 #' extent of the buffered location of interest on the map.
+#' @param interactive logical. Whether (FALSE, default setting) or (TRUE) to plot the 
+#' data interactively with leaflet library
 #'
 #' @return A plot of the storm track data.
 #' 
@@ -224,6 +267,10 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #'
 #' # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 #' plotStorms(pam, labels = TRUE, by = 2, pos = 4)
+#' 
+#' # Interactive mode
+#  # plotStorms(pam, interactive=TRUE)
+#' 
 #' }
 #' @export
 plotStorms <- function(sts,
@@ -235,11 +282,10 @@ plotStorms <- function(sts,
                        by = 8,
                        pos = 3,
                        legends = "topleft",
-                       loi = TRUE) {
-  checkInputsPlotStorms(
-    sts, names, category, labels, by, pos, legends,
-    loi, xlim, ylim
-  )
+                       loi = TRUE,
+                       interactive=FALSE) {
+  
+  checkInputsPlotStorms(sts, names, category, labels, by, pos, legends,loi, xlim, ylim, interactive)
 
 
   # Handling spatial extent
@@ -288,54 +334,126 @@ plotStorms <- function(sts,
     }
   }
 
-
-  # Plotting base map
-  world <- rworldmap::getMap(resolution = "high")
-
-  maps::map(world,
-    fill = TRUE,
-    col = groundColor,
-    bg = oceanColor,
-    wrap = c(0, 360),
-    xlim = c(ext$xmin - 1, ext$xmax + 1), # we extend W & E by 1°
-    ylim = c(ext$ymin - 1, ext$ymax + 1)
-  ) # we extend S & N by 1°
-  maps::map.axes(cex.axis = 1)
-
-
-  # Plotting loi
-  if (loi) {
-    plot(sts@spatialLoiBuffer, lwd = 1, border = "blue", add = TRUE)
+  if(!interactive){
+    
+    # Plotting base map
+    world <- rworldmap::getMap(resolution = "high")
+    
+    maps::map(world,
+              fill = TRUE,
+              col = groundColor,
+              bg = oceanColor,
+              wrap = c(0, 360),
+              xlim = c(ext$xmin - 1, ext$xmax + 1), # we extend W & E by 1°
+              ylim = c(ext$ymin - 1, ext$ymax + 1)
+    ) # we extend S & N by 1°
+    maps::map.axes(cex.axis = 1)
+    
+    
+    # Plotting loi
+    if (loi) {
+      plot(sts@spatialLoiBuffer, lwd = 1, border = "blue", add = TRUE)
+    }
+    
+    if (loi && as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT") {
+      plot(sts@spatialLoi, lwd = 2, col = "blue", pch = 4, add = TRUE)
+    }
+    
+    # Plotting track(s) and labels
+    lapply(stsAux, plotTrack)
+    if (labels) {
+      lapply(stsAux, plotLabels, by, pos)
+    }
+    
+    # Adding legends
+    if (legends != "none") {
+      leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
+      col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
+      
+      lty <- rep(0, 7)
+      pch <- rep(19, 7)
+      lwd <- rep(1, 7)
+      
+      graphics::legend(legends,
+                       title = "SSHS",
+                       legend = leg,
+                       col = col,
+                       lty = lty,
+                       pch = pch,
+                       lwd = lwd,
+                       cex = 0.6,
+                       bty = "n"
+      )
+    }
+    
+  }else{
+    #Init map
+    map <- leaflet::leaflet(options = leaflet::leafletOptions(worldCopyJump = F,
+                                                              minZoom = 2,
+                                                              maxZoom = 12),
+                            width = 650,
+                            height = 700) %>%
+      leaflet::addProviderTiles(leaflet::providers$Esri.NatGeoWorldMap, group = "Satellite",
+                                options = leaflet::providerTileOptions(errorTileUrl = "Tile not found")) %>%
+      leaflet::fitBounds(lng1 = as.numeric(ext$xmin), lng2 = as.numeric(ext$xmax),
+                         lat1 = as.numeric(ext$ymin), lat2 = as.numeric(ext$ymax))
+    
+    #Plotting loi
+    if(loi)
+      map <- leaflet::addPolylines(map,
+                                   data = sts@spatialLoiBuffer,
+                                   fillColor = "transparent",
+                                   label = "Buffer limit")
+    
+    if(loi & as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT")
+      map <- leaflet::addCircleMarkers(map,
+                                       data = sts@spatialLoi,
+                                       fillColor = "transparent",
+                                       label = "LOI")
+    
+    
+    #Plotting track(s) and labels
+    for(st in stsAux){
+      
+      data <- st@obs.all
+      data$type <- unlist(lapply(data$msw,getColors, sshs)) # TODO ???
+      
+      labels <- paste0(st@name," (",row.names(data),")\n",data$iso.time)
+      
+      #Plot track
+      map <- leaflet::addPolylines(map,
+                                   data = data,
+                                   lng = ~lon,
+                                   lat = ~lat,
+                                   color = "black",
+                                   weight = 2)
+      
+      
+      map <- leaflet::addCircleMarkers(map,
+        data = data,
+        lng = ~lon,
+        lat = ~lat,
+        radius = 5,
+        color = ~type,
+        stroke = FALSE,
+        fillOpacity = 1,
+        label = labels
+      )
+    }
+    
+    
+    #Adding legends
+    map <- leaflet::addLegend(map,
+                              "topright",
+                              colors = SSHS_PALETTE,
+                              labels = names(SSHS_PALETTE),
+                              title = "SSHS",
+                              opacity = 1)
+    
+    map
+    
+    return(map)
   }
 
-  if (loi && as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT") {
-    plot(sts@spatialLoi, lwd = 2, col = "blue", pch = 4, add = TRUE)
-  }
-
-  # Plotting track(s) and labels
-  lapply(stsAux, plotTrack)
-  if (labels) {
-    lapply(stsAux, plotLabels, by, pos)
-  }
-
-  # Adding legends
-  if (legends != "none") {
-    leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
-    col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
-
-    lty <- rep(0, 7)
-    pch <- rep(19, 7)
-    lwd <- rep(1, 7)
-
-    graphics::legend(legends,
-      title = "SSHS",
-      legend = leg,
-      col = col,
-      lty = lty,
-      pch = pch,
-      lwd = lwd,
-      cex = 0.6,
-      bty = "n"
-    )
-  }
+  
 }
