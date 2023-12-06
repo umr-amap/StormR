@@ -387,7 +387,7 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
 
 
 
-#' Load database when filename is a NetCDF
+#' Load database when filename is a CSV
 #' (CF defStormsDataset for additional informations about parameters)
 #'
 #' @param filename character
