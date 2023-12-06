@@ -440,19 +440,35 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
   # Initialize template structure
   templateArray = array(NaN, dim=c(row,len))
   
-  # Mandatory fields
-  names <- array(NaN, dim=len)
-  seasons <- array(NaN, dim=len)
-  isotimes <- templateArray
-  longitude <- templateArray
-  latitude <- templateArray
-  msw <- templateArray
   
-  # Optional fields
-  sshs <- templateArray # TODO Remove later
-  rmw <- templateArray
-  pressure <- templateArray
-  poci <- templateArray
+  # Mandatory fields
+  data <- list(
+    names = array(NaN, dim=len),
+    seasons = array(NaN, dim=len),
+    isotimes = templateArray,
+    longitude = templateArray,
+    latitude = templateArray,
+    msw = templateArray
+  )
+  
+  # TODO Remove later
+  if("sshs" %in% names(fields)){
+    data$sshs <- templateArray
+  }
+  
+  if("rmw" %in% names(fields)){
+    data$rmw <- templateArray
+  }
+  
+  if("pressure" %in% names(fields)){
+    data$pressure <- templateArray
+  }
+  
+  if("poci" %in% names(fields)){
+    data$poci <- templateArray
+  }
+  
+
   
   for(i in 1:len){
     
@@ -465,101 +481,72 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
     end = cumulativeIndex[i]
     
     # Fill data
-    
-    names[i] <- dataBaseFiltered[start, fields["names"]]
-    seasons[i] <- as.numeric(dataBaseFiltered[start, fields["seasons"]])
-    isotimes[,i] <- c(dataBaseFiltered[start:end, fields["isoTime"]], rep(NaN, row-countObs[i]))
-    longitude[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["lon"]], rep(NaN, row-countObs[i])))
-    latitude[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["lat"]], rep(NaN, row-countObs[i])))
+    data$names[i] <- dataBaseFiltered[start, fields["names"]]
+    data$seasons[i] <- as.numeric(dataBaseFiltered[start, fields["seasons"]])
+    data$isotimes[,i] <- c(dataBaseFiltered[start:end, fields["isoTime"]], rep(NaN, row-countObs[i]))
+    data$longitude[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["lon"]], rep(NaN, row-countObs[i])))
+    data$latitude[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["lat"]], rep(NaN, row-countObs[i])))
     
     if (unitConversion["msw"] == "mph2ms") {
-      msw[,i] <- as.numeric(c(mph2ms(as.numeric(dataBaseFiltered[start:end, fields["msw"]])), rep(NaN, row-countObs[i])))
+      data$msw[,i] <- as.numeric(c(mph2ms(as.numeric(dataBaseFiltered[start:end, fields["msw"]])), rep(NaN, row-countObs[i])))
     } else if (unitConversion["msw"] == "knt2ms") {
-      msw[,i] <- as.numeric(c(knt2ms(as.numeric(dataBaseFiltered[start:end, fields["msw"]])), rep(NaN, row-countObs[i])))
+      data$msw[,i] <- as.numeric(c(knt2ms(as.numeric(dataBaseFiltered[start:end, fields["msw"]])), rep(NaN, row-countObs[i])))
     } else if (unitConversion["msw"] == "kmh2ms") {
-      msw[,i] <- as.numeric(c(kmh2ms(as.numeric(dataBaseFiltered[start:end, fields["msw"]])), rep(NaN, row-countObs[i])))
+      data$msw[,i] <- as.numeric(c(kmh2ms(as.numeric(dataBaseFiltered[start:end, fields["msw"]])), rep(NaN, row-countObs[i])))
     } else {
-      msw[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["msw"]], rep(NaN, row-countObs[i])))
+      data$msw[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["msw"]], rep(NaN, row-countObs[i])))
     }
     
     # TODO Remove later
     if ("sshs" %in% names(fields)) {
-      sshs[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["sshs"]], rep(NaN, row-countObs[i])))
+      data$sshs[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["sshs"]], rep(NaN, row-countObs[i])))
     }
     
     if ("rmw" %in% names(fields)) {
       if (unitConversion["rmw"] == "nm2km") {
-        rmw[,i] <- as.numeric(c(nm2km(as.numeric(dataBaseFiltered[start:end, fields["rmw"]])), rep(NaN, row-countObs[i])))
+        data$rmw[,i] <- as.numeric(c(nm2km(as.numeric(dataBaseFiltered[start:end, fields["rmw"]])), rep(NaN, row-countObs[i])))
       } else {
-        rmw[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["rwm"]], rep(NaN, row-countObs[i])))
+        data$rmw[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["rwm"]], rep(NaN, row-countObs[i])))
       }
     }
     
     if ("pressure" %in% names(fields)) {
       if (unitConversion["pressure"] == "mb2pa") {
-        pressure[,i] <- as.numeric(c(mb2pa(as.numeric(dataBaseFiltered[start:end, fields["pressure"]])), rep(NaN, row-countObs[i])))
+        data$pressure[,i] <- as.numeric(c(mb2pa(as.numeric(dataBaseFiltered[start:end, fields["pressure"]])), rep(NaN, row-countObs[i])))
 
       } else if (unitConversion["pressure"] == "b2pa") {
-        pressure[,i] <- as.numeric(c(b2pa(as.numeric(dataBaseFiltered[start:end, fields["pressure"]])), rep(NaN, row-countObs[i])))
+        data$pressure[,i] <- as.numeric(c(b2pa(as.numeric(dataBaseFiltered[start:end, fields["pressure"]])), rep(NaN, row-countObs[i])))
 
       } else if (unitConversion["pressure"] == "psi2pa") {
-        pressure[,i] <- as.numeric(c(psi2pa(as.numeric(dataBaseFiltered[start:end, fields["pressure"]])), rep(NaN, row-countObs[i])))
+        data$pressure[,i] <- as.numeric(c(psi2pa(as.numeric(dataBaseFiltered[start:end, fields["pressure"]])), rep(NaN, row-countObs[i])))
 
       } else if (unitConversion["pressure"] == "atm2pa") {
-        pressure[,i] <- as.numeric(c(atm2pa(as.numeric(dataBaseFiltered[start:end, fields["pressure"]])), rep(NaN, row-countObs[i])))
+        data$pressure[,i] <- as.numeric(c(atm2pa(as.numeric(dataBaseFiltered[start:end, fields["pressure"]])), rep(NaN, row-countObs[i])))
 
       } else {
-        pressure[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["pressure"]], rep(NaN, row-countObs[i])))
+        data$pressure[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["pressure"]], rep(NaN, row-countObs[i])))
       }
     }
     
     if ("poci" %in% names(fields)) {
       if (unitConversion["poci"] == "mb2pa") {
-        poci[,i] <- as.numeric(c(mb2pa(as.numeric(dataBaseFiltered[start:end, fields["poci"]])), rep(NaN, row-countObs[i])))
+        data$poci[,i] <- as.numeric(c(mb2pa(as.numeric(dataBaseFiltered[start:end, fields["poci"]])), rep(NaN, row-countObs[i])))
 
       } else if (unitConversion["poci"] == "b2pa") {
-        poci[,i] <- as.numeric(c(b2pa(as.numeric(dataBaseFiltered[start:end, fields["poci"]])), rep(NaN, row-countObs[i])))
+        data$poci[,i] <- as.numeric(c(b2pa(as.numeric(dataBaseFiltered[start:end, fields["poci"]])), rep(NaN, row-countObs[i])))
 
       } else if (unitConversion["poci"] == "psi2pa") {
-        poci[,i] <- as.numeric(c(psi2pa(as.numeric(dataBaseFiltered[start:end, fields["poci"]])), rep(NaN, row-countObs[i])))
+        data$poci[,i] <- as.numeric(c(psi2pa(as.numeric(dataBaseFiltered[start:end, fields["poci"]])), rep(NaN, row-countObs[i])))
 
       } else if (unitConversion["poci"] == "atm2pa") {
-        poci[,i] <- as.numeric(c(atm2pa(as.numeric(dataBaseFiltered[start:end, fields["poci"]])), rep(NaN, row-countObs[i])))
+        data$poci[,i] <- as.numeric(c(atm2pa(as.numeric(dataBaseFiltered[start:end, fields["poci"]])), rep(NaN, row-countObs[i])))
 
       } else {
-        poci[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["poci"]], rep(NaN, row-countObs[i])))
+        data$poci[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["poci"]], rep(NaN, row-countObs[i])))
       }
     }
 
   }
-  
-  # Collect data
-  data <- list(
-    names = names,
-    seasons = seasons,
-    isotimes = isotimes,
-    longitude = longitude,
-    latitude = latitude,
-    msw = msw
-  )
-  
-  # TODO Remove later
-  if("sshs" %in% names(fields)){
-    data$sshs <- sshs
-  }
-  
-  if("rmw" %in% names(fields)){
-    data$rmw <- rmw
-  }
-  
-  if("pressure" %in% names(fields)){
-    data$pressure <- pressure
-  }
-  
-  if("poci" %in% names(fields)){
-    data$poci <- poci
-  }
-  
   
   return(data)
 

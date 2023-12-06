@@ -2,7 +2,7 @@
 % Please edit documentation in R/defStormsDataset.R
 \name{getDataFromCsvFile}
 \alias{getDataFromCsvFile}
-\title{Load database when filename is a NetCDF
+\title{Load database when filename is a CSV
 (CF defStormsDataset for additional informations about parameters)}
 \usage{
 getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, verbose)
@@ -24,6 +24,6 @@ getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, verbose)
 list of arrays
 }
 \description{
-Load database when filename is a NetCDF
+Load database when filename is a CSV
 (CF defStormsDataset for additional informations about parameters)
 }
