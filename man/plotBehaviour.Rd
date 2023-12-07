@@ -14,7 +14,8 @@ plotBehaviour(
   labels = FALSE,
   by = 8,
   pos = 3,
-  legends = "topleft"
+  legends = "topright",
+  interactive = FALSE
 )
 }
 \arguments{
@@ -51,8 +52,11 @@ when observations are made every 3 (or 6) hours.}
 \item{pos}{numeric. If \code{labels=TRUE}, defines the position of the labels, \code{1} (above the observation),
 \code{2} (on the left), \code{3} (below, default setting), and \code{4} (on the right).}
 
-\item{legends}{character. Indicates where to plot the legend, \code{"topright"}, \code{"topleft"} (default setting),
+\item{legends}{character. Indicates where to plot the legend, \code{"topright"}(default setting), \code{"topleft"},
 \code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
+
+\item{interactive}{logical. Whether (FALSE, default setting) or (TRUE) to plot the
+data interactively with leaflet library}
 }
 \value{
 A plot of the storm track data with the raster layer.

@@ -244,7 +244,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' when observations are made every 3 (or 6) hours.
 #' @param pos numeric. If `labels=TRUE`, defines the position of the labels, `1` (above the observation),
 #'  `2` (on the left), `3` (below, default setting), and `4` (on the right).
-#' @param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting),
+#' @param legends character. Indicates where to plot the legend, `"topright"`(default setting), `"topleft"`,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 #' extent of the buffered location of interest on the map.
@@ -281,7 +281,7 @@ plotStorms <- function(sts,
                        labels = FALSE,
                        by = 8,
                        pos = 3,
-                       legends = "topleft",
+                       legends = "topright",
                        loi = TRUE,
                        interactive=FALSE) {
   
@@ -418,7 +418,16 @@ plotStorms <- function(sts,
       data <- st@obs.all
       data$type <- unlist(lapply(data$msw,getColors, sshs)) # TODO ???
       
-      labels <- paste0(st@name," (",row.names(data),")\n",data$iso.time)
+      labels <- paste0("<b>",st@name, "</b><br>",
+                       "<i>observation ",row.names(data),"</i><br>",
+                       data$iso.time,
+                       "<ul>",
+                       "<li>", "scale:  ", data$sshs,"</li>",
+                       "<li>", "msw:  ", data$msw,"m/s</li>",
+                       "<li>", "rmw:  ", data$rmw, "km</li>",
+                       "<li>", "pressure:  ", data$pressure,"pa</li>",
+                       "<li>", "poci:  ", data$poci, "pa</li>",
+                       "</ul>")
       
       #Plot track
       map <- leaflet::addPolylines(map,
@@ -437,14 +446,14 @@ plotStorms <- function(sts,
         color = ~type,
         stroke = FALSE,
         fillOpacity = 1,
-        label = labels
+        popup = labels
       )
     }
     
     
     #Adding legends
     map <- leaflet::addLegend(map,
-                              "topright",
+                              legends,
                               colors = SSHS_PALETTE,
                               labels = names(SSHS_PALETTE),
                               title = "SSHS",

@@ -16,8 +16,9 @@
 #' @param colorPalette character vector
 #' @param main character
 #' @param legends character
+#' @param interactive logical
 #' @return NULL, just stops the function if an error is found
-checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends) {
+checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends, interactive) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -72,6 +73,10 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
     "legends must be either topright, topleft, bottomleft, bottomright, or none" =
       legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none")
   )
+  
+  #Checking mode input
+  stopifnot("interactive must be logical" = identical(class(interactive), "logical"))
+  stopifnot("interactive must length 1" = length(mode) == 1)
 }
 
 
@@ -108,9 +113,10 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' when observations are made every 3 (or 6) hours.
 #' @param pos numeric. If `labels=TRUE`, defines the position of the labels, `1` (above the observation),
 #' `2` (on the left), `3` (below, default setting), and `4` (on the right).
-#' @param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting),
+#' @param legends character. Indicates where to plot the legend, `"topright"`(default setting), `"topleft"`,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
-#'
+#' @param interactive logical. Whether (FALSE, default setting) or (TRUE) to plot the 
+#' data interactively with leaflet library
 #' @returns A plot of the storm track data with the raster layer.
 #'
 #' @examples
@@ -139,10 +145,11 @@ plotBehaviour <- function(sts,
                           labels = FALSE,
                           by = 8,
                           pos = 3,
-                          legends = "topleft") {
+                          legends = "topright",
+                          interactive = FALSE) {
   checkInputsPlotBehaviour(
     sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette,
-    main, legends
+    main, legends, interactive
   )
 
   name <- strsplit(names(rasterProduct), split = "_", fixed = TRUE)[[1]][1]
@@ -170,15 +177,8 @@ plotBehaviour <- function(sts,
     ymin <- ylim[1]
     ymax <- ylim[2]
   }
-
-
-  # Plotting track
-  plotStorms(
-    sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
-    legends = legends
-  )
-
-  # Adding rasterProduct on map
+  
+  # Choose color, range and legends depending on input raster
   if (product == "MSW") {
     col <- mswSSHSPalette
     range <- c(17, 95)
@@ -200,7 +200,7 @@ plotBehaviour <- function(sts,
     range <- c(0, 360)
     leg <- expression(paste("Wind direction (degree)"))
   }
-
+  
   if (!is.null(colorPalette)) {
     col <- colorPalette
   }
@@ -209,74 +209,111 @@ plotBehaviour <- function(sts,
     leg <- main
   }
 
-  # Adding title
-  graphics::title(leg)
-
-
-  terra::plot(rasterProduct,
-    col = col,
-    type = "continuous",
-    xlim = c(xmin - 1, xmax + 1), # we extend W & E by 1°. Needs to be in agreement with plotStorm
-    ylim = c(ymin - 1, ymax + 1), # we extend S & N by 1°. Needs to be in agreement with plotStorm
-    alpha = 0.7,
-    axes = FALSE,
-    range = range,
-    legend = TRUE,
-    add = TRUE
-  )
-
-
-  # Adding track again (to emphazise)
-  plotTrack(sts@data[[name]])
-
-  # Adding labels
-  if (labels && product != "Profiles" && product != "WindDirection") {
-    plotLabels(sts@data[[name]], by, pos)
-  }
-
-  if (labels && (product == "Profiles" || product == "WindDirection")) {
-    ind <- as.numeric(strsplit(names(rasterProduct), split = "_", fixed = TRUE)[[1]][3])
-
-    if (round(ind) == ind) {
-      # It is a real observation
-      graphics::text(sts@data[[name]]@obs.all$lon[ind],
-        sts@data[[name]]@obs.all$lat[ind],
-        labels = paste0(
-          name, "\n", sts@data[[name]]@obs.all$iso.time[ind],
-          "\n(", ind, ")"
-        ),
-        pos = pos,
-        cex = 0.6
-      )
-    } else {
-      # It is an interpolated observation
-      indf <- floor(ind)
-      indc <- ceiling(ind)
-      pos2 <- switch(pos,
-        "1" = 3,
-        "2" = 4,
-        "3" = 1,
-        "4" = 2
-      )
-      graphics::text(sts@data[[name]]@obs.all$lon[indf],
-        sts@data[[name]]@obs.all$lat[indf],
-        labels = paste0(
-          name, "\n", sts@data[[name]]@obs.all$iso.time[indf],
-          "\n(", indf, ")"
-        ),
-        pos = pos,
-        cex = 0.6
-      )
-
-      graphics::text(sts@data[[name]]@obs.all$lon[indc],
-        sts@data[[name]]@obs.all$lat[indc],
-        labels = paste0(
-          name, "\n", sts@data[[name]]@obs.all$iso.time[indc],
-          "\n(", indc, ")"
-        ),
-        pos = pos2,
-        cex = 0.6
-      )
+  if(!interactive){
+    # Plotting track
+    plotStorms(
+      sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
+      legends = legends
+    )
+    
+    
+    # Adding title
+    graphics::title(leg)
+    
+    
+    terra::plot(rasterProduct,
+                col = col,
+                type = "continuous",
+                xlim = c(xmin - 1, xmax + 1), # we extend W & E by 1°. Needs to be in agreement with plotStorm
+                ylim = c(ymin - 1, ymax + 1), # we extend S & N by 1°. Needs to be in agreement with plotStorm
+                alpha = 0.7,
+                axes = FALSE,
+                range = range,
+                legend = TRUE,
+                add = TRUE
+    )
+    
+    
+    # Adding track again (to emphazise)
+    plotTrack(sts@data[[name]])
+    
+    # Adding labels
+    if (labels && product != "Profiles" && product != "WindDirection") {
+      plotLabels(sts@data[[name]], by, pos)
     }
+    
+    if (labels && (product == "Profiles" || product == "WindDirection")) {
+      ind <- as.numeric(strsplit(names(rasterProduct), split = "_", fixed = TRUE)[[1]][3])
+      
+      if (round(ind) == ind) {
+        # It is a real observation
+        graphics::text(sts@data[[name]]@obs.all$lon[ind],
+                       sts@data[[name]]@obs.all$lat[ind],
+                       labels = paste0(
+                         name, "\n", sts@data[[name]]@obs.all$iso.time[ind],
+                         "\n(", ind, ")"
+                       ),
+                       pos = pos,
+                       cex = 0.6
+        )
+      } else {
+        # It is an interpolated observation
+        indf <- floor(ind)
+        indc <- ceiling(ind)
+        pos2 <- switch(pos,
+                       "1" = 3,
+                       "2" = 4,
+                       "3" = 1,
+                       "4" = 2
+        )
+        graphics::text(sts@data[[name]]@obs.all$lon[indf],
+                       sts@data[[name]]@obs.all$lat[indf],
+                       labels = paste0(
+                         name, "\n", sts@data[[name]]@obs.all$iso.time[indf],
+                         "\n(", indf, ")"
+                       ),
+                       pos = pos,
+                       cex = 0.6
+        )
+        
+        graphics::text(sts@data[[name]]@obs.all$lon[indc],
+                       sts@data[[name]]@obs.all$lat[indc],
+                       labels = paste0(
+                         name, "\n", sts@data[[name]]@obs.all$iso.time[indc],
+                         "\n(", indc, ")"
+                       ),
+                       pos = pos2,
+                       cex = 0.6
+        )
+      }
+    }
+  }else{
+    
+    # Interactive plot
+    map <- plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
+      legends = legends, interactive = TRUE)
+    
+    
+    pal <- leaflet::colorNumeric(col, terra::values(rasterProduct),
+                        na.color = "transparent")
+    
+    map <- leaflet::addRasterImage(map,
+                                  rasterProduct,
+                                  colors = pal,
+                                  opacity = 0.8
+                                  )
+    # TODO deparse leg variable
+    
+    
+    #Adding legends
+    map <- leaflet::addLegend(map,
+                              legends,
+                              pal = pal,
+                              values = terra::values(rasterProduct),
+                              title = leg,
+                              opacity = 0.8)
+
+    map
   }
+  
 }

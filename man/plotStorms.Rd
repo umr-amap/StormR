@@ -13,7 +13,7 @@ plotStorms(
   labels = FALSE,
   by = 8,
   pos = 3,
-  legends = "topleft",
+  legends = "topright",
   loi = TRUE,
   interactive = FALSE
 )
@@ -51,7 +51,7 @@ when observations are made every 3 (or 6) hours.}
 \item{pos}{numeric. If \code{labels=TRUE}, defines the position of the labels, \code{1} (above the observation),
 \code{2} (on the left), \code{3} (below, default setting), and \code{4} (on the right).}
 
-\item{legends}{character. Indicates where to plot the legend, \code{"topright"}, \code{"topleft"} (default setting),
+\item{legends}{character. Indicates where to plot the legend, \code{"topright"}(default setting), \code{"topleft"},
 \code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
 
 \item{loi}{logical. Whether (TRUE, default setting) or not (FALSE) to plot the
