@@ -182,23 +182,28 @@ plotBehaviour <- function(sts,
   if (product == "MSW") {
     col <- mswSSHSPalette
     range <- c(17, 95)
-    leg <- expression(paste("MSW (m.s"^"-1", ")"))
+    leg <- ifelse(dynamicPlot, "MSW (m.s <sup>-1</sup>)", expression(paste("MSW (m.s"^"-1", ")")))
+    
   } else if (product == "PDI") {
     col <- pdiPalette
     range <- c(0, max(terra::values(rasterProduct), na.rm = TRUE))
-    leg <- expression(paste("PDI (J.m"^"2", ")"))
+    leg <- ifelse(dynamicPlot, "PDI (J.m<sup>2</sup>)",expression(paste("PDI (J.m"^"2", ")")))
+    
   } else if (product == "Exposure") {
     col <- exposurePalette
     range <- c(0, max(terra::values(rasterProduct), na.rm = TRUE))
-    leg <- expression(paste("Duration of exposure (h)"))
+    leg <- ifelse(dynamicPlot, "Duration of exposure (h)",expression(paste("Duration of exposure (h)")))
+    
   } else if (product == "Speed") {
     col <- mswSSHSPalette
     range <- c(17, 95)
-    leg <- expression(paste("Radial wind speed (m.s"^"-1", ")"))
+    leg <- ifelse(dynamicPlot, "Radial wind speed (m.s <sup>-1</sup>)",expression(paste("Radial wind speed (m.s"^"-1", ")")))
+    
   } else if (product == "Direction") {
     col <- exposurePalette
     range <- c(0, 360)
-    leg <- expression(paste("Wind direction (degree)"))
+    leg <- ifelse(dynamicPlot, "Wind direction (degree)",expression(paste("Wind direction (degree)")))
+    
   }
   
   if (!is.null(colorPalette)) {
@@ -302,8 +307,6 @@ plotBehaviour <- function(sts,
                                   colors = pal,
                                   opacity = 0.8
                                   )
-    # TODO deparse leg variable
-    
     
     #Adding legends
     map <- leaflet::addLegend(map,
