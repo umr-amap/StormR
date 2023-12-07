@@ -388,15 +388,18 @@ plotStorms <- function(sts,
     
   }else{
     #Init map
-    map <- leaflet::leaflet(options = leaflet::leafletOptions(worldCopyJump = F,
-                                                              minZoom = 2,
-                                                              maxZoom = 12),
-                            width = 650,
-                            height = 700) %>%
-      leaflet::addProviderTiles(leaflet::providers$Esri.NatGeoWorldMap, group = "Satellite",
-                                options = leaflet::providerTileOptions(errorTileUrl = "Tile not found")) %>%
-      leaflet::fitBounds(lng1 = as.numeric(ext$xmin), lng2 = as.numeric(ext$xmax),
-                         lat1 = as.numeric(ext$ymin), lat2 = as.numeric(ext$ymax))
+    
+    map <-leaflet::fitBounds(leaflet::addProviderTiles(leaflet::leaflet(options = leaflet::leafletOptions(worldCopyJump = F,
+                                                                                                          minZoom = 2,
+                                                                                                          maxZoom = 12),
+                                                                        width = 650,
+                                                                        height = 700),
+                                                       leaflet::providers$Esri.NatGeoWorldMap, group = "Satellite",
+                                                       options = leaflet::providerTileOptions(errorTileUrl = "Tile not found")),
+                             lng1 = as.numeric(ext$xmin),
+                             lng2 = as.numeric(ext$xmax),
+                             lat1 = as.numeric(ext$ymin),
+                             lat2 = as.numeric(ext$ymax))
     
     #Plotting loi
     if(loi)

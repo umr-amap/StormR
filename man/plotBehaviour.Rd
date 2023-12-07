@@ -15,7 +15,7 @@ plotBehaviour(
   by = 8,
   pos = 3,
   legends = "topright",
-  interactive = FALSE
+  dynamicPlot = FALSE
 )
 }
 \arguments{
@@ -55,8 +55,8 @@ when observations are made every 3 (or 6) hours.}
 \item{legends}{character. Indicates where to plot the legend, \code{"topright"}(default setting), \code{"topleft"},
 \code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
 
-\item{interactive}{logical. Whether (FALSE, default setting) or (TRUE) to plot the
-data interactively with leaflet library}
+\item{dynamicPlot}{logical. Whether (FALSE, default setting) or (TRUE) to plot the
+data dynamicaly with leaflet library}
 }
 \value{
 A plot of the storm track data with the raster layer.

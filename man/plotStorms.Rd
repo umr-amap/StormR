@@ -15,7 +15,7 @@ plotStorms(
   pos = 3,
   legends = "topright",
   loi = TRUE,
-  interactive = FALSE
+  dynamicPlot = FALSE
 )
 }
 \arguments{
@@ -57,8 +57,8 @@ when observations are made every 3 (or 6) hours.}
 \item{loi}{logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 extent of the buffered location of interest on the map.}
 
-\item{interactive}{logical. Whether (FALSE, default setting) or (TRUE) to plot the
-data interactively with leaflet library}
+\item{dynamicPlot}{logical. Whether (FALSE, default setting) or (TRUE) to plot the
+data dynamicaly with leaflet library}
 }
 \value{
 A plot of the storm track data.
@@ -81,7 +81,7 @@ plotStorms(pam, labels = TRUE)
 # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 plotStorms(pam, labels = TRUE, by = 2, pos = 4)
 
-# Interactive mode
+# dynamicPlot mode
 
 }
 }
