@@ -150,10 +150,10 @@ plotLabels <- function(st, by, pos) {
 #' @param loi logical
 #' @param xlim numeric vector
 #' @param ylim numeric vector
-#' @param interactive logical
+#' @param dynamicPlot logical
 #' @return NULL, just stops the function if an error is found
 checkInputsPlotStorms <- function(sts, names, category, labels, by,
-                                  pos, legends, loi, xlim, ylim, interactive) {
+                                  pos, legends, loi, xlim, ylim, dynamicPlot) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -208,8 +208,8 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
   )
   
   #Checking mode input
-  stopifnot("interactive must be logical" = identical(class(interactive), "logical"))
-  stopifnot("interactive must length 1" = length(mode) == 1)
+  stopifnot("dynamicPlot must be logical" = identical(class(dynamicPlot), "logical"))
+  stopifnot("dynamicPlot must length 1" = length(mode) == 1)
 }
 
 
@@ -248,8 +248,8 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 #' extent of the buffered location of interest on the map.
-#' @param interactive logical. Whether (FALSE, default setting) or (TRUE) to plot the 
-#' data interactively with leaflet library
+#' @param dynamicPlot logical. Whether (FALSE, default setting) or (TRUE) to plot the 
+#' data dynamicaly with leaflet library
 #'
 #' @return A plot of the storm track data.
 #' 
@@ -268,8 +268,8 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 #' plotStorms(pam, labels = TRUE, by = 2, pos = 4)
 #' 
-#' # Interactive mode
-#  # plotStorms(pam, interactive=TRUE)
+#' # dynamicPlot mode
+#  # plotStorms(pam, dynamicPlot=TRUE)
 #' 
 #' }
 #' @export
@@ -283,9 +283,9 @@ plotStorms <- function(sts,
                        pos = 3,
                        legends = "topright",
                        loi = TRUE,
-                       interactive=FALSE) {
+                       dynamicPlot=FALSE) {
   
-  checkInputsPlotStorms(sts, names, category, labels, by, pos, legends,loi, xlim, ylim, interactive)
+  checkInputsPlotStorms(sts, names, category, labels, by, pos, legends,loi, xlim, ylim, dynamicPlot)
 
 
   # Handling spatial extent
@@ -334,7 +334,7 @@ plotStorms <- function(sts,
     }
   }
 
-  if(!interactive){
+  if(!dynamicPlot){
     
     # Plotting base map
     world <- rworldmap::getMap(resolution = "high")

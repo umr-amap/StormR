@@ -16,9 +16,9 @@
 #' @param colorPalette character vector
 #' @param main character
 #' @param legends character
-#' @param interactive logical
+#' @param dynamicPlot logical
 #' @return NULL, just stops the function if an error is found
-checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends, interactive) {
+checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends, dynamicPlot) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -75,8 +75,8 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
   )
   
   #Checking mode input
-  stopifnot("interactive must be logical" = identical(class(interactive), "logical"))
-  stopifnot("interactive must length 1" = length(mode) == 1)
+  stopifnot("dynamicPlot must be logical" = identical(class(dynamicPlot), "logical"))
+  stopifnot("dynamicPlot must length 1" = length(mode) == 1)
 }
 
 
@@ -115,8 +115,8 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' `2` (on the left), `3` (below, default setting), and `4` (on the right).
 #' @param legends character. Indicates where to plot the legend, `"topright"`(default setting), `"topleft"`,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
-#' @param interactive logical. Whether (FALSE, default setting) or (TRUE) to plot the 
-#' data interactively with leaflet library
+#' @param dynamicPlot logical. Whether (FALSE, default setting) or (TRUE) to plot the 
+#' data dynamicaly with leaflet library
 #' @returns A plot of the storm track data with the raster layer.
 #'
 #' @examples
@@ -146,10 +146,10 @@ plotBehaviour <- function(sts,
                           by = 8,
                           pos = 3,
                           legends = "topright",
-                          interactive = FALSE) {
+                          dynamicPlot = FALSE) {
   checkInputsPlotBehaviour(
     sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette,
-    main, legends, interactive
+    main, legends, dynamicPlot
   )
 
   name <- strsplit(names(rasterProduct), split = "_", fixed = TRUE)[[1]][1]
@@ -209,7 +209,7 @@ plotBehaviour <- function(sts,
     leg <- main
   }
 
-  if(!interactive){
+  if(!dynamicPlot){
     # Plotting track
     plotStorms(
       sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
@@ -289,9 +289,9 @@ plotBehaviour <- function(sts,
     }
   }else{
     
-    # Interactive plot
+    # dynamicPlot plot
     map <- plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
-      legends = legends, interactive = TRUE)
+      legends = legends, dynamicPlot = TRUE)
     
     
     pal <- leaflet::colorNumeric(col, terra::values(rasterProduct),
