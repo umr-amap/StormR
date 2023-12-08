@@ -76,7 +76,7 @@ dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3,
 
 usethis::use_data(resolutions,
     mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
-    km, wgs84, Basins, sshs, sshsPalette,
+    km, wgs84, Basins, sshs,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
     dfGetDataInterpolate,

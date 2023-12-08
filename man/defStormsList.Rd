@@ -11,7 +11,7 @@ defStormsList(
   names = NULL,
   maxDist = 300,
   scale = sshs,
-  scalePalette = SSHS_PALETTE,
+  scalePalette = sshsPalette,
   removeUnder = NULL,
   verbose = 2
 )
