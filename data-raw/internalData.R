@@ -19,7 +19,7 @@ wgs84 <- 4326
 # SSHS constants
 
 sshs <- c(18, 33, 42, 49, 58, 70)
-SSHS_PALETTE = c("#00CCFF",
+sshsPalette = c("#00CCFF",
                  "#00CCCC",
                  "#FFFFB2",
                  "#FECC5C",
@@ -51,8 +51,6 @@ margin <- c(4, 12, 4, 8)
 oceanColor <- "white"
 groundColor <- "grey"
 
-sshsPalette <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
-
 
 palette <- c("#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 xsup <- 95
@@ -78,7 +76,7 @@ dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3,
 
 usethis::use_data(resolutions,
     mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
-    km, wgs84, Basins, sshs, SSHS_PALETTE,
+    km, wgs84, Basins, sshs, sshsPalette,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
     dfGetDataInterpolate,

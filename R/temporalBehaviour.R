@@ -9,7 +9,6 @@
 #' @param windThreshold numeric
 #' @param method character
 #' @param asymmetry character
-#' @param empiricalRMW logical
 #' @param tempRes numeric
 #' @param verbose logical
 #' @return NULL
