@@ -1230,7 +1230,7 @@ spatialBehaviour <- function(sts,
                              verbose = 2) {
   startTime <- Sys.time()
 
-  if(is.null(windThreshold)){
+  if (is.null(windThreshold)) {
     windThreshold = sts@scale
   }
   checkInputsSpatialBehaviour(
