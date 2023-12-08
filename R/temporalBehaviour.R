@@ -457,12 +457,7 @@ temporalBehaviour <- function(sts,
   if (verbose > 0) {
     cat(" Done\n\n")
     cat("Computation settings:\n")
-    cat("  (*) Temporal resolution: Every", switch(as.numeric(tempRes),
-                                                   "1" = 60,
-                                                   "0.75" = 45,
-                                                   "0.5" = 30,
-                                                   "0.25" = 15
-    ), "min\n")
+    cat("  (*) Temporal resolution: Every", tempRes, "min\n")
     cat("  (*) Method used:", method, "\n")
     cat("  (*) Product(s) to compute:", product, "\n")
     cat("  (*) Asymmetry used:", asymmetry, "\n")
