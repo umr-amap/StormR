@@ -27,7 +27,7 @@ SSHS_PALETTE = c("#00CCFF",
                  "#F03B20",
                  "#BD0026")
 
-names(SSHS_PALETTE) = c("TD",
+names(sshsPalette) = c("TD",
                         "TS",
                         "Cat. 1",
                         "Cat. 2",
