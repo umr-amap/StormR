@@ -2,42 +2,6 @@
 
 
 
-#' Get type for icon (leaflet)
-#'
-#' @noRd
-#' @param msw numeric
-#'
-#' @return corresponding icon
-getType <- function(msw) {
-  
-  if (is.na(msw)) {
-    type <- NA
-    
-  } else if (msw < sshs[1]) {
-    type <- "TD"
-    
-  } else if (msw >= sshs[1] & msw < sshs[2]) {
-    type <- "TS"
-    
-  } else if (msw >= sshs[2] & msw < sshs[3]) {
-    type <- "cat1"
-    
-  } else if (msw >= sshs[3] & msw < sshs[4]) {
-    type <- "cat2"
-    
-  } else if (msw >= sshs[4] & msw < sshs[5]) {
-    type <- "cat3"
-    
-  } else if (msw >= sshs[5] & msw < sshs[6]) {
-    type <- "cat4"
-    
-  } else if (msw >= sshs[6]) {
-    type <- "cat5"
-  }
-  
-  return(type)
-}
-
 
 #' Get the right color associated with a wind observation
 #'
