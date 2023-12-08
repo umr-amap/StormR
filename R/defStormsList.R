@@ -83,7 +83,7 @@ setOldClass("sf")
 #' @slot scale numeric. List of storm scale thresholds to use in all functions of 
 #' the package. Default value is set to the Saffir Simpson Hurricane Scale
 #' @slot scalePalette character. Named vector containing the color hex code 
-#' corresponding to each category in `scale` slot
+#' corresponding to each category in `scale` slot. Default value is the palette associated with the Saffir Simpson Hurricane Scale
 #' @return A `stormsList` object.
 #' \itemize{
 #'  \item `data`, list.
