@@ -426,8 +426,8 @@ plotStorms <- function(sts,
     #Adding legends
     map <- leaflet::addLegend(map,
                               legends,
-                              colors = SSHS_PALETTE,
-                              labels = names(SSHS_PALETTE),
+                              colors = sshsPalette,
+                              labels = names(sshsPalette),
                               title = "SSHS",
                               opacity = 1)
 
