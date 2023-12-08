@@ -35,16 +35,17 @@ getColors <- function(msw, scale, palette) {
 #'
 #' @noRd
 #' @param st Storm object
-#' @param sds stormsDataset object
+#' @param scale numeric vector. Thresholds used for the scale
+#' @param scale named character vector. colors used for the scale
 #'
 #' @return A plot with the track of the storm
-plotTrack <- function(st, sds) {
+plotTrack <- function(st, scale, scalePalette) {
   cexL <- 1
   cexP <- 0.6
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
-  colors <- unlist(lapply(msw, getColors, scale = sds@scale, palette = sds@scalePalette))
+  colors <- unlist(lapply(msw, getColors, scale = scale, palette = scalePalette))
 
   graphics::lines(
     lon,
@@ -106,7 +107,6 @@ plotLabels <- function(st, by, pos) {
 #'
 #' @noRd
 #' @param sts StormsList object
-#' @param sds stormsDataset object
 #' @param names character vector
 #' @param category numeric vector
 #' @param labels logical
@@ -117,14 +117,11 @@ plotLabels <- function(st, by, pos) {
 #' @param xlim numeric vector
 #' @param ylim numeric vector
 #' @return NULL, just stops the function if an error is found
-checkInputsPlotStorms <- function(sts, sds, names, category, labels, by,
+checkInputsPlotStorms <- function(sts, names, category, labels, by,
                                   pos, legends, loi, xlim, ylim) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
   
-  #checking sds input
-  stopifnot("sds is missing" = !missing(sds))
-
   # Checking names input
   if (!is.null(names)) {
     stopifnot("names must be characters" = identical(class(names), "character"))
@@ -185,7 +182,6 @@ checkInputsPlotStorms <- function(sts, sds, names, category, labels, by,
 #' This `plotStorms()` function allows plotting storm track data stored in a `StormsList` object.
 #'
 #' @param sts `StormsList` object
-#' @param sds `stormsDataset` object used to generate `sts` input
 #' @param names character vector. Name(s) of the storm(s) in capital letters.
 #'  If `names = NULL` (default setting), all storms are plotted.
 #' @param category numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
@@ -226,14 +222,13 @@ checkInputsPlotStorms <- function(sts, sds, names, category, labels, by,
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #'
 #' # Plotting Pam over Vanuatu with labels every 24h
-#' plotStorms(sts =pam, sds = sds, labels = TRUE)
+#' plotStorms(sts =pam, labels = TRUE)
 #'
 #' # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
-#' plotStorms(sts = pam, sds = sds, labels = TRUE, by = 2, pos = 4)
+#' plotStorms(sts = pam, labels = TRUE, by = 2, pos = 4)
 #' }
 #' @export
 plotStorms <- function(sts,
-                       sds,
                        names = NULL,
                        category = NULL,
                        xlim = NULL,
@@ -245,7 +240,7 @@ plotStorms <- function(sts,
                        loi = TRUE) {
   
   checkInputsPlotStorms(
-    sts, sds, names, category, labels, by, pos, legends,
+    sts, names, category, labels, by, pos, legends,
     loi, xlim, ylim
   )
 
@@ -321,7 +316,7 @@ plotStorms <- function(sts,
   }
 
   # Plotting track(s) and labels
-  lapply(stsAux, plotTrack, sds)
+  lapply(stsAux, plotTrack, sts@scale, sts@scalePalette)
   if (labels) {
     lapply(stsAux, plotLabels, by, pos)
   }
@@ -329,9 +324,10 @@ plotStorms <- function(sts,
   # Adding legends
   if (legends != "none") {
     
-    leg <- names(sds@scalePalette)
-    col <- sds@scalePalette
     
+    leg <- names(sts@scalePalette)
+    col <- sts@scalePalette
+  
     lty <- rep(0, length(col))
     pch <- rep(19, length(col))
     lwd <- rep(1, length(col))

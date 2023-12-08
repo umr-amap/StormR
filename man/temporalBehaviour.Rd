@@ -6,7 +6,6 @@
 \usage{
 temporalBehaviour(
   sts,
-  sds,
   points,
   product = "TS",
   windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -19,8 +18,6 @@ temporalBehaviour(
 }
 \arguments{
 \item{sts}{\code{StormsList} object.}
-
-\item{sds}{\code{stormsDataset} object used to generate \code{sts} input}
 
 \item{points}{data.frame. Consisting of two columns names as "x" (for the longitude) and
 "y" (for the latitude), providing the coordinates in decimal degrees of the point locations. Row names
@@ -212,15 +209,15 @@ row.names(pts) <- c("point_1", "point_2")
 
 # Computing time series of wind speed and direction for Pam
 # over points 1 and 2 defined above
-ts.pam <- temporalBehaviour(pam, sds, points = pts)
+ts.pam <- temporalBehaviour(pam, points = pts)
 
 # Computing PDI for Pam over points 1 and 2 defined above
-pdi.pam <- temporalBehaviour(pam, sds, points = pts, product = "PDI")
+pdi.pam <- temporalBehaviour(pam, points = pts, product = "PDI")
 
 # Computing the duration of exposure to wind speeds above the thresholds
 # used by the Saffir-Simpson hurricane wind scale for Pam
 # over points 1 and 2 defined above
-exp.pam <- temporalBehaviour(pam, sds, points = pts, product = "Exposure")
+exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
 }
 }
 \references{

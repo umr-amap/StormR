@@ -6,7 +6,6 @@
 \usage{
 plotBehaviour(
   sts,
-  sds,
   rasterProduct,
   colorPalette = NULL,
   main = NULL,
@@ -20,8 +19,6 @@ plotBehaviour(
 }
 \arguments{
 \item{sts}{\code{StormsList} object.}
-
-\item{sds}{\code{stormsDataset} object used to generate \code{sts} input}
 
 \item{rasterProduct}{layer name in a \code{SpatRaster} object. The names of the layers follow
 the following terminology:
@@ -73,11 +70,11 @@ sds <- defStormsDataset()
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
 # Plotting maximum sustained wind speed for Pam (2015) near Vanuatu
-pam.msw <- spatialBehaviour(pam, sds, verbose = 0)
-plotBehaviour(pam, sds, pam.msw)
+pam.msw <- spatialBehaviour(pam, verbose = 0)
+plotBehaviour(pam, pam.msw)
 
 # Plotting 2D wind speed profile for Pam (2015) near Vanuatu
-pam.prof <- spatialBehaviour(pam, sds, product = "Profiles", verbose = 0)
-plotBehaviour(pam, sds, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
+pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
+plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 }
 }

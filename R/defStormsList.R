@@ -80,6 +80,10 @@ setOldClass("sf")
 #' @slot spatialLoi sf object. Represents the location of interest. Projection
 #'   is EPSG:4326
 #' @slot spatialLoiBuffer sf object. Buffer extension of `spatialLoi`
+#' @slot scale numeric. List of storm scale thresholds to use in all functions of 
+#' the package. Default value is set to the Saffir Simpson Hurricane Scale
+#' @slot scalePalette character. Named vector containing the color hex code 
+#' corresponding to each category in `scale` slot
 #' @return A `stormsList` object.
 #' \itemize{
 #'  \item `data`, list.
@@ -94,7 +98,9 @@ stormsList <- methods::setClass("stormsList",
                                 slots = c(data = "list",
                                           buffer = "numeric",
                                           spatialLoi = "sf",
-                                          spatialLoiBuffer = "sf"))
+                                          spatialLoiBuffer = "sf",
+                                          scale = "numeric",
+                                          scalePalette = "character"))
 
 
 
@@ -588,10 +594,12 @@ setMethod("getInObs", signature("storm"), function(s) s@obs)
 #' @param seasons, numeric vector
 #' @param names character vector
 #' @param maxDist numeric
+#' @param scale numeric vector
+#' @param scalePalette character vector
 #' @param verbose logical
 #' @param removeUnder numeric
 #' @return NULL, stops the function if an error is detected
-checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, verbose, removeUnder) {
+checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, scalePalette, verbose, removeUnder) {
 
   #checking sds input
   stopifnot("sds is missing" = !missing(sds))
@@ -640,6 +648,15 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, verbose,
   stopifnot("maxDist must be numeric " = identical(class(maxDist), "numeric"))
   stopifnot("maxDist must be a length 1 vector " = length(maxDist) == 1)
   stopifnot("maxDist must > 0 " = maxDist > 0)
+  
+  # Checking scale input
+  stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
+  
+  # Checking scalePalette input
+  stopifnot("scalePalette must be a named vector of character" = identical(class(scalePalette), "character"))
+  
+  stopifnot("invalid length of either scale or scalePalette input (lenght(scalePalette) must be equal to lenght(scalePalette) + 1)" = 
+              length(scalePalette) == length(scale) + 1)
 
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -853,13 +870,13 @@ computeScaleIndice <- function(msw, scale) {
 #' @param sds stormsDataset object. sds input from storms
 #' @param index numeric, index of the storm in the database
 #' @param loiSfBuffer sf object. Location of interest extended with buffer
-#'
+#' @param scale numeric vector. Thresholds for the scale used
 #' @return a list with 2 slots:
 #'   \itemize{
 #'     \item list of storm objects
 #'     \item list of character (names of storms)
 #'   }
-writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
+writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer, scale) {
 
   #Getting lon/lat coordinates
   lon <- sds@database$longitude[, index]
@@ -906,8 +923,8 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 
 
     
-    # scale is calculated using the sds scale input and the wind speed data
-    storm@obs.all$scale <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = sds@scale))
+    # scale is calculated using the scale input and the wind speed data
+    storm@obs.all$scale <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = scale))
 
     if ("rmw" %in% names(sds@fields))
       storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[validIndices, index]), na.rm = FALSE, rule = 2)
@@ -967,6 +984,10 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 #' @param names character vector. Names of specific storms (in capital letters).
 #' @param maxDist numeric. Maximum distance between the location of interest and the
 #' storm for which track data are extracted. Default `maxDist` is set to 300 km.
+#' @param scale numeric. List of storm scale thresholds used for the database.
+#'   Default value is set to the Saffir Simpson Hurricane Scale
+#' @param scalePalette character. Named vector containing the color hex code 
+#' corresponding to each category in `scale` input
 #' @param removeUnder numeric. Storms reaching this maximum level or less in the scale are removed.
 #'   Default value is set to NULL.
 #' @param verbose numeric. Type of information the function displays. Can be:
@@ -1020,12 +1041,17 @@ defStormsList <- function(sds,
                    seasons = c(sds@seasons["min"], sds@seasons["max"]),
                    names = NULL,
                    maxDist = 300,
+                   scale = sshs,
+                   scalePalette = SSHS_PALETTE,
                    removeUnder = NULL,
                    verbose = 2) {
 
   startTime <- Sys.time()
 
-  checkInputsDefStormsList(sds, loi, seasons, names, maxDist, verbose, removeUnder)
+  checkInputsDefStormsList(sds, loi, seasons, names, maxDist, scale, scalePalette, verbose, removeUnder)
+  
+  # order scale
+  scale = scale[order(scale)]
 
   if (length(seasons) == 2)
     seasons <- seasons[order(seasons)]
@@ -1090,7 +1116,8 @@ defStormsList <- function(sds,
                                stormNames = stormNames,
                                sds = sds,
                                index = i,
-                               loiSfBuffer = spatialBuffer)
+                               loiSfBuffer = spatialBuffer,
+                               scale = scale)
 
       if (!is.null(stsOutput[[1]])) {
         stormList <- stsOutput[[1]]
@@ -1113,7 +1140,9 @@ defStormsList <- function(sds,
                data = stormList,
                buffer = maxDist,
                spatialLoi = loiSf,
-               spatialLoiBuffer = spatialBuffer)
+               spatialLoiBuffer = spatialBuffer,
+               scale = scale,
+               scalePalette = scalePalette)
 
     names(sts@data) <- unlist(stormNames)
 
@@ -1138,12 +1167,13 @@ defStormsList <- function(sds,
         }
         cat("(*) Number of storms:", getNbStorms(sts), "\n")
         cat("        Name - Tropical season - Scale - Number of observation within buffer:\n")
-        i <- 1
         for (i in 1:getNbStorms(sts)){
-          n <- getNames(sts@data[[i]])
-          s <- getSeasons(sts@data[[i]])
-          scalev <- getScale(sts@data[[i]])
-          cat("       ", n, "-", s, "-", scalev, "-", length(getInObs(sts, n, s)), "\n")
+          cat("       ",
+              getNames(sts@data[[i]]), "-",
+              getSeasons(sts@data[[i]]), "-",
+              getScale(sts@data[[i]]), "-",
+              length(getInObs(sts, getNames(sts@data[[i]]), getSeasons(sts@data[[i]]))),
+              "\n")
         }
         cat("\n")
       }

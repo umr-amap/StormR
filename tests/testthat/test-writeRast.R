@@ -1,6 +1,6 @@
 suppressWarnings(sds <- defStormsDataset(verbose = 0))
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-msw <- spatialBehaviour(pam, sds, verbose = 0)
+msw <- spatialBehaviour(pam, verbose = 0)
 
 test_that("Tests checkInputsWriteRastiteRast function", {
   # Checking rast validity
@@ -94,7 +94,7 @@ test_that("Function correctly writes a netCDF file for PDI product", {
 
 # Test case 4: Test that the function correctly writes a netCDF file for Exposure product
 test_that("Function correctly writes a netCDF file for Exposure product", {
-  exposure <- spatialBehaviour(pam, sds, product = "Exposure", verbose = 0)
+  exposure <- spatialBehaviour(pam, product = "Exposure", verbose = 0)
   # Call the function with netCDF format and Exposure product
   writeRast(exposure, filename = "exposure.nc", path = "./")
   # Check that the file was created
@@ -110,7 +110,7 @@ test_that("Function correctly writes a netCDF file for Exposure product", {
 
 # Test case 5: Test that the function correctly writes a netCDF file for profile product
 test_that("Function correctly writes a netCDF file for profile product", {
-  profiles <- spatialBehaviour(pam, sds, product = "Profiles", verbose = 0)
+  profiles <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
   # Call the function with netCDF format and profile product
   writeRast(profiles, filename = "profile.nc", path = "./")
   # Check that the file was created

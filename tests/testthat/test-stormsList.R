@@ -437,7 +437,7 @@ test_that("Test writeStorm function", {
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
   expect_identical(
-    writeStorm(list(), list(), sds, 1, getBuffer(pam)),
+    writeStorm(list(), list(), sds, 1, getBuffer(pam), sshs),
     list(list(getStorm(pam, "PAM")), list("PAM"))
   )
 })

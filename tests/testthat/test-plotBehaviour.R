@@ -5,7 +5,7 @@
 test_that("Tests checkInputsPlotBehaviour function", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-  msw <- spatialBehaviour(pam, sds, verbose = 0)
+  msw <- spatialBehaviour(pam, verbose = 0)
 
   # Checking sts input
   expect_error(checkInputsPlotBehaviour(
@@ -20,19 +20,6 @@ test_that("Tests checkInputsPlotBehaviour function", {
     pos = 3
   ))
   
-  # Checking sds input
-  expect_error(checkInputsPlotBehaviour(
-    sts = pam,
-    raster_product = msw,
-    color_palette = NULL,
-    main = NULL,
-    legends = "topleft",
-    xlim = NULL,
-    ylim = NULL,
-    labels = FALSE,
-    by = 8,
-    pos = 3
-  ))
 
   # Checking raster_product input
   expect_error(checkInputsPlotBehaviour(

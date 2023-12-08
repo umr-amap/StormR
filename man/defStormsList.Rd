@@ -10,6 +10,8 @@ defStormsList(
   seasons = c(sds@seasons["min"], sds@seasons["max"]),
   names = NULL,
   maxDist = 300,
+  scale = sshs,
+  scalePalette = SSHS_PALETTE,
   removeUnder = NULL,
   verbose = 2
 )
@@ -34,6 +36,12 @@ with cyclones assigned for the year that originated in. By default all storms fr
 
 \item{maxDist}{numeric. Maximum distance between the location of interest and the
 storm for which track data are extracted. Default \code{maxDist} is set to 300 km.}
+
+\item{scale}{numeric. List of storm scale thresholds used for the database.
+Default value is set to the Saffir Simpson Hurricane Scale}
+
+\item{scalePalette}{character. Named vector containing the color hex code
+corresponding to each category in \code{scale} input}
 
 \item{removeUnder}{numeric. Storms reaching this maximum level or less in the scale are removed.
 Default value is set to NULL.}

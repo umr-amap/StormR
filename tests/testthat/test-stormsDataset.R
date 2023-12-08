@@ -16,7 +16,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -31,8 +30,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -48,7 +45,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -63,8 +59,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
       verbose = 1
     )
   )
@@ -80,7 +74,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -95,8 +88,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -113,7 +106,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -128,8 +121,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -149,8 +142,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -169,8 +162,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -185,7 +178,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -200,8 +193,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -216,7 +209,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -231,8 +224,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -247,7 +240,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -262,8 +255,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -278,7 +271,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "isoTime" = "iso_time",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -293,8 +286,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -309,7 +302,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "isoTime" = "iso_time",
         "lon" = "usa_lon",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -324,8 +317,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -341,7 +334,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "isoTime" = "iso_time",
         "lon" = "usa_lon",
         "lat" = "usa_lat",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -356,8 +349,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -373,7 +366,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -387,8 +380,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -404,7 +397,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -419,8 +412,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb_to_pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -436,7 +429,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -450,8 +443,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -467,7 +460,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -482,8 +475,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb_to_pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -499,7 +492,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -511,8 +504,8 @@ test_that("Test checkInputsdefStormsDataset function", {
       unitConversion = c(msw = "knt2ms",
                          rmw = "nm2km",
                          poci = "mb2pa"),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -528,7 +521,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -543,8 +536,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -560,7 +553,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -574,8 +567,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         rmw = "nm2km",
         pressure = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -591,7 +584,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -606,7 +599,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
+      
       verbose = TRUE
     )
   )
@@ -623,7 +616,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -638,8 +631,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -654,7 +647,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -669,8 +662,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -686,7 +679,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -701,8 +694,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -718,7 +711,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -733,8 +726,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -750,7 +743,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -765,8 +758,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -783,7 +776,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -796,8 +789,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -813,7 +806,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -826,8 +819,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -843,7 +836,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -856,8 +849,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -873,7 +866,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -886,8 +879,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -905,7 +898,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -915,8 +908,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         
       ), "%Y"))),
       unitConversion = 1,
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -932,7 +925,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -942,8 +935,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         
       ), "%Y"))),
       unitConversion = TRUE,
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -976,7 +969,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = c("1", "2"),
-      scalePalette = SSHS_PALETTE,
+      
       verbose = 1
     )
   )
@@ -1008,7 +1001,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = TRUE,
-      scalePalette = SSHS_PALETTE,
+      
       verbose = 1
     )
   )
@@ -1040,7 +1033,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
+      
       scalePalette = c(1,2,2,3),
       verbose = 1
     )
@@ -1072,7 +1065,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
+      
       scalePalette = TRUE,
       verbose = 1
     )
@@ -1106,7 +1099,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         poci = "mb2pa"
       ),
       scale = c(18,30),
-      scalePalette = SSHS_PALETTE,
+      
       verbose = 1
     )
   )
@@ -1124,7 +1117,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -1155,7 +1148,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
@@ -1169,8 +1162,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -1186,7 +1179,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "poci" = "usa_poci"
       ),
@@ -1200,8 +1193,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )
@@ -1217,7 +1210,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
+        
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres"
       ),
@@ -1231,8 +1224,8 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      scale = sshs,
-      scalePalette = SSHS_PALETTE,
+      
+      
       verbose = 1
     )
   )

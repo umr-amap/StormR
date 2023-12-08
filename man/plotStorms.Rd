@@ -6,7 +6,6 @@
 \usage{
 plotStorms(
   sts,
-  sds,
   names = NULL,
   category = NULL,
   xlim = NULL,
@@ -20,8 +19,6 @@ plotStorms(
 }
 \arguments{
 \item{sts}{\code{StormsList} object}
-
-\item{sds}{\code{stormsDataset} object used to generate \code{sts} input}
 
 \item{names}{character vector. Name(s) of the storm(s) in capital letters.
 If \code{names = NULL} (default setting), all storms are plotted.}
@@ -75,9 +72,9 @@ sds <- defStormsDataset()
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
 # Plotting Pam over Vanuatu with labels every 24h
-plotStorms(sts =pam, sds = sds, labels = TRUE)
+plotStorms(sts =pam, labels = TRUE)
 
 # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
-plotStorms(sts = pam, sds = sds, labels = TRUE, by = 2, pos = 4)
+plotStorms(sts = pam, labels = TRUE, by = 2, pos = 4)
 }
 }

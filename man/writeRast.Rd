@@ -35,14 +35,14 @@ sds <- defStormsDataset()
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
 # Computing maximum sustained wind speed
-pam.msw <- spatialBehaviour(pam, sds)
+pam.msw <- spatialBehaviour(pam)
 
 # Exporting maximum sustained wind speed raster layer to a GeoTIFF file
 writeRast(pam.msw, path = paste0(tempdir(), "/"))
 
 # Computing power dissipation index for several storms near New Caledonia
 sts.nc <- defStormsList(sds = sds, loi = "New Caledonia")
-pdi.nc <- spatialBehaviour(sts.nc, sds, product = "PDI")
+pdi.nc <- spatialBehaviour(sts.nc, product = "PDI")
 
 # Exporting the power dissipation index raster layers to a NetCDF file
 writeRast(pdi.nc, path = paste0(tempdir(), "/"))

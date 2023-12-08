@@ -12,8 +12,6 @@ defStormsDataset(
   basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unitConversion = c(msw = "knt2ms", rmw = "nm2km", pressure = "mb2pa", poci = "mb2pa"),
-  scale = sshs,
-  scalePalette = SSHS_PALETTE,
   verbose = 1
 )
 }
@@ -89,12 +87,6 @@ For \code{pressure} and \code{poci},
 \item \code{"psi2pa"}, to convert  psi to Pascal, or
 \item \code{"None"}, if no conversion is needed.
 }}
-
-\item{scale}{numeric. List of storm scale thresholds used for the database.
-Default value is set to the Saffir Simpson Hurricane Scale}
-
-\item{scalePalette}{character. Named vector containing the color hex code
-corresponding to each category in \code{scale} input}
 
 \item{verbose}{numeric. Whether the function should display (\verb{= 1})
 or not (\verb{= 0}) information about the processes.}

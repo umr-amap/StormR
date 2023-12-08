@@ -4,6 +4,10 @@
 
 
 
+
+
+
+
 test_that("Test getRmw function", {
   expect_equal(getRmw(seq(0, 80, 5),-15),
                c(60, 55, 51, 47, 44, 41, 38, 35, 32,
@@ -356,13 +360,13 @@ test_that("Test spatialBehaviour function", {
       names = "PAM",
       verbose = 0
     )
-  sb <- spatialBehaviour(pam, sds, method = "Holland", verbose = 0)
+  sb <- spatialBehaviour(pam, method = "Holland", verbose = 0)
   
   expect_equal(terra::minmax(sb[["PAM_MSW"]]),
                matrix(c(6.846, 76.733942),
                       dimnames = list(c('min', 'max'), c('PAM_MSW'))))
   
-  sb <- spatialBehaviour(pam, sds, method = "Boose", verbose = 0)
+  sb <- spatialBehaviour(pam, method = "Boose", verbose = 0)
   expect_equal(terra::minmax(sb[["PAM_MSW"]]),
                matrix(c(8.086, 73.804678),
                       dimnames = list(c('min', 'max'), c('PAM_MSW'))))
@@ -385,26 +389,10 @@ test_that("Test checkInputsSpatialBehaviour function", {
     )
   )
   
-  # Checking sds input
-  expect_error(
-    checkInputsSpatialBehaviour(
-      sts = pam,
-      product = c("MSW", "PDI", "Exposure"),
-      windThreshold = c(18, 33, 42, 49, 58, 70),
-      method = "Willoughby",
-      asymmetry = "Chen",
-      empiricalRMW = FALSE,
-      spaceRes = "2.5min",
-      tempRes = 1,
-      verbose = 2
-    )
-  )
-  
   # Checking product input
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = 1,
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -419,7 +407,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -435,7 +422,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c("18", "33", "42", "49", "58", "70"),
       method = "Willoughby",
@@ -450,7 +436,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(-3,-45),
       method = "Willoughby",
@@ -466,7 +451,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "willoughby",
@@ -481,7 +465,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = 1,
@@ -496,7 +479,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = TRUE,
@@ -511,7 +493,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = c("Willoughby", "Holland"),
@@ -527,7 +508,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -542,7 +522,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -557,7 +536,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -572,7 +550,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -588,7 +565,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -603,7 +579,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -619,7 +594,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -634,7 +608,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -649,7 +622,7 @@ test_that("Test checkInputsSpatialBehaviour function", {
   expect_error(
     checkInputsSpatialBehaviour(
       sts = pam,
-      sds = sds,
+      
       product = c("MSW", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
       method = "Willoughby",
@@ -661,6 +634,7 @@ test_that("Test checkInputsSpatialBehaviour function", {
     )
   )
 })
+
 
 
 

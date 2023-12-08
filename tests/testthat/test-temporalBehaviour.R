@@ -1,6 +1,7 @@
 
 
 
+
 test_that("Test checkInputsTemporalBehaviour function", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <-
@@ -25,26 +26,10 @@ test_that("Test checkInputsTemporalBehaviour function", {
     )
   )
   
-  # Checking sds input
-  expect_error(
-    checkInputsTemporalBehaviour(
-      sts = pam,
-      points = data.frame(x = 169, y = -19),
-      product = "TS",
-      windThreshold = c(18, 33, 42, 49, 58, 70),
-      method = "Willoughby",
-      asymmetry = "Chen",
-      empiricalRMW = FALSE,
-      tempRes = 1,
-      verbose = 1
-    )
-  )
-  
   # Checking points
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = c(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -59,7 +44,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = c(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -117,7 +101,7 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
+      
       points = data.frame(x = 169, y = -19),
       product = 1,
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -132,7 +116,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "MSW",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -147,7 +130,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = c("TS", "PDI", "Exposure"),
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -163,7 +145,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "Exposure",
       windThreshold = c("18", "33", "42", "49", "58", "70"),
@@ -178,10 +159,9 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "Exposure",
-      windThreshold = c(-3,-45),
+      windThreshold = c(-3, -45),
       method = "Willoughby",
       asymmetry = "Chen",
       empiricalRMW = FALSE,
@@ -194,7 +174,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -209,7 +188,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -224,7 +202,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -239,7 +216,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -255,7 +231,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -270,7 +245,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -285,7 +259,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -300,7 +273,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -316,7 +288,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -331,7 +302,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -346,7 +316,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -361,7 +330,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -376,7 +344,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -392,7 +359,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -407,7 +373,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -422,7 +387,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),
@@ -437,7 +401,6 @@ test_that("Test checkInputsTemporalBehaviour function", {
   expect_error(
     checkInputsTemporalBehaviour(
       sts = pam,
-      sds = sds,
       points = data.frame(x = 169, y = -19),
       product = "TS",
       windThreshold = c(18, 33, 42, 49, 58, 70),

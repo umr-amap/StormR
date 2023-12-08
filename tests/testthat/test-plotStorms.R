@@ -42,19 +42,6 @@ test_that("Test checkInputsPlotStorms function", {
     ylim = NULL
   ))
   
-  # Checking sds input
-  expect_error(checkInputsPlotStorms(
-    sts = pam,
-    names = NULL,
-    category = NULL,
-    labels = TRUE,
-    by = 8,
-    pos = 3,
-    legends = "topleft",
-    loi = TRUE,
-    xlim = NULL,
-    ylim = NULL
-  ))
 
   # Checking names input
   expect_error(checkInputsPlotStorms(
