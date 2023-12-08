@@ -138,7 +138,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
     stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
     stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
-      xlim <= 360)
+                xlim <= 360)
   }
 
   # Checking ylim input
@@ -146,7 +146,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
     stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
     stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
-      ylim <= 90)
+                ylim <= 90)
   }
 
   # Checking logical inputs
@@ -170,7 +170,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
     "legends must be either topright, topleft, bottomleft, bottomright, or none" =
       legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none")
   )
-  
+
   #Checking mode input
   stopifnot("dynamicPlot must be logical" = identical(class(dynamicPlot), "logical"))
   stopifnot("dynamicPlot must length 1" = length(mode) == 1)
@@ -231,10 +231,10 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #'
 #' # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 #' plotStorms(pam, labels = TRUE, by = 2, pos = 4)
-#' 
+#'
 #' # dynamicPlot mode
 #  # plotStorms(pam, dynamicPlot=TRUE)
-#' 
+#'
 #' }
 #' @export
 plotStorms <- function(sts,
@@ -247,8 +247,8 @@ plotStorms <- function(sts,
                        pos = 3,
                        legends = "topright",
                        loi = TRUE,
-                       dynamicPlot=FALSE) {
-  
+                       dynamicPlot = FALSE) {
+
   checkInputsPlotStorms(sts, names, category, labels, by, pos, legends,loi, xlim, ylim, dynamicPlot)
 
 
@@ -298,104 +298,109 @@ plotStorms <- function(sts,
     }
   }
 
-  if(!dynamicPlot){
-    
+  if (!dynamicPlot) {
+
     # Plotting base map
     world <- rworldmap::getMap(resolution = "high")
-    
+
     maps::map(world,
-              fill = TRUE,
-              col = groundColor,
-              bg = oceanColor,
-              wrap = c(0, 360),
-              xlim = c(ext$xmin - 1, ext$xmax + 1), # we extend W & E by 1°
-              ylim = c(ext$ymin - 1, ext$ymax + 1)
+      fill = TRUE,
+      col = groundColor,
+      bg = oceanColor,
+      wrap = c(0, 360),
+      xlim = c(ext$xmin - 1, ext$xmax + 1), # we extend W & E by 1°
+      ylim = c(ext$ymin - 1, ext$ymax + 1)
     ) # we extend S & N by 1°
     maps::map.axes(cex.axis = 1)
-    
-    
+
+
     # Plotting loi
     if (loi) {
       plot(sts@spatialLoiBuffer, lwd = 1, border = "blue", add = TRUE)
     }
-    
+
     if (loi && as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT") {
       plot(sts@spatialLoi, lwd = 2, col = "blue", pch = 4, add = TRUE)
     }
-    
+
     # Plotting track(s) and labels
     lapply(stsAux, plotTrack)
     if (labels) {
       lapply(stsAux, plotLabels, by, pos)
     }
-    
+
     # Adding legends
     if (legends != "none") {
       leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
       col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
-      
+
       lty <- rep(0, 7)
       pch <- rep(19, 7)
       lwd <- rep(1, 7)
-      
+
       graphics::legend(legends,
-                       title = "SSHS",
-                       legend = leg,
-                       col = col,
-                       lty = lty,
-                       pch = pch,
-                       lwd = lwd,
-                       cex = 0.6,
-                       bty = "n"
+        title = "SSHS",
+        legend = leg,
+        col = col,
+        lty = lty,
+        pch = pch,
+        lwd = lwd,
+        cex = 0.6,
+        bty = "n"
       )
     }
-    
-  }else{
+
+  }else {
     #Init map
-    
-    map <-leaflet::fitBounds(leaflet::addProviderTiles(leaflet::leaflet(options = leaflet::leafletOptions(worldCopyJump = F,
-                                                                                                          minZoom = 2,
-                                                                                                          maxZoom = 12),
-                                                                        width = 650,
-                                                                        height = 700),
-                                                       leaflet::providers$Esri.NatGeoWorldMap, group = "Satellite",
-                                                       options = leaflet::providerTileOptions(errorTileUrl = "Tile not found")),
-                             lng1 = as.numeric(ext$xmin),
-                             lng2 = as.numeric(ext$xmax),
-                             lat1 = as.numeric(ext$ymin),
-                             lat2 = as.numeric(ext$ymax))
-    
+
+    map <- leaflet::fitBounds(
+      leaflet::addProviderTiles(
+        leaflet::leaflet(options =
+                           leaflet::leafletOptions(worldCopyJump = F,
+                                                   minZoom = 2,
+                                                   maxZoom = 12),
+                         width = 650,
+                         height = 700),
+        leaflet::providers$Esri.NatGeoWorldMap,
+        group = "Satellite",
+        options = leaflet::providerTileOptions(errorTileUrl = "Tile not found")),
+      lng1 = as.numeric(ext$xmin),
+      lng2 = as.numeric(ext$xmax),
+      lat1 = as.numeric(ext$ymin),
+      lat2 = as.numeric(ext$ymax)
+    )
+
     #Plotting loi
     if(loi)
       map <- leaflet::addPolylines(map,
                                    data = sts@spatialLoiBuffer,
                                    fillColor = "transparent",
                                    label = "Buffer limit")
-    
+
     if(loi & as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT")
       map <- leaflet::addCircleMarkers(map,
                                        data = sts@spatialLoi,
                                        fillColor = "transparent",
                                        label = "LOI")
-    
-    
+
+
     #Plotting track(s) and labels
-    for(st in stsAux){
-      
+    for (st in stsAux) {
+
       data <- st@obs.all
       data$type <- unlist(lapply(data$msw,getColors, sshs)) # TODO ???
-      
+
       labels <- paste0("<b>",st@name, "</b><br>",
-                       "<i>observation ",row.names(data),"</i><br>",
+                       "<i>observation ",row.names(data), "</i><br>",
                        data$iso.time,
                        "<ul>",
-                       "<li>", "scale:  ", data$sshs,"</li>",
-                       "<li>", "msw:  ", data$msw,"m/s</li>",
+                       "<li>", "scale:  ", data$sshs, "</li>",
+                       "<li>", "msw:  ", data$msw, "m/s</li>",
                        "<li>", "rmw:  ", data$rmw, "km</li>",
-                       "<li>", "pressure:  ", data$pressure,"pa</li>",
+                       "<li>", "pressure:  ", data$pressure, "pa</li>",
                        "<li>", "poci:  ", data$poci, "pa</li>",
                        "</ul>")
-      
+
       #Plot track
       map <- leaflet::addPolylines(map,
                                    data = data,
@@ -403,8 +408,8 @@ plotStorms <- function(sts,
                                    lat = ~lat,
                                    color = "black",
                                    weight = 2)
-      
-      
+
+
       map <- leaflet::addCircleMarkers(map,
         data = data,
         lng = ~lon,
@@ -416,8 +421,8 @@ plotStorms <- function(sts,
         popup = labels
       )
     }
-    
-    
+
+
     #Adding legends
     map <- leaflet::addLegend(map,
                               legends,
@@ -425,11 +430,11 @@ plotStorms <- function(sts,
                               labels = names(SSHS_PALETTE),
                               title = "SSHS",
                               opacity = 1)
-    
+
     map
-    
+
     return(map)
   }
 
-  
+
 }

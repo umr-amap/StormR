@@ -214,100 +214,104 @@ plotBehaviour <- function(sts,
     leg <- main
   }
 
-  if(!dynamicPlot){
+  if (!dynamicPlot) {
     # Plotting track
     plotStorms(
       sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
       legends = legends
     )
-    
-    
+
+
     # Adding title
     graphics::title(leg)
-    
-    
+
+
     terra::plot(rasterProduct,
-                col = col,
-                type = "continuous",
-                xlim = c(xmin - 1, xmax + 1), # we extend W & E by 1°. Needs to be in agreement with plotStorm
-                ylim = c(ymin - 1, ymax + 1), # we extend S & N by 1°. Needs to be in agreement with plotStorm
-                alpha = 0.7,
-                axes = FALSE,
-                range = range,
-                legend = TRUE,
-                add = TRUE
+      col = col,
+      type = "continuous",
+      xlim = c(xmin - 1, xmax + 1), # we extend W & E by 1°. Needs to be in agreement with plotStorm
+      ylim = c(ymin - 1, ymax + 1), # we extend S & N by 1°. Needs to be in agreement with plotStorm
+      alpha = 0.7,
+      axes = FALSE,
+      range = range,
+      legend = TRUE,
+      add = TRUE
     )
-    
-    
+
+
     # Adding track again (to emphazise)
     plotTrack(sts@data[[name]])
-    
+
     # Adding labels
     if (labels && product != "Profiles" && product != "WindDirection") {
       plotLabels(sts@data[[name]], by, pos)
     }
-    
+
     if (labels && (product == "Profiles" || product == "WindDirection")) {
       ind <- as.numeric(strsplit(names(rasterProduct), split = "_", fixed = TRUE)[[1]][3])
-      
+
       if (round(ind) == ind) {
         # It is a real observation
         graphics::text(sts@data[[name]]@obs.all$lon[ind],
-                       sts@data[[name]]@obs.all$lat[ind],
-                       labels = paste0(
-                         name, "\n", sts@data[[name]]@obs.all$iso.time[ind],
-                         "\n(", ind, ")"
-                       ),
-                       pos = pos,
-                       cex = 0.6
+          sts@data[[name]]@obs.all$lat[ind],
+          labels = paste0(
+            name, "\n", sts@data[[name]]@obs.all$iso.time[ind],
+            "\n(", ind, ")"
+          ),
+          pos = pos,
+          cex = 0.6
         )
       } else {
         # It is an interpolated observation
         indf <- floor(ind)
         indc <- ceiling(ind)
         pos2 <- switch(pos,
-                       "1" = 3,
-                       "2" = 4,
-                       "3" = 1,
-                       "4" = 2
+          "1" = 3,
+          "2" = 4,
+          "3" = 1,
+          "4" = 2
         )
         graphics::text(sts@data[[name]]@obs.all$lon[indf],
-                       sts@data[[name]]@obs.all$lat[indf],
-                       labels = paste0(
-                         name, "\n", sts@data[[name]]@obs.all$iso.time[indf],
-                         "\n(", indf, ")"
-                       ),
-                       pos = pos,
-                       cex = 0.6
+          sts@data[[name]]@obs.all$lat[indf],
+          labels = paste0(
+            name, "\n", sts@data[[name]]@obs.all$iso.time[indf],
+            "\n(", indf, ")"
+          ),
+          pos = pos,
+          cex = 0.6
         )
-        
+
         graphics::text(sts@data[[name]]@obs.all$lon[indc],
-                       sts@data[[name]]@obs.all$lat[indc],
-                       labels = paste0(
-                         name, "\n", sts@data[[name]]@obs.all$iso.time[indc],
-                         "\n(", indc, ")"
-                       ),
-                       pos = pos2,
-                       cex = 0.6
+          sts@data[[name]]@obs.all$lat[indc],
+          labels = paste0(
+            name, "\n", sts@data[[name]]@obs.all$iso.time[indc],
+            "\n(", indc, ")"
+          ),
+          pos = pos2,
+          cex = 0.6
         )
       }
     }
   }else{
-    
+
     # dynamicPlot plot
-    map <- plotStorms(sts = sts, names = name, xlim = c(xmin, xmax), ylim = c(ymin, ymax),
-      legends = legends, dynamicPlot = TRUE)
-    
-    
-    pal <- leaflet::colorNumeric(col, terra::values(rasterProduct),
-                        na.color = "transparent")
-    
+    map <- plotStorms(sts = sts, 
+                      names = name,
+                      xlim = c(xmin, xmax),
+                      ylim = c(ymin, ymax),
+                      legends = legends, dynamicPlot = TRUE)
+
+
+    pal <- leaflet::colorNumeric(col,
+                                 terra::values(rasterProduct),
+                                 na.color = "transparent")
+
     map <- leaflet::addRasterImage(map,
-                                  rasterProduct,
-                                  colors = pal,
-                                  opacity = 0.8
-                                  )
-    
+      rasterProduct,
+      colors = pal,
+      opacity = 0.8
+    )
+
     #Adding legends
     map <- leaflet::addLegend(map,
                               legends,
@@ -318,5 +322,5 @@ plotBehaviour <- function(sts,
 
     map
   }
-  
+
 }
