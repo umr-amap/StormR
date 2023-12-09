@@ -653,10 +653,12 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
   stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
   
   # Checking scalePalette input
-  stopifnot("scalePalette must be a named vector of character" = identical(class(scalePalette), "character"))
+  if(!is.null(scalePalette)){
+    stopifnot("scalePalette must be a (named) character vector" = identical(class(scalePalette), "character"))
+    stopifnot("(lenght(scalePalette) must be equal to lenght(scale) + 1)" = 
+                length(scalePalette) == length(scale) + 1)
+  }
   
-  stopifnot("invalid length of either scale or scalePalette input (lenght(scalePalette) must be equal to lenght(scalePalette) + 1)" = 
-              length(scalePalette) == length(scale) + 1)
 
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -1042,7 +1044,7 @@ defStormsList <- function(sds,
                    names = NULL,
                    maxDist = 300,
                    scale = sshs,
-                   scalePalette = sshsPalette,
+                   scalePalette = NULL,
                    removeUnder = NULL,
                    verbose = 2) {
 
@@ -1052,6 +1054,22 @@ defStormsList <- function(sds,
   
   # order scale
   scale = scale[order(scale)]
+  
+  
+  if(identical(scale, sshs) & is.null(scalePalette)){
+    # Default palette should be SSHS
+    scalePalette <- sshsPalette
+    
+  }else if(scale != sshs & is.null(scalePalette)){
+    # Create a default color Palette based on the number of level in scale
+    
+  }else if(is.null(names(scalePalette))){
+    # If scalePalette has no names, provide default ones
+    names(scalePalette) <- seq(1, length(scalePalette))
+    
+  }
+  
+
 
   if (length(seasons) == 2)
     seasons <- seasons[order(seasons)]
