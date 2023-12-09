@@ -27,6 +27,19 @@ locations
 }
 \examples{
 \donttest{
-#Add example here
+sds <- defStormsDataset()
+st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
+
+df <- data.frame(x = c(168.33, 167.17), y = c(-17.73, -15.53))
+rownames(df) <- c("Port_Vila", "Luganville")
+
+# Generate temporal series of wind on the points
+TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 0.5, verbose = 0)
+
+# Plot temporal series of wind speed
+plotTemporal(data=TS, storm="PAM")
+
+# Plot temporal series of wind direction
+plotTemporal(data=TS, storm="PAM", var='direction')
 }
 }
