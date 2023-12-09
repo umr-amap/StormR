@@ -1,4 +1,3 @@
-
 # TODO non ASCII character somewhere ...?
 
 ##' Check inputs for plotTemporal function
