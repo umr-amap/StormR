@@ -110,7 +110,7 @@ convertVariables <- function(data, unitConversion){
 #'
 #' Choose the database to use within the package's functions
 #'
-#' @slot filename character. Name of the database to load. Must be a netcdf or a csv file
+#' @slot filename character. Name of the database to load. Must be either a netcdf or a csv file
 #' @slot fields named character vector. Dictionary that provides all the name of
 #' dimensions to extract from the netcdf database (See `Details`)
 #' @slot basin character. Basin name to filter the database within its
@@ -242,10 +242,6 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
       unitConversion["msw"] %in% c("None", "mph2ms", "knt2ms", "kmh2ms")
   )
   
-  if(extension == "csv"){
-    stopifnot("No 'sid' selection in fields" = "sid" %in% names(fields))
-  }
-  
   # Optional fields
   if (("basin" %in% names(fields)) && is.null(basin)) {
     warning("No basin argument specified. StormR will work as expected
@@ -303,8 +299,8 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
   stopifnot("seasons must be a range of calendar year" = length(seasons) == 2 & seasons[1] <= seasons[2])
   
   # Checking notNamed input 
-  stopifnot("seasons must be a character" = identical(class(notNamed), "character"))
-  stopifnot("seasons must be length one " = length(notNamed) == 1)
+  stopifnot("notNamed must be a character" = identical(class(notNamed), "character"))
+  stopifnot("notNamed must be length one " = length(notNamed) == 1)
   
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -444,12 +440,11 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
   filter <- which(colnames(dataBase) %in% fields)
   dataBaseFiltered <- dataBase[, filter]
   
-  
   # Remove sub header
   dataBaseFiltered <- dataBase[2:dim(dataBaseFiltered)[1], filter]
   
   # Remove notNamed storms
-  filter <- which(as.numeric(dataBaseFiltered[,fields["names"]]) != notNamed)
+  filter <- which(!(dataBaseFiltered[,fields["names"]] %in% notNamed))
   dataBaseFiltered <- dataBaseFiltered[filter,]
   
   # Filter by season
@@ -462,10 +457,34 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
     dataBaseFiltered <- dataBaseFiltered[filter,]
   }
   
-  
   # Get dimensions
-  sid <- dataBaseFiltered[,fields["sid"]]
-  countObs <- table(sid) # count of observation by storm
+  stormNames <- dataBaseFiltered[,fields["names"]] 
+  stormSeasons <- dataBaseFiltered[,fields["seasons"]]
+  sid <- paste0(stormNames, stormSeasons)
+
+  # Do the following code to replace table function
+  k <- 0
+  actualStorm <- sid[1]
+  countObs <- c()
+  names <- c()
+  for (i in 1:length(sid)){
+    if(t[i] != actualStorm){
+      countObs <- c(countObs, k)
+      names <- c(names, actualStorm)
+      actualStorm <- sid[i]
+      k <- 1
+    }else{
+      k = k + 1
+    }
+  }
+  countObs <- c(countObs, k)
+  names <- c(names, sid[length(t)])
+  names(countObs) <- names
+  
+  # Do not work anymore without sid field
+  # sid <- dataBaseFiltered[,fields["sid"]]
+  # countObs <- table(sid) # count of observation by storm
+  
   row <- max(countObs) # maximum number of rows
   len <- length(unique(sid)) # number of unique storm in csv
   cumulativeIndex <- cumsum(countObs) # starting points for each storm in csv
@@ -499,8 +518,6 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
   if("poci" %in% names(fields)){
     data$poci <- templateArray
   }
-  
-  
   
   for(i in 1:len){
     
@@ -569,7 +586,6 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
 #' Corresponding variable names for following fields have to (mandatory fields) or can be
 #' (recommended or optional fields) provided:
 #'  \itemize{
-#'    \item `"sid"`, unique identifiers of the storms (mandatory if `filename` is a CSV)
 #'    \item `"names"`, names of the storms (mandatory),
 #'    \item `"seasons"`, years of observations (mandatory),
 #'    \item `"isoTime"`, date and time of observations (mandatory),
@@ -648,7 +664,6 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
 #' @export
 defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
                              fields = c(
-                               sid = "sid",
                                names = "name",
                                seasons = "season",
                                isoTime = "iso_time",

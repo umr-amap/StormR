@@ -6,9 +6,9 @@
 \usage{
 defStormsDataset(
   filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
-  fields = c(sid = "sid", names = "name", seasons = "season", isoTime = "iso_time", lon =
-    "usa_lon", lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw
-    = "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
+  fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
+    lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw =
+    "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
   basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unitConversion = c(msw = "knt2ms", rmw = "nm2km", pressure = "mb2pa", poci = "mb2pa"),
@@ -29,7 +29,6 @@ variable names are set up to import data from a NetCDF file from the IBTrACS dat
 Corresponding variable names for following fields have to (mandatory fields) or can be
 (recommended or optional fields) provided:
 \itemize{
-\item \code{"sid"}, unique identifiers of the storms (mandatory if \code{filename} is a CSV)
 \item \code{"names"}, names of the storms (mandatory),
 \item \code{"seasons"}, years of observations (mandatory),
 \item \code{"isoTime"}, date and time of observations (mandatory),
