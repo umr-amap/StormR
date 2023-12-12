@@ -1,4 +1,4 @@
-# TODO non ASCII character somewhere ...?
+
 
 ##' Check inputs for plotTemporal function
 #'
@@ -76,7 +76,7 @@ plotTemporal <- function(data, storm, var = "speed") {
   # Generate a sequence of colors
 
   # TODO pb of dependencies here...
-  palette <- colorRampPalette(colors = c("red", "green", "blue"))
+  palette <- grDevices::colorRampPalette(colors = c("red", "green", "blue"))
   cols <- palette(nbOfPositions)
 
   # Generate a sequence of symbols
@@ -84,10 +84,10 @@ plotTemporal <- function(data, storm, var = "speed") {
 
 
 
-  notNaIndices <- which(!is.na(sub_data[[1]][[1]]$speed))
+  notNaIndices <- which(!is.na(subData[[1]][[1]]$speed))
 
   # Define x-axis range
-  for (location in sub_data[[1]][c(2:nbOfPositions)]) {
+  for (location in subData[[1]][c(2:nbOfPositions)]) {
 
     notNaIndices <- union(notNaIndices,
                           which(!is.na(location$speed)))
@@ -108,14 +108,14 @@ plotTemporal <- function(data, storm, var = "speed") {
       maxValue <- c(maxValue, max(location$speed, na.rm = TRUE))
     }
 
-    dat <- sub_data[[1]][[1]]$speed[notNaIndices]
+    dat <- subData[[1]][[1]]$speed[notNaIndices]
     ylim <- c(floor(min(minValue)) - 10, ceiling(max(maxValue) + 10))
     ylab <- "Maximum Sustained Wind speed (m/s)"
     dy <- 5 # dashed lines every 5m/s on the plot
   }else {
-    dat <- sub_data[[1]][[1]]$direction[notNaIndices]
+    dat <- subData[[1]][[1]]$direction[notNaIndices]
     ylim <- c(0, 360)
-    ylab <- "Wind direction (°)"
+    ylab <- "Wind direction (degree)"
     dy <- 15 # dashed lines every 5m/s on the plot
   }
 
@@ -130,7 +130,7 @@ plotTemporal <- function(data, storm, var = "speed") {
   graphics::points(dat, col = cols[1], pch = symbols[1])
 
   i <- 2
-  for (location in sub_data[[1]][c(2:nbOfPositions)]) {
+  for (location in subData[[1]][c(2:nbOfPositions)]) {
 
     if (var == "speed") {
       dat <- location$speed[notNaIndices]
@@ -149,8 +149,8 @@ plotTemporal <- function(data, storm, var = "speed") {
                    legend = paste(names(subData), names(subData[[1]])),
                    bty = "n")
   graphics::axis(1,
-                 at = seq(1, length(sub_data[[1]][[1]]$speed[notNaIndices])),
-                 labels = sub_data[[1]][[1]]$isoTimes[notNaIndices],
+                 at = seq(1, length(subData[[1]][[1]]$speed[notNaIndices])),
+                 labels = subData[[1]][[1]]$isoTimes[notNaIndices],
                  las = 2,
                  cex.axis = 0.5)
 
@@ -160,7 +160,7 @@ plotTemporal <- function(data, storm, var = "speed") {
                  labels = seq(0, ylim[2], dy),
                  las = 2)
 
-  #abline(v=seq(1, length(sub_data[[1]][[1]]$speed)),
+  #abline(v=seq(1, length(subData[[1]][[1]]$speed)),
   #       lty = 2)
   graphics::abline(h = seq(0, ylim[2], dy),
                    lty = 2)
