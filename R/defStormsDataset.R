@@ -210,10 +210,11 @@ stormsDataset <- methods::setClass(
 #' @param basin character
 #' @param seasons numeric vector
 #' @param unitConversion character vector
+#' @param notNamed character
 #' @param verbose numeric
 #'
 #' @return NULL
-checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitConversion, verbose) {
+checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitConversion, notNamed, verbose) {
   # Checking filename input
   stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename), "character"))
@@ -301,6 +302,9 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
   stopifnot("seasons must be numeric" = identical(class(seasons), "numeric"))
   stopifnot("seasons must be a range of calendar year" = length(seasons) == 2 & seasons[1] <= seasons[2])
   
+  # Checking notNamed input 
+  stopifnot("seasons must be a character" = identical(class(notNamed), "character"))
+  stopifnot("seasons must be length one " = length(notNamed) == 1)
   
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -319,10 +323,11 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
 #' @param basin character
 #' @param seasons numeric vector
 #' @param unitConversion named character vector
+#' @param notNamed character for not named storms
 #' @param verbose numeric
 #'
 #' @return list of arrays
-getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion, verbose){
+getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion, notNamed, verbose){
   
   if (verbose) {
     cat("=== Loading data  ===\nOpen database... ")
@@ -336,11 +341,16 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
   
   lon <- ncdf4::ncvar_get(dataBase, fields["lon"])
   season <- ncdf4::ncvar_get(dataBase, fields["seasons"])
+  names <- ncdf4::ncvar_get(dataBase, fields["names"])
   
   row <- dim(lon)[1] 
   
+  # Remove notNamed storms
+  ind <- which(!(names %in% notNamed))
+  
   # Filter by season
-  ind <- which(season %in% seq(seasons[1], seasons[2], 1))
+  indS <- which(season %in% seq(seasons[1], seasons[2], 1))
+  ind <- intersect(ind, indS)
   len <- length(ind)
   
   if (!is.null(basin)) {
@@ -353,7 +363,7 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
   
   # Collect data
   data <- list(
-    names = ncdf4::ncvar_get(dataBase, fields["names"])[ind],
+    names = names[ind],
     seasons = season[ind],
     isotimes = array(ncdf4::ncvar_get(dataBase, fields["isoTime"])[, ind],
                      dim = c(row, len)
@@ -414,10 +424,11 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
 #' @param basin character
 #' @param seasons numeric vector
 #' @param unitConversion named character vector
+#' @param notNamed character for not named storms
 #' @param verbose numeric
 #'
 #' @return list of arrays
-getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion, verbose){
+getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion, notNamed, verbose){
   
   if (verbose) {
     cat("=== Loading data  ===\nOpen database... ")
@@ -437,12 +448,15 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
   # Remove sub header
   dataBaseFiltered <- dataBase[2:dim(dataBaseFiltered)[1], filter]
   
+  # Remove notNamed storms
+  filter <- which(as.numeric(dataBaseFiltered[,fields["names"]]) != notNamed)
+  dataBaseFiltered <- dataBaseFiltered[filter,]
   
-  # filter by season
+  # Filter by season
   filter <- which(as.numeric(dataBaseFiltered[,fields["seasons"]]) >= seasons[1] & as.numeric(dataBaseFiltered[,fields["seasons"]]) <= seasons[2])
   dataBaseFiltered <- dataBaseFiltered[filter,]
   
-  # filter by basin
+  # Filter by basin
   if(!is.null((basin))){
     filter <- which(dataBaseFiltered[,fields["basin"]] == basin)
     dataBaseFiltered <- dataBaseFiltered[filter,]
@@ -614,7 +628,9 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
 #'    \item `"psi2pa"`, to convert  psi to Pascal, or
 #'    \item `"None"`, if no conversion is needed.
 #'  }
-#'
+#'  
+#' @param notNamed character. Constant name for not named storms to remove in the database.
+#' Default value is "NOT_NAMED" (IBTrACS database)
 #' @param verbose numeric. Whether the function should display (`= 1`)
 #'   or not (`= 0`) information about the processes.
 #' @return The `defStormsDataset()` function returns a `stormsDataset` object.
@@ -653,8 +669,9 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                                pressure = "mb2pa",
                                poci = "mb2pa"
                              ),
+                             notNamed = "NOT_NAMED",
                              verbose = 1) {
-  checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, verbose)
+  checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, notNamed, verbose)
   
   
   splitedFilename <- strsplit(filename, "\\.")[[1]]
@@ -662,9 +679,9 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
   
   
   if(extension == "csv"){
-    data <- getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, verbose)
+    data <- getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, notNamed, verbose)
   }else{
-    data <- getDataFromNcdfFile(filename, fields, basin, seasons, unitConversion, verbose)
+    data <- getDataFromNcdfFile(filename, fields, basin, seasons, unitConversion, notNamed, verbose)
   }
   
   data <- convertVariables(data, unitConversion)

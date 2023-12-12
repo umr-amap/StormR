@@ -12,6 +12,7 @@ defStormsDataset(
   basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unitConversion = c(msw = "knt2ms", rmw = "nm2km", pressure = "mb2pa", poci = "mb2pa"),
+  notNamed = "NOT_NAMED",
   verbose = 1
 )
 }
@@ -89,6 +90,9 @@ For \code{pressure} and \code{poci},
 \item \code{"psi2pa"}, to convert  psi to Pascal, or
 \item \code{"None"}, if no conversion is needed.
 }}
+
+\item{notNamed}{character. Constant name for not named storms to remove in the database.
+Default value is "NOT_NAMED" (IBTrACS database)}
 
 \item{verbose}{numeric. Whether the function should display (\verb{= 1})
 or not (\verb{= 0}) information about the processes.}

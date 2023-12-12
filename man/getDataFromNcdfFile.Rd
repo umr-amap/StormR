@@ -5,7 +5,15 @@
 \title{Load database when filename is a NetCDF
 (CF defStormsDataset for additional informations about parameters)}
 \usage{
-getDataFromNcdfFile(filename, fields, basin, seasons, unitConversion, verbose)
+getDataFromNcdfFile(
+  filename,
+  fields,
+  basin,
+  seasons,
+  unitConversion,
+  notNamed,
+  verbose
+)
 }
 \arguments{
 \item{filename}{character}
@@ -17,6 +25,8 @@ getDataFromNcdfFile(filename, fields, basin, seasons, unitConversion, verbose)
 \item{seasons}{numeric vector}
 
 \item{unitConversion}{named character vector}
+
+\item{notNamed}{character for not named storms}
 
 \item{verbose}{numeric}
 }

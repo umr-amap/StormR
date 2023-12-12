@@ -790,9 +790,6 @@ retrieveStorms <- function(database, filterNames, filterSeasons, removeTD) {
 
   }
 
-  #Removing NOT_NAMED storms
-  indices <- indices[which(database$names[indices] != "NOT_NAMED")]
-
   #Removing TD if removeTD == T
   if (removeTD) {
     suppressWarnings({

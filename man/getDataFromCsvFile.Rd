@@ -5,7 +5,15 @@
 \title{Load database when filename is a CSV
 (CF defStormsDataset for additional informations about parameters)}
 \usage{
-getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, verbose)
+getDataFromCsvFile(
+  filename,
+  fields,
+  basin,
+  seasons,
+  unitConversion,
+  notNamed,
+  verbose
+)
 }
 \arguments{
 \item{filename}{character}
@@ -17,6 +25,8 @@ getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, verbose)
 \item{seasons}{numeric vector}
 
 \item{unitConversion}{named character vector}
+
+\item{notNamed}{character for not named storms}
 
 \item{verbose}{numeric}
 }
