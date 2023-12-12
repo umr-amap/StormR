@@ -669,7 +669,7 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
   if(!is.null(removeUnder)){
     stopifnot("removeUnder must be numeric" = identical(class(removeUnder), "numeric"))
     stopifnot("removeUnder must a single integer" = length(removeUnder) == 1)
-    stopifnot("Invalid removeUnder input, must be greater than 0" = removeUnder > 0)
+    stopifnot("Invalid removeUnder input" = removeUnder %in% seq(1, length(scale)))
   }
 
 }
@@ -780,11 +780,12 @@ makeBuffer <- function(loi, loiSf, buffer) {
 #' @param database storms database
 #' @param filterNames character vector. Contains names input from the storms
 #' @param filterSeasons numeric vector.  Contains seasons input from the storms
+#' @param scale numeric vector. CF defStormsList function
 #' @param removeUnder numeric. Whether or not to remove storms under this level.
 #'  Default value is set to NULL
 #'
 #' @return indices of storms in the database, that match the filter inputs
-retrieveStorms <- function(database, filterNames, filterSeasons, removeUnder) {
+retrieveStorms <- function(database, filterNames, filterSeasons, scale, removeUnder) {
 
   if (length(filterSeasons) == 1) {
     #We are interested in only one cyclonic season
@@ -817,13 +818,12 @@ retrieveStorms <- function(database, filterNames, filterSeasons, removeUnder) {
 
   # Filter Storms if removeUnder is not NULL
   if (!is.null(removeUnder)) {
-    # TODO change here
-    # suppressWarnings({
-    #   suppressWarnings(i <- which(apply(array(database$msw[, indices],
-    #                                           dim = c(dim(database$msw)[1], length(indices))),
-    #                                     2, max, na.rm = TRUE) >= database * knt2msC))
-    #   indices <- indices[i]
-    # })
+    suppressWarnings({
+      suppressWarnings(i <- which(apply(array(database$msw[, indices],
+                                              dim = c(dim(database$msw)[1], length(indices))),
+                                        2, max, na.rm = TRUE) >= scale[removeUnder]))
+      indices <- indices[i]
+    })
   }
 
   return(indices)
@@ -1110,6 +1110,7 @@ defStormsList <- function(sds,
   indices <- retrieveStorms(sds@database,
                             filterNames = names,
                             filterSeasons = seasons,
+                            scale = scale,
                             removeUnder = removeUnder)
 
   if (verbose > 0 && length(indices) >= 1) {
