@@ -1060,10 +1060,13 @@ defStormsList <- function(sds,
     # Default palette should be SSHS
     scalePalette <- sshsPalette
     
-  }else if(scale != sshs & is.null(scalePalette)){
+  }else if(!identical(scale, sshs) & is.null(scalePalette)){
     # Create a default color Palette based on the number of level in scale
-    
-  }else if(is.null(names(scalePalette))){
+    palette <- grDevices::colorRampPalette(colors = c("red", "green", "blue"))
+    scalePalette <- rev(palette(length(scale) + 1))
+  }
+  
+  if(is.null(names(scalePalette))){
     # If scalePalette has no names, provide default ones
     names(scalePalette) <- seq(1, length(scalePalette))
     
