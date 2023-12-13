@@ -110,8 +110,14 @@ This is an essential first step before other \code{stormR} functions can be used
 \examples{
 # Creating a `stormsDataset` object with storms between 2010 and 2015
 # in the South Pacific using the NetCDF provided with the package
-SP_2015_2020 <- defStormsDataset(seasons = c(2010, 2015))
-str(SP_2015_2020)
+SP_2015_2020_nc <- defStormsDataset(seasons = c(2010, 2015))
+str(SP_2015_2020_nc)
+
+# Creating a `stormsDataset` object with storms between 2010 and 2015
+# in the South Pacific using the CSV provided with the package
+fileName <- system.file("extdata", "test_dataset.csv", package = "StormR")
+SP_2015_2020_csv <- defStormsDataset(seasons = c(2010, 2021))
+str(SP_2015_2020_csv)
 }
 \references{
 Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
