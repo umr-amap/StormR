@@ -447,6 +447,10 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
   filter <- which(!(dataBaseFiltered[,fields["names"]] %in% notNamed))
   dataBaseFiltered <- dataBaseFiltered[filter,]
   
+  # Remove NA lon-lat row
+  filter <- which(!is.na(dataBaseFiltered[,fields["lon"]]) & !is.na(dataBaseFiltered[,fields["lat"]]))
+  dataBaseFiltered <- dataBaseFiltered[filter,]
+  
   # Filter by season
   filter <- which(as.numeric(dataBaseFiltered[,fields["seasons"]]) >= seasons[1] & as.numeric(dataBaseFiltered[,fields["seasons"]]) <= seasons[2])
   dataBaseFiltered <- dataBaseFiltered[filter,]
@@ -468,7 +472,7 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
   countObs <- c()
   names <- c()
   for (i in 1:length(sid)){
-    if(t[i] != actualStorm){
+    if(sid[i] != actualStorm){
       countObs <- c(countObs, k)
       names <- c(names, actualStorm)
       actualStorm <- sid[i]
