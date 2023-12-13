@@ -206,6 +206,7 @@ stormsDataset <- methods::setClass(
 #'
 #' @noRd
 #' @param filename character
+#' @param sep character
 #' @param fields character vector
 #' @param basin character
 #' @param seasons numeric vector
@@ -214,11 +215,17 @@ stormsDataset <- methods::setClass(
 #' @param verbose numeric
 #'
 #' @return NULL
-checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitConversion, notNamed, verbose) {
+checkInputsdefStormsDataset <- function(filename, sep, fields, basin, seasons, unitConversion, notNamed, verbose) {
   # Checking filename input
   stopifnot("filename is missing" = !missing(filename))
   stopifnot("filename must be character" = identical(class(filename), "character"))
   stopifnot("filename must be length one" = length(filename) == 1)
+  
+  # Checking sep input
+  if(!is.null(sep)){
+    stopifnot("sep must be character" = identical(class(sep), "character"))
+    stopifnot("sep must be length one" = length(sep) == 1)
+  }
   
   # Checking extension
   splitedFilename <- strsplit(filename, "\\.")[[1]]
@@ -416,6 +423,7 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
 #' (CF defStormsDataset for additional informations about parameters)
 #'
 #' @param filename character
+#' @param sep character. separator for the csv file in input
 #' @param fields named character vecor
 #' @param basin character
 #' @param seasons numeric vector
@@ -424,13 +432,17 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
 #' @param verbose numeric
 #'
 #' @return list of arrays
-getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion, notNamed, verbose){
+getDataFromCsvFile <- function(filename, sep, fields, basin, seasons, unitConversion, notNamed, verbose){
   
   if (verbose) {
     cat("=== Loading data  ===\nOpen database... ")
   }
   
-  dataBase <- utils::read.csv(filename)
+  if(is.null(sep)){
+    sep = ","
+  }
+  
+  dataBase <- utils::read.csv(file = filename, sep = sep)
   
   if (verbose) {
     cat(filename, "opened\nCollecting data ...\n")
@@ -584,6 +596,8 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
 #' `system.file("extdata", "test_dataset.nc", package = "StormR")`). This test dataset is extracted
 #' from the IBTrACS.SP.v04r00.nc file and provides all the tropical cyclones that occurred around Vanuatu
 #' from 2015 to 2016 and around New Caledonia from 2020 to 2021.
+#' @param sep character. The field separator character if `filename` is a CSV file. Default value is set to `NULL`
+#' which will set the separator to `","`.
 #' @param fields named character vector. This argument allows to specify the corresponding variable names (NetCDF) or
 #' headers (CSV) in the input file for each field in the output `stormsDataset`. By default, the corresponding
 #' variable names are set up to import data from a NetCDF file from the IBTrACS database (Knapp et al., 2010).
@@ -667,6 +681,7 @@ getDataFromCsvFile <- function(filename, fields, basin, seasons, unitConversion,
 #' str(SP_2015_2020)
 #' @export
 defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
+                             sep = NULL,
                              fields = c(
                                names = "name",
                                seasons = "season",
@@ -690,7 +705,7 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                              ),
                              notNamed = "NOT_NAMED",
                              verbose = 1) {
-  checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, notNamed, verbose)
+  checkInputsdefStormsDataset(filename, sep, fields, basin, seasons, unitConversion, notNamed, verbose)
   
   
   splitedFilename <- strsplit(filename, "\\.")[[1]]
@@ -698,7 +713,7 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
   
   
   if(extension == "csv"){
-    data <- getDataFromCsvFile(filename, fields, basin, seasons, unitConversion, notNamed, verbose)
+    data <- getDataFromCsvFile(filename, sep, fields, basin, seasons, unitConversion, notNamed, verbose)
   }else{
     data <- getDataFromNcdfFile(filename, fields, basin, seasons, unitConversion, notNamed, verbose)
   }

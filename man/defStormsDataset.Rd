@@ -6,6 +6,7 @@
 \usage{
 defStormsDataset(
   filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
+  sep = NULL,
   fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
     lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw =
     "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
@@ -22,6 +23,9 @@ file located in the \code{inst/extdata} repository of the directory (accessible 
 \code{system.file("extdata", "test_dataset.nc", package = "StormR")}). This test dataset is extracted
 from the IBTrACS.SP.v04r00.nc file and provides all the tropical cyclones that occurred around Vanuatu
 from 2015 to 2016 and around New Caledonia from 2020 to 2021.}
+
+\item{sep}{character. The field separator character if \code{filename} is a CSV file. Default value is set to \code{NULL}
+which will set the separator to \code{","}.}
 
 \item{fields}{named character vector. This argument allows to specify the corresponding variable names (NetCDF) or
 headers (CSV) in the input file for each field in the output \code{stormsDataset}. By default, the corresponding

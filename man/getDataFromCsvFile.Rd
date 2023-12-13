@@ -7,6 +7,7 @@
 \usage{
 getDataFromCsvFile(
   filename,
+  sep,
   fields,
   basin,
   seasons,
@@ -17,6 +18,8 @@ getDataFromCsvFile(
 }
 \arguments{
 \item{filename}{character}
+
+\item{sep}{character. separator for the csv file in input}
 
 \item{fields}{named character vecor}
 
