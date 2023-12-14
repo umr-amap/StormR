@@ -651,6 +651,7 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
   
   # Checking scale input
   stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
+  stopifnot("invalid scale input" = all(scale>=0)
   
   # Checking scalePalette input
   if(!is.null(scalePalette)){
