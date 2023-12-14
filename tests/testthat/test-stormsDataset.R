@@ -1,5 +1,16 @@
 
-
+test_that("Test conversions functions",{
+  
+  expect_equal(knt2ms(1), 0.514)
+  expect_equal(mph2ms(1), 0.44704)
+  expect_equal(kmh2ms(1), 1 / 3.6)
+  expect_equal(nm2km(1), 1.852)
+  expect_equal(b2pa(1), 100000)
+  expect_equal(mb2pa(1), 100)
+  expect_equal(psi2pa(1), 6895)
+  expect_equal(atm2pa(1), 101300)
+  
+})
 
 
 
@@ -1338,4 +1349,54 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
+})
+
+
+test_that("Test getDataFrom functions", {
+  
+  fields = c(
+    names = "name",
+    seasons = "season",
+    isoTime = "iso_time",
+    lon = "usa_lon",
+    lat = "usa_lat",
+    msw = "usa_wind",
+    basin = "basin",
+    sshs = "usa_sshs",
+    rmw = "usa_rmw",
+    pressure = "usa_pres",
+    poci = "usa_poci"
+  )
+ 
+  unitConversion = c(
+    msw = "knt2ms",
+    rmw = "nm2km",
+    pressure = "mb2pa",
+    poci = "mb2pa"
+  )
+  notNamed = "NOT_NAMED"
+  verbose = 1
+  
+  filename = system.file("extdata", "test_dataset.csv", package = "StormR")
+  databaseFromCsv <- getDataFromCsvFile(filename=filename,
+                                        sep = ",",
+                                        fields=fields,
+                                        basin=NULL,
+                                        seasons=c(2015,2020),
+                                        unitConversion=unitConversion,
+                                        notNamed="NOT_NAMED",
+                                        verbose=0)
+  
+  filename = system.file("extdata", "test_dataset.nc", package = "StormR")
+  databaseFromNc <- getDataFromNcdfFile(filename=filename,
+                                        fields=fields,
+                                        basin=NULL,
+                                        seasons=c(2015,2020),
+                                        unitConversion=unitConversion,
+                                        notNamed="NOT_NAMED",
+                                        verbose=0)
+  
+  expect_equal(convertVariables(databaseFromCsv, unitConversion), sdsFromCsv@database)
+  expect_equal(convertVariables(databaseFromNc, unitConversion), sdsFromNc@database)
+  
 })

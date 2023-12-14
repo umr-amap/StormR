@@ -40,28 +40,37 @@ xsup <- 95
 xinf <- 18
 nbC <- xsup - xinf
 x <- seq(xinf, xsup)
-
 y <- x
 colorRange <- colorRampPalette(sshsPalette[2:7], bias = 1)
 mswSSHSPalette <- colorRange(nbC)
-
 plot(x, y, col = mswSSHSPalette, lwd = 3)
 abline(v = sshs)
-
 mswPalette <- rev(grDevices::heat.colors(50))
 pdiPalette <- rev(viridis::inferno(50))
 exposurePalette <- rev(viridis::viridis(50))
 
-# Data for test functions
+################################################################################
+########### Data for the tests of functions ####################################
+################################################################################
+
+# spatialBehaviour functions
 suppressWarnings(sds <- defStormsDataset())
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3, FALSE, "Willoughby")
+
+
+# defStormsDataset functions
+sdsFromNc <- defStormsDataset(seasons = c(2015, 2020))
+sdsFromCsv <- defStormsDataset(filename = system.file("extdata", "test_dataset.csv", package = "StormR"),
+                               seasons = c(2015, 2020))
+
+
 
 usethis::use_data(resolutions,
     mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
     km, wgs84, Basins, sshs,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
-    dfGetDataInterpolate,
+    dfGetDataInterpolate, sdsFromNc, sdsFromCsv,
     internal = TRUE, overwrite = TRUE
 )
