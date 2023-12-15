@@ -40,7 +40,7 @@ atm2pa <- function(x) {
 
 
 #' Convert variable in the correct metric in the dataset
-#'
+#' @noRd
 #' @param data database generated with either getDataFromNcdfFile or
 #' getDataFromCsvFile
 #' @param unitConversion named character vector (Cf defStormsDatabase)
@@ -320,7 +320,7 @@ checkInputsdefStormsDataset <- function(filename, sep, fields, basin, seasons, u
 
 #' Load database when filename is a NetCDF
 #' (CF defStormsDataset for additional informations about parameters)
-#'
+#' @noRd
 #' @param filename character
 #' @param fields named character vecor
 #' @param basin character
@@ -421,7 +421,8 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
 
 #' Load database when filename is a CSV
 #' (CF defStormsDataset for additional informations about parameters)
-#'
+#' 
+#' @noRd
 #' @param filename character
 #' @param sep character. separator for the csv file in input
 #' @param fields named character vecor

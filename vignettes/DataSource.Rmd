@@ -17,11 +17,11 @@ library(StormR)
 ```
 
 Before running `StormR` functions users have to provide a tropical storm track
-dataset as a ".nc" (NetCDF) file in which the location and some characteristics
-of storms are given across their lifespan. This file is used to create a
+dataset either as a ".nc" (NetCDF) or a ".csv" (CSV) file in which the location and some characteristics
+of storms are given across their lifespan. Using a CSV file as a dataset implies following few specific formatting rules, please refer to the "CSV formatting" section below. These files are then used to create a
 `stormsDataset` object using the `defStormsDataset()` function. By default, the
 arguments of `defStormsDataset()` function are set up to create a `stormsDataset`
-object using the USA fields in the IBTrACS database [International Best Track
+object using the USA fields in the NetCDF IBTrACS database [International Best Track
 Archive for Climate
 Stewardship](https://www.ncei.noaa.gov/products/international-best-track-archive)
 (Knapp *et al.*, [-@knapp_international_2010], [-@knapp_international_2018]). This database provides a fairly comprehensive record of
@@ -146,10 +146,19 @@ For both `pressure` and `poci`: <br />
 `psi2pa`: converts psi in Pascal <br />
 `None`: no conversion <br />
 
-### Test data set
+### Test data sets
 
-A `test_dataset` is provided with the `StormR` package. This test data set
+Two `test_dataset` are provided with the `StormR` package (a NetCDF and a CSV file). These test data sets
 comprises the track data of nine storms that occurred near Vanuatu and New
 Caledonia between 2015-2016 and 2020-2021, respectively.
+
+### CSV Formatting
+
+In order to load and read a CSV file in `defStormsDataset()`, it must stick to the following rules:<br />
+* As for the NetCDF file, the CSV file must contains at least a name, season, iso times, longitude, latitude,and a maximum wind speed column.
+* Every observation (row) in the CSV must be sorted in increasing order according to the ISO times AND joined by storm. For example, if several storms happened during the same iso Times, the observations for the storm that first appeared should be stacked before the observations of the second one and so on.
+
+In addition to these mandatory rules above, the default separator is set to a single comma ','. Nevertheless th user might decide to change it using the `sep` parameter in `defStormsDataset()`.
+
 
 ## Reference
