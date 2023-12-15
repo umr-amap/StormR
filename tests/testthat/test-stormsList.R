@@ -548,9 +548,8 @@ test_that("Storm and stormsList class getters", {
   expect_match(out[2], "Season: 2015")
   expect_match(out[3], "Maximum level reached in scale: 6")
   expect_match(out[4], "Indices of observations within buffer: 43 44 45 46 47")
-  #expect_match(out[7], "1  2015-03-08 12:00:00 168.9000  -7.500000  13   -1  93 100400 100500")
-  #expect_match(tail(out, n = 1), "57 2015-03-15 12:00:00 178.5000 -33.799999  28   -4  37  98200  99300")
-  # TODO Decomment --> weird output ??
+  expect_match(out[7], "1  2015-03-08 12:00:00 168.9000  -7.500000  13     0  93 100400 100500")
+  expect_match(tail(out, n = 1), "57 2015-03-15 12:00:00 178.5000 -33.799999  28     1  37  98200  99300")
   
   out <- capture_output_lines(print(sts_nc))
   # Check that the Storm output is correct
