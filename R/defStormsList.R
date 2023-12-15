@@ -1069,7 +1069,7 @@ defStormsList <- function(sds,
   
   if(is.null(names(scalePalette))){
     # If scalePalette has no names, provide default ones
-    names(scalePalette) <- seq(0, length(scalePalette))
+    names(scalePalette) <- seq(0, length(scale))
     
   }
   

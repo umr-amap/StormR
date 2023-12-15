@@ -702,3 +702,17 @@ test_that("Test writeStorm function", {
   expect_identical(writeStorm(list(), list(), sds, 1, getBuffer(pam), sshs),
                    list(list(getStorm(pam, "PAM")), list("PAM")))
 })
+
+
+test_that("Test default scale and scaleInput", {
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
+  sts_nc <-
+    defStormsList(sds = sds,
+                  loi = "New Caledonia",
+                  scale = c(10,30,50),
+                  verbose = 0)
+  
+  palette <- c('#0000FF', '#00AA54', '#55AA00', '#FF0000')
+  names(palette) <- c('0', '1', '2', '3')
+  expect_equal(sts_nc@scalePalette, palette)
+})
