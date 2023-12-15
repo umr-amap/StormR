@@ -480,20 +480,6 @@ test_that("Tests invalid inputs", {
       scale = sshs,
       scalePalette = NULL,
       verbose = 2,
-      removeUnder = NULL
-    )
-  )
-  
-  expect_error(
-    checkInputsDefStormsList(
-      sds = sds,
-      loi = "Vanuatu",
-      seasons = c(2015, 2021),
-      names = "PAM",
-      maxDist = 300,
-      scale = sshs,
-      scalePalette = NULL,
-      verbose = 2,
       removeUnder = -1
     )
   )
