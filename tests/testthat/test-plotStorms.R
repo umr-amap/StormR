@@ -74,7 +74,7 @@ test_that("Test checkInputsPlotStorms function", {
   expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
-    category = c(1, 6),
+    category = c(1, 7),
     labels = TRUE,
     by = 8,
     pos = 3,

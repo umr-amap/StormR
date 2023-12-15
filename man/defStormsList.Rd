@@ -41,7 +41,7 @@ storm for which track data are extracted. Default \code{maxDist} is set to 300 k
 Default value is set to the Saffir Simpson Hurricane Scale}
 
 \item{scalePalette}{character. Named vector containing the color hex code
-corresponding to each category in \code{scale} input}
+corresponding to each category interval of \code{scale} input}
 
 \item{removeUnder}{numeric. Storms reaching this maximum level or less in the scale are removed.
 Default value is set to NULL.}

@@ -651,7 +651,7 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
   
   # Checking scale input
   stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
-  stopifnot("invalid scale input" = all(scale>=0)
+  stopifnot("invalid scale input" = all(scale>=0))
   
   # Checking scalePalette input
   if(!is.null(scalePalette)){
@@ -990,7 +990,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer, scale) {
 #' @param scale numeric. List of storm scale thresholds used for the database.
 #'   Default value is set to the Saffir Simpson Hurricane Scale
 #' @param scalePalette character. Named vector containing the color hex code 
-#' corresponding to each category in `scale` input
+#' corresponding to each category interval of `scale` input
 #' @param removeUnder numeric. Storms reaching this maximum level or less in the scale are removed.
 #'   Default value is set to NULL.
 #' @param verbose numeric. Type of information the function displays. Can be:
