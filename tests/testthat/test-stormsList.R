@@ -9,7 +9,7 @@ test_that("Tests invalid inputs", {
   expect_error(
     checkInputsDefStormsList(
       loi = NULL,
-      seasons = c(1980, 2022),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -25,7 +25,7 @@ test_that("Tests invalid inputs", {
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
-      seasons = c(1980, 2022),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -39,7 +39,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = c("Vanuatu", "New Caledonia"),
-      seasons = c(1980, 2022),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -53,7 +53,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = 169,
-      seasons = c(1980, 2022),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -67,7 +67,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = c(169, 170,-15,-14),
-      seasons = c(1980, 2022),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -81,7 +81,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = c(169, 170,-15,-14),
-      seasons = c(1980, 2022),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -95,7 +95,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = c(169,-100),
-      seasons = c(1980, 2022),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -226,7 +226,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = "hui",
       verbose = 2,
@@ -238,7 +238,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = c(1, 3),
       verbose = 2,
@@ -250,7 +250,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = -10,
       verbose = 2,
@@ -262,7 +262,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = TRUE,
       verbose = 2,
@@ -275,7 +275,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = "1",
@@ -289,7 +289,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = c("1", "2", "3"),
@@ -303,7 +303,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = NULL,
@@ -317,7 +317,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = TRUE,
@@ -331,7 +331,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = c(-1, 20, 30),
@@ -341,13 +341,55 @@ test_that("Tests invalid inputs", {
     )
   )
   
+  # Checking scalePalette input
+  expect_error(
+    checkInputsDefStormsList(
+      sds = sds,
+      loi = "Vanuatu",
+      seasons = c(2015, 2021),
+      names = "PAM",
+      maxDist = 300,
+      scale = sshs,
+      scalePalette = c("red", "blue", "green"),
+      verbose = 1,
+      removeUnder = NULL
+    )
+  )
+  
+  expect_error(
+    checkInputsDefStormsList(
+      sds = sds,
+      loi = "Vanuatu",
+      seasons = c(2015, 2021),
+      names = "PAM",
+      maxDist = 300,
+      scale = sshs,
+      scalePalette = 1,
+      verbose = 1,
+      removeUnder = NULL
+    )
+  )
+  
+  expect_error(
+    checkInputsDefStormsList(
+      sds = sds,
+      loi = "Vanuatu",
+      seasons = c(2015, 2021),
+      names = "PAM",
+      maxDist = 300,
+      scale = sshs,
+      scalePalette = TRUE,
+      verbose = 1,
+      removeUnder = NULL
+    )
+  )
   
   # Checking verbose input
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -361,7 +403,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -375,7 +417,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -389,7 +431,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -404,7 +446,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -418,7 +460,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -432,7 +474,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
@@ -446,7 +488,7 @@ test_that("Tests invalid inputs", {
     checkInputsDefStormsList(
       sds = sds,
       loi = "Vanuatu",
-      seasons = c(1980, 2020),
+      seasons = c(2015, 2021),
       names = "PAM",
       maxDist = 300,
       scale = sshs,
