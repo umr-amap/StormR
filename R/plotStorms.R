@@ -173,7 +173,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 
   #Checking mode input
   stopifnot("dynamicPlot must be logical" = identical(class(dynamicPlot), "logical"))
-  stopifnot("dynamicPlot must length 1" = length(mode) == 1)
+  stopifnot("dynamicPlot must length 1" = length(dynamicPlot) == 1)
 }
 
 
@@ -421,7 +421,6 @@ plotStorms <- function(sts,
         popup = labels
       )
     }
-
 
     #Adding legends
     map <- leaflet::addLegend(map,

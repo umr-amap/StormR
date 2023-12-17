@@ -63,12 +63,15 @@ exposurePalette <- rev(viridis::viridis(50))
 suppressWarnings(sds <- defStormsDataset())
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3, FALSE, "Willoughby")
+mswPam <- spatialBehaviour(pam)
+mapPam <- plotStorms(pam, dynamicPlot=TRUE)
+mapPamMsw <- plotBehaviour(pam, mswPam, dynamicPlot=TRUE)
 
 usethis::use_data(resolutions,
     mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
     km, wgs84, Basins, sshs,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
-    dfGetDataInterpolate,
+    dfGetDataInterpolate, mapPam, mapPamMsw,
     internal = TRUE, overwrite = TRUE
 )
