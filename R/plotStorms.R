@@ -213,7 +213,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 #' extent of the buffered location of interest on the map.
 #' @param dynamicPlot logical. Whether (FALSE, default setting) or (TRUE) to plot the 
-#' data dynamicaly with leaflet library
+#' data dynamicaly using leaflet library
 #'
 #' @return A plot of the storm track data.
 #' 

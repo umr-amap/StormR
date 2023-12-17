@@ -58,7 +58,7 @@ when observations are made every 3 (or 6) hours.}
 extent of the buffered location of interest on the map.}
 
 \item{dynamicPlot}{logical. Whether (FALSE, default setting) or (TRUE) to plot the
-data dynamicaly with leaflet library}
+data dynamicaly using leaflet library}
 }
 \value{
 A plot of the storm track data.

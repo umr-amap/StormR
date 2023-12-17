@@ -56,7 +56,7 @@ when observations are made every 3 (or 6) hours.}
 \code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
 
 \item{dynamicPlot}{logical. Whether (FALSE, default setting) or (TRUE) to plot the
-data dynamicaly with leaflet library}
+data dynamicaly using leaflet library}
 }
 \value{
 A plot of the storm track data with the raster layer.
@@ -77,8 +77,12 @@ pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 pam.msw <- spatialBehaviour(pam, verbose = 0)
 plotBehaviour(pam, pam.msw)
 
+# dynamicPlot mode
+plotBehaviour(pam, pam.msw, dynamicPlot = TRUE)
+
 # Plotting 2D wind speed profile for Pam (2015) near Vanuatu
 pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
+
 }
 }

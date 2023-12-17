@@ -116,7 +116,7 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' @param legends character. Indicates where to plot the legend, `"topright"`(default setting), `"topleft"`,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #' @param dynamicPlot logical. Whether (FALSE, default setting) or (TRUE) to plot the 
-#' data dynamicaly with leaflet library
+#' data dynamicaly using leaflet library
 #' @returns A plot of the storm track data with the raster layer.
 #'
 #' @examples
@@ -130,10 +130,15 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' # Plotting maximum sustained wind speed for Pam (2015) near Vanuatu
 #' pam.msw <- spatialBehaviour(pam, verbose = 0)
 #' plotBehaviour(pam, pam.msw)
+#' 
+#' # dynamicPlot mode
+#' plotBehaviour(pam, pam.msw, dynamicPlot = TRUE)
 #'
 #' # Plotting 2D wind speed profile for Pam (2015) near Vanuatu
 #' pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 #' plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
+#' 
+# 
 #' }
 #' @export
 plotBehaviour <- function(sts,
