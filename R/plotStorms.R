@@ -11,14 +11,15 @@
 #' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param scale list of values that defines the scale intensity of the storm, e.g. `sshs`
+#' @param scalePalette list of hex color the scale intensity of the storm, e.g. `sshsPalette`
 #'
 #' @return color associated with the observation
-getColors <- function(msw, scale) {
+getColors <- function(msw, scale, scalePalette) {
   if (is.na(msw)) {
     color <- NA
   } else {
     i <- findInterval(msw, scale)
-    color <- sshsPalette[i + 1]
+    color <- scalePalette[i + 1]
   }
 
   return(color)

@@ -869,9 +869,13 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
   #Removing invalid iso_time
   isotime <- sds@database$isotimes[validIndices, index]
   listIsotime <- as.numeric(stringr::str_sub(isotime, 12, 13))
-  #Keep only 03H 06H 09H 12H 15H 18h 21H 00h iso times
-  indIsotime <- which(listIsotime %% 3 == 0)
+
+  # database should not contain irregular isotimes
+  validTimeStep <- listIsotime[2] - listIsotime[1]
+  #Keep only valid iso times
+  indIsotime <- which(listIsotime %% validTimeStep == 0)
   coords <- coords[indIsotime, ]
+  
 
   if (dim(coords)[1] == 0) {
     #ERROR

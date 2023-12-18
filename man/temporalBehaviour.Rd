@@ -197,7 +197,7 @@ the forward trajectory of the storm and a radial line from the eye of the storm 
 \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}).
 }
 \examples{
-\dontrun{
+\donttest{
 # Creating a stormsDataset
 sds <- defStormsDataset()
 
