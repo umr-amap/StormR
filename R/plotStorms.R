@@ -43,7 +43,7 @@ plotTrack <- function(st) {
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
-  colors <- unlist(lapply(msw, getColors, scale = sshs, scalePalette= sshsPalette))
+  colors <- unlist(lapply(msw, getColors, scale = sshs))
 
   graphics::lines(
     lon,
