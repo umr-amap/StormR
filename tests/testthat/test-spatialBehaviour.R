@@ -378,3 +378,38 @@ test_that("Test computeDirectionBoose function", {
   expect_equal(computeDirectionBoose(-1, -1, -30, 1), 355)
   expect_equal(computeDirectionBoose(-1, -1, -30, 0), 335)
 })
+
+
+test_that("Test processingStorm function",{
+  suppressWarnings(sds <- defStormsDataset(verbose = 0))
+  sts <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
+  
+  pam <- getStorm(sts,"PAM")
+  
+  # Make raster template
+  rasterTemplate <- makeTemplateRaster(sts@spatialLoiBuffer, 0.04166667)
+  
+  output <- processingStorm(
+    storm = pam,
+    product = "MSW",
+    method = "Willoughby",
+    asymmetry = "Chen",
+    empiricalRMW = FALSE,
+    tempRes = 1,
+    spaceRes = "2.5min",
+    windThresholds = c(18, 33, 42, 49, 58, 70),
+    rasterTemplate = rasterTemplate,
+    stackMSW = c(),
+    stackPDI = c(),
+    stackEXP = c(),
+    stackWIND = c(),
+    count = 1,
+    totalStorms = getNbStorms(sts),
+    verbose = 0
+  )
+  
+  # TODO Cannot compare rasters (pointers are differents)
+  # expect_equal(output, outputPS)
+  
+  
+})

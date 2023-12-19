@@ -57,11 +57,35 @@ suppressWarnings(sds <- defStormsDataset())
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3, FALSE, "Willoughby")
 
+
+# For processingStorm function
+pamSt <- getStorm(sts,"PAM")
+rasterTemplate <- makeTemplateRaster(pam@spatialLoiBuffer, 0.04166667)
+
+outputPS <- processingStorm(
+  storm = pamSt,
+  product = "MSW",
+  method = "Willoughby",
+  asymmetry = "Chen",
+  empiricalRMW = FALSE,
+  tempRes = 1,
+  spaceRes = "2.5min",
+  windThresholds = c(18, 33, 42, 49, 58, 70),
+  rasterTemplate = rasterTemplate,
+  stackMSW = c(),
+  stackPDI = c(),
+  stackEXP = c(),
+  stackWIND = c(),
+  count = 1,
+  totalStorms = getNbStorms(sts),
+  verbose = 0
+)
+
 usethis::use_data(resolutions,
     mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
     km, wgs84, Basins, sshs,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
-    dfGetDataInterpolate,
+    dfGetDataInterpolate, outputPS,
     internal = TRUE, overwrite = TRUE
 )

@@ -986,6 +986,164 @@ maskProduct <- function(finalStack, loi, template) {
 }
 
 
+###########################
+# main processing routine #
+###########################
+
+processingStorm <- function(storm,
+                            product,
+                            method,
+                            asymmetry,
+                            empiricalRMW,
+                            tempRes,
+                            spaceRes,
+                            windThresholds,
+                            rasterTemplate,
+                            stackMSW,
+                            stackPDI,
+                            stackEXP,
+                            stackWIND,
+                            count,
+                            totalStorms,
+                            verbose){
+  
+  # Buffer size in degree
+  buffer <- 2.5
+  
+  # Handling indices inside loi.buffer or not
+  ind <- getIndices(storm, 2, product)
+  
+  it1 <- storm@obs.all$iso.time[1]
+  it2 <- storm@obs.all$iso.time[2]
+  timeDiff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
+  # Interpolated time step dt, default value dt <- 4 --> 1h
+  dt <- 1 + (1 / tempRes * timeDiff) # + 1 for the limit values
+  
+  # Getting data associated with storm st
+  dataTC <- getDataInterpolate(storm, ind, dt, timeDiff, empiricalRMW, method)
+  
+  nbStep <- dim(dataTC)[1] - 1
+  
+  if (verbose > 0) {
+    step <- 1
+    cat(storm@name, " (", count, "/", totalStorms, ")\n")
+    pb <- utils::txtProgressBar(min = step, max = nbStep, style = 3)
+  }
+  
+  auxStackMSW <- c()
+  auxStackPDI <- c()
+  auxStackEXP <- c()
+  auxStackSpeed <- c()
+  auxStackDirection <- c()
+  
+  for (j in 1:nbStep) {
+    # Making template to compute wind profiles
+    rasterTemplateModel <- makeTemplateModel(rasterTemplate, buffer, dataTC, j)
+    rasterWind <- rasterTemplateModel
+    rasterDirection <- rasterTemplateModel
+    
+    # Computing coordinates of raster
+    crds <- terra::crds(rasterWind, na.rm = FALSE)
+    
+    # Computing distances in degree to the eye of the storm for x and y axes
+    x <- crds[, 1] - dataTC$lon[j]
+    y <- crds[, 2] - dataTC$lat[j]
+    
+    # Computing distances to the eye of the storm in m
+    distEye <- terra::distance(
+      x = crds,
+      y = cbind(dataTC$lon[j], dataTC$lat[j]),
+      lonlat = TRUE
+    )
+    
+    # Computing wind speed/direction
+    output <- computeWindProfile(dataTC,
+                                 j,
+                                 method,
+                                 asymmetry,
+                                 x,
+                                 y,
+                                 crds,
+                                 distEye,
+                                 buffer,
+                                 sts@spatialLoiBuffer,
+                                 world,
+                                 indCountries)
+    
+    terra::values(rasterWind) <- output$wind
+    terra::values(rasterDirection) <- output$direction
+    
+    # Stacking products
+    if ("MSW" %in% product) {
+      auxStackMSW <- stackProduct("MSW", auxStackMSW, rasterTemplate, rasterWind, NULL)
+    }
+    if ("PDI" %in% product) {
+      auxStackPDI <- stackProduct("PDI", auxStackPDI, rasterTemplate, rasterWind, NULL)
+    }
+    if ("Exposure" %in% product) {
+      auxStackEXP <- stackProduct("Exposure", auxStackEXP, rasterTemplate, rasterWind, windThreshold)
+    }
+    if ("Profiles" %in% product) {
+      names(rasterWind) <- paste0(storm@name, "_", "Speed", "_", dataTC$indices[j])
+      names(rasterDirection) <- paste0(storm@name, "_", "Direction", "_", dataTC$indices[j])
+      auxStackSpeed <- stackRaster(auxStackSpeed, rasterTemplate, rasterWind)
+      auxStackDirection <- stackRaster(auxStackDirection, rasterTemplate, rasterDirection)
+    }
+    
+    
+    if (verbose > 0) {
+      utils::setTxtProgressBar(pb, step)
+      step <- step + 1
+    }
+  }
+  
+  
+  if (verbose > 0) {
+    close(pb)
+  }
+  
+  
+  # Rasterize final products
+  if ("MSW" %in% product) {
+    auxStackMSW <- terra::rast(auxStackMSW)
+    stackMSW <- rasterizeProduct("MSW",
+                                 stackMSW,
+                                 auxStackMSW,
+                                 tempRes,
+                                 spaceRes,
+                                 storm@name,
+                                 NULL)
+    terra::time(stackMSW[[length(stackMSW)]]) <- terra::time(auxStackMSW[[1]])
+  }
+  if ("PDI" %in% product) {
+    auxStackPDI <- terra::rast(auxStackPDI)
+    stackPDI <- rasterizeProduct(
+      "PDI", stackPDI, auxStackPDI,
+      tempRes, spaceRes, storm@name, NULL
+    )
+    terra::time(stackPDI[[length(stackPDI)]]) <- terra::time(auxStackPDI[[1]])
+  }
+  if ("Exposure" %in% product) {
+    auxStackEXP <- terra::rast(auxStackEXP)
+    stackEXP <- rasterizeProduct(
+      "Exposure", stackEXP, auxStackEXP,
+      tempRes, spaceRes, storm@name, windThresholds
+    )
+  }
+  if ("Profiles" %in% product) {
+    auxStackSpeed <- terra::rast(auxStackSpeed)
+    auxStackDirection <- terra::rast(auxStackDirection)
+    stackWIND <- c(stackWIND, auxStackSpeed, auxStackDirection)
+  }
+  
+  output <- list(msw = stackMSW,
+                 pdi = stackPDI,
+                 exposure = stackEXP,
+                 wind = stackWIND)
+  
+  return(output)
+}
+
 
 
 ############################
@@ -1243,8 +1401,7 @@ spatialBehaviour <- function(sts,
 
   # Make raster template
   rasterTemplate <- makeTemplateRaster(sts@spatialLoiBuffer, resolutions[spaceRes])
-  # Buffer size in degree
-  buffer <- 2.5
+  
   # Initializing final raster stacks
   finalStackMSW <- c()
   finalStackPDI <- c()
@@ -1285,129 +1442,32 @@ spatialBehaviour <- function(sts,
   }
 
   for (st in sts@data) {
-    # Handling indices inside loi.buffer or not
-    ind <- getIndices(st, 2, product)
-
-
-    it1 <- st@obs.all$iso.time[1]
-    it2 <- st@obs.all$iso.time[2]
-    timeDiff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
-    # Interpolated time step dt, default value dt <- 4 --> 1h
-    dt <- 1 + (1 / tempRes * timeDiff) # + 1 for the limit values
-
-    # Getting data associated with storm st
-    dataTC <- getDataInterpolate(st, ind, dt, timeDiff, empiricalRMW, method)
-
-    nbStep <- dim(dataTC)[1] - 1
-
-    if (verbose > 0) {
-      step <- 1
-      cat(st@name, " (", s, "/", getNbStorms(sts), ")\n")
-      pb <- utils::txtProgressBar(min = step, max = nbStep, style = 3)
-    }
-
-    auxStackMSW <- c()
-    auxStackPDI <- c()
-    auxStackEXP <- c()
-    auxStackSpeed <- c()
-    auxStackDirection <- c()
-
-
-
-    for (j in 1:nbStep) {
-      # Making template to compute wind profiles
-      rasterTemplateModel <- makeTemplateModel(rasterTemplate, buffer, dataTC, j)
-      rasterWind <- rasterTemplateModel
-      rasterDirection <- rasterTemplateModel
-
-      # Computing coordinates of raster
-      crds <- terra::crds(rasterWind, na.rm = FALSE)
-
-      # Computing distances in degree to the eye of the storm for x and y axes
-      x <- crds[, 1] - dataTC$lon[j]
-      y <- crds[, 2] - dataTC$lat[j]
-
-      # Computing distances to the eye of the storm in m
-      distEye <- terra::distance(
-        x = crds,
-        y = cbind(dataTC$lon[j], dataTC$lat[j]),
-        lonlat = TRUE
-      )
-
-      # Computing wind speed/direction
-      output <- computeWindProfile(
-        dataTC, j, method, asymmetry,
-        x, y, crds, distEye, buffer,
-        sts@spatialLoiBuffer,
-        world, indCountries
-      )
-
-      terra::values(rasterWind) <- output$wind
-      terra::values(rasterDirection) <- output$direction
-
-      # Stacking products
-      if ("MSW" %in% product) {
-        auxStackMSW <- stackProduct("MSW", auxStackMSW, rasterTemplate, rasterWind, NULL)
-      }
-      if ("PDI" %in% product) {
-        auxStackPDI <- stackProduct("PDI", auxStackPDI, rasterTemplate, rasterWind, NULL)
-      }
-      if ("Exposure" %in% product) {
-        auxStackEXP <- stackProduct("Exposure", auxStackEXP, rasterTemplate, rasterWind, windThreshold)
-      }
-      if ("Profiles" %in% product) {
-        names(rasterWind) <- paste0(st@name, "_", "Speed", "_", dataTC$indices[j])
-        names(rasterDirection) <- paste0(st@name, "_", "Direction", "_", dataTC$indices[j])
-        auxStackSpeed <- stackRaster(auxStackSpeed, rasterTemplate, rasterWind)
-        auxStackDirection <- stackRaster(auxStackDirection, rasterTemplate, rasterDirection)
-      }
-
-
-      if (verbose > 0) {
-        utils::setTxtProgressBar(pb, step)
-        step <- step + 1
-      }
-    }
-
-
-    if (verbose > 0) {
-      close(pb)
-    }
-
-
-    # Rasterize final products
-    if ("MSW" %in% product) {
-      auxStackMSW <- terra::rast(auxStackMSW)
-      finalStackMSW <- rasterizeProduct(
-        "MSW", finalStackMSW, auxStackMSW,
-        tempRes, spaceRes, st@name, NULL
-      )
-      terra::time(finalStackMSW[[length(finalStackMSW)]]) <- terra::time(auxStackMSW[[1]])
-    }
-    if ("PDI" %in% product) {
-      auxStackPDI <- terra::rast(auxStackPDI)
-      finalStackPDI <- rasterizeProduct(
-        "PDI", finalStackPDI, auxStackPDI,
-        tempRes, spaceRes, st@name, NULL
-      )
-      terra::time(finalStackPDI[[length(finalStackPDI)]]) <- terra::time(auxStackPDI[[1]])
-    }
-    if ("Exposure" %in% product) {
-      auxStackEXP <- terra::rast(auxStackEXP)
-      finalStackEXP <- rasterizeProduct(
-        "Exposure", finalStackEXP, auxStackEXP,
-        tempRes, spaceRes, st@name, windThreshold
-      )
-    }
-    if ("Profiles" %in% product) {
-      auxStackSpeed <- terra::rast(auxStackSpeed)
-      auxStackDirection <- terra::rast(auxStackDirection)
-      finalStackWind <- c(finalStackWind, auxStackSpeed, auxStackDirection)
-    }
-
-    if (verbose > 0) {
-      s <- s + 1
-    }
+    
+    output <- processingStorm(
+      storm = st,
+      product = product,
+      method = method,
+      asymmetry = asymmetry,
+      empiricalRMW = empiricalRMW,
+      tempRes = tempRes,
+      spaceRes = spaceRes,
+      windThresholds = windThreshold,
+      rasterTemplate = rasterTemplate,
+      stackMSW = finalStackMSW,
+      stackPDI = finalStackPDI,
+      stackEXP = finalStackEXP,
+      stackWIND = finalStackWind,
+      count = s,
+      totalStorms = getNbStorms(sts),
+      verbose = verbose
+    )
+    
+    finalStackMSW <- output$msw
+    finalStackPDI <- output$pdi
+    finalStackEXP <- output$exposure
+    finalStackWind <- output$wind
+    
+    s <- s + 1
   }
 
   finalStack <- c()
