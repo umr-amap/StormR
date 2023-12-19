@@ -55,11 +55,13 @@ exposurePalette <- rev(viridis::viridis(50))
 # Data for test functions
 suppressWarnings(sds <- defStormsDataset())
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
+
+# For getDataInterpolate function
 dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3, FALSE, "Willoughby")
 
 
 # For processingStorm function
-pamSt <- getStorm(sts,"PAM")
+pamSt <- getStorm(pam,"PAM")
 rasterTemplate <- makeTemplateRaster(pam@spatialLoiBuffer, 0.04166667)
 
 outputPS <- processingStorm(
@@ -72,6 +74,9 @@ outputPS <- processingStorm(
   spaceRes = "2.5min",
   windThresholds = c(18, 33, 42, 49, 58, 70),
   rasterTemplate = rasterTemplate,
+  loi = pam@spatialLoiBuffer,
+  world = NULL,
+  indCountries = NULL,
   stackMSW = c(),
   stackPDI = c(),
   stackEXP = c(),
