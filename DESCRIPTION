@@ -25,10 +25,13 @@ License: GPL (>= 3)
 Depends: 
     R (>= 2.10)
 Imports: 
+    doParallel,
+    foreach,
     graphics,
     maps,
     methods,
     ncdf4,
+    parallel,
     Rcpp,
     rworldmap,
     sf,
