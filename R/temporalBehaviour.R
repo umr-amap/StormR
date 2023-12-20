@@ -238,7 +238,7 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #' the radius of maximum wind (`rmw`) empirically using the model developed by
 #' Willoughby et al. (2006). If `empiricalRMW==FALSE` (default setting) then the
 #' `rmw` provided in the `StormsList` is used.
-#' @param tempRes numeric. Temporal resolution (min). Can be `60` ( default setting),
+#' @param tempRes numeric. Temporal resolution (min). Can be `60` (default setting),
 #'   `30` or `15`.
 #' @param verbose numeric. Information displayed. Can be:
 #' \itemize{

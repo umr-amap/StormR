@@ -1197,7 +1197,7 @@ maskProduct <- function(finalStack, loi, template) {
 #' Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Creating a stormsDataset
 #' sds <- defStormsDataset()
 #'
