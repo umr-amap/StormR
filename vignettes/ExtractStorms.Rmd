@@ -131,7 +131,7 @@ terra::plot(countriesHigh, add = TRUE)
 ### Using different wind scale
 
 
-By default the Saffir-Simpson hurricane wind scale is used in `defStormsList()`
+By default the Saffir-Simpson hurricane wind scale (SSHS) is used in `defStormsList()`
 to assign level to storms.
 
 The maximum level reached in the scale for each cyclone
