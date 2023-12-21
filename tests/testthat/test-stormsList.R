@@ -14,8 +14,6 @@ test_that("Tests invalid inputs", {
       maxDist = 300,
       scale = sshs,
       scalePalette = NULL,
-      scale = sshs,
-      scalePalette = NULL,
       verbose = 2,
       removeUnder = NULL
     )
