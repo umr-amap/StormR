@@ -711,6 +711,6 @@ test_that("Test default scale and scaleInput", {
                   verbose = 0)
   
   palette <- c('#0000FF', '#00AA54', '#55AA00', '#FF0000')
-  names(palette) <- c('0', '1', '2', '3')
+  names(palette) <- c('Cat. 0', 'Cat. 1', 'Cat. 2', 'Cat. 3')
   expect_equal(sts_nc@scalePalette, palette)
 })
