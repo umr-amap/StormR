@@ -158,7 +158,30 @@ In order to load and read a CSV file in `defStormsDataset()`, it must stick to t
 * As for the NetCDF file, the CSV file must contains at least a name, season, iso times, longitude, latitude,and a maximum wind speed column.
 * Every observation (row) in the CSV must be sorted in increasing order according to the ISO times AND joined by storm. For example, if several storms happened during the same iso Times, the observations for the storm that first appeared should be stacked before the observations of the second one and so on.
 
-In addition to these mandatory rules above, the default separator is set to a single comma ','. Nevertheless th user might decide to change it using the `sep` parameter in `defStormsDataset()`.
+In addition to these mandatory rules above, the default separator is set to a single comma ','. Nevertheless the user might decide to change it using the `sep` parameter in `defStormsDataset()`.
+
+Hereafter, an example where we access the data with `test_dataset.csv`.
+Notice that the header of the csv and the names of columns in `fields` input must be equals
+```{r chunk 4}
+# Header of the csv
+head(read.csv(system.file("extdata", "test_dataset.csv", package = "StormR")))
+```                         
 
 
+```{r chunk 5}
+# Is already the default setting (in this particular case)
+fields <- c(
+  names = "name",
+  seasons = "season",
+  isoTime = "iso_time",
+  lon = "usa_lon",
+  lat = "usa_lat",
+  msw = "usa_wind",
+  sshs = "usa_sshs",
+  rmw = "usa_rmw",
+  pressure = "usa_pres",
+  poci = "usa_poci"
+)
+SP_2015_2020_csv <- defStormsDataset(fields = fields, seasons = c(2015, 2020))
+```
 ## Reference
