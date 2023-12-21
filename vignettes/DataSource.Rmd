@@ -148,7 +148,7 @@ For both `pressure` and `poci`: <br />
 
 ### Test data sets
 
-Two `test_dataset` are provided with the `StormR` package (a NetCDF and a CSV file). These test data sets
+A `test_dataset` is provided with the `StormR` package in two formats (a NetCDF and a CSV file). This test data set
 comprises the track data of nine storms that occurred near Vanuatu and New
 Caledonia between 2015-2016 and 2020-2021, respectively.
 
