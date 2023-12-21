@@ -18,7 +18,7 @@ library(StormR)
 
 Before running `StormR` functions users have to provide a tropical storm track
 dataset either as a ".nc" (NetCDF) or a ".csv" (CSV) file in which the location and some characteristics
-of storms are given across their lifespan. Using a CSV file as a dataset implies following few specific formatting rules, please refer to the "CSV formatting" section below. These files are then used to create a
+of storms are given across their lifespan. Using a CSV file as a dataset implies following few specific formatting rules, please refer to the [CSV Formatting] section below. These files are then used to create a
 `stormsDataset` object using the `defStormsDataset()` function. By default, the
 arguments of `defStormsDataset()` function are set up to create a `stormsDataset`
 object using the USA fields in the NetCDF IBTrACS database [International Best Track
