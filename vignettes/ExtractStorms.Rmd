@@ -152,17 +152,30 @@ plotStorms(st, category = c(5, 6), labels = FALSE, legends = "topright")
 ```
 Finally, the user can choose his own scale and associated palette, by setting the `scale` and `scalePalette` inputs in `defStormsList()`. In the following example, we use the Tokyo's tropical cyclone intensity scale to analyse tropical storm PAM.
 
+StormR provides default palette and category names:
+
 ```{r chunk 12}
 # Tokyo's tropical cyclone intensity scale 
 RSMC_SCALE = c(16.94, 24.44, 32.5, 43.33, 53.61)
+
+sts_jpn <- defStormsList(sds = sds,
+                        loi = "Vanuatu",
+                        names = "PAM",
+                        scale = RSMC_SCALE,
+                        verbose = 0)
+
+plotStorms(sts_jpn)
+```
+
+But you can also easily customize them:
+```{r chunk 13}
 RSMC_PALETTE = c("#6ec1ea","#4dffff","#c0ffc0","#ffd98c","#ff738a","#a188fc")
 names(RSMC_PALETTE) = c("Tropical depression",
                          "Tropical storm",
                          "Severe tropical storm",
-                         "typhoon",
-                         "very strong typhoon",
-                         "violent typhoon")
-
+                         "Typhoon",
+                         "Very strong typhoon",
+                         "Violent typhoon")
 
 sts_jpn <- defStormsList(sds = sds,
                         loi = "Vanuatu",
@@ -172,5 +185,4 @@ sts_jpn <- defStormsList(sds = sds,
                         verbose = 0)
 
 plotStorms(sts_jpn)
-```
 
