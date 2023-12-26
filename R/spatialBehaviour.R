@@ -261,7 +261,7 @@ makeTemplateRaster <- function(buffer, res) {
 #' models
 #'
 #' @noRd
-#' @param rasterTemplate SpatRaster. Raster generated with makeTemplateRaster
+#' @param resolution  numeric. Raster resolution generated with makeTemplateRaster
 #'   function
 #' @param buffer numeric. Buffer size in degree
 #' @param data data.frame. Data generated with getInterpolatedData function
@@ -269,13 +269,13 @@ makeTemplateRaster <- function(buffer, res) {
 #'   generate raster
 #'
 #' @return a SpatRaster
-makeTemplateModel <- function(rasterTemplate, buffer, data, index) {
+makeTemplateModel <- function(resolution, buffer, data, index) {
   template <- terra::rast(
     xmin = data$lon[index] - buffer,
     xmax = data$lon[index] + buffer,
     ymin = data$lat[index] - buffer,
     ymax = data$lat[index] + buffer,
-    resolution = terra::res(rasterTemplate),
+    resolution = c(resolution,resolution),
     vals = NA,
     time = as.POSIXct(data$isoTimes[index])
   )
@@ -1230,10 +1230,8 @@ spatialBehaviour <- function(sts,
                              verbose = 2) {
   startTime <- Sys.time()
 
-  checkInputsSpatialBehaviour(
-    sts, product, windThreshold, method, asymmetry,
-    empiricalRMW, spaceRes, tempRes, verbose
-  )
+  checkInputsSpatialBehaviour(sts, product, windThreshold, method, asymmetry,
+                              empiricalRMW, spaceRes, tempRes, verbose)
 
 
   if (verbose > 0) {
@@ -1243,6 +1241,17 @@ spatialBehaviour <- function(sts,
 
   # Make raster template
   rasterTemplate <- makeTemplateRaster(sts@spatialLoiBuffer, resolutions[spaceRes])
+  
+  # templateExtent <- c(terra::ext(rasterTemplate)[1],
+  #                     terra::ext(rasterTemplate)[2],
+  #                     terra::ext(rasterTemplate)[3],
+  #                     terra::ext(rasterTemplate)[4])
+  # 
+  # templateOrigin <- terra::ext(rasterTemplate)
+  # templateRes <- resolutions[spaceRes]
+  
+  
+  
   # Buffer size in degree
   buffer <- 2.5
   # Initializing final raster stacks
@@ -1284,132 +1293,118 @@ spatialBehaviour <- function(sts,
     cat("  (", getNbStorms(sts), ") ", getNames(sts), "\n\n")
   }
 
-  for (st in sts@data) {
+  # Auto detect cores and prepare parallel processing
+  cl <- parallel::makeCluster(parallel::detectCores() - 1) #On laisse un coeur de dispo
+  doParallel::registerDoParallel(cl)
+  `%dopar%` <- foreach::`%dopar%`
+  
+  result <- foreach::foreach(
+    i = 1:length(sts@data),
+    .combine = 'c'
+  ) %dopar% {
+    
+    # Extract storm
+    storm = sts@data[[i]]
+    
+    # Buffer size in degree
+    buffer <- 2.5
+    
     # Handling indices inside loi.buffer or not
-    ind <- getIndices(st, 2, product)
+    ind <- getIndices(storm, 2, product)
 
-
-    it1 <- st@obs.all$iso.time[1]
-    it2 <- st@obs.all$iso.time[2]
+    it1 <- storm@obs.all$iso.time[1]
+    it2 <- storm@obs.all$iso.time[2]
     timeDiff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
     # Interpolated time step dt, default value dt <- 4 --> 1h
     dt <- 1 + (1 / tempRes * timeDiff) # + 1 for the limit values
-
+    
     # Getting data associated with storm st
-    dataTC <- getDataInterpolate(st, ind, dt, timeDiff, empiricalRMW, method)
-
+    dataTC <- getDataInterpolate(storm, ind, dt, timeDiff, empiricalRMW, method)
+  
+    
+    stackWind <- c()
+    stackDirection <- c()
+    stackExtent <- c()
+    stackIso <- c()
+    
     nbStep <- dim(dataTC)[1] - 1
-
-    if (verbose > 0) {
-      step <- 1
-      cat(st@name, " (", s, "/", getNbStorms(sts), ")\n")
-      pb <- utils::txtProgressBar(min = step, max = nbStep, style = 3)
-    }
-
-    auxStackMSW <- c()
-    auxStackPDI <- c()
-    auxStackEXP <- c()
-    auxStackSpeed <- c()
-    auxStackDirection <- c()
-
-
-
+    
     for (j in 1:nbStep) {
+      
       # Making template to compute wind profiles
-      rasterTemplateModel <- makeTemplateModel(rasterTemplate, buffer, dataTC, j)
-      rasterWind <- rasterTemplateModel
-      rasterDirection <- rasterTemplateModel
-
+      # TODO probleme ici, on doit créer à chaque fois le template 
+      # pour recuperer les coordonnées x y sous forme de arrays
+      rasterTemplateModel <- terra::rast(xmin = dataTC$lon[j] - buffer,
+                                         xmax = dataTC$lon[j] + buffer,
+                                         ymin = dataTC$lat[j] - buffer,
+                                         ymax = dataTC$lat[j] + buffer,
+                                         resolution = resolutions[spaceRes],
+                                         vals = NA,
+                                         time = as.POSIXct(dataTC$isoTimes[j]))
+      terra::origin(rasterTemplateModel) <- c(0, 0)
+      
       # Computing coordinates of raster
-      crds <- terra::crds(rasterWind, na.rm = FALSE)
+      crds <- terra::crds(rasterTemplateModel, na.rm = FALSE)
 
       # Computing distances in degree to the eye of the storm for x and y axes
       x <- crds[, 1] - dataTC$lon[j]
       y <- crds[, 2] - dataTC$lat[j]
 
       # Computing distances to the eye of the storm in m
-      distEye <- terra::distance(
-        x = crds,
-        y = cbind(dataTC$lon[j], dataTC$lat[j]),
-        lonlat = TRUE
-      )
+      distEye <- terra::distance(x = crds,
+                                 y = cbind(dataTC$lon[j], dataTC$lat[j]),
+                                 lonlat = TRUE)
 
       # Computing wind speed/direction
-      output <- computeWindProfile(
-        dataTC, j, method, asymmetry,
-        x, y, crds, distEye, buffer,
-        sts@spatialLoiBuffer,
-        world, indCountries
-      )
+      output <- computeWindProfile(dataTC,
+                                   j,
+                                   method,
+                                   asymmetry,
+                                   x,
+                                   y,
+                                   crds,
+                                   distEye,
+                                   buffer,
+                                   loi,
+                                   world,
+                                   indCountries)
 
-      terra::values(rasterWind) <- output$wind
-      terra::values(rasterDirection) <- output$direction
+      output$wind
+      output$direction
+      ext <- c(dataTC$lon[j] - buffer,
+               dataTC$lon[j] + buffer,
+               dataTC$lat[j] - buffer,
+               dataTC$lat[j] + buffer)
+      isoTimes <- as.POSIXct(dataTC$isoTimes[j])
 
-      # Stacking products
-      if ("MSW" %in% product) {
-        auxStackMSW <- stackProduct("MSW", auxStackMSW, rasterTemplate, rasterWind, NULL)
-      }
-      if ("PDI" %in% product) {
-        auxStackPDI <- stackProduct("PDI", auxStackPDI, rasterTemplate, rasterWind, NULL)
-      }
-      if ("Exposure" %in% product) {
-        auxStackEXP <- stackProduct("Exposure", auxStackEXP, rasterTemplate, rasterWind, windThreshold)
-      }
-      if ("Profiles" %in% product) {
-        names(rasterWind) <- paste0(st@name, "_", "Speed", "_", dataTC$indices[j])
-        names(rasterDirection) <- paste0(st@name, "_", "Direction", "_", dataTC$indices[j])
-        auxStackSpeed <- stackRaster(auxStackSpeed, rasterTemplate, rasterWind)
-        auxStackDirection <- stackRaster(auxStackDirection, rasterTemplate, rasterDirection)
-      }
+      names(output$wind) <- paste0(storm@name, "_", "Speed", "_", dataTC$indices[j])
+      names(output$direction) <- paste0(storm@name, "_", "Direction", "_", dataTC$indices[j])
+      names(ext) <- c("xmin", "xmax", "ymin", "ymax")
 
+      stackWind <- c(stackWind, output$wind)
+      stackDirection <- c(stackDirection, output$direction)
+      stackExtent <- c(stackExtent, ext)
+      stackIso <- c(stackIso, isoTimes)
 
-      if (verbose > 0) {
-        utils::setTxtProgressBar(pb, step)
-        step <- step + 1
-      }
     }
 
-
-    if (verbose > 0) {
-      close(pb)
-    }
-
-
-    # Rasterize final products
-    if ("MSW" %in% product) {
-      auxStackMSW <- terra::rast(auxStackMSW)
-      finalStackMSW <- rasterizeProduct(
-        "MSW", finalStackMSW, auxStackMSW,
-        tempRes, spaceRes, st@name, NULL
-      )
-      terra::time(finalStackMSW[[length(finalStackMSW)]]) <- terra::time(auxStackMSW[[1]])
-    }
-    if ("PDI" %in% product) {
-      auxStackPDI <- terra::rast(auxStackPDI)
-      finalStackPDI <- rasterizeProduct(
-        "PDI", finalStackPDI, auxStackPDI,
-        tempRes, spaceRes, st@name, NULL
-      )
-      terra::time(finalStackPDI[[length(finalStackPDI)]]) <- terra::time(auxStackPDI[[1]])
-    }
-    if ("Exposure" %in% product) {
-      auxStackEXP <- terra::rast(auxStackEXP)
-      finalStackEXP <- rasterizeProduct(
-        "Exposure", finalStackEXP, auxStackEXP,
-        tempRes, spaceRes, st@name, windThreshold
-      )
-    }
-    if ("Profiles" %in% product) {
-      auxStackSpeed <- terra::rast(auxStackSpeed)
-      auxStackDirection <- terra::rast(auxStackDirection)
-      finalStackWind <- c(finalStackWind, auxStackSpeed, auxStackDirection)
-    }
-
-    if (verbose > 0) {
-      s <- s + 1
-    }
+  
+    list(stackWind, stackDirection, stackExtent, stackIso)
+    
   }
-
+  
+  # End parallel processing
+  parallel::stopCluster(cl)
+  
+  # TODO Rasteriser les données ici
+  # Dans l'ensemble, routine assez longue, environs 14sec pour le benchmark de l'issue github
+  # sans la finalisation avec les routines SpatRast !!!
+  # Notes: pas de mode verbeux en parallele
+  # sds <- defStormsDataset()
+  # s <- defStormsList(sds, loi="New Caledonia")
+  # msw <-spatialBehaviour(s)
+  
+  
   finalStack <- c()
 
   if ("MSW" %in% product) {
