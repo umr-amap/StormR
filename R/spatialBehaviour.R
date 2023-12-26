@@ -1397,7 +1397,7 @@ spatialBehaviour <- function(sts,
   parallel::stopCluster(cl)
   
   # TODO Rasteriser les données ici
-  # Dans l'ensemble, routine assez longue, environs 14sec pour le benchmark de l'issue github
+  # Dans l'ensemble, routine assez longue, environs 14sec pour le benchmark de l'issue github (3 coeurs)
   # sans la finalisation avec les routines SpatRast !!!
   # Notes: pas de mode verbeux en parallele
   # sds <- defStormsDataset()
