@@ -1365,6 +1365,7 @@ spatialBehaviour <- function(sts,
       }
     }
     
+    output <- c()
     # Rasterize final products
     if ("MSW" %in% product) {
       auxStackMSW <- terra::rast(auxStackMSW)
@@ -1376,6 +1377,7 @@ spatialBehaviour <- function(sts,
                                    storm@name,
                                    NULL)
       terra::time(stackMSW[[length(stackMSW)]]) <- terra::time(auxStackMSW[[1]])
+      output <- c(output, terra::wrap(terra::rast(stackMSW)))
     }
     if ("PDI" %in% product) {
       auxStackPDI <- terra::rast(auxStackPDI)
@@ -1387,6 +1389,7 @@ spatialBehaviour <- function(sts,
                                    storm@name,
                                    NULL)
       terra::time(stackPDI[[length(stackPDI)]]) <- terra::time(auxStackPDI[[1]])
+      output <- c(output, terra::wrap(terra::rast(stackPDI)))
     }
     if ("Exposure" %in% product) {
       auxStackEXP <- terra::rast(auxStackEXP)
@@ -1397,44 +1400,31 @@ spatialBehaviour <- function(sts,
                                    spaceRes,
                                    storm@name,
                                    windThresholds)
+      output <- c(output, terra::wrap(terra::rast(stackEXP)))
     }
     if ("Profiles" %in% product) {
       auxStackSpeed <- terra::rast(auxStackSpeed)
       auxStackDirection <- terra::rast(auxStackDirection)
       stackWIND <- c(stackWIND, auxStackSpeed, auxStackDirection)
+      output <- c(output, terra::wrap(terra::rast(stackWIND)))
     }
     
-    pack <- terra::wrap(stackMSW)
-    
-    list(msw = stackMSW,
-         pdi = stackPDI,
-         exposure = stackEXP,
-         wind = stackWIND)
+    output
     
   }
   
   # End parallel processing
   parallel::stopCluster(cl)
   
-  print(result)
+  
 
   finalStack <- c()
-
-  if ("MSW" %in% product) {
-    finalStack <- c(finalStack, finalStackMSW)
+  for(r in result){
+    finalStack <- c(finalStack, terra::unwrap(r))
   }
-  if ("PDI" %in% product) {
-    finalStack <- c(finalStack, finalStackPDI)
-  }
-  if ("Exposure" %in% product) {
-    finalStack <- c(finalStack, finalStackEXP)
-  }
-  if ("Profiles" %in% product) {
-    finalStack <- c(finalStack, finalStackWind)
-  }
-
   finalStack <- terra::rast(finalStack)
-  finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, rasterTemp)
+  
+  finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, terra::unwrap(rasterTemplatePacked))
 
   endTime <- Sys.time()
 
@@ -1456,3 +1446,5 @@ spatialBehaviour <- function(sts,
 
   return(finalStack)
 }
+
+
