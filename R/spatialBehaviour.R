@@ -775,7 +775,7 @@ stackProduct <- function(product, stack, rasterTemplate, rasterWind, threshold) 
     rasterWind <- rasterWind**3
     # Applying both rho and surface drag coefficient
     rasterWind <- rasterWind * rho * cd
-    stack <- stackRasterPDI(stack, rasterTemplate, rasterWind)
+    stack <- stackRaster(stack, rasterTemplate, rasterWind)
     
   } else if (product == "Exposure") {
     
@@ -1209,8 +1209,10 @@ spatialBehaviour <- function(sts,
   # Make raster template
   rasterTemplate <- makeTemplateRaster(sts@spatialLoiBuffer, resolutions[spaceRes])
   rasterTemplatePacked <- terra::wrap(rasterTemplate)
+  
   # Buffer size in degree
   buffer <- 2.5
+  
   # Initializing final raster stacks
   finalStackMSW <- c()
   finalStackPDI <- c()
@@ -1225,6 +1227,7 @@ spatialBehaviour <- function(sts,
     indCountries <- which(sf::st_intersects(sts@spatialLoiBuffer, world$geometry, sparse = FALSE) == TRUE)
     asymmetry <- "None"
   } else {
+    world <- NULL
     indCountries <- NULL
   }
 
@@ -1251,15 +1254,13 @@ spatialBehaviour <- function(sts,
   }
 
   # Auto detect cores and prepare parallel processing
-  cl <- parallel::makeCluster(parallel::detectCores() - 1) #On laisse un coeur de dispo
+  cl <- parallel::makeCluster(parallel::detectCores() - 1) 
   doParallel::registerDoParallel(cl)
   `%dopar%` <- foreach::`%dopar%`
   
   result <- foreach::foreach(
     i = 1:length(sts@data),
-    .combine = 'c',
-    .packages = c("terra"),
-    .export = c("rasterTemplatePacked")
+    .combine = 'c'
   ) %dopar% {
     
     # Unpack raster template
@@ -1328,14 +1329,16 @@ spatialBehaviour <- function(sts,
                                    crds,
                                    distEye,
                                    buffer,
-                                   loi,
+                                   sts@spatialLoiBuffer,
                                    world,
                                    indCountries)
       
       terra::values(rasterWind) <- output$wind
       terra::values(rasterDirection) <- output$direction
       
-      # Stacking products
+      output <- c()
+      
+      # Stacking + Rasterzing products
       if ("MSW" %in% product) {
         auxStackMSW <- stackProduct("MSW",
                                     auxStackMSW,
@@ -1399,7 +1402,7 @@ spatialBehaviour <- function(sts,
                                    tempRes,
                                    spaceRes,
                                    storm@name,
-                                   windThresholds)
+                                   windThreshold)
       output <- c(output, terra::wrap(terra::rast(stackEXP)))
     }
     if ("Profiles" %in% product) {
@@ -1416,15 +1419,13 @@ spatialBehaviour <- function(sts,
   # End parallel processing
   parallel::stopCluster(cl)
   
-  
-
+  # Processing final raster stack
   finalStack <- c()
   for(r in result){
     finalStack <- c(finalStack, terra::unwrap(r))
   }
   finalStack <- terra::rast(finalStack)
-  
-  finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, terra::unwrap(rasterTemplatePacked))
+  finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, rasterTemplatePacked)
 
   endTime <- Sys.time()
 
