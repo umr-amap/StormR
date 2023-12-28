@@ -148,9 +148,25 @@ plotTemporal <- function(data, storm, var = "speed") {
                    col = cols,
                    legend = paste(names(subData), names(subData[[1]])),
                    bty = "n")
+  
+  
+  # Handle x axis labels
+  labels <- subData[[1]][[1]]$isoTimes[notNaIndices]
+  t1 <- labels[1]
+  t2 <- labels[2]
+  diffTime <- as.numeric(difftime(t2, t1, "hours"))
+  
+  if(diffTime == 30){
+    notNullLabels <- seq(1,length(labels)) %% 2 == 0
+    labels[notNullLabels] <- ""
+  }else if(diffTime == 15){
+    notNullLabels <- seq(1,length(labels)) %% 4 == 0
+    labels[notNullLabels] <- ""
+  }
+  
   graphics::axis(1,
                  at = seq(1, length(subData[[1]][[1]]$speed[notNaIndices])),
-                 labels = subData[[1]][[1]]$isoTimes[notNaIndices],
+                 labels = labels,
                  las = 2,
                  cex.axis = 0.5)
 
