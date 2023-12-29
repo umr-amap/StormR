@@ -149,7 +149,7 @@ plotStorms(st, category = c(4, 5), labels = FALSE, legends = "topright")
 library by setting `dynamicPlot` to `TRUE`. Doing so, the user can explore the map the way he wants
 and click and each dotted colored observations to see there informations.
 
-``` {r chunk12}
+``` {r chunk13}
 # Example of dynamic plot, using the same parameters above
 plotStorms(st, category = c(4, 5), labels = FALSE, legends = "topright", dynamicPlot=TRUE)
 ```
