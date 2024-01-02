@@ -49,8 +49,8 @@ affiliations:
 
 # Summary
 
-`StormR` is an R package allowing to easily extract storm track data from a 
-provided database and to generate surface wind fields (speed and direction) as 
+`StormR` is an R package allowing the easy extraction of storm track data from a 
+provided database and the generation of surface wind fields (speed and direction) as 
 reconstructed from storm track data and a parametric cyclone model. Then 
 `StormR` allows us to compute three summary statistics (the maximum sustained wind 
 speed, the power dissipation index, and the duration of exposure to winds reaching 
@@ -82,7 +82,7 @@ dissipated by a tropical storm [@emanuel_power_1999; @emanuel_increasing_2005],
 and the duration of exposure to winds reaching defined speed thresholds. 
 By default the duration of exposure is computed for each Saffir-Simpson 
 Hurricane Scale threshold values for tropical cyclone categories, 
-i.e., $33$, $43$, $50$ ,$58$, and $70$ $m.s^{-1}$ [@simpson_hurricane_2010], 
+i.e., $33$, $43$, $50$, $58$, and $70$ $m.s^{-1}$ [@simpson_hurricane_2010], 
 but can be defined by the user.
 
 # Statement of need
@@ -147,8 +147,8 @@ R objects created by the `stormR` functions in yellow.](images/stormR_workflow.p
 
 # Example
 
-A `test_dataset` is provided with the `StormR` package. This test data set 
-comprises the track data of nine storms that occurred near Vanuatu and 
+A `test_dataset` is provided with the `StormR` package. This test data set is
+comprised of the track data of nine storms that occurred near Vanuatu and 
 New Caledonia between 2015-2016 and 2020-2021, respectively. 
 Figure 2 shows how the `spatialBehaviour()` function can compute different 
 products for the tropical cyclone Pam (2015) near Vanuatu.
