@@ -155,34 +155,34 @@ Finally, the user can choose his own scale and associated palette, by setting th
 StormR provides default palette and category names:
 
 ```{r chunk 12}
-# Tokyo's tropical cyclone intensity scale 
-RSMC_SCALE = c(16.94, 24.44, 32.5, 43.33, 53.61)
+# Tokyo's tropical cyclone intensity scale
+RSMCScale <- c(16.94, 24.44, 32.5, 43.33, 53.61)
 
 sts_jpn <- defStormsList(sds = sds,
-                        loi = "Vanuatu",
-                        names = "PAM",
-                        scale = RSMC_SCALE,
-                        verbose = 0)
+                         loi = "Vanuatu",
+                         names = "PAM",
+                         scale = RSMCScale,
+                         verbose = 0)
 
 plotStorms(sts_jpn)
 ```
 
 But you can also easily customize them:
 ```{r chunk 13}
-RSMC_PALETTE = c("#6ec1ea","#4dffff","#c0ffc0","#ffd98c","#ff738a","#a188fc")
-names(RSMC_PALETTE) = c("Tropical depression",
-                         "Tropical storm",
-                         "Severe tropical storm",
-                         "Typhoon",
-                         "Very strong typhoon",
-                         "Violent typhoon")
+RSMCPalette <- c("#6ec1ea", "#4dffff", "#c0ffc0", "#ffd98c", "#ff738a", "#a188fc")
+names(RSMCPalette) <- c("Tropical depression",
+                        "Tropical storm",
+                        "Severe tropical storm",
+                        "Typhoon",
+                        "Very strong typhoon",
+                        "Violent typhoon")
 
 sts_jpn <- defStormsList(sds = sds,
-                        loi = "Vanuatu",
-                        names = "PAM",
-                        scale = RSMC_SCALE,
-                        scalePalette = RSMC_PALETTE,
-                        verbose = 0)
+                         loi = "Vanuatu",
+                         names = "PAM",
+                         scale = RSMCScale,
+                         scalePalette = RSMCPalette,
+                         verbose = 0)
 
 plotStorms(sts_jpn)
-
+```
