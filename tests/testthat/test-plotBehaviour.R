@@ -19,6 +19,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
     by = 8,
     pos = 3
   ))
+  
 
   # Checking raster_product input
   expect_error(checkInputsPlotBehaviour(
