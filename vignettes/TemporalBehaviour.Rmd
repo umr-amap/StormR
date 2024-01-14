@@ -66,7 +66,7 @@ the observation ("isoTimes").
 str(TS)
 ```
 
-We use the data frame to draw time series plots for wind speed and wind
+We use the data frame and the `plotTemporal()` function to draw time series plots for wind speed and wind
 direction as follows:
 
 ``` {r , include = FALSE}
@@ -74,13 +74,7 @@ oldpar <- par(mar = c(10, 4, 4, 2))
 ```
 
 ``` {r}
-plot(TS$PAM$Port_Vila$speed, type = "l", ylim = c(0, 60), xlab = "", ylab = "Wind speed (m/s)", axes = FALSE, col = "blue")
-points(TS$PAM$Port_Vila$speed, col = "blue", pch = 3)
-lines(TS$PAM$Luganville$speed, col = "red")
-points(TS$PAM$Luganville$speed, col = "red", pch = 3)
-legend("topleft", pch = 3, col = c("blue", "red"), legend = c("Port Vila", "Luganville"), bty = "n")
-axis(1, at = seq(1, length(TS$PAM$Port_Vila$speed)), labels = TS$PAM$Port_Vila$isoTimes, las = 2)
-axis(2, at = seq(0, 60, 10), labels = seq(0, 60, 10), las = 2)
+plotTemporal(data=TS, storm="PAM")
 ```
 
 ``` {r , include = FALSE}
@@ -88,13 +82,7 @@ dev.off()
 ```
 
 ``` {r}
-plot(TS$PAM$Port_Vila$direction, type = "l", ylim = c(0, 360), xlab = "", ylab = "Wind direction (degree north)", axes = FALSE, col = "blue")
-points(TS$PAM$Port_Vila$direction, col = "blue", pch = 3)
-lines(TS$PAM$Luganville$direction, col = "red")
-points(TS$PAM$Luganville$direction, col = "red", pch = 3)
-legend("topleft", pch = 3, col = c("blue", "red"), legend = c("Port Vila", "Luganville"), bty = "n")
-axis(1, at = seq(1, length(TS$PAM$Port_Vila$speed)), labels = TS$PAM$Port_Vila$isoTimes, las = 2)
-axis(2, at = seq(0, 360, 90), labels = seq(0, 360, 90), las = 2)
+plotTemporal(data=TS, storm="PAM", var='direction')
 ```
 
 ``` {r , include = FALSE}

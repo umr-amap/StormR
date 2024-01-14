@@ -27,6 +27,7 @@ Gather all the needed informations to model a single storm
 
 \item{\code{scale}}{numeric. Maximum scale category reached}
 
+
 \item{\code{obs}}{numeric vector. Indices of observations within the location of
 interest extented with its corresponding buffer (See \code{stormsList} class)}
 
