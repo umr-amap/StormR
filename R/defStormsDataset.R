@@ -3,9 +3,9 @@
 
 
 
-###########################
+############################
 # Unit conversion functions#
-###########################
+############################
 
 # For msw
 knt2ms <- function(x) {
@@ -68,14 +68,14 @@ atm2pa <- function(x) {
 #' @slot seasons numeric vector. Range of calendar years to filter storms. For
 #'   cyclones that formed in one year and dissipated in the following year, the
 #'   latter should be used
-#' @slot database list of 6 to 10 slots depending on the fields input. Each slot
+#' @slot database list of 6 to 9 slots depending on the fields input. Each slot
 #' is either a 1D array of dimension (number of storms) for `names` and
 #' `seasons` fields, or a 2D array of dimension
 #' (Maximum number of observations:number of storms), for the remaining fields
-#' which are `isoTime`, `lon`, `lat`, `msw`, `rmw`, `pressure`, `poci`, `sshs`
-#'
+#' which are `isoTime`, `lon`, `lat`, `msw`, `rmw`, `pressure`, `poci`
+#' 
 #' @details
-#' The fields input must provide at least 6 mandatory fields (and at most 11) in
+#' The fields input must provide at least 6 mandatory fields (and at most 10) in
 #' order to benefit from all the functionalities of this package:
 #' \itemize{
 #'   \item A field `names`: which dimension contains the names of storms
@@ -102,9 +102,6 @@ atm2pa <- function(x) {
 #'  \item A field `rmw`: which dimension contains the radius of maximum
 #'        wind speed of each observations for all storms in the netcdf
 #'        database (See spatialBehaviour, temporalBehaviour)
-#'  \item A field `sshs`: which dimension contains the Saffir Simpson
-#'        Hurricane Scale index of each observations for all storms in the
-#'        netcdf database
 #' }
 #' Finally these following fields are optional but mandatory to perform Holland
 #' model (See `spatialBehaviour`, `temporalBehaviour`)
@@ -121,7 +118,7 @@ atm2pa <- function(x) {
 #' databases:
 #' `fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time",
 #' lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres",
-#' poci = "usa_poci", sshs = "usa_sshs")`
+#' poci = "usa_poci")`
 #'
 #' @export
 stormsDataset <- methods::setClass(
@@ -225,12 +222,9 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
     )
   }
 
-
-
   # Checking seasons input
   stopifnot("seasons must be numeric" = identical(class(seasons), "numeric"))
   stopifnot("seasons must be a range of calendar year" = length(seasons) == 2 & seasons[1] <= seasons[2])
-
 
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -267,8 +261,7 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
 #'    \item `"rmw"`, radius of maximum winds: distance between the centre of the storm and
 #'        its band of strongest winds (recommended),
 #'    \item `"pressure"`, central pressure (recommended),
-#'    \item `"poci"`, pressure of the last closed isobar (recommended), and
-#'    \item `"sshs"`, Saffir-Simpson hurricane wind scale rating based on msw (optional).
+#'    \item `"poci"`, pressure of the last closed isobar (recommended)
 #'  }
 #' @param basin character. If the basin field is provided, then storm track data will
 #' only be extracted for the named basin. By default `basin=NULL`, meaning that all storms
@@ -315,7 +308,6 @@ checkInputsdefStormsDataset <- function(filename, fields, basin, seasons, unitCo
 #'    \item `"psi2pa"`, to convert  psi to Pascal, or
 #'    \item `"None"`, if no conversion is needed.
 #'  }
-#'
 #' @param verbose numeric. Whether the function should display (`= 1`)
 #'   or not (`= 0`) information about the processes.
 #' @return The `defStormsDataset()` function returns a `stormsDataset` object.
@@ -340,7 +332,6 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                                lat = "usa_lat",
                                msw = "usa_wind",
                                basin = "basin",
-                               sshs = "usa_sshs",
                                rmw = "usa_rmw",
                                pressure = "usa_pres",
                                poci = "usa_poci"
@@ -354,8 +345,8 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                                poci = "mb2pa"
                              ),
                              verbose = 1) {
+  
   checkInputsdefStormsDataset(filename, fields, basin, seasons, unitConversion, verbose)
-
 
   if (verbose) {
     cat("=== Loading data  ===\nOpen database... ")
@@ -433,10 +424,6 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
   data$latitude <- data$latitude[, o]
   data$msw <- data$msw[, o]
 
-  if ("sshs" %in% names(fields)) {
-    data$sshs <- array(ncdf4::ncvar_get(dataBase, fields["sshs"])[, ind], dim = c(row, len))
-    data$sshs <- data$sshs[, o]
-  }
 
   if ("rmw" %in% names(fields)) {
     if (unitConversion["rmw"] == "nm2km") {

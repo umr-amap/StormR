@@ -8,7 +8,7 @@ temporalBehaviour(
   sts,
   points,
   product = "TS",
-  windThreshold = c(18, 33, 42, 49, 58, 70),
+  windThreshold = NULL,
   method = "Willoughby",
   asymmetry = "Chen",
   empiricalRMW = FALSE,
@@ -31,8 +31,8 @@ can also be provided to named the locations.}
 }}
 
 \item{windThreshold}{numeric vector. Minimal wind threshold(s) (in \eqn{m.s^{-1}}) used to
-compute the duration of exposure when \code{product="Exposure"}. By default the thresholds
-used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 \eqn{m.s^{-1}}).}
+compute the duration of exposure when \code{product="Exposure"}. Default value is to set NULL, in this
+case, the windthresholds are the one used in the scale defined in the stormdatabase.}
 
 \item{method}{character. Model used to compute wind speed and direction.
 Three different models are implemented:

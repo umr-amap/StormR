@@ -128,16 +128,61 @@ terra::plot(LOI, add = TRUE)
 terra::plot(countriesHigh, add = TRUE)
 ```
 
-The maximum category of each cyclone on the Saffir-Simpson hurricane wind scale
-can be obtained using the `getSSHS()` function as follows:
+### Using different wind scale
+
+
+By default the Saffir-Simpson hurricane wind scale (SSHS) is used in `defStormsList()`
+to assign level to storms.
+
+The maximum level reached in the scale for each cyclone
+can then be obtained using the `getScale()` function as follows:
 
 ``` {r chunk11}
-getSSHS(st)
+getScale(st)
 ```
 
-We can only plot category 4 and 5 tropical cyclones using the `category`
+In this case, the SSHS scale is composed of 6 thresholds resulting in 6 levels
+spanning from level 0 to level 6.
+
+We can only plot cyclones that reached level 5 and 6 using the `category`
 argument of the `plotStorms()` function as follows:
 
 ``` {r chunk12}
-plotStorms(st, category = c(4, 5), labels = FALSE, legends = "topright")
+plotStorms(st, category = c(5, 6), labels = FALSE, legends = "topright")
+```
+Finally, the user can choose his own scale and associated palette, by setting the `scale` and `scalePalette` inputs in `defStormsList()`. In the following example, we use the Tokyo's tropical cyclone intensity scale to analyse tropical storm PAM.
+
+StormR provides default palette and category names:
+
+```{r chunk 12}
+# Tokyo's tropical cyclone intensity scale
+RSMCScale <- c(16.94, 24.44, 32.5, 43.33, 53.61)
+
+sts_jpn <- defStormsList(sds = sds,
+                         loi = "Vanuatu",
+                         names = "PAM",
+                         scale = RSMCScale,
+                         verbose = 0)
+
+plotStorms(sts_jpn)
+```
+
+But you can also easily customize them:
+```{r chunk 13}
+RSMCPalette <- c("#6ec1ea", "#4dffff", "#c0ffc0", "#ffd98c", "#ff738a", "#a188fc")
+names(RSMCPalette) <- c("Tropical depression",
+                        "Tropical storm",
+                        "Severe tropical storm",
+                        "Typhoon",
+                        "Very strong typhoon",
+                        "Violent typhoon")
+
+sts_jpn <- defStormsList(sds = sds,
+                         loi = "Vanuatu",
+                         names = "PAM",
+                         scale = RSMCScale,
+                         scalePalette = RSMCPalette,
+                         verbose = 0)
+
+plotStorms(sts_jpn)
 ```

@@ -15,7 +15,26 @@ atm2paC <- 101300
 km <- 1000
 
 wgs84 <- 4326
+
+# SSHS constants
+
 sshs <- c(18, 33, 42, 49, 58, 70)
+sshsPalette = c("#00CCFF",
+                 "#00CCCC",
+                 "#FFFFB2",
+                 "#FECC5C",
+                 "#FD8D3C",
+                 "#F03B20",
+                 "#BD0026")
+
+names(sshsPalette) = c("TD",
+                        "TS",
+                        "Cat. 1",
+                        "Cat. 2",
+                        "Cat. 3",
+                        "Cat. 4",
+                        "Cat. 5")
+
 
 basins <- data.frame(
     row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"),
@@ -31,8 +50,6 @@ margin <- c(4, 12, 4, 8)
 # Color Palettes
 oceanColor <- "white"
 groundColor <- "grey"
-
-sshsPalette <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 
 
 palette <- c("#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")

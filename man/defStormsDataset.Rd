@@ -7,8 +7,8 @@
 defStormsDataset(
   filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
   fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
-    lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw =
-    "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
+    lat = "usa_lat", msw = "usa_wind", basin = "basin", rmw = "usa_rmw", pressure =
+    "usa_pres", poci = "usa_poci"),
   basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unitConversion = c(msw = "knt2ms", rmw = "nm2km", pressure = "mb2pa", poci = "mb2pa"),
@@ -38,8 +38,7 @@ Corresponding variable names for following fields have to (mandatory fields) or 
 \item \code{"rmw"}, radius of maximum winds: distance between the centre of the storm and
 its band of strongest winds (recommended),
 \item \code{"pressure"}, central pressure (recommended),
-\item \code{"poci"}, pressure of the last closed isobar (recommended), and
-\item \code{"sshs"}, Saffir-Simpson hurricane wind scale rating based on msw (optional).
+\item \code{"poci"}, pressure of the last closed isobar (recommended)
 }}
 
 \item{basin}{character. If the basin field is provided, then storm track data will
