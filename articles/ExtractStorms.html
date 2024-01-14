@@ -86,7 +86,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Extract Storms</h1>
             
-            <h4 data-toc-skip class="date">2024-01-11</h4>
+            <h4 data-toc-skip class="date">2024-01-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/HEAD/vignettes/ExtractStorms.Rmd" class="external-link"><code>vignettes/ExtractStorms.Rmd</code></a></small>
       <div class="d-none name"><code>ExtractStorms.Rmd</code></div>
@@ -137,13 +137,13 @@ data can be obtained using the <code><a href="../reference/getObs-methods.html">
 follows:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getObs-methods.html">getObs</a></span><span class="op">(</span><span class="va">st</span>, name <span class="op">=</span> <span class="st">"PAM"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##              iso.time      lon       lat msw sshs rmw   pres   poci</span></span>
-<span><span class="co">## 1 2015-03-08 12:00:00 168.9000 -7.500000  13   -1  93 100400 100500</span></span>
-<span><span class="co">## 2 2015-03-08 15:00:00 169.0425 -7.652509  14   -1  93 100200 100200</span></span>
-<span><span class="co">## 3 2015-03-08 18:00:00 169.2000 -7.800000  15   -1  93 100000 100000</span></span>
-<span><span class="co">## 4 2015-03-08 21:00:00 169.3850 -7.942489  15   -1  93 100000 100000</span></span>
-<span><span class="co">## 5 2015-03-09 00:00:00 169.6000 -8.100000  15   -1  93 100000 100100</span></span>
-<span><span class="co">## 6 2015-03-09 03:00:00 169.8425 -8.284999  16   -1  93  99800 100100</span></span></code></pre>
+<pre><code><span><span class="co">##              iso.time      lon       lat msw scale rmw   pres   poci</span></span>
+<span><span class="co">## 1 2015-03-08 12:00:00 168.9000 -7.500000  13     0  93 100400 100500</span></span>
+<span><span class="co">## 2 2015-03-08 15:00:00 169.0425 -7.652509  14     0  93 100200 100200</span></span>
+<span><span class="co">## 3 2015-03-08 18:00:00 169.2000 -7.800000  15     0  93 100000 100000</span></span>
+<span><span class="co">## 4 2015-03-08 21:00:00 169.3850 -7.942489  15     0  93 100000 100000</span></span>
+<span><span class="co">## 5 2015-03-09 00:00:00 169.6000 -8.100000  15     0  93 100000 100100</span></span>
+<span><span class="co">## 6 2015-03-09 03:00:00 169.8425 -8.284999  16     0  93  99800 100100</span></span></code></pre>
 <p>The number of observation and the indices of the observations can be
 obtained using the <code><a href="../reference/getNbObs-methods.html">getNbObs()</a></code> and <code><a href="../reference/getInObs-methods.html">getInObs()</a></code>
 as follows:</p>
@@ -214,20 +214,64 @@ and <code><a href="../reference/getBufferSize-methods.html">getBufferSize()</a><
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">LOI</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">countriesHigh</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ExtractStorms_files/figure-html/chunk10-1.png" width="700"></p>
-<p>The maximum category of each cyclone on the Saffir-Simpson hurricane
-wind scale can be obtained using the <code><a href="../reference/getSSHS-methods.html">getSSHS()</a></code> function as
-follows:</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="using-different-wind-scale">Using different wind scale<a class="anchor" aria-label="anchor" href="#using-different-wind-scale"></a>
+</h3>
+<p>By default the Saffir-Simpson hurricane wind scale (SSHS) is used in
+<code><a href="../reference/defStormsList.html">defStormsList()</a></code> to assign level to storms.</p>
+<p>The maximum level reached in the scale for each cyclone can then be
+obtained using the <code><a href="../reference/getScale-methods.html">getScale()</a></code> function as follows:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/getSSHS-methods.html">getSSHS</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/getScale-methods.html">getScale</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##     PAM    SOLO     ULA WINSTON    ZENA    UESI  GRETEL   LUCAS   NIRAN </span></span>
-<span><span class="co">##       5       0       4       5       2       1       1       1       5</span></span></code></pre>
-<p>We can only plot category 4 and 5 tropical cyclones using the
+<span><span class="co">##       6       1       5       6       3       2       2       2       6</span></span></code></pre>
+<p>In this case, the SSHS scale is composed of 6 thresholds resulting in
+6 levels spanning from level 0 to level 6.</p>
+<p>We can only plot cyclones that reached level 5 and 6 using the
 <code>category</code> argument of the <code><a href="../reference/plotStorms.html">plotStorms()</a></code> function
 as follows:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, labels <span class="op">=</span> <span class="cn">FALSE</span>, legends <span class="op">=</span> <span class="st">"topright"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ExtractStorms_files/figure-html/chunk12-1.png" width="700"></p>
-</div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span>, category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span>, labels <span class="op">=</span> <span class="cn">FALSE</span>, legends <span class="op">=</span> <span class="st">"topright"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ExtractStorms_files/figure-html/chunk12-1.png" width="700">
+Finally, the user can choose his own scale and associated palette, by
+setting the <code>scale</code> and <code>scalePalette</code> inputs in
+<code><a href="../reference/defStormsList.html">defStormsList()</a></code>. In the following example, we use the
+Tokyo’s tropical cyclone intensity scale to analyse tropical storm
+PAM.</p>
+<p>StormR provides default palette and category names:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Tokyo's tropical cyclone intensity scale</span></span>
+<span><span class="va">RSMCScale</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">16.94</span>, <span class="fl">24.44</span>, <span class="fl">32.5</span>, <span class="fl">43.33</span>, <span class="fl">53.61</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sts_jpn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defStormsList.html">defStormsList</a></span><span class="op">(</span>sds <span class="op">=</span> <span class="va">sds</span>,</span>
+<span>                         loi <span class="op">=</span> <span class="st">"Vanuatu"</span>,</span>
+<span>                         names <span class="op">=</span> <span class="st">"PAM"</span>,</span>
+<span>                         scale <span class="op">=</span> <span class="va">RSMCScale</span>,</span>
+<span>                         verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">sts_jpn</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ExtractStorms_files/figure-html/chunk%2012-1.png" width="700"></p>
+<p>But you can also easily customize them:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">RSMCPalette</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#6ec1ea"</span>, <span class="st">"#4dffff"</span>, <span class="st">"#c0ffc0"</span>, <span class="st">"#ffd98c"</span>, <span class="st">"#ff738a"</span>, <span class="st">"#a188fc"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">RSMCPalette</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tropical depression"</span>,</span>
+<span>                        <span class="st">"Tropical storm"</span>,</span>
+<span>                        <span class="st">"Severe tropical storm"</span>,</span>
+<span>                        <span class="st">"Typhoon"</span>,</span>
+<span>                        <span class="st">"Very strong typhoon"</span>,</span>
+<span>                        <span class="st">"Violent typhoon"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sts_jpn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defStormsList.html">defStormsList</a></span><span class="op">(</span>sds <span class="op">=</span> <span class="va">sds</span>,</span>
+<span>                         loi <span class="op">=</span> <span class="st">"Vanuatu"</span>,</span>
+<span>                         names <span class="op">=</span> <span class="st">"PAM"</span>,</span>
+<span>                         scale <span class="op">=</span> <span class="va">RSMCScale</span>,</span>
+<span>                         scalePalette <span class="op">=</span> <span class="va">RSMCPalette</span>,</span>
+<span>                         verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">sts_jpn</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ExtractStorms_files/figure-html/chunk%2013-1.png" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

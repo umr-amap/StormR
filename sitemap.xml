@@ -37,15 +37,6 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/Storm-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/StormsDataset-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/StormsList-class.html</loc>
-  </url>
-  <url>
     <loc>/reference/defStormsDataset.html</loc>
   </url>
   <url>
@@ -79,7 +70,7 @@
     <loc>/reference/getObs-methods.html</loc>
   </url>
   <url>
-    <loc>/reference/getSSHS-methods.html</loc>
+    <loc>/reference/getScale-methods.html</loc>
   </url>
   <url>
     <loc>/reference/getSeasons-methods.html</loc>
@@ -101,6 +92,15 @@
   </url>
   <url>
     <loc>/reference/spatialBehaviour.html</loc>
+  </url>
+  <url>
+    <loc>/reference/storm-class.html</loc>
+  </url>
+  <url>
+    <loc>/reference/stormsDataset-class.html</loc>
+  </url>
+  <url>
+    <loc>/reference/stormsList-class.html</loc>
   </url>
   <url>
     <loc>/reference/temporalBehaviour.html</loc>

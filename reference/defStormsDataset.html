@@ -69,8 +69,8 @@ This is an essential first step before other <code>stormR</code> functions can b
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">defStormsDataset</span><span class="op">(</span></span>
 <span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"test_dataset.nc"</span>, package <span class="op">=</span> <span class="st">"StormR"</span><span class="op">)</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>names <span class="op">=</span> <span class="st">"name"</span>, seasons <span class="op">=</span> <span class="st">"season"</span>, isoTime <span class="op">=</span> <span class="st">"iso_time"</span>, lon <span class="op">=</span> <span class="st">"usa_lon"</span>,</span>
-<span>    lat <span class="op">=</span> <span class="st">"usa_lat"</span>, msw <span class="op">=</span> <span class="st">"usa_wind"</span>, basin <span class="op">=</span> <span class="st">"basin"</span>, sshs <span class="op">=</span> <span class="st">"usa_sshs"</span>, rmw <span class="op">=</span></span>
-<span>    <span class="st">"usa_rmw"</span>, pressure <span class="op">=</span> <span class="st">"usa_pres"</span>, poci <span class="op">=</span> <span class="st">"usa_poci"</span><span class="op">)</span>,</span>
+<span>    lat <span class="op">=</span> <span class="st">"usa_lat"</span>, msw <span class="op">=</span> <span class="st">"usa_wind"</span>, basin <span class="op">=</span> <span class="st">"basin"</span>, rmw <span class="op">=</span> <span class="st">"usa_rmw"</span>, pressure <span class="op">=</span></span>
+<span>    <span class="st">"usa_pres"</span>, poci <span class="op">=</span> <span class="st">"usa_poci"</span><span class="op">)</span>,</span>
 <span>  basin <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seasons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1980</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%Y"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  unitConversion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>msw <span class="op">=</span> <span class="st">"knt2ms"</span>, rmw <span class="op">=</span> <span class="st">"nm2km"</span>, pressure <span class="op">=</span> <span class="st">"mb2pa"</span>, poci <span class="op">=</span> <span class="st">"mb2pa"</span><span class="op">)</span>,</span>
@@ -103,8 +103,7 @@ Corresponding variable names for following fields have to (mandatory fields) or 
 <li><p><code>"rmw"</code>, radius of maximum winds: distance between the centre of the storm and
 its band of strongest winds (recommended),</p></li>
 <li><p><code>"pressure"</code>, central pressure (recommended),</p></li>
-<li><p><code>"poci"</code>, pressure of the last closed isobar (recommended), and</p></li>
-<li><p><code>"sshs"</code>, Saffir-Simpson hurricane wind scale rating based on msw (optional).</p></li>
+<li><p><code>"poci"</code>, pressure of the last closed isobar (recommended)</p></li>
 </ul></dd>
 
 
@@ -181,19 +180,18 @@ Bulletin of the American Meteorological Society, 91(3), Article 3. https://doi.o
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">SP_2015_2020</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formal class 'stormsDataset' [package "StormR"] with 5 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ filename: chr "/home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ fields  : Named chr [1:11] "name" "season" "iso_time" "usa_lon" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "names")= chr [1:11] "names" "seasons" "isoTime" "lon" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ fields  : Named chr [1:10] "name" "season" "iso_time" "usa_lon" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "names")= chr [1:10] "names" "seasons" "isoTime" "lon" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ basin   : chr "None"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ seasons : Named num [1:2] 2015 2015</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..- attr(*, "names")= chr [1:2] "min" "max"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ database:List of 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..@ database:List of 9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ names    : chr [1:2(1d)] "PAM" "SOLO"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ seasons  : num [1:2(1d)] 2015 2015</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ isotimes : chr [1:360, 1:2] "2015-03-07 06:00:00" "2015-03-07 09:00:00" "2015-03-07 12:00:00" "2015-03-07 15:00:00" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ longitude: num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ latitude : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ msw      : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ sshs     : num [1:360, 1:2] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ rmw      : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ pressure : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ poci     : num [1:360, 1:2] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span>

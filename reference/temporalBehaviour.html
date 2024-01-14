@@ -73,7 +73,7 @@ It also allows to compute three associated summary statistics.</p>
 <span>  <span class="va">sts</span>,</span>
 <span>  <span class="va">points</span>,</span>
 <span>  product <span class="op">=</span> <span class="st">"TS"</span>,</span>
-<span>  windThreshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">33</span>, <span class="fl">42</span>, <span class="fl">49</span>, <span class="fl">58</span>, <span class="fl">70</span><span class="op">)</span>,</span>
+<span>  windThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"Willoughby"</span>,</span>
 <span>  asymmetry <span class="op">=</span> <span class="st">"Chen"</span>,</span>
 <span>  empiricalRMW <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -103,8 +103,8 @@ can also be provided to named the locations.</p></dd>
 
 <dt>windThreshold</dt>
 <dd><p>numeric vector. Minimal wind threshold(s) (in \(m.s^{-1}\)) used to
-compute the duration of exposure when <code>product="Exposure"</code>. By default the thresholds
-used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 \(m.s^{-1}\)).</p></dd>
+compute the duration of exposure when <code>product="Exposure"</code>. Default value is to set NULL, in this
+case, the windthresholds are the one used in the scale defined in the stormdatabase.</p></dd>
 
 
 <dt>method</dt>
@@ -284,15 +284,14 @@ Monthly Weather Review, 134(4), 1102–1120. https://doi.org/10.1175/MWR3106.1</
 <span class="r-out co"><span class="r-pr">#&gt;</span>    -&gt; Identifying Storms: Done</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Gathering storm(s) ... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 0.4745235 sec ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 0.4867404 sec ===</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SUMMARY:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (*) LOI: Vanuatu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (*) Buffer size: 300 km</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs): yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Number of storms: 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - SSHS - Number of observation within buffer:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PAM - 2015 - 5 - 20 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs):(*) Number of storms: 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - Scale - Number of observation within buffer:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PAM - 2015 - 6 - 20 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">168.5</span>, <span class="fl">168</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">17.9</span>, <span class="op">-</span><span class="fl">16.3</span><span class="op">)</span><span class="op">)</span></span></span>

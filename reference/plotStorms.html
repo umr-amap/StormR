@@ -89,15 +89,9 @@ If <code>names = NULL</code> (default setting), all storms are plotted.</p></dd>
 
 
 <dt>category</dt>
-<dd><p>numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
-Can be a single category or a range of categories among:</p><ul><li><p>-1, for tropical depression,</p></li>
-<li><p>0, for tropical storms,</p></li>
-<li><p>1, for category 1 tropical cyclone,</p></li>
-<li><p>2, for category 2 tropical cyclone,</p></li>
-<li><p>3, for category 3 tropical cyclone,</p></li>
-<li><p>4, for category 4 tropical cyclone, or</p></li>
-<li><p>5, for category 5 tropical cyclone.</p></li>
-</ul><p>If <code>category=NULL</code> (default setting), all storms are plotted.</p></dd>
+<dd><p>numeric vector. Category of storms to be plotted among the level in
+the windscale provided in <code>sts</code> input. If <code>category=NULL</code> (default setting),
+all storms are plotted.</p></dd>
 
 
 <dt>xlim</dt>
@@ -165,22 +159,21 @@ extent of the buffered location of interest on the map.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    -&gt; Identifying Storms: Done</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; Gathering storm(s) ... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 0.4754758 sec ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === DONE with run time 0.4724429 sec ===</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SUMMARY:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (*) LOI: Vanuatu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (*) Buffer size: 300 km</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs): yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Number of storms: 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - SSHS - Number of observation within buffer:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         PAM - 2015 - 5 - 20 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (*) Remove Tropical Depressions (&lt; 18 m/s in sshs):(*) Number of storms: 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Name - Tropical season - Scale - Number of observation within buffer:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PAM - 2015 - 6 - 20 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plotting Pam over Vanuatu with labels every 24h</span></span></span>
-<span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span><span class="va">pam</span>, labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span>sts <span class="op">=</span><span class="va">pam</span>, labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plotting Pam over Vanuatu with labels every 6h on the right side of the observations</span></span></span>
-<span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span><span class="va">pam</span>, labels <span class="op">=</span> <span class="cn">TRUE</span>, by <span class="op">=</span> <span class="fl">2</span>, pos <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plotStorms</span><span class="op">(</span>sts <span class="op">=</span> <span class="va">pam</span>, labels <span class="op">=</span> <span class="cn">TRUE</span>, by <span class="op">=</span> <span class="fl">2</span>, pos <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
