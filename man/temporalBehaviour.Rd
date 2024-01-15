@@ -12,7 +12,7 @@ temporalBehaviour(
   method = "Willoughby",
   asymmetry = "Chen",
   empiricalRMW = FALSE,
-  tempRes = 1,
+  tempRes = 60,
   verbose = 1
 )
 }
@@ -55,8 +55,8 @@ the radius of maximum wind (\code{rmw}) empirically using the model developed by
 Willoughby et al. (2006). If \code{empiricalRMW==FALSE} (default setting) then the
 \code{rmw} provided in the \code{StormsList} is used.}
 
-\item{tempRes}{numeric. Temporal resolution. Can be \code{1} (for 60 min, default setting),
-\code{0.75} (for 45min), \code{0.5} (for 30 min), and \code{0.25} (15 for min).}
+\item{tempRes}{numeric. Temporal resolution (min). Can be \code{60} (default setting),
+\code{30} or \code{15}.}
 
 \item{verbose}{numeric. Information displayed. Can be:
 \itemize{
@@ -91,7 +91,7 @@ Storm track data sets, such as those extracted from IBRTrACKS (Knapp et
 al., 2010), usually provide observation at a 3- or 6-hours temporal
 resolution. In the temporalBehaviour() function, linear interpolations are
 used to reach the temporal resolution specified in the \code{tempRes} argument
-(default value = 1 hour).
+(default value = 60 min).
 
 The Holland (1980) model, widely used in the literature, is based on the
 'gradient wind balance in mature tropical cyclones. The wind speed distribution
@@ -197,8 +197,8 @@ the forward trajectory of the storm and a radial line from the eye of the storm 
 \eqn{p_c} is the pressure at the centre of the storm (\eqn{pressure} in \eqn{Pa}).
 }
 \examples{
-# Creating a stormsDataset
 \donttest{
+# Creating a stormsDataset
 sds <- defStormsDataset()
 
 # Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
@@ -219,6 +219,7 @@ pdi.pam <- temporalBehaviour(pam, points = pts, product = "PDI")
 # over points 1 and 2 defined above
 exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
 }
+
 }
 \references{
 Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and regional impacts of hurricanes in Puerto Rico.

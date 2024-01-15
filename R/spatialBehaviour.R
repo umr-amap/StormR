@@ -3,9 +3,9 @@
 
 
 
-########
-# MODELS#
-########
+##########
+# MODELS #
+##########
 
 
 
@@ -47,12 +47,12 @@ willoughby <- function(r, rmw, msw, lat) {
   x2 <- 25
   a <- 0.5913 + 0.0029 * msw - 0.1361 * log(rmw) - 0.0042 * abs(lat)
   n <- 2.1340 + 0.0077 * msw - 0.4522 * log(rmw) - 0.0038 * abs(lat)
-
+  
   vr <- r
   vr[r >= rmw] <- msw * ((1 - a) * exp(-abs((r[r >= rmw] - rmw) / x1)) + a * exp(-abs(r[r >= rmw] - rmw) / x2))
   vr[r < rmw] <- msw * abs((r[r < rmw] / rmw)^n)
-
-
+  
+  
   return(round(vr, 3))
 }
 
@@ -79,10 +79,10 @@ holland <- function(r, rmw, msw, pc, poci, lat) {
   rho <- 1.15 # air densiy
   f <- 2 * 7.29 * 10**(-5) * sin(lat) # Coriolis parameter
   b <- rho * exp(1) * msw**2 / (poci - pc)
-
+  
   vr <- r
   vr <- sqrt(b / rho * (rmw / r)**b * (poci - pc) * exp(-(rmw / r)**b) + (r * f / 2)**2) - r * f / 2
-
+  
   return(round(vr, 3))
 }
 
@@ -117,11 +117,11 @@ holland <- function(r, rmw, msw, pc, poci, lat) {
 boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
   rho <- 1 # air densiy
   b <- rho * exp(1) * msw**2 / (poci - pc)
-
+  
   vr <- r
   vr <- sqrt((rmw / r)**b * exp(1 - (rmw / r)**b))
-
-
+  
+  
   if (lat >= 0) {
     # Northern Hemisphere, t is clockwise
     angle <- atan2(vy, vx) - atan2(y, x)
@@ -129,12 +129,12 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
     # Southern Hemisphere, t is counterclockwise
     angle <- atan2(y, x) - atan2(vy, vx)
   }
-
-
+  
+  
   vr[landIntersect == 1] <- 0.8 * (msw - (1 - sin(angle[landIntersect == 1])) * vh / 2) * vr[landIntersect == 1]
   vr[landIntersect == 0] <- (msw - (1 - sin(angle[landIntersect == 0])) * vh / 2) * vr[landIntersect == 0]
-
-
+  
+  
   return(round(vr, 3))
 }
 
@@ -161,7 +161,7 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #' @param spaceRes character
 #' @param tempRes numeric
 #' @param verbose numeric
-#' @return NULL, just stops the function if inputs are not valid
+#' @return NULL
 checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asymmetry,
                                         empiricalRMW, spaceRes, tempRes, verbose) {
   # Checking sts input
@@ -169,13 +169,13 @@ checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asy
   
   # Checking product input
   stopifnot("Invalid product" = product %in% c("MSW", "PDI", "Exposure", "Profiles"))
-
+  
   # Checking windThreshold input
   if ("Exposure" %in% product) {
     stopifnot("windThreshold must be numeric" = identical(class(windThreshold), "numeric"))
     stopifnot("invalid value(s) for windThreshold input (must be > 0)" = windThreshold > 0)
   }
-
+  
   # Checking method input
   stopifnot("Invalid method input" = method %in% c("Willoughby", "Holland", "Boose"))
   stopifnot("Only one method must be chosen" = length(method) == 1)
@@ -183,14 +183,14 @@ checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asy
     stopifnot("Cannot perform Holland method (missing pressure input)" = "pres" %in% colnames(sts@data[[1]]@obs.all))
     stopifnot("Cannot perform Holland method (missing poci input)" = "poci" %in% colnames(sts@data[[1]]@obs.all))
   }
-
+  
   # Checking asymmetry input
   stopifnot("Invalid asymmetry input" = asymmetry %in% c("None", "Chen", "Miyazaki"))
   stopifnot("Only one asymmetry must be chosen" = length(asymmetry) == 1)
-
+  
   # Checking empiricalRMW input
   stopifnot("empiricalRMW must be logical" = identical(class(empiricalRMW), "logical"))
-
+  
   # Checking spaceRes input
   stopifnot("spaceRes must be character" = identical(class(spaceRes), "character"))
   stopifnot("spaceRes must be length 1" = length(spaceRes) == 1)
@@ -198,12 +198,12 @@ checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asy
     "invalid spaceRes: must be either 30s, 2.5min, 5min or 10min" =
       spaceRes %in% c("30sec", "2.5min", "5min", "10min")
   )
-
+  
   # Checking tempRes input
   stopifnot("tempRes must be numeric" = identical(class(tempRes), "numeric"))
   stopifnot("tempRes must be length 1" = length(tempRes) == 1)
-  stopifnot("invalid tempRes: must be either 1, 0.75, 0.5 or 0.25" = tempRes %in% c(1, 0.75, 0.5, 0.25))
-
+  stopifnot("invalid tempRes: must be either 60, 30 or 15" = tempRes %in% c(60, 30, 15))
+  
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
@@ -237,9 +237,9 @@ makeTemplateRaster <- function(buffer, res) {
     sf::st_bbox(buffer)$ymin,
     sf::st_bbox(buffer)$ymax
   )
-
-
-
+  
+  
+  
   template <- terra::rast(
     xmin = ext$xmin,
     xmax = ext$xmax,
@@ -249,7 +249,7 @@ makeTemplateRaster <- function(buffer, res) {
     vals = NA,
   )
   terra::origin(template) <- c(0, 0)
-
+  
   return(template)
 }
 
@@ -268,7 +268,7 @@ makeTemplateRaster <- function(buffer, res) {
 #' @param index numeric. Index of interpolated observation in data to use to
 #'   generate raster
 #'
-#' @return a SpatRaster
+#' @return SpatRaster
 makeTemplateModel <- function(rasterTemplate, buffer, data, index) {
   template <- terra::rast(
     xmin = data$lon[index] - buffer,
@@ -280,7 +280,7 @@ makeTemplateModel <- function(rasterTemplate, buffer, data, index) {
     time = as.POSIXct(data$isoTimes[index])
   )
   terra::origin(template) <- c(0, 0)
-
+  
   return(template)
 }
 
@@ -311,18 +311,18 @@ makeTemplateModel <- function(rasterTemplate, buffer, data, index) {
 getIndices <- function(st, offset, product) {
   # Use observations within the loi for the computations
   ind <- seq(st@obs[1], st@obs[length(st@obs)], 1)
-
+  
   if ("MSW" %in% product || "PDI" %in% product || "Exposure" %in% product) {
     # Handling indices and offset (outside of loi at entry and exit)
     for (o in 1:offset) {
       ind <- c(st@obs[1] - o, ind)
       ind <- c(ind, st@obs[length(st@obs)] + o)
     }
-
+    
     # Remove negative values and values beyond the number of observations
     ind <- ind[ind > 0 & ind <= getNbObs(st)]
   }
-
+  
   return(ind)
 }
 
@@ -357,7 +357,7 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
   lenIndices <- length(indices)
   lenData <- dt * (lenIndices - 1) - (lenIndices - 2)
   indicesObs <- seq(1, lenData, dt - 1)
-
+  
   data <- data.frame(
     lon = rep(NA, lenData),
     lat = rep(NA, lenData),
@@ -369,36 +369,40 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
     indices = rep(NA, lenData),
     isoTimes = rep(NA, lenData)
   )
-
+  
   # Filling indices and isoTimes
   ind <- c()
   isoT <- c()
   timeRes <- 1 / ((dt - 1) / timeDiff) * 60
-
+  
   for (i in indices[1:lenIndices - 1]) {
-    lab <- as.character(i)
-    t <- st@obs.all$iso.time[i]
-    for (j in 1:(dt - 2)) {
-      lab <- c(lab, paste0(as.character(i), ".", as.character(j)))
-      t <- c(t, as.character(as.POSIXct(st@obs.all$iso.time[i]) + j * 60 * timeRes))
+    label <- as.character(i)
+    time <- st@obs.all$iso.time[i]
+    
+    if(dt !=2){
+      for (j in 1:(dt - 2)) {
+        label <- c(label, paste0(as.character(i), ".", as.character(j)))
+        time <- c(time, as.character(as.POSIXct(st@obs.all$iso.time[i]) + j * 60 * timeRes))
+      }
     }
-    ind <- c(ind, lab)
-    isoT <- c(isoT, t)
+    
+    ind <- c(ind, label)
+    isoT <- c(isoT, time)
   }
   ind <- c(ind, as.character(indices[lenIndices]))
   isoT <- c(isoT, st@obs.all$iso.time[indices[lenIndices]])
-
+  
   data$indices <- ind
   data$isoTimes <- isoT
-
-
+  
+  
   lon <- st@obs.all$lon[indices]
   lat <- st@obs.all$lat[indices]
-
+  
   stormSpeed <- rep(NA, lenIndices)
   vxDeg <- rep(NA, lenIndices)
   vyDeg <- rep(NA, lenIndices)
-
+  
   # Computing storm velocity (m/s)
   for (i in 1:(lenIndices - 1)) {
     stormSpeed[i] <- terra::distance(
@@ -406,16 +410,16 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
       y = cbind(lon[i + 1], lat[i + 1]),
       lonlat = TRUE
     ) * (0.001 / 3) / 3.6
-
+    
     # component wise velocity in both x and y direction (degree/h)
     vxDeg[i] <- (lon[i + 1] - lon[i]) / 3
     vyDeg[i] <- (lat[i + 1] - lat[i]) / 3
   }
-
-
+  
+  
   data$msw[indicesObs] <- st@obs.all$msw[indices]
-
-
+  
+  
   if (empiricalRMW) {
     data$rmw[indicesObs] <- getRmw(data$msw[indicesObs], lat)
   } else {
@@ -429,19 +433,19 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
       data$rmw[indicesObs] <- st@obs.all$rmw[indices]
     }
   }
-
+  
   data$lon[indicesObs] <- lon
   data$lat[indicesObs] <- lat
   data$stormSpeed[indicesObs] <- stormSpeed
   data$vxDeg[indicesObs] <- vxDeg
   data$vyDeg[indicesObs] <- vyDeg
-
+  
   # Interpolate data
   data$lon <- zoo::na.approx(data$lon)
   data$lat <- zoo::na.approx(data$lat)
   data$msw <- zoo::na.approx(data$msw, rule = 2)
   data$rmw <- zoo::na.approx(data$rmw, rule = 2)
-
+  
   for (i in 1:(dt - 2)) {
     ind <- indicesObs + i
     ind <- ind[seq_along(ind) - 1]
@@ -449,24 +453,24 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
     data$vxDeg[ind] <- vxDeg[seq_along(ind)]
     data$vyDeg[ind] <- vyDeg[seq_along(ind)]
   }
-
-
+  
+  
   if (method == "Holland" || method == "Boose") {
     if (all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices]))) {
       stop("Missing pressure data to perform Holland model")
     }
-
+    
     data$poci <- rep(NA, lenData)
     data$pc <- rep(NA, lenData)
     data$poci[indicesObs] <- st@obs.all$poci[indices]
     data$pc[indicesObs] <- st@obs.all$pres[indices]
-
+    
     # Interpolate data
     data$poci <- zoo::na.approx(data$poci)
     data$pc <- zoo::na.approx(data$pc)
   }
-
-
+  
+  
   return(data)
 }
 
@@ -477,9 +481,6 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
 ##############################################
 # Helpers to handle Models/Asymmetry/Direction#
 ##############################################
-
-
-
 
 
 #' Compute wind profile according to the selected method and asymmetry
@@ -526,14 +527,14 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
     # Intersect points coordinates with land
     pts <- sf::st_as_sf(as.data.frame(crds), coords = c("x", "y"))
     sf::st_crs(pts) <- wgs84
-
+    
     landIntersect <- rep(0, length(x))
-
+    
     for (i in indCountries) {
       ind <- which(sf::st_intersects(pts, world$geometry[i], sparse = FALSE) == TRUE)
       landIntersect[ind] <- 1
     }
-
+    
     wind <- boose(
       r = distEye * 0.001,
       rmw = data$rmw[index],
@@ -548,19 +549,19 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
       landIntersect = landIntersect,
       lat = data$lat[index]
     )
-
+    
     direction <- computeDirectionBoose(x, y, data$lat[index], landIntersect)
   }
-
-
-
+  
+  
+  
   # Compute wind direction
   if (method != "Boose") {
     direction <- computeDirection(x, y, data$lat[index])
   }
-
-
-
+  
+  
+  
   # Adding asymmetry
   if (asymmetry != "None") {
     output <- computeAsymmetry(
@@ -572,12 +573,12 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
   } else {
     output <- list(wind = round(wind, 3), direction = round(direction, 3))
   }
-
+  
   # Remove cells outside of buffer
   dist <- sqrt(x * x + y * y)
   output$wind[dist > buffer] <- NA
   output$direction[dist > buffer] <- NA
-
+  
   return(output)
 }
 
@@ -608,46 +609,46 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
 computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rmw, lat) {
   # Circular symmetrical wind
   dir <- -(atan2(y, x) - pi / 2)
-
+  
   if (lat >= 0) {
     dir <- dir - pi / 2
   } else {
     dir <- dir + pi / 2
   }
-
+  
   dir[dir < 0] <- dir[dir < 0] + 2 * pi
   dir[dir > 2 * pi] <- dir[dir > 360] - 2 * pi
-
+  
   windX <- wind * cos(dir)
   windY <- wind * sin(dir)
-
+  
   # Moving wind
   stormDir <- -(atan2(vy, vx) - pi / 2)
   if (stormDir < 0) {
     stormDir <- stormDir + 2 * pi
   }
-
+  
   mWindX <- vh * cos(stormDir)
   mWindY <- vh * sin(stormDir)
-
+  
   # Formula for asymmetry
   if (asymmetry == "Chen") {
     formula <- 3 * rmw**(3 / 2) * r**(3 / 2) / (rmw**3 + r**3 + rmw**(3 / 2) * r**(3 / 2))
   } else if (asymmetry == "Miyazaki") {
     formula <- exp(-r / 500 * pi)
   }
-
+  
   # New total wind speed
   tWindX <- windX + formula * mWindX
   tWindY <- windY + formula * mWindY
-
-
+  
+  
   wind <- sqrt(tWindX**2 + tWindY**2)
-
+  
   # New wind direction
   direction <- atan2(tWindY, tWindX) * 180 / pi
   direction[direction < 0] <- direction[direction < 0] + 360
-
+  
   return(list(wind = round(wind, 3), direction = round(direction, 3)))
 }
 
@@ -668,9 +669,9 @@ computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rm
 #' @return wind directions (rad) at each (x,y) position
 computeDirectionBoose <- function(x, y, lat, landIntersect) {
   azimuth <- -(atan2(y, x) - pi / 2)
-
+  
   azimuth[azimuth < 0] <- azimuth[azimuth < 0] + 2 * pi
-
+  
   if (lat >= 0) {
     direction <- azimuth * 180 / pi - 90
     direction[landIntersect == 1] <- direction[landIntersect == 1] - 40
@@ -680,10 +681,10 @@ computeDirectionBoose <- function(x, y, lat, landIntersect) {
     direction[landIntersect == 1] <- direction[landIntersect == 1] + 40
     direction[landIntersect == 0] <- direction[landIntersect == 0] + 20
   }
-
+  
   direction[direction < 0] <- direction[direction < 0] + 360
   direction[direction > 360] <- direction[direction > 360] - 360
-
+  
   return(direction)
 }
 
@@ -703,18 +704,18 @@ computeDirectionBoose <- function(x, y, lat, landIntersect) {
 #' @return wind directions (rad) at each (x,y) position
 computeDirection <- function(x, y, lat) {
   azimuth <- -(atan2(y, x) - pi / 2)
-
+  
   azimuth[azimuth < 0] <- azimuth[azimuth < 0] + 2 * pi
-
+  
   if (lat >= 0) {
     direction <- azimuth * 180 / pi - 90
   } else {
     direction <- azimuth * 180 / pi + 90
   }
-
+  
   direction[direction < 0] <- direction[direction < 0] + 360
   direction[direction > 360] <- direction[direction > 360] - 360
-
+  
   return(direction)
 }
 
@@ -744,7 +745,7 @@ stackRaster <- function(stack, rasterTemplate, rasterWind) {
   extent <- terra::ext(ras)
   ras <- terra::merge(rasterWind, ras)
   ras <- terra::crop(ras, extent)
-
+  
   return(c(stack, ras))
 }
 
@@ -768,7 +769,7 @@ stackRasterPDI <- function(stack, rasterTemplate, rasterWind) {
   rasterWind <- rasterWind**3
   # Applying both rho and surface drag coefficient
   rasterWind <- rasterWind * rho * cd
-
+  
   return(stackRaster(stack, rasterTemplate, rasterWind))
 }
 
@@ -794,7 +795,7 @@ stackRasterExposure <- function(stack, rasterTemplate, rasterWind, threshold) {
     rasterCModel[ind] <- 1
     stack <- stackRaster(stack, rasterTemplate, rasterCModel)
   }
-
+  
   return(stack)
 }
 
@@ -821,7 +822,7 @@ stackProduct <- function(product, stack, rasterTemplate, rasterWind, threshold) 
   } else if (product == "Exposure") {
     stack <- stackRasterExposure(stack, rasterTemplate, rasterWind, threshold)
   }
-
+  
   return(stack)
 }
 
@@ -841,17 +842,17 @@ stackProduct <- function(product, stack, rasterTemplate, rasterWind, threshold) 
 #' @return list of SpatRaster
 rasterizeMSW <- function(finalStack, stack, spaceRes, name) {
   nbg <- switch(spaceRes,
-    "30sec" = 59,
-    "2.5min" = 11,
-    "5min" = 5,
-    "10min" = 3
+                "30sec" = 59,
+                "2.5min" = 11,
+                "5min" = 5,
+                "10min" = 3
   )
-
+  
   msw <- max(stack, na.rm = TRUE)
   # Applying focal function to smooth results
   msw <- terra::focal(msw, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, pad = TRUE)
   names(msw) <- paste0(name, "_MSW")
-
+  
   return(c(finalStack, msw))
 }
 
@@ -875,19 +876,19 @@ rasterizeMSW <- function(finalStack, stack, spaceRes, name) {
 #' @return list of SpatRaster
 rasterizePDI <- function(finalStack, stack, tempRes, spaceRes, name, threshold) {
   nbg <- switch(spaceRes,
-    "30sec" = 59,
-    "2.5min" = 11,
-    "5min" = 5,
-    "10min" = 3
+                "30sec" = 59,
+                "2.5min" = 11,
+                "5min" = 5,
+                "10min" = 3
   )
-
+  
   # Integrating over the whole track
   prod <- sum(stack, na.rm = TRUE) * tempRes
   # Applying focal function to smooth results
   prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, pad = TRUE)
   names(prod) <- paste0(name, "_PDI")
-
-
+  
+  
   return(c(finalStack, prod))
 }
 
@@ -911,12 +912,12 @@ rasterizePDI <- function(finalStack, stack, tempRes, spaceRes, name, threshold) 
 #' @return list of SpatRaster
 rasterizeExp <- function(finalStack, stack, tempRes, spaceRes, name, threshold) {
   nbg <- switch(spaceRes,
-    "30sec" = 59,
-    "2.5min" = 11,
-    "5min" = 5,
-    "10min" = 3
+                "30sec" = 59,
+                "2.5min" = 11,
+                "5min" = 5,
+                "10min" = 3
   )
-
+  
   for (l in seq_along(threshold)) {
     ind <- seq(l, terra::nlyr(stack), length(threshold))
     # Integrating over the whole track
@@ -926,8 +927,8 @@ rasterizeExp <- function(finalStack, stack, tempRes, spaceRes, name, threshold) 
     names(prod) <- paste0(name, "_Exposure_", threshold[l])
     finalStack <- c(finalStack, prod)
   }
-
-
+  
+  
   return(finalStack)
 }
 
@@ -960,7 +961,7 @@ rasterizeProduct <- function(product, finalStack, stack, tempRes, spaceRes, name
     # Computing Exposure analytic raster
     finalStack <- rasterizeExp(finalStack, stack, tempRes, spaceRes, name, threshold)
   }
-
+  
   return(finalStack)
 }
 
@@ -1035,8 +1036,8 @@ maskProduct <- function(finalStack, loi, template) {
 #' @param spaceRes character. Spatial resolution. Can be `"30 sec"` (~1 km at the equator),
 #' `"2.5 min"` (~4.5 km at the equator), `"5 min"` (~9 km at the equator) or `"10 min"` (~18.6 km at the equator).
 #'  Default setting is `"2.5 min"`.
-#' @param tempRes numeric. Temporal resolution. Can be `1` (for 60 min, default setting),
-#'  `0.75` (for 45min), `0.5` (for 30 min), and `0.25` (15 for min).
+#' @param tempRes numeric. Temporal resolution (min). Can be `60` ( default setting),
+#'   `30` or `15`.
 #' @param verbose numeric. Whether or not the function should display
 #'   informations about the process and/or outputs. Can be:
 #' \itemize{
@@ -1068,7 +1069,7 @@ maskProduct <- function(finalStack, loi, template) {
 #'   al., 2010), usually provide observation at a 3- or 6-hours temporal
 #'   resolution. In the spatialBehaviour() function, linear interpolations are
 #'   used to reach the temporal resolution specified in the `tempRes` argument
-#'   (default value = 1 hour). When `product = "MSW"`, `product = "PDI"`,
+#'   (default value = 60 min). When `product = "MSW"`, `product = "PDI"`,
 #'   or `product = "Exposure"` the `focal()` function from the `terra` R package
 #'   is used to smooth the results using moving windows.
 #'
@@ -1218,6 +1219,7 @@ maskProduct <- function(finalStack, loi, template) {
 #' # using Boose model
 #' prof.pam <- spatialBehaviour(pam, product = "Profiles", method = "Boose")
 #' }
+#'
 #' @export
 spatialBehaviour <- function(sts,
                              product = "MSW",
@@ -1226,24 +1228,29 @@ spatialBehaviour <- function(sts,
                              asymmetry = "Chen",
                              empiricalRMW = FALSE,
                              spaceRes = "2.5min",
-                             tempRes = 1,
+                             tempRes = 60,
                              verbose = 2) {
   startTime <- Sys.time()
 
   if (is.null(windThreshold)) {
     windThreshold = sts@scale
   }
+  
   checkInputsSpatialBehaviour(
     sts, product, windThreshold, method, asymmetry,
     empiricalRMW, spaceRes, tempRes, verbose
   )
-
-
+  
+  # Convert minutes to hour
+  tempRes <- tempRes / 60
+  
+  
+  
   if (verbose > 0) {
     cat("=== spatialBehaviour processing ... ===\n\n")
     cat("Initializing data ...")
   }
-
+  
   # Make raster template
   rasterTemplate <- makeTemplateRaster(sts@spatialLoiBuffer, resolutions[spaceRes])
   # Buffer size in degree
@@ -1253,7 +1260,7 @@ spatialBehaviour <- function(sts,
   finalStackPDI <- c()
   finalStackEXP <- c()
   finalStackWind <- c()
-
+  
   if (method == "Boose") {
     # Map for intersection
     world <- rworldmap::getMap(resolution = "high")
@@ -1264,17 +1271,12 @@ spatialBehaviour <- function(sts,
   } else {
     indCountries <- NULL
   }
-
+  
   if (verbose > 0) {
     s <- 1 # Initializing count of storms
     cat(" Done\n\n")
     cat("Computation settings:\n")
-    cat("  (*) Temporal resolution: Every", switch(as.numeric(tempRes),
-      "1" = 60,
-      "0.75" = 45,
-      "0.5" = 30,
-      "0.25" = 15
-    ), "min\n")
+    cat("  (*) Temporal resolution: Every", tempRes, "min\n")
     cat("  (*) Space resolution:", names(resolutions[spaceRes]), "\n")
     cat("  (*) Method used:", method, "\n")
     cat("  (*) Product(s) to compute:", product, "\n")
@@ -1282,61 +1284,61 @@ spatialBehaviour <- function(sts,
     if (empiricalRMW) {
       cat("  (*) rmw computed according to the empirical formula (See Details section)")
     }
-
+    
     cat("\nStorm(s):\n")
     cat("  (", getNbStorms(sts), ") ", getNames(sts), "\n\n")
   }
-
+  
   for (st in sts@data) {
     # Handling indices inside loi.buffer or not
     ind <- getIndices(st, 2, product)
-
-
+    
+    
     it1 <- st@obs.all$iso.time[1]
     it2 <- st@obs.all$iso.time[2]
     timeDiff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
     # Interpolated time step dt, default value dt <- 4 --> 1h
     dt <- 1 + (1 / tempRes * timeDiff) # + 1 for the limit values
-
+    
     # Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, dt, timeDiff, empiricalRMW, method)
-
+    
     nbStep <- dim(dataTC)[1] - 1
-
+    
     if (verbose > 0) {
       step <- 1
       cat(st@name, " (", s, "/", getNbStorms(sts), ")\n")
       pb <- utils::txtProgressBar(min = step, max = nbStep, style = 3)
     }
-
+    
     auxStackMSW <- c()
     auxStackPDI <- c()
     auxStackEXP <- c()
     auxStackSpeed <- c()
     auxStackDirection <- c()
-
-
-
+    
+    
+    
     for (j in 1:nbStep) {
       # Making template to compute wind profiles
       rasterTemplateModel <- makeTemplateModel(rasterTemplate, buffer, dataTC, j)
       rasterWind <- rasterTemplateModel
       rasterDirection <- rasterTemplateModel
-
+      
       # Computing coordinates of raster
       crds <- terra::crds(rasterWind, na.rm = FALSE)
-
+      
       # Computing distances in degree to the eye of the storm for x and y axes
       x <- crds[, 1] - dataTC$lon[j]
       y <- crds[, 2] - dataTC$lat[j]
-
+      
       # Computing distances to the eye of the storm in m
       distEye <- terra::distance(
         x = crds,
         y = cbind(dataTC$lon[j], dataTC$lat[j]),
         lonlat = TRUE
       )
-
+      
       # Computing wind speed/direction
       output <- computeWindProfile(
         dataTC, j, method, asymmetry,
@@ -1344,10 +1346,10 @@ spatialBehaviour <- function(sts,
         sts@spatialLoiBuffer,
         world, indCountries
       )
-
+      
       terra::values(rasterWind) <- output$wind
       terra::values(rasterDirection) <- output$direction
-
+      
       # Stacking products
       if ("MSW" %in% product) {
         auxStackMSW <- stackProduct("MSW", auxStackMSW, rasterTemplate, rasterWind, NULL)
@@ -1364,20 +1366,20 @@ spatialBehaviour <- function(sts,
         auxStackSpeed <- stackRaster(auxStackSpeed, rasterTemplate, rasterWind)
         auxStackDirection <- stackRaster(auxStackDirection, rasterTemplate, rasterDirection)
       }
-
-
+      
+      
       if (verbose > 0) {
         utils::setTxtProgressBar(pb, step)
         step <- step + 1
       }
     }
-
-
+    
+    
     if (verbose > 0) {
       close(pb)
     }
-
-
+    
+    
     # Rasterize final products
     if ("MSW" %in% product) {
       auxStackMSW <- terra::rast(auxStackMSW)
@@ -1407,14 +1409,14 @@ spatialBehaviour <- function(sts,
       auxStackDirection <- terra::rast(auxStackDirection)
       finalStackWind <- c(finalStackWind, auxStackSpeed, auxStackDirection)
     }
-
+    
     if (verbose > 0) {
       s <- s + 1
     }
   }
-
+  
   finalStack <- c()
-
+  
   if ("MSW" %in% product) {
     finalStack <- c(finalStack, finalStackMSW)
   }
@@ -1427,15 +1429,15 @@ spatialBehaviour <- function(sts,
   if ("Profiles" %in% product) {
     finalStack <- c(finalStack, finalStackWind)
   }
-
+  
   finalStack <- terra::rast(finalStack)
   finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, rasterTemplate)
-
+  
   endTime <- Sys.time()
-
+  
   if (verbose > 0) {
     cat("\n=== DONE with run time", as.numeric(round(endTime - startTime, 3)), "sec ===\n\n")
-
+    
     if (verbose > 1) {
       cat("Output:\n")
       cat("SpatRaster stack with", terra::nlyr(finalStack), "layers:\n")
@@ -1448,6 +1450,6 @@ spatialBehaviour <- function(sts,
       cat("\n")
     }
   }
-
+  
   return(finalStack)
 }
