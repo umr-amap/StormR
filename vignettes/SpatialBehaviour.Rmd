@@ -126,6 +126,14 @@ a 30 min temporal resolution as follows:
 ss <- spatialBehaviour(st, product = c("MSW"), verbose = 0, spaceRes = "10min", tempRes = 0.5)
 plotBehaviour(st, ss$PAM_MSW)
 ```
+#### Dynamic plot
+`plotBehaviour` function also provide (See ExtractStorms vignette) a dynamic plot.
+Here is an example based on the same parameters as above.
+```{r}
+plotBehaviour(st, ss$PAM_MSW, dynamicPlot = TRUE)
+```
+
+
 
 ### Exporting spatialBehaviour products
 
@@ -137,3 +145,6 @@ the working directory as follows:
 ```{r}
 writeRast(ss$PAM_MSW)
 ```
+
+
+

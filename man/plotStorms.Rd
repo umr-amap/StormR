@@ -13,8 +13,9 @@ plotStorms(
   labels = FALSE,
   by = 8,
   pos = 3,
-  legends = "topleft",
-  loi = TRUE
+  legends = "topright",
+  loi = TRUE,
+  dynamicPlot = FALSE
 )
 }
 \arguments{
@@ -41,11 +42,14 @@ when observations are made every 3 (or 6) hours.}
 \item{pos}{numeric. If \code{labels=TRUE}, defines the position of the labels, \code{1} (above the observation),
 \code{2} (on the left), \code{3} (below, default setting), and \code{4} (on the right).}
 
-\item{legends}{character. Indicates where to plot the legend, \code{"topright"}, \code{"topleft"} (default setting),
+\item{legends}{character. Indicates where to plot the legend, \code{"topright"}(default setting), \code{"topleft"},
 \code{"bottomleft"}, \code{"bottomright"}, or \code{"none"} (legend not plotted).}
 
 \item{loi}{logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 extent of the buffered location of interest on the map.}
+
+\item{dynamicPlot}{logical. Whether (FALSE, default setting) or (TRUE) to plot the
+data dynamicaly using leaflet library}
 }
 \value{
 A plot of the storm track data.
@@ -66,6 +70,9 @@ pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 plotStorms(sts =pam, labels = TRUE)
 
 # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
-plotStorms(sts = pam, labels = TRUE, by = 2, pos = 4)
+plotStorms(pam, labels = TRUE, by = 2, pos = 4)
+
+# dynamicPlot mode
+
 }
 }
