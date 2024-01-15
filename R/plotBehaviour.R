@@ -20,7 +20,7 @@
 checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
-
+  
   # Checking rasterProduct
   stopifnot("no data to plot" = !missing(rasterProduct))
   stopifnot("Raster stack are not allowed. Please subset your desired layer" = terra::nlyr(rasterProduct) == 1)
@@ -227,7 +227,7 @@ plotBehaviour <- function(sts,
 
 
   # Adding track again (to emphazise)
-  plotTrack(sts@data[[name]])
+  plotTrack(sts@data[[name]], sts@scale, sts@scalePalette)
 
   # Adding labels
   if (labels && product != "Profiles" && product != "WindDirection") {

@@ -18,8 +18,7 @@
 #'
 #' @slot name character. Name of the storm
 #' @slot season  numeric. Cyclonic season in which the storm has occured
-#' @slot  sshs numeric. Maximum category reached in the Saffir Simpson Hurricane
-#'   Scale
+#' @slot  scale numeric. Maximum scale category reached
 #' @slot obs numeric vector. Indices of observations within the location of
 #'   interest extented with its corresponding buffer (See `stormsList` class)
 #' @slot obs.all  data.frame. Contains all of the observations available. An
@@ -29,7 +28,7 @@
 #'   \item `lon`, Longitude coordinate (Eastern degree)
 #'   \item `lat`, Latitude coordinate (Northern degree)
 #'   \item `msw`, Maximum Sustained Wind (m/s)
-#'   \item `sshs`, Category in the Saffir Simpson Hurricane Scale
+#'   \item `scale`, Level in the chosen scale
 #'  }
 #'   The following field is not mandatory but highly recommended
 #'  \itemize{
@@ -45,7 +44,7 @@
 #' \itemize{
 #'  \item `name`, character.
 #'  \item `season`, numeric.
-#'  \item `sshs`, numeric.
+#'  \item `scale`, numeric.
 #'  \item `obs`, numeric.
 #'  \item `obs.all`, data.frame.
 #' }
@@ -54,7 +53,7 @@
 storm <- methods::setClass("storm",
                            slots = c(name = "character",
                                      season = "numeric",
-                                     sshs = "numeric",
+                                     scale = "numeric",
                                      obs = "numeric",
                                      obs.all = "data.frame"))
 
@@ -81,6 +80,10 @@ setOldClass("sf")
 #' @slot spatialLoi sf object. Represents the location of interest. Projection
 #'   is EPSG:4326
 #' @slot spatialLoiBuffer sf object. Buffer extension of `spatialLoi`
+#' @slot scale numeric. List of storm scale thresholds to use in all functions of 
+#' the package. Default value is set to the Saffir Simpson Hurricane Scale
+#' @slot scalePalette character. Named vector containing the color hex code 
+#' corresponding to each category in `scale` slot. Default value is the palette associated with the Saffir Simpson Hurricane Scale
 #' @return A `stormsList` object.
 #' \itemize{
 #'  \item `data`, list.
@@ -95,7 +98,9 @@ stormsList <- methods::setClass("stormsList",
                                 slots = c(data = "list",
                                           buffer = "numeric",
                                           spatialLoi = "sf",
-                                          spatialLoiBuffer = "sf"))
+                                          spatialLoiBuffer = "sf",
+                                          scale = "numeric",
+                                          scalePalette = "character"))
 
 
 
@@ -135,7 +140,7 @@ setMethod("show",
           function(object) {
             cat("Name:", object@name, "\n")
             cat("Season:", object@season, "\n")
-            cat("Maximum category reached (SSHS):", object@sshs, "\n")
+            cat("Maximum level reached in scale:", object@scale, "\n")
             cat("Indices of observations within buffer:", object@obs, "\n")
             cat("Observations:\n")
             print(object@obs.all)
@@ -414,17 +419,17 @@ setMethod("getSeasons", signature("stormsList"), function(s) unlist(lapply(s@dat
 
 
 
-#' Getting maximum Saffir-Simpson hurricane wind scale category
+#' Getting maximum level in the wind scale
 #'
-#' The `getSSHS()` function return the maximum Saffir-Simpson hurricane
-#' wind scale category reached by each storm in the `storm` or `stormsList` object.
+#' The `getScale()` function return the maximum wind scale category reached by 
+#' each storm in the `storm` or `stormsList` object.
 #'
 #' @param s `storm` or `stormsList` object.
 #'
 #' @return numeric vector.
 #' @export
 #' @docType methods
-#' @rdname getSSHS-methods
+#' @rdname getScale-methods
 #' @examples
 #' \donttest{
 #' #Creating a stormsDataset
@@ -433,15 +438,15 @@ setMethod("getSeasons", signature("stormsList"), function(s) unlist(lapply(s@dat
 #' #Getting storm track data for all storms near New Caledonia
 #' sts <- defStormsList(sds=sds, loi = "New Caledonia")
 #'
-#' #Getting maximum Saffir-Simpson hurricane wind scale category
+#' #Getting maximum level in the wind scale
 #' #reached by each storm in the sts object
-#' getSSHS(sts)
+#' getScale(sts)
 #' }
-setGeneric("getSSHS", function(s) standardGeneric("getSSHS"))
-#' @rdname getSSHS-methods
-setMethod("getSSHS", signature("storm"), function(s) s@sshs)
-#' @rdname getSSHS-methods
-setMethod("getSSHS", signature("stormsList"), function(s) unlist(lapply(s@data, getSSHS)))
+setGeneric("getScale", function(s) standardGeneric("getScale"))
+#' @rdname getScale-methods
+setMethod("getScale", signature("storm"), function(s) s@scale)
+#' @rdname getScale-methods
+setMethod("getScale", signature("stormsList"), function(s) unlist(lapply(s@data, getScale)))
 
 
 
@@ -589,10 +594,12 @@ setMethod("getInObs", signature("storm"), function(s) s@obs)
 #' @param seasons, numeric vector
 #' @param names character vector
 #' @param maxDist numeric
+#' @param scale numeric vector
+#' @param scalePalette character vector
 #' @param verbose logical
-#' @param removeTD logical
+#' @param removeUnder numeric
 #' @return NULL, stops the function if an error is detected
-checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, verbose, removeTD) {
+checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, scalePalette, verbose, removeUnder) {
 
   #checking sds input
   stopifnot("sds is missing" = !missing(sds))
@@ -641,14 +648,30 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, verbose,
   stopifnot("maxDist must be numeric " = identical(class(maxDist), "numeric"))
   stopifnot("maxDist must be a length 1 vector " = length(maxDist) == 1)
   stopifnot("maxDist must > 0 " = maxDist > 0)
+  
+  # Checking scale input
+  stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
+  stopifnot("invalid scale input" = all(scale>=0))
+  
+  # Checking scalePalette input
+  if(!is.null(scalePalette)){
+    stopifnot("scalePalette must be a (named) character vector" = identical(class(scalePalette), "character"))
+    stopifnot("(lenght(scalePalette) must be equal to lenght(scale) + 1)" = 
+                length(scalePalette) == length(scale) + 1)
+  }
+  
 
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
   stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 
-  #Checking removeTD input
-  stopifnot("removeTD must be logical" = identical(class(removeTD), "logical"))
+  #Checking removeUnder input
+  if(!is.null(removeUnder)){
+    stopifnot("removeUnder must be numeric" = identical(class(removeUnder), "numeric"))
+    stopifnot("removeUnder must a single integer" = length(removeUnder) == 1)
+    stopifnot("Invalid removeUnder input" = removeUnder %in% seq(1, length(scale)))
+  }
 
 }
 
@@ -758,11 +781,12 @@ makeBuffer <- function(loi, loiSf, buffer) {
 #' @param database storms database
 #' @param filterNames character vector. Contains names input from the storms
 #' @param filterSeasons numeric vector.  Contains seasons input from the storms
-#' @param removeTD logical. Whether or not to remove tropical depressions (< 18
-#'   m/s) and include cyclones only. Default value is set to TRUE.
+#' @param scale numeric vector. CF defStormsList function
+#' @param removeUnder numeric. Whether or not to remove storms under this level.
+#'  Default value is set to NULL
 #'
 #' @return indices of storms in the database, that match the filter inputs
-retrieveStorms <- function(database, filterNames, filterSeasons, removeTD) {
+retrieveStorms <- function(database, filterNames, filterSeasons, scale, removeUnder) {
 
   if (length(filterSeasons) == 1) {
     #We are interested in only one cyclonic season
@@ -790,12 +814,15 @@ retrieveStorms <- function(database, filterNames, filterSeasons, removeTD) {
 
   }
 
-  #Removing TD if removeTD == T
-  if (removeTD) {
+  #Removing NOT_NAMED storms
+  indices <- indices[which(database$names[indices] != "NOT_NAMED")]
+
+  # Filter Storms if removeUnder is not NULL
+  if (!is.null(removeUnder)) {
     suppressWarnings({
       suppressWarnings(i <- which(apply(array(database$msw[, indices],
                                               dim = c(dim(database$msw)[1], length(indices))),
-                                        2, max, na.rm = TRUE) >= 18 * knt2msC))
+                                        2, max, na.rm = TRUE) >= scale[removeUnder]))
       indices <- indices[i]
     })
   }
@@ -808,21 +835,21 @@ retrieveStorms <- function(database, filterNames, filterSeasons, removeTD) {
 
 
 
-#' Get the sshs associated with a msw
+#' Get the level in the scale associated with a msw
 #'
 #' @noRd
 #' @param msw numeric maximum sustained wind
 #' @param scale list of values that defines the scale
 #' intensity of the storm, e.g. `sshs`
 #'
-#' @return numeric, sshs
+#' @return numeric, scale
 computeScaleIndice <- function(msw, scale) {
 
   if (is.na(msw)) {
     res <- NA
 
   } else {
-    res <- findInterval(msw, scale) - 1
+    res <- findInterval(msw, scale)
   }
 
   return(res)
@@ -846,13 +873,13 @@ computeScaleIndice <- function(msw, scale) {
 #' @param sds stormsDataset object. sds input from storms
 #' @param index numeric, index of the storm in the database
 #' @param loiSfBuffer sf object. Location of interest extended with buffer
-#'
+#' @param scale numeric vector. Thresholds for the scale used
 #' @return a list with 2 slots:
 #'   \itemize{
 #'     \item list of storm objects
 #'     \item list of character (names of storms)
 #'   }
-writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
+writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer, scale) {
 
   #Getting lon/lat coordinates
   lon <- sds@database$longitude[, index]
@@ -898,11 +925,9 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
                                                      na.rm = FALSE, rule = 2))
 
 
-    if ("sshs" %in% names(sds@fields)) {
-      storm@obs.all$sshs <- sds@database$sshs[validIndices, index]
-    }else {
-      storm@obs.all$sshs <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = sshs))
-    }
+    
+    # scale is calculated using the scale input and the wind speed data
+    storm@obs.all$scale <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = scale))
 
     if ("rmw" %in% names(sds@fields))
       storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[validIndices, index]), na.rm = FALSE, rule = 2)
@@ -924,7 +949,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
     row.names(storm@obs.all) <- seq(1, dim(storm@obs.all)[1])
 
     storm@obs <- ind
-    storm@sshs <- max(storm@obs.all$sshs, na.rm = TRUE)
+    storm@scale <- max(storm@obs.all$scale, na.rm = TRUE)
 
     return(list(append(stormList, storm),
                 append(stormNames, storm@name)))
@@ -962,9 +987,12 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer) {
 #' @param names character vector. Names of specific storms (in capital letters).
 #' @param maxDist numeric. Maximum distance between the location of interest and the
 #' storm for which track data are extracted. Default `maxDist` is set to 300 km.
-#' @param removeTD logical. Whether (TRUE) or not (FALSE) removing tropical depressions (\eqn{msw < 18
-#'   m.s^{-1}}, not considered to be stormed in Saffir-Simpson hurricane wind scale) are removed.
-#'   Default value is set to `TRUE`.
+#' @param scale numeric. List of storm scale thresholds used for the database.
+#'   Default value is set to the Saffir Simpson Hurricane Scale
+#' @param scalePalette character. Named vector containing the color hex code 
+#' corresponding to each category interval of `scale` input
+#' @param removeUnder numeric. Storms reaching this maximum level or less in the scale are removed.
+#'   Default value is set to NULL.
 #' @param verbose numeric. Type of information the function displays. Can be:
 #' \itemize{
 #' \item `2`, information about both the processes and the outputs are displayed (default value),
@@ -1016,12 +1044,36 @@ defStormsList <- function(sds,
                    seasons = c(sds@seasons["min"], sds@seasons["max"]),
                    names = NULL,
                    maxDist = 300,
-                   removeTD = TRUE,
+                   scale = sshs,
+                   scalePalette = NULL,
+                   removeUnder = NULL,
                    verbose = 2) {
 
   startTime <- Sys.time()
 
-  checkInputsDefStormsList(sds, loi, seasons, names, maxDist, verbose, removeTD)
+  checkInputsDefStormsList(sds, loi, seasons, names, maxDist, scale, scalePalette, verbose, removeUnder)
+  
+  # order scale
+  scale = scale[order(scale)]
+  
+  
+  if(identical(scale, sshs) & is.null(scalePalette)){
+    # Default palette should be SSHS
+    scalePalette <- sshsPalette
+    
+  }else if(!identical(scale, sshs) & is.null(scalePalette)){
+    # Create a default color Palette based on the number of level in scale
+    palette <- grDevices::colorRampPalette(colors = c("red", "green", "blue"))
+    scalePalette <- rev(palette(length(scale) + 1))
+  }
+  
+  if(is.null(names(scalePalette))){
+    # If scalePalette has no names, provide default ones
+    names(scalePalette) <- paste0("Cat. ",seq(0, length(scale)))
+    
+  }
+  
+
 
   if (length(seasons) == 2)
     seasons <- seasons[order(seasons)]
@@ -1059,7 +1111,8 @@ defStormsList <- function(sds,
   indices <- retrieveStorms(sds@database,
                             filterNames = names,
                             filterSeasons = seasons,
-                            removeTD = removeTD)
+                            scale = scale,
+                            removeUnder = removeUnder)
 
   if (verbose > 0 && length(indices) >= 1) {
     if (is.null(names) && length(seasons) == 2) {
@@ -1086,7 +1139,8 @@ defStormsList <- function(sds,
                                stormNames = stormNames,
                                sds = sds,
                                index = i,
-                               loiSfBuffer = spatialBuffer)
+                               loiSfBuffer = spatialBuffer,
+                               scale = scale)
 
       if (!is.null(stsOutput[[1]])) {
         stormList <- stsOutput[[1]]
@@ -1109,7 +1163,9 @@ defStormsList <- function(sds,
                data = stormList,
                buffer = maxDist,
                spatialLoi = loiSf,
-               spatialLoiBuffer = spatialBuffer)
+               spatialLoiBuffer = spatialBuffer,
+               scale = scale,
+               scalePalette = scalePalette)
 
     names(sts@data) <- unlist(stormNames)
 
@@ -1129,19 +1185,18 @@ defStormsList <- function(sds,
         }
         cat("(*) Buffer size:", getBufferSize(sts), "km\n")
         cat("(*) Remove Tropical Depressions (< 18 m/s in sshs):")
-        if (removeTD) {
-          cat(" yes\n")
-        }else {
-          cat(" no\n")
+        if (!is.null(removeUnder)) {
+          cat("(*) Remove Storms under level ", removeUnder, " in the scale")
         }
         cat("(*) Number of storms:", getNbStorms(sts), "\n")
-        cat("        Name - Tropical season - SSHS - Number of observation within buffer:\n")
-        i <- 1
+        cat("        Name - Tropical season - Scale - Number of observation within buffer:\n")
         for (i in 1:getNbStorms(sts)){
-          n <- getNames(sts@data[[i]])
-          s <- getSeasons(sts@data[[i]])
-          sshsv <- getSSHS(sts@data[[i]])
-          cat("       ", n, "-", s, "-", sshsv, "-", length(getInObs(sts, n, s)), "\n")
+          cat("       ",
+              getNames(sts@data[[i]]), "-",
+              getSeasons(sts@data[[i]]), "-",
+              getScale(sts@data[[i]]), "-",
+              length(getInObs(sts, getNames(sts@data[[i]]), getSeasons(sts@data[[i]]))),
+              "\n")
         }
         cat("\n")
       }

@@ -9,7 +9,6 @@
 #' @param windThreshold numeric
 #' @param method character
 #' @param asymmetry character
-#' @param empiricalRMW logical
 #' @param tempRes numeric
 #' @param verbose logical
 #' @return NULL
@@ -17,7 +16,7 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
                                          empiricalRMW, tempRes, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
-
+  
   # Checking points input
   stopifnot("no data found" = !missing(points))
   stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
@@ -218,8 +217,8 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #'     \item `"Exposure"`, for the duration of exposure to defined wind thresholds.
 #'   }
 #' @param windThreshold numeric vector. Minimal wind threshold(s) (in \eqn{m.s^{-1}}) used to
-#'   compute the duration of exposure when `product="Exposure"`. By default the thresholds
-#'   used in the Saffir-Simpson hurricane wind scale are used (i.e., 18, 33, 42, 49, 58, 70 \eqn{m.s^{-1}}).
+#'   compute the duration of exposure when `product="Exposure"`. Default value is to set NULL, in this 
+#'   case, the windthresholds are the one used in the scale defined in the stromsList.
 #' @param method character. Model used to compute wind speed and direction.
 #' Three different models are implemented:
 #'   \itemize{
@@ -419,12 +418,17 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 temporalBehaviour <- function(sts,
                               points,
                               product = "TS",
-                              windThreshold = c(18, 33, 42, 49, 58, 70),
+                              windThreshold = NULL,
                               method = "Willoughby",
                               asymmetry = "Chen",
                               empiricalRMW = FALSE,
                               tempRes = 1,
                               verbose = 1) {
+  
+  if(is.null(windThreshold)){
+    windThreshold = sts@scale
+  }
+  
   checkInputsTemporalBehaviour(sts, points, product, windThreshold, method, asymmetry, empiricalRMW, tempRes, verbose)
 
 

@@ -78,7 +78,7 @@ test_that("Function correctly writes a netCDF file for MSW product", {
 
 # Test case 3: Test that the function correctly writes a netCDF file for PDI product
 test_that("Function correctly writes a netCDF file for PDI product", {
-  pdi <- spatialBehaviour(pam, product = "PDI", verbose = 0)
+  pdi <- spatialBehaviour(pam, sds, product = "PDI", verbose = 0)
   # Call the function with netCDF format and PDI product
   writeRast(pdi, filename = "PAM_PDI.nc", path = "./")
   # Check that the file was created

@@ -3,21 +3,15 @@
 
 
 test_that("Test getColors function", {
-  expect_error(getColors(50))
-  expect_equal(getColors(NA, sshs), NA)
-  expect_equal(getColors(10, sshs), "#00CCFF")
-  expect_equal(getColors(18, sshs), "#00CCCC")
-  expect_equal(getColors(25, sshs), "#00CCCC")
-  expect_equal(getColors(33, sshs), "#FFFFB2")
-  expect_equal(getColors(36, sshs), "#FFFFB2")
-  expect_equal(getColors(42, sshs), "#FECC5C")
-  expect_equal(getColors(46, sshs), "#FECC5C")
-  expect_equal(getColors(49, sshs), "#FD8D3C")
-  expect_equal(getColors(53, sshs), "#FD8D3C")
-  expect_equal(getColors(58, sshs), "#F03B20")
-  expect_equal(getColors(65, sshs), "#F03B20")
-  expect_equal(getColors(70, sshs), "#BD0026")
-  expect_equal(getColors(100, sshs), "#BD0026")
+  
+  
+  scale <- c(10,30,50)
+  scalePalette <- c("red", "green", "blue", "black")
+  expect_equal(getColors(5, scale, scalePalette), "red")
+  expect_equal(getColors(25, scale, scalePalette), "green")
+  expect_equal(getColors(45, scale, scalePalette), "blue")
+  expect_equal(getColors(65, scale, scalePalette), "black")
+  
 })
 
 
@@ -40,6 +34,7 @@ test_that("Test checkInputsPlotStorms function", {
     xlim = NULL,
     ylim = NULL
   ))
+  
 
   # Checking names input
   expect_error(checkInputsPlotStorms(
@@ -72,7 +67,7 @@ test_that("Test checkInputsPlotStorms function", {
   expect_error(checkInputsPlotStorms(
     sts = pam,
     names = NULL,
-    category = c(1, 6),
+    category = c(1, 7),
     labels = TRUE,
     by = 8,
     pos = 3,

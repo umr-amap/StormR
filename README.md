@@ -4,10 +4,11 @@
 
 <!-- badges: start -->
 [![](https://www.r-pkg.org/badges/version/StormR?color=green)](https://cran.r-project.org/package=StormR)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10213689.svg)](https://doi.org/10.5281/zenodo.10213689)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.05766/status.svg)](https://doi.org/10.21105/joss.05766)
 [![codecov](https://codecov.io/github/umr-amap/StormR/branch/master/graph/badge.svg?token=5YMVL4TFB5)](https://app.codecov.io/github/umr-amap/StormR)
-[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/umr-amap/StormR/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/umr-amap/StormR)
 ![R-CMD-check](https://github.com/umr-amap/StormR/actions/workflows/check-standard.yaml/badge.svg)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10213689.svg)](https://doi.org/10.5281/zenodo.10213689)
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/umr-amap/StormR/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/umr-amap/StormR)
 <!-- badges: end -->
 
 ## Overview

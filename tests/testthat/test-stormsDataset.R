@@ -14,12 +14,10 @@ test_that("Test conversions functions",{
 
 
 
-
 test_that("Test checkInputsdefStormsDataset function", {
   # Checking filename input
   expect_error(
     checkInputsdefStormsDataset(
-      sep = NULL,
       fields = c(
         "basin" = "basin",
         "names" = "name",
@@ -28,7 +26,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -51,7 +48,6 @@ test_that("Test checkInputsdefStormsDataset function", {
   expect_error(
     checkInputsdefStormsDataset(
       filename = 1,
-      sep = NULL,
       fields = c(
         "basin" = "basin",
         "names" = "name",
@@ -60,7 +56,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -83,7 +78,6 @@ test_that("Test checkInputsdefStormsDataset function", {
   expect_error(
     checkInputsdefStormsDataset(
       filename = TRUE,
-      sep = NULL,
       fields = c(
         "basin" = "basin",
         "names" = "name",
@@ -92,7 +86,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -116,7 +109,6 @@ test_that("Test checkInputsdefStormsDataset function", {
   expect_error(
     checkInputsdefStormsDataset(
       filename = c("data", ".nc"),
-      sep = NULL,
       fields = c(
         "basin" = "basin",
         "names" = "name",
@@ -125,7 +117,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -144,106 +135,6 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
-  # Checking sep input
-  expect_error(
-    checkInputsdefStormsDataset(
-      filename = "database.nc",
-      sep = 1,
-      fields = c(
-        "basin" = "basin",
-        "names" = "name",
-        "seasons" = "season",
-        "isoTime" = "iso_time",
-        "lon" = "usa_lon",
-        "lat" = "usa_lat",
-        "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
-        "rmw" = "usa_rmw",
-        "pressure" = "usa_pres",
-        "poci" = "usa_poci"
-      ),
-      basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
-      unitConversion = c(
-        msw = "knt2ms",
-        rmw = "nm2km",
-        pressure = "mb2pa",
-        poci = "mb2pa"
-      ),
-      notNamed = "NOT_NAMED",
-      verbose = 1
-    )
-  )
-  
-  expect_error(
-    checkInputsdefStormsDataset(
-      filename = "database.nc",
-      sep = TRUE,
-      fields = c(
-        "basin" = "basin",
-        "names" = "name",
-        "seasons" = "season",
-        "isoTime" = "iso_time",
-        "lon" = "usa_lon",
-        "lat" = "usa_lat",
-        "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
-        "rmw" = "usa_rmw",
-        "pressure" = "usa_pres",
-        "poci" = "usa_poci"
-      ),
-      basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
-      unitConversion = c(
-        msw = "knt2ms",
-        rmw = "nm2km",
-        pressure = "mb2pa",
-        poci = "mb2pa"
-      ),
-      notNamed = "NOT_NAMED",
-      verbose = 1
-    )
-  )
-  
-  expect_error(
-    checkInputsdefStormsDataset(
-      filename = "database.nc",
-      sep = c("/", "."),
-      fields = c(
-        "basin" = "basin",
-        "names" = "name",
-        "seasons" = "season",
-        "isoTime" = "iso_time",
-        "lon" = "usa_lon",
-        "lat" = "usa_lat",
-        "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
-        "rmw" = "usa_rmw",
-        "pressure" = "usa_pres",
-        "poci" = "usa_poci"
-      ),
-      basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
-      unitConversion = c(
-        msw = "knt2ms",
-        rmw = "nm2km",
-        pressure = "mb2pa",
-        poci = "mb2pa"
-      ),
-      notNamed = "NOT_NAMED",
-      verbose = 1
-    )
-  )
-
-
-  
   
   # Checking fields input
   expect_error(
@@ -252,9 +143,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       sep = NULL,
       fields = 1,
       basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
         rmw = "nm2km",
@@ -272,9 +161,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       sep = NULL,
       fields = TRUE,
       basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
         rmw = "nm2km",
@@ -297,7 +184,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -328,7 +214,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -359,7 +244,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -390,7 +274,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "isoTime" = "iso_time",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -421,15 +304,12 @@ test_that("Test checkInputsdefStormsDataset function", {
         "isoTime" = "iso_time",
         "lon" = "usa_lon",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
       basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
         rmw = "nm2km",
@@ -453,15 +333,12 @@ test_that("Test checkInputsdefStormsDataset function", {
         "isoTime" = "iso_time",
         "lon" = "usa_lon",
         "lat" = "usa_lat",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
       basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
         rmw = "nm2km",
@@ -485,7 +362,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -516,15 +392,12 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
       basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
         rmw = "nm2km",
@@ -548,15 +421,12 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
       basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
         pressure = "mb2pa",
@@ -579,15 +449,12 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
       basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
         rmw = "nm2km",
@@ -611,15 +478,12 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
       basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(msw = "knt2ms",
                          rmw = "nm2km",
                          poci = "mb2pa"),
@@ -640,15 +504,12 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
       basin = TRUE,
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
+      seasons = c(1980, as.numeric(format(Sys.time(), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
         rmw = "nm2km",
@@ -672,7 +533,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -703,7 +563,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -735,7 +594,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -766,7 +624,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -798,7 +655,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -830,7 +686,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -845,7 +700,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
-      notNamed = "NOT_NAMED",
       verbose = 1
     )
   )
@@ -862,7 +716,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -895,7 +748,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -925,7 +777,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -955,7 +806,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -985,7 +835,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -1017,7 +866,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -1044,7 +892,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -1059,108 +906,7 @@ test_that("Test checkInputsdefStormsDataset function", {
     )
   )
   
-  # Checking verbose input
-  expect_error(
-    checkInputsdefStormsDataset(
-      filename = "database.nc",
-      sep = NULL,
-      fields = c(
-        "basin" = "basin",
-        "names" = "name",
-        "seasons" = "season",
-        "isoTime" = "iso_time",
-        "lon" = "usa_lon",
-        "lat" = "usa_lat",
-        "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
-        "rmw" = "usa_rmw",
-        "pressure" = "usa_pres",
-        "poci" = "usa_poci"
-      ),
-      basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
-      unitConversion = c(
-        msw = "knt2ms",
-        rmw = "nm2km",
-        pressure = "mb2pa",
-        poci = "mb2pa"
-      ),
-      notNamed = 1,
-      verbose = 1
-    )
-  )
-  
-  # Checking verbose input
-  expect_error(
-    checkInputsdefStormsDataset(
-      filename = "database.nc",
-      sep = NULL,
-      fields = c(
-        "basin" = "basin",
-        "names" = "name",
-        "seasons" = "season",
-        "isoTime" = "iso_time",
-        "lon" = "usa_lon",
-        "lat" = "usa_lat",
-        "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
-        "rmw" = "usa_rmw",
-        "pressure" = "usa_pres",
-        "poci" = "usa_poci"
-      ),
-      basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
-      unitConversion = c(
-        msw = "knt2ms",
-        rmw = "nm2km",
-        pressure = "mb2pa",
-        poci = "mb2pa"
-      ),
-      notNamed = c("NOT", "NAMED"),
-      verbose = 1
-    )
-  )
-  
-  # Checking verbose input
-  expect_error(
-    checkInputsdefStormsDataset(
-      filename = "database.nc",
-      sep = NULL,
-      fields = c(
-        "basin" = "basin",
-        "names" = "name",
-        "seasons" = "season",
-        "isoTime" = "iso_time",
-        "lon" = "usa_lon",
-        "lat" = "usa_lat",
-        "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
-        "rmw" = "usa_rmw",
-        "pressure" = "usa_pres",
-        "poci" = "usa_poci"
-      ),
-      basin = "SP",
-      seasons = c(1980, as.numeric(format(Sys.time(
-        
-      ), "%Y"))),
-      unitConversion = c(
-        msw = "knt2ms",
-        rmw = "nm2km",
-        pressure = "mb2pa",
-        poci = "mb2pa"
-      ),
-      notNamed = TRUE,
-      verbose = 1
-    )
-  )
-  
-  
-  
-  
+
   # Checking verbose input
   expect_error(
     checkInputsdefStormsDataset(
@@ -1221,6 +967,7 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
+      notNamed = "NOT_NAMED",
       verbose = "1"
     )
   )
@@ -1237,7 +984,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
@@ -1252,11 +998,13 @@ test_that("Test checkInputsdefStormsDataset function", {
         pressure = "mb2pa",
         poci = "mb2pa"
       ),
+      notNamed = "NOT_NAMED",
       verbose = TRUE
     )
   )
   
-  # Warnings
+
+  # Check Warnings
   expect_warning(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -1269,7 +1017,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "pressure" = "usa_pres",
         "poci" = "usa_poci"
       ),
@@ -1288,6 +1035,7 @@ test_that("Test checkInputsdefStormsDataset function", {
     )
   )
   
+  
   expect_warning(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -1300,7 +1048,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "poci" = "usa_poci"
       ),
@@ -1331,7 +1078,6 @@ test_that("Test checkInputsdefStormsDataset function", {
         "lon" = "usa_lon",
         "lat" = "usa_lat",
         "msw" = "usa_wind",
-        "sshs" = "usa_sshs",
         "rmw" = "usa_rmw",
         "pressure" = "usa_pres"
       ),
@@ -1374,8 +1120,6 @@ test_that("Test getDataFrom functions", {
     pressure = "mb2pa",
     poci = "mb2pa"
   )
-  notNamed = "NOT_NAMED"
-  verbose = 1
   
   filename = system.file("extdata", "test_dataset.csv", package = "StormR")
   databaseFromCsv <- getDataFromCsvFile(filename=filename,

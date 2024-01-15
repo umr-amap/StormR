@@ -23,18 +23,9 @@ plotStorms(
 \item{names}{character vector. Name(s) of the storm(s) in capital letters.
 If \code{names = NULL} (default setting), all storms are plotted.}
 
-\item{category}{numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
-Can be a single category or a range of categories among:
-\itemize{
-\item -1, for tropical depression,
-\item 0, for tropical storms,
-\item 1, for category 1 tropical cyclone,
-\item 2, for category 2 tropical cyclone,
-\item 3, for category 3 tropical cyclone,
-\item 4, for category 4 tropical cyclone, or
-\item 5, for category 5 tropical cyclone.
-}
-If \code{category=NULL} (default setting), all storms are plotted.}
+\item{category}{numeric vector. Category of storms to be plotted among the level in
+the windscale provided in \code{sts} input. If \code{category=NULL} (default setting),
+all storms are plotted.}
 
 \item{xlim}{numeric vector. The x limits of the plot.}
 
@@ -72,9 +63,9 @@ sds <- defStormsDataset()
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
 # Plotting Pam over Vanuatu with labels every 24h
-plotStorms(pam, labels = TRUE)
+plotStorms(sts =pam, labels = TRUE)
 
 # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
-plotStorms(pam, labels = TRUE, by = 2, pos = 4)
+plotStorms(sts = pam, labels = TRUE, by = 2, pos = 4)
 }
 }

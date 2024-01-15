@@ -128,14 +128,14 @@ convertVariables <- function(data, unitConversion){
 #' @slot seasons numeric vector. Range of calendar years to filter storms. For
 #'   cyclones that formed in one year and dissipated in the following year, the
 #'   latter should be used
-#' @slot database list of 6 to 10 slots depending on the fields input. Each slot
+#' @slot database list of 6 to 9 slots depending on the fields input. Each slot
 #' is either a 1D array of dimension (number of storms) for `names` and
 #' `seasons` fields, or a 2D array of dimension
 #' (Maximum number of observations:number of storms), for the remaining fields
-#' which are `isoTime`, `lon`, `lat`, `msw`, `rmw`, `pressure`, `poci`, `sshs`
-#'
+#' which are `isoTime`, `lon`, `lat`, `msw`, `rmw`, `pressure`, `poci`
+#' 
 #' @details
-#' The fields input must provide at least 6 mandatory fields (and at most 11) in
+#' The fields input must provide at least 6 mandatory fields (and at most 10) in
 #' order to benefit from all the functionalities of this package:
 #' \itemize{
 #'   \item A field `names`: which dimension contains the names of storms
@@ -162,9 +162,6 @@ convertVariables <- function(data, unitConversion){
 #'  \item A field `rmw`: which dimension contains the radius of maximum
 #'        wind speed of each observations for all storms in the netcdf
 #'        database (See spatialBehaviour, temporalBehaviour)
-#'  \item A field `sshs`: which dimension contains the Saffir Simpson
-#'        Hurricane Scale index of each observations for all storms in the
-#'        netcdf database
 #' }
 #' Finally these following fields are optional but mandatory to perform Holland
 #' model (See `spatialBehaviour`, `temporalBehaviour`)
@@ -181,7 +178,7 @@ convertVariables <- function(data, unitConversion){
 #' databases:
 #' `fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time",
 #' lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres",
-#' poci = "usa_poci", sshs = "usa_sshs")`
+#' poci = "usa_poci")`
 #'
 #' @export
 stormsDataset <- methods::setClass(
@@ -308,7 +305,7 @@ checkInputsdefStormsDataset <- function(filename, sep, fields, basin, seasons, u
   # Checking notNamed input 
   stopifnot("notNamed must be a character" = identical(class(notNamed), "character"))
   stopifnot("notNamed must be length one " = length(notNamed) == 1)
-  
+
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
   stopifnot("verbose must length 1" = length(verbose) == 1)
@@ -389,11 +386,6 @@ getDataFromNcdfFile <- function(filename, fields, basin, seasons, unitConversion
   data$longitude <- data$longitude[, o]
   data$latitude <- data$latitude[, o]
   data$msw <- data$msw[, o]
-  
-  if ("sshs" %in% names(fields)) {
-    data$sshs <- array(ncdf4::ncvar_get(dataBase, fields["sshs"])[, ind], dim = c(row, len))
-    data$sshs <- data$sshs[, o]
-  }
   
   if ("rmw" %in% names(fields)) {
     data$rmw <- array(ncdf4::ncvar_get(dataBase, fields["rmw"])[, ind], dim = c(row, len))
@@ -519,10 +511,6 @@ getDataFromCsvFile <- function(filename, sep, fields, basin, seasons, unitConver
     msw = templateArray
   )
   
-  # TODO Remove later
-  if("sshs" %in% names(fields)){
-    data$sshs <- templateArray
-  }
   
   if("rmw" %in% names(fields)){
     data$rmw <- templateArray
@@ -555,12 +543,6 @@ getDataFromCsvFile <- function(filename, sep, fields, basin, seasons, unitConver
     
     
     data$msw[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["msw"]], rep(NaN, row-countObs[i])))
-    
-    
-    # TODO Remove later
-    if ("sshs" %in% names(fields)) {
-      data$sshs[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["sshs"]], rep(NaN, row-countObs[i])))
-    }
     
     if ("rmw" %in% names(fields)) {
       data$rmw[,i] <- as.numeric(c(dataBaseFiltered[start:end, fields["rmw"]], rep(NaN, row-countObs[i])))
@@ -615,8 +597,7 @@ getDataFromCsvFile <- function(filename, sep, fields, basin, seasons, unitConver
 #'    \item `"rmw"`, radius of maximum winds: distance between the centre of the storm and
 #'        its band of strongest winds (recommended),
 #'    \item `"pressure"`, central pressure (recommended),
-#'    \item `"poci"`, pressure of the last closed isobar (recommended), and
-#'    \item `"sshs"`, Saffir-Simpson hurricane wind scale rating based on msw (optional).
+#'    \item `"poci"`, pressure of the last closed isobar (recommended)
 #'  }
 #' @param basin character. If the basin field is provided, then storm track data will
 #' only be extracted for the named basin. By default `basin=NULL`, meaning that all storms
@@ -697,7 +678,6 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                                lat = "usa_lat",
                                msw = "usa_wind",
                                basin = "basin",
-                               sshs = "usa_sshs",
                                rmw = "usa_rmw",
                                pressure = "usa_pres",
                                poci = "usa_poci"
@@ -712,6 +692,7 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
                              ),
                              notNamed = "NOT_NAMED",
                              verbose = 1) {
+
   checkInputsdefStormsDataset(filename, sep, fields, basin, seasons, unitConversion, notNamed, verbose)
   
   
@@ -726,6 +707,7 @@ defStormsDataset <- function(filename = system.file("extdata", "test_dataset.nc"
   }
   
   data <- convertVariables(data, unitConversion)
+  
   
   if (verbose) {
     cat("=== DONE ===\n")
