@@ -11,14 +11,14 @@
 #' @noRd
 #' @param msw numeric. Maximum Sustained Wind (m/s)
 #' @param scale list of values that defines the scale intensity of the storm, e.g. `sshs`
-#'
+#' @param palette list of colors that defines the scale intensity of the storm
 #' @return color associated with the observation
-getColors <- function(msw, scale) {
+getColors <- function(msw, scale, palette) {
   if (is.na(msw)) {
     color <- NA
   } else {
     i <- findInterval(msw, scale)
-    color <- sshsPalette[i + 1]
+    color <- palette[i + 1]
   }
 
   return(color)
@@ -35,15 +35,17 @@ getColors <- function(msw, scale) {
 #'
 #' @noRd
 #' @param st Storm object
+#' @param scale numeric vector. Thresholds used for the scale
+#' @param scale named character vector. colors used for the scale
 #'
 #' @return A plot with the track of the storm
-plotTrack <- function(st) {
+plotTrack <- function(st, scale, scalePalette) {
   cexL <- 1
   cexP <- 0.6
   lon <- st@obs.all$lon
   lat <- st@obs.all$lat
   msw <- st@obs.all$msw
-  colors <- unlist(lapply(msw, getColors, scale = sshs))
+  colors <- unlist(lapply(msw, getColors, scale = scale, palette = scalePalette))
 
   graphics::lines(
     lon,
@@ -114,12 +116,13 @@ plotLabels <- function(st, by, pos) {
 #' @param loi logical
 #' @param xlim numeric vector
 #' @param ylim numeric vector
+#' @param dynamicPlot logical
 #' @return NULL, just stops the function if an error is found
 checkInputsPlotStorms <- function(sts, names, category, labels, by,
-                                  pos, legends, loi, xlim, ylim) {
+                                  pos, legends, loi, xlim, ylim, dynamicPlot) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
-
+  
   # Checking names input
   if (!is.null(names)) {
     stopifnot("names must be characters" = identical(class(names), "character"))
@@ -129,7 +132,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
   # Checking category input
   if (!is.null(category)) {
     stopifnot("category must be numeric(s)" = identical(class(category), "numeric"))
-    stopifnot("Invalid category input" = category %in% c(-1, -2, 0, 1, 2, 3, 4, 5))
+    stopifnot("Invalid category input" = category %in% seq(0, length(sts@scale)))
   }
 
   # Checking xlim input
@@ -137,7 +140,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
     stopifnot("xlim must be numeric" = identical(class(xlim), "numeric"))
     stopifnot("xlim must length 2" = length(xlim) == 2)
     stopifnot("xlim must have valid longitude coordinates" = xlim >= 0 &
-      xlim <= 360)
+                xlim <= 360)
   }
 
   # Checking ylim input
@@ -145,7 +148,7 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
     stopifnot("ylim must be numeric" = identical(class(ylim), "numeric"))
     stopifnot("ylim must length 2" = length(ylim) == 2)
     stopifnot("ylim must have valid latitude coordinates" = ylim >= -90 &
-      ylim <= 90)
+                ylim <= 90)
   }
 
   # Checking logical inputs
@@ -169,6 +172,10 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
     "legends must be either topright, topleft, bottomleft, bottomright, or none" =
       legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none")
   )
+
+  #Checking mode input
+  stopifnot("dynamicPlot must be logical" = identical(class(dynamicPlot), "logical"))
+  stopifnot("dynamicPlot must length 1" = length(dynamicPlot) == 1)
 }
 
 
@@ -182,18 +189,9 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' @param sts `StormsList` object
 #' @param names character vector. Name(s) of the storm(s) in capital letters.
 #'  If `names = NULL` (default setting), all storms are plotted.
-#' @param category numeric vector. Category of storms to be plotted in the Saffir-Simpson hurricane wind scale.
-#'  Can be a single category or a range of categories among:
-#' \itemize{
-#'    \item -1, for tropical depression,
-#'    \item 0, for tropical storms,
-#'    \item 1, for category 1 tropical cyclone,
-#'    \item 2, for category 2 tropical cyclone,
-#'    \item 3, for category 3 tropical cyclone,
-#'    \item 4, for category 4 tropical cyclone, or
-#'    \item 5, for category 5 tropical cyclone.
-#' }
-#'  If `category=NULL` (default setting), all storms are plotted.
+#' @param category numeric vector. Category of storms to be plotted among the level in
+#'  the windscale provided in `sts` input. If `category=NULL` (default setting),
+#'  all storms are plotted.
 #' @param xlim numeric vector. The x limits of the plot.
 #' @param ylim numeric vector. The y limits of the plot.
 #' @param labels logical. Whether (TRUE) or not (FALSE, default setting) to add labels with the name
@@ -203,10 +201,12 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' when observations are made every 3 (or 6) hours.
 #' @param pos numeric. If `labels=TRUE`, defines the position of the labels, `1` (above the observation),
 #'  `2` (on the left), `3` (below, default setting), and `4` (on the right).
-#' @param legends character. Indicates where to plot the legend, `"topright"`, `"topleft"` (default setting),
+#' @param legends character. Indicates where to plot the legend, `"topright"`(default setting), `"topleft"`,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #' @param loi logical. Whether (TRUE, default setting) or not (FALSE) to plot the
 #' extent of the buffered location of interest on the map.
+#' @param dynamicPlot logical. Whether (FALSE, default setting) or (TRUE) to plot the 
+#' data dynamicaly using leaflet library
 #'
 #' @return A plot of the storm track data.
 #' 
@@ -220,10 +220,14 @@ checkInputsPlotStorms <- function(sts, names, category, labels, by,
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #'
 #' # Plotting Pam over Vanuatu with labels every 24h
-#' plotStorms(pam, labels = TRUE)
+#' plotStorms(sts =pam, labels = TRUE)
 #'
 #' # Plotting Pam over Vanuatu with labels every 6h on the right side of the observations
 #' plotStorms(pam, labels = TRUE, by = 2, pos = 4)
+#'
+#' # dynamicPlot mode
+#  # plotStorms(pam, dynamicPlot=TRUE)
+#'
 #' }
 #' @export
 plotStorms <- function(sts,
@@ -234,12 +238,11 @@ plotStorms <- function(sts,
                        labels = FALSE,
                        by = 8,
                        pos = 3,
-                       legends = "topleft",
-                       loi = TRUE) {
-  checkInputsPlotStorms(
-    sts, names, category, labels, by, pos, legends,
-    loi, xlim, ylim
-  )
+                       legends = "topright",
+                       loi = TRUE,
+                       dynamicPlot = FALSE) {
+
+  checkInputsPlotStorms(sts, names, category, labels, by, pos, legends,loi, xlim, ylim, dynamicPlot)
 
 
   # Handling spatial extent
@@ -268,10 +271,10 @@ plotStorms <- function(sts,
       category <- category[order(category)]
       catInf <- category[1]
       catSup <- category[2]
-      ind <- which(getSSHS(sts) >= catInf & getSSHS(sts) <= catSup)
+      ind <- which(getScale(sts) >= catInf & getScale(sts) <= catSup)
     } else {
       # length category == 1
-      ind <- which(getSSHS(sts) == category)
+      ind <- which(getScale(sts) == category)
     }
 
     stsAux <- unlist(sts@data)[ind]
@@ -288,54 +291,144 @@ plotStorms <- function(sts,
     }
   }
 
+  if (!dynamicPlot) {
 
-  # Plotting base map
-  world <- rworldmap::getMap(resolution = "high")
+    # Plotting base map
+    world <- rworldmap::getMap(resolution = "high")
 
-  maps::map(world,
-    fill = TRUE,
-    col = groundColor,
-    bg = oceanColor,
-    wrap = c(0, 360),
-    xlim = c(ext$xmin - 1, ext$xmax + 1), # we extend W & E by 1°
-    ylim = c(ext$ymin - 1, ext$ymax + 1)
-  ) # we extend S & N by 1°
-  maps::map.axes(cex.axis = 1)
+    maps::map(world,
+      fill = TRUE,
+      col = groundColor,
+      bg = oceanColor,
+      wrap = c(0, 360),
+      xlim = c(ext$xmin - 1, ext$xmax + 1), # we extend W & E by 1°
+      ylim = c(ext$ymin - 1, ext$ymax + 1)
+    ) # we extend S & N by 1°
+    maps::map.axes(cex.axis = 1)
 
 
-  # Plotting loi
-  if (loi) {
-    plot(sts@spatialLoiBuffer, lwd = 1, border = "blue", add = TRUE)
+    # Plotting loi
+    if (loi) {
+      plot(sts@spatialLoiBuffer, lwd = 1, border = "blue", add = TRUE)
+    }
+
+    if (loi && as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT") {
+      plot(sts@spatialLoi, lwd = 2, col = "blue", pch = 4, add = TRUE)
+    }
+
+    # Plotting track(s) and labels
+    lapply(stsAux, plotTrack, sts@scale, sts@scalePalette)
+    if (labels) {
+      lapply(stsAux, plotLabels, by, pos)
+    }
+    
+    # Adding legends
+    if (legends != "none") {
+      
+      
+      leg <- names(sts@scalePalette)
+      col <- sts@scalePalette
+      
+      lty <- rep(0, length(col))
+      pch <- rep(19, length(col))
+      lwd <- rep(1, length(col))
+      
+      graphics::legend(legends,
+                       title = "Scale",
+                       legend = leg,
+                       col = col,
+                       lty = lty,
+                       pch = pch,
+                       lwd = lwd,
+                       cex = 0.6,
+                       bty = "n"
+      )
+    }
+
+  }else {
+    #Init map
+
+    map <- leaflet::fitBounds(
+      leaflet::addProviderTiles(
+        leaflet::leaflet(options =
+                           leaflet::leafletOptions(worldCopyJump = F,
+                                                   minZoom = 2,
+                                                   maxZoom = 12),
+                         width = 650,
+                         height = 700),
+        leaflet::providers$Esri.NatGeoWorldMap,
+        group = "Satellite",
+        options = leaflet::providerTileOptions(errorTileUrl = "Tile not found")),
+      lng1 = as.numeric(ext$xmin),
+      lng2 = as.numeric(ext$xmax),
+      lat1 = as.numeric(ext$ymin),
+      lat2 = as.numeric(ext$ymax)
+      )
+
+    #Plotting loi
+    if(loi)
+      map <- leaflet::addPolylines(map,
+                                   data = sts@spatialLoiBuffer,
+                                   fillColor = "transparent",
+                                   label = "Buffer limit")
+
+    if(loi & as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT")
+      map <- leaflet::addCircleMarkers(map,
+                                       data = sts@spatialLoi,
+                                       fillColor = "transparent",
+                                       label = "LOI")
+
+
+    #Plotting track(s) and labels
+    for (st in stsAux) {
+
+      data <- st@obs.all
+      data$type <- unlist(lapply(data$msw,getColors, sts@scale, sts@scalePalette))
+
+      labels <- paste0("<b>",st@name, "</b><br>",
+                       "<i>observation ",row.names(data), "</i><br>",
+                       data$iso.time,
+                       "<ul>",
+                       "<li>", "scale:  ", data$scale, "</li>",
+                       "<li>", "msw:  ", data$msw, "m/s</li>",
+                       "<li>", "rmw:  ", data$rmw, "km</li>",
+                       "<li>", "pressure:  ", data$pressure, "pa</li>",
+                       "<li>", "poci:  ", data$poci, "pa</li>",
+                       "</ul>")
+
+      #Plot track
+      map <- leaflet::addPolylines(map,
+                                   data = data,
+                                   lng = ~lon,
+                                   lat = ~lat,
+                                   color = "black",
+                                   weight = 2)
+
+
+      map <- leaflet::addCircleMarkers(map,
+        data = data,
+        lng = ~lon,
+        lat = ~lat,
+        radius = 5,
+        color = ~type,
+        stroke = FALSE,
+        fillOpacity = 1,
+        popup = labels
+      )
+    }
+
+    #Adding legends
+    map <- leaflet::addLegend(map,
+                              legends,
+                              colors = sts@scalePalette,
+                              labels = names(sts@scalePalette),
+                              title = "Scale",
+                              opacity = 1)
+
+    map
+
+    return(map)
   }
 
-  if (loi && as.character(sf::st_geometry_type(sts@spatialLoi)) == "POINT") {
-    plot(sts@spatialLoi, lwd = 2, col = "blue", pch = 4, add = TRUE)
-  }
 
-  # Plotting track(s) and labels
-  lapply(stsAux, plotTrack)
-  if (labels) {
-    lapply(stsAux, plotLabels, by, pos)
-  }
-
-  # Adding legends
-  if (legends != "none") {
-    leg <- c("TD", "TS", "Cat. 1", "Cat. 2", "Cat. 3", "Cat. 4", "Cat. 5")
-    col <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
-
-    lty <- rep(0, 7)
-    pch <- rep(19, 7)
-    lwd <- rep(1, 7)
-
-    graphics::legend(legends,
-      title = "SSHS",
-      legend = leg,
-      col = col,
-      lty = lty,
-      pch = pch,
-      lwd = lwd,
-      cex = 0.6,
-      bty = "n"
-    )
-  }
 }

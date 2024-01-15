@@ -10,7 +10,7 @@ A \code{storm} object.
 \itemize{
 \item \code{name}, character.
 \item \code{season}, numeric.
-\item \code{sshs}, numeric.
+\item \code{scale}, numeric.
 \item \code{obs}, numeric.
 \item \code{obs.all}, data.frame.
 }
@@ -25,8 +25,7 @@ Gather all the needed informations to model a single storm
 
 \item{\code{season}}{numeric. Cyclonic season in which the storm has occured}
 
-\item{\code{sshs}}{numeric. Maximum category reached in the Saffir Simpson Hurricane
-Scale}
+\item{\code{scale}}{numeric. Maximum scale category reached}
 
 \item{\code{obs}}{numeric vector. Indices of observations within the location of
 interest extented with its corresponding buffer (See \code{stormsList} class)}
@@ -38,7 +37,7 @@ observation is made up of several fields which are:
 \item \code{lon}, Longitude coordinate (Eastern degree)
 \item \code{lat}, Latitude coordinate (Northern degree)
 \item \code{msw}, Maximum Sustained Wind (m/s)
-\item \code{sshs}, Category in the Saffir Simpson Hurricane Scale
+\item \code{scale}, Level in the chosen scale
 }
 The following field is not mandatory but highly recommended
 \itemize{

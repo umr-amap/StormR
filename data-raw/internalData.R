@@ -15,7 +15,26 @@ atm2paC <- 101300
 km <- 1000
 
 wgs84 <- 4326
+
+# SSHS constants
+
 sshs <- c(18, 33, 42, 49, 58, 70)
+sshsPalette = c("#00CCFF",
+                 "#00CCCC",
+                 "#FFFFB2",
+                 "#FECC5C",
+                 "#FD8D3C",
+                 "#F03B20",
+                 "#BD0026")
+
+names(sshsPalette) = c("TD",
+                        "TS",
+                        "Cat. 1",
+                        "Cat. 2",
+                        "Cat. 3",
+                        "Cat. 4",
+                        "Cat. 5")
+
 
 basins <- data.frame(
     row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"),
@@ -32,30 +51,39 @@ margin <- c(4, 12, 4, 8)
 oceanColor <- "white"
 groundColor <- "grey"
 
-sshsPalette <- c("#00CCFF", "#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
-
-
 palette <- c("#00CCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026")
 xsup <- 95
 xinf <- 18
 nbC <- xsup - xinf
 x <- seq(xinf, xsup)
-
 y <- x
 colorRange <- colorRampPalette(sshsPalette[2:7], bias = 1)
 mswSSHSPalette <- colorRange(nbC)
-
 plot(x, y, col = mswSSHSPalette, lwd = 3)
 abline(v = sshs)
-
 mswPalette <- rev(grDevices::heat.colors(50))
 pdiPalette <- rev(viridis::inferno(50))
 exposurePalette <- rev(viridis::viridis(50))
 
-# Data for test functions
+################################################################################
+########### Data for the tests of functions ####################################
+################################################################################
+
+# spatialBehaviour functions
 suppressWarnings(sds <- defStormsDataset())
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3, FALSE, "Willoughby")
+mswPam <- spatialBehaviour(pam)
+mapPam <- plotStorms(pam, dynamicPlot=TRUE)
+mapPamMsw <- plotBehaviour(pam, mswPam, dynamicPlot=TRUE)
+
+
+# defStormsDataset functions
+sdsFromNc <- defStormsDataset(seasons = c(2015, 2020))
+sdsFromCsv <- defStormsDataset(filename = system.file("extdata", "test_dataset.csv", package = "StormR"),
+                               seasons = c(2015, 2020))
+
+
 
 usethis::use_data(resolutions,
     mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
@@ -63,5 +91,7 @@ usethis::use_data(resolutions,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
     dfGetDataInterpolate,
+    sdsFromNc, sdsFromCsv,
+    mapPam, mapPamMsw,
     internal = TRUE, overwrite = TRUE
 )

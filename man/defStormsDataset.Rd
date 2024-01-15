@@ -6,29 +6,34 @@
 \usage{
 defStormsDataset(
   filename = system.file("extdata", "test_dataset.nc", package = "StormR"),
+  sep = NULL,
   fields = c(names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon",
-    lat = "usa_lat", msw = "usa_wind", basin = "basin", sshs = "usa_sshs", rmw =
-    "usa_rmw", pressure = "usa_pres", poci = "usa_poci"),
+    lat = "usa_lat", msw = "usa_wind", basin = "basin", rmw = "usa_rmw", pressure =
+    "usa_pres", poci = "usa_poci"),
   basin = NULL,
   seasons = c(1980, as.numeric(format(Sys.time(), "\%Y"))),
   unitConversion = c(msw = "knt2ms", rmw = "nm2km", pressure = "mb2pa", poci = "mb2pa"),
+  notNamed = "NOT_NAMED",
   verbose = 1
 )
 }
 \arguments{
-\item{filename}{character. Name of the NetCDF (.nc) file. Default is the \code{test_dataset.nc}
+\item{filename}{character. Name of the NetCDF (.nc)/CSV (.csv) file. Default is the \code{test_dataset.nc}
 file located in the \code{inst/extdata} repository of the directory (accessible by
 \code{system.file("extdata", "test_dataset.nc", package = "StormR")}). This test dataset is extracted
 from the IBTrACS.SP.v04r00.nc file and provides all the tropical cyclones that occurred around Vanuatu
 from 2015 to 2016 and around New Caledonia from 2020 to 2021.}
 
-\item{fields}{named character vector. This argument allows to specify the corresponding variable names
-in the input NetCDF file for each field in the output \code{stormsDataset}. By default, the corresponding
+\item{sep}{character. The field separator character if \code{filename} is a CSV file. Default value is set to \code{NULL}
+which will set the separator to \code{","}.}
+
+\item{fields}{named character vector. This argument allows to specify the corresponding variable names (NetCDF) or
+headers (CSV) in the input file for each field in the output \code{stormsDataset}. By default, the corresponding
 variable names are set up to import data from a NetCDF file from the IBTrACS database (Knapp et al., 2010).
 Corresponding variable names for following fields have to (mandatory fields) or can be
 (recommended or optional fields) provided:
 \itemize{
-\item "\verb{names"}, names of the storms (mandatory),
+\item \code{"names"}, names of the storms (mandatory),
 \item \code{"seasons"}, years of observations (mandatory),
 \item \code{"isoTime"}, date and time of observations (mandatory),
 \item \code{"lon"}, longitude of the observations (mandatory),
@@ -38,8 +43,7 @@ Corresponding variable names for following fields have to (mandatory fields) or 
 \item \code{"rmw"}, radius of maximum winds: distance between the centre of the storm and
 its band of strongest winds (recommended),
 \item \code{"pressure"}, central pressure (recommended),
-\item \code{"poci"}, pressure of the last closed isobar (recommended), and
-\item \code{"sshs"}, Saffir-Simpson hurricane wind scale rating based on msw (optional).
+\item \code{"poci"}, pressure of the last closed isobar (recommended)
 }}
 
 \item{basin}{character. If the basin field is provided, then storm track data will
@@ -89,6 +93,9 @@ For \code{pressure} and \code{poci},
 \item \code{"None"}, if no conversion is needed.
 }}
 
+\item{notNamed}{character. Constant name for not named storms to remove in the database.
+Default value is "NOT_NAMED" (IBTrACS database)}
+
 \item{verbose}{numeric. Whether the function should display (\verb{= 1})
 or not (\verb{= 0}) information about the processes.}
 }
@@ -96,14 +103,20 @@ or not (\verb{= 0}) information about the processes.}
 The \code{defStormsDataset()} function returns a \code{stormsDataset} object.
 }
 \description{
-The \code{defStormsDataset()} function creates a \code{stormsDataset} object from a NetCDF file.
+The \code{defStormsDataset()} function creates a \code{stormsDataset} object from either a NetCDF or a CSV file.
 This is an essential first step before other \code{stormR} functions can be used.
 }
 \examples{
 # Creating a `stormsDataset` object with storms between 2010 and 2015
 # in the South Pacific using the NetCDF provided with the package
-SP_2015_2020 <- defStormsDataset(seasons = c(2010, 2015))
-str(SP_2015_2020)
+SP_2015_2020_nc <- defStormsDataset(seasons = c(2010, 2015))
+str(SP_2015_2020_nc)
+
+# Creating a `stormsDataset` object with storms between 2010 and 2015
+# in the South Pacific using the CSV provided with the package
+fileName <- system.file("extdata", "test_dataset.csv", package = "StormR")
+SP_2015_2020_csv <- defStormsDataset(seasons = c(2010, 2021))
+str(SP_2015_2020_csv)
 }
 \references{
 Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
