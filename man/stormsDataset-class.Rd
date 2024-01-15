@@ -55,7 +55,7 @@ databases:
 \section{Slots}{
 
 \describe{
-\item{\code{filename}}{character. Name of the database to load. Must be a netcdf file}
+\item{\code{filename}}{character. Name of the database to load. Must be either a netcdf or a csv file}
 
 \item{\code{fields}}{named character vector. Dictionary that provides all the name of
 dimensions to extract from the netcdf database (See \code{Details})}
