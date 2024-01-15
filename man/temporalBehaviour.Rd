@@ -55,7 +55,7 @@ the radius of maximum wind (\code{rmw}) empirically using the model developed by
 Willoughby et al. (2006). If \code{empiricalRMW==FALSE} (default setting) then the
 \code{rmw} provided in the \code{StormsList} is used.}
 
-\item{tempRes}{numeric. Temporal resolution (min). Can be \code{60} ( default setting),
+\item{tempRes}{numeric. Temporal resolution (min). Can be \code{60} (default setting),
 \code{30} or \code{15}.}
 
 \item{verbose}{numeric. Information displayed. Can be:

@@ -56,7 +56,7 @@ checkInputsPlotTemporal <- function(data, storm, var) {
 #' rownames(df) <- c("Port_Vila", "Luganville")
 #'
 #' # Generate temporal series of wind on the points
-#' TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 0.5, verbose = 0)
+#' TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)
 #'
 #' # Plot temporal series of wind speed
 #' plotTemporal(data=TS, storm="PAM")

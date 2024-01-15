@@ -16,8 +16,8 @@ test_that("Test checkinputs function", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
   st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 
-  TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 0.5, verbose = 0)
-  PDI <- temporalBehaviour(st, points = df, product = "TS", tempRes = 0.5, verbose = 0)
+  TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)
+  PDI <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)
 
   # Checking data input
   expect_error(checkInputsPlotTemporal(storm = "PAM"))
