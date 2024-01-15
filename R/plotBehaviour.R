@@ -21,7 +21,7 @@
 checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends, dynamicPlot) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
-
+  
   # Checking rasterProduct
   stopifnot("no data to plot" = !missing(rasterProduct))
   stopifnot("Raster stack are not allowed. Please subset your desired layer" = terra::nlyr(rasterProduct) == 1)
@@ -185,7 +185,7 @@ plotBehaviour <- function(sts,
   
   # Choose color, range and legends depending on input raster
   if (product == "MSW") {
-    col <- mswSSHSPalette
+    col <- sts@scalePalette
     range <- c(17, 95)
     leg <- ifelse(dynamicPlot, "MSW (m.s <sup>-1</sup>)", expression(paste("MSW (m.s"^"-1", ")")))
     
@@ -200,7 +200,7 @@ plotBehaviour <- function(sts,
     leg <- ifelse(dynamicPlot, "Duration of exposure (h)",expression(paste("Duration of exposure (h)")))
     
   } else if (product == "Speed") {
-    col <- mswSSHSPalette
+    col <- sts@scalePalette
     range <- c(17, 95)
     leg <- ifelse(dynamicPlot, "Radial wind speed (m.s <sup>-1</sup>)",expression(paste("Radial wind speed (m.s"^"-1", ")")))
     
@@ -230,7 +230,6 @@ plotBehaviour <- function(sts,
     # Adding title
     graphics::title(leg)
 
-
     terra::plot(rasterProduct,
       col = col,
       type = "continuous",
@@ -243,9 +242,9 @@ plotBehaviour <- function(sts,
       add = TRUE
     )
 
-
     # Adding track again (to emphazise)
-    plotTrack(sts@data[[name]])
+    plotTrack(sts@data[[name]], sts@scale, sts@scalePalette)
+
 
     # Adding labels
     if (labels && product != "Profiles" && product != "WindDirection") {

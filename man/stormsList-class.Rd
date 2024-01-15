@@ -28,5 +28,11 @@ Gather all the needed informations to model a set of storms
 is EPSG:4326}
 
 \item{\code{spatialLoiBuffer}}{sf object. Buffer extension of \code{spatialLoi}}
+
+\item{\code{scale}}{numeric. List of storm scale thresholds to use in all functions of
+the package. Default value is set to the Saffir Simpson Hurricane Scale}
+
+\item{\code{scalePalette}}{character. Named vector containing the color hex code
+corresponding to each category in \code{scale} slot. Default value is the palette associated with the Saffir Simpson Hurricane Scale}
 }}
 

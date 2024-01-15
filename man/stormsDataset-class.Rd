@@ -9,7 +9,7 @@
 Choose the database to use within the package's functions
 }
 \details{
-The fields input must provide at least 6 mandatory fields (and at most 11) in
+The fields input must provide at least 6 mandatory fields (and at most 10) in
 order to benefit from all the functionalities of this package:
 \itemize{
 \item A field \code{names}: which dimension contains the names of storms
@@ -36,9 +36,6 @@ database
 \item A field \code{rmw}: which dimension contains the radius of maximum
 wind speed of each observations for all storms in the netcdf
 database (See spatialBehaviour, temporalBehaviour)
-\item A field \code{sshs}: which dimension contains the Saffir Simpson
-Hurricane Scale index of each observations for all storms in the
-netcdf database
 }
 Finally these following fields are optional but mandatory to perform Holland
 model (See \code{spatialBehaviour}, \code{temporalBehaviour})
@@ -53,12 +50,12 @@ in the nectdf database
 
 Default value is set according to the most relevant dimensions of IBTrACS
 databases:
-\code{fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres", poci = "usa_poci", sshs = "usa_sshs")}
+\code{fields = c(basin = "basin", names = "name", seasons = "season", isoTime = "iso_time", lon = "usa_lon", lat = "usa_lat", msw = "usa_wind", rmw = "usa_rmw", pressure = "usa_pres", poci = "usa_poci")}
 }
 \section{Slots}{
 
 \describe{
-\item{\code{filename}}{character. Name of the database to load. Must be a netcdf file}
+\item{\code{filename}}{character. Name of the database to load. Must be either a netcdf or a csv file}
 
 \item{\code{fields}}{named character vector. Dictionary that provides all the name of
 dimensions to extract from the netcdf database (See \code{Details})}
@@ -80,10 +77,10 @@ boundaries. It must be either
 cyclones that formed in one year and dissipated in the following year, the
 latter should be used}
 
-\item{\code{database}}{list of 6 to 10 slots depending on the fields input. Each slot
+\item{\code{database}}{list of 6 to 9 slots depending on the fields input. Each slot
 is either a 1D array of dimension (number of storms) for \code{names} and
 \code{seasons} fields, or a 2D array of dimension
 (Maximum number of observations:number of storms), for the remaining fields
-which are \code{isoTime}, \code{lon}, \code{lat}, \code{msw}, \code{rmw}, \code{pressure}, \code{poci}, \code{sshs}}
+which are \code{isoTime}, \code{lon}, \code{lat}, \code{msw}, \code{rmw}, \code{pressure}, \code{poci}}
 }}
 

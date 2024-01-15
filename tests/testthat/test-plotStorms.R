@@ -2,6 +2,7 @@
 
 
 
+
 # TODO to adapt with scale merge
 # test_that("Test getColors function", {
 #   # expect_error(getColors(50))
@@ -20,8 +21,6 @@
 #   # expect_equal(getColors(70, sshs), "#BD0026")
 #   # expect_equal(getColors(100, sshs), "#BD0026")
 # })
-
-
 
 
 
@@ -87,7 +86,7 @@ test_that("Test checkInputsPlotStorms function", {
     checkInputsPlotStorms(
       sts = pam,
       names = NULL,
-      category = c(1, 6),
+      category = c(-2, 6),
       labels = TRUE,
       by = 8,
       pos = 3,
@@ -162,7 +161,6 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
   
   # Checking xlim/ylim input
   expect_error(
