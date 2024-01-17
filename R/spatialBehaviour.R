@@ -1425,7 +1425,7 @@ spatialBehaviour <- function(sts,
     finalStack <- c(finalStack, terra::unwrap(r))
   }
   finalStack <- terra::rast(finalStack)
-  finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, rasterTemplatePacked)
+  finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, rasterTemplate)
 
   endTime <- Sys.time()
 
