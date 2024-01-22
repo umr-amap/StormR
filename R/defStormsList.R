@@ -647,7 +647,7 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
   #Checking maxDist input
   stopifnot("maxDist must be numeric " = identical(class(maxDist), "numeric"))
   stopifnot("maxDist must be a length 1 vector " = length(maxDist) == 1)
-  stopifnot("maxDist must > 0 " = maxDist > 0)
+  stopifnot("maxDist must greater or equal than 0 " = maxDist >= 0)
   
   # Checking scale input
   stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
@@ -760,7 +760,10 @@ convertLoi <- function(loi) {
 #' @return loi extended with buffer in a sf format
 makeBuffer <- function(loi, loiSf, buffer) {
 
-  if ((identical(class(loi), c("character"))) && (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))) {
+  if (buffer == 0){
+    loiBuffer <- loiSf
+    
+  }else if ((identical(class(loi), c("character"))) && (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))) {
     loiBuffer <- loiSf
   }else {
     loiBuffer <- sf::st_buffer(loiSf, dist = buffer)
