@@ -2,14 +2,42 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 willoughby_cpp <- function(r, rmw, msw, lat) {
-    .Call('_StormR_willoughby_cpp', PACKAGE = 'StormR', r, rmw, msw, lat)
+    .Call(`_StormR_willoughby_cpp`, r, rmw, msw, lat)
 }
 
 holland_cpp <- function(r, rmw, msw, pc, poci, lat) {
-    .Call('_StormR_holland_cpp', PACKAGE = 'StormR', r, rmw, msw, pc, poci, lat)
+    .Call(`_StormR_holland_cpp`, r, rmw, msw, pc, poci, lat)
 }
 
 boose_cpp <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
-    .Call('_StormR_boose_cpp', PACKAGE = 'StormR', r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat)
+    .Call(`_StormR_boose_cpp`, r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat)
+}
+
+computeAsymmetry_cpp <- function(asymmetry, wind, x, y, vx, vy, vh, r, rmw, lat) {
+    .Call(`_StormR_computeAsymmetry_cpp`, asymmetry, wind, x, y, vx, vy, vh, r, rmw, lat)
+}
+
+computeDirectionBoose_cpp <- function(x, y, lat, landIntersect) {
+    .Call(`_StormR_computeDirectionBoose_cpp`, x, y, lat, landIntersect)
+}
+
+computeDirection_cpp <- function(x, y, lat) {
+    .Call(`_StormR_computeDirection_cpp`, x, y, lat)
+}
+
+computePDI_cpp <- function(wind, tempRes) {
+    .Call(`_StormR_computePDI_cpp`, wind, tempRes)
+}
+
+computeExposure_cpp <- function(wind, tempRes, threshold) {
+    .Call(`_StormR_computeExposure_cpp`, wind, tempRes, threshold)
+}
+
+willoughby_cppa <- function(r, rmw, msw, lat) {
+    .Call(`_StormR_willoughby_cppa`, r, rmw, msw, lat)
+}
+
+boose_cppa <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
+    .Call(`_StormR_boose_cppa`, r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat)
 }
 

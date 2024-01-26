@@ -507,14 +507,14 @@ getDataInterpolate <- function(st, indices, dt, timeDiff, empiricalRMW, method) 
 computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distEye, buffer, loi, world, indCountries) {
   # Computing wind speed according to the input model
   if (method == "Willoughby") {
-    wind <- willoughby(
+    wind <- willoughby_cpp(
       msw = data$msw[index],
       lat = data$lat[index],
       r = distEye * 0.001,
       rmw = data$rmw[index]
     )
   } else if (method == "Holland") {
-    wind <- holland(
+    wind <- holland_cpp(
       r = distEye * 0.001,
       rmw = data$rmw[index],
       msw = data$msw[index],
@@ -1009,56 +1009,56 @@ processingStorm <- function(storm,
                             count,
                             totalStorms,
                             verbose){
-  
+
   # Buffer size in degree
   buffer <- 2.5
-  
+
   # Handling indices inside loi.buffer or not
   ind <- getIndices(storm, 2, product)
-  
+
   it1 <- storm@obs.all$iso.time[1]
   it2 <- storm@obs.all$iso.time[2]
   timeDiff <- as.numeric(as.POSIXct(it2) - as.POSIXct(it1))
   # Interpolated time step dt, default value dt <- 4 --> 1h
   dt <- 1 + (1 / tempRes * timeDiff) # + 1 for the limit values
-  
+
   # Getting data associated with storm st
   dataTC <- getDataInterpolate(storm, ind, dt, timeDiff, empiricalRMW, method)
-  
+
   nbStep <- dim(dataTC)[1] - 1
-  
+
   if (verbose > 0) {
     step <- 1
     cat(storm@name, " (", count, "/", totalStorms, ")\n")
     pb <- utils::txtProgressBar(min = step, max = nbStep, style = 3)
   }
-  
+
   auxStackMSW <- c()
   auxStackPDI <- c()
   auxStackEXP <- c()
   auxStackSpeed <- c()
   auxStackDirection <- c()
-  
+
   for (j in 1:nbStep) {
     # Making template to compute wind profiles
     rasterTemplateModel <- makeTemplateModel(rasterTemplate, buffer, dataTC, j)
     rasterWind <- rasterTemplateModel
     rasterDirection <- rasterTemplateModel
-    
+
     # Computing coordinates of raster
     crds <- terra::crds(rasterWind, na.rm = FALSE)
-    
+
     # Computing distances in degree to the eye of the storm for x and y axes
     x <- crds[, 1] - dataTC$lon[j]
     y <- crds[, 2] - dataTC$lat[j]
-    
+
     # Computing distances to the eye of the storm in m
     distEye <- terra::distance(
       x = crds,
       y = cbind(dataTC$lon[j], dataTC$lat[j]),
       lonlat = TRUE
     )
-    
+
     # Computing wind speed/direction
     output <- computeWindProfile(dataTC,
                                  j,
@@ -1072,10 +1072,10 @@ processingStorm <- function(storm,
                                  loi,
                                  world,
                                  indCountries)
-    
+
     terra::values(rasterWind) <- output$wind
     terra::values(rasterDirection) <- output$direction
-    
+
     # Stacking products
     if ("MSW" %in% product) {
       auxStackMSW <- stackProduct("MSW", auxStackMSW, rasterTemplate, rasterWind, NULL)
@@ -1092,20 +1092,20 @@ processingStorm <- function(storm,
       auxStackSpeed <- stackRaster(auxStackSpeed, rasterTemplate, rasterWind)
       auxStackDirection <- stackRaster(auxStackDirection, rasterTemplate, rasterDirection)
     }
-    
-    
+
+
     if (verbose > 0) {
       utils::setTxtProgressBar(pb, step)
       step <- step + 1
     }
   }
-  
-  
+
+
   if (verbose > 0) {
     close(pb)
   }
-  
-  
+
+
   # Rasterize final products
   if ("MSW" %in% product) {
     auxStackMSW <- terra::rast(auxStackMSW)
@@ -1138,12 +1138,12 @@ processingStorm <- function(storm,
     auxStackDirection <- terra::rast(auxStackDirection)
     stackWIND <- c(stackWIND, auxStackSpeed, auxStackDirection)
   }
-  
+
   output <- list(msw = stackMSW,
                  pdi = stackPDI,
                  exposure = stackEXP,
                  wind = stackWIND)
-  
+
   return(output)
 }
 
@@ -1404,7 +1404,7 @@ spatialBehaviour <- function(sts,
 
   # Make raster template
   rasterTemplate <- makeTemplateRaster(sts@spatialLoiBuffer, resolutions[spaceRes])
-  
+
   # Initializing final raster stacks
   finalStackMSW <- c()
   finalStackPDI <- c()
@@ -1445,7 +1445,7 @@ spatialBehaviour <- function(sts,
   }
 
   for (st in sts@data) {
-    
+
     output <- processingStorm(
       storm = st,
       product = product,
@@ -1467,12 +1467,12 @@ spatialBehaviour <- function(sts,
       totalStorms = getNbStorms(sts),
       verbose = verbose
     )
-    
+
     finalStackMSW <- output$msw
     finalStackPDI <- output$pdi
     finalStackEXP <- output$exposure
     finalStackWind <- output$wind
-    
+
     s <- s + 1
   }
 
