@@ -41,7 +41,7 @@ southAtlantic <- sf::st_polygon(list(cbind(c(290, 359, 359, 290, 290),
                                            c(-60, -60, 0, 0, -60))))
 eastPacific <- sf::st_polygon(list(cbind(c(180, 180, 210, 217, 236, 236, 240, 250, 265, 280, 180),
                                          c(0, 60, 60, 60, 49, 40, 34, 25, 15, 0, 0))))
-westPacific <- sf::st_polygon(list(cbind(c(100, 180, 180, 100, 100),
+westPacific <- sf::st_polygon(list(cbind(c(85, 180, 180, 85, 85),
                                          c(0, 0, 60, 60, 0))))
 southPacific <- sf::st_polygon(list(cbind(c(135, 290, 290, 135, 135),
                                           c(-60, -60, 0, 0, -60))))
