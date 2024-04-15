@@ -80,9 +80,9 @@ setOldClass("sf")
 #' @slot spatialLoi sf object. Represents the location of interest. Projection
 #'   is EPSG:4326
 #' @slot spatialLoiBuffer sf object. Buffer extension of `spatialLoi`
-#' @slot scale numeric. List of storm scale thresholds to use in all functions of 
+#' @slot scale numeric. List of storm scale thresholds to use in all functions of
 #' the package. Default value is set to the Saffir Simpson Hurricane Scale
-#' @slot scalePalette character. Named vector containing the color hex code 
+#' @slot scalePalette character. Named vector containing the color hex code
 #' corresponding to each category in `scale` slot. Default value is the palette associated with the Saffir Simpson Hurricane Scale
 #' @return A `stormsList` object.
 #' \itemize{
@@ -421,7 +421,7 @@ setMethod("getSeasons", signature("stormsList"), function(s) unlist(lapply(s@dat
 
 #' Getting maximum level in the wind scale
 #'
-#' The `getScale()` function return the maximum wind scale category reached by 
+#' The `getScale()` function return the maximum wind scale category reached by
 #' each storm in the `storm` or `stormsList` object.
 #'
 #' @param s `storm` or `stormsList` object.
@@ -648,18 +648,18 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
   stopifnot("maxDist must be numeric " = identical(class(maxDist), "numeric"))
   stopifnot("maxDist must be a length 1 vector " = length(maxDist) == 1)
   stopifnot("maxDist must greater or equal than 0 " = maxDist >= 0)
-  
+
   # Checking scale input
   stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
   stopifnot("invalid scale input" = all(scale>=0))
-  
+
   # Checking scalePalette input
   if(!is.null(scalePalette)){
     stopifnot("scalePalette must be a (named) character vector" = identical(class(scalePalette), "character"))
-    stopifnot("(lenght(scalePalette) must be equal to lenght(scale) + 1)" = 
+    stopifnot("(lenght(scalePalette) must be equal to lenght(scale) + 1)" =
                 length(scalePalette) == length(scale) + 1)
   }
-  
+
 
   #Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -720,19 +720,13 @@ convertLoi <- function(loi) {
   } else if (identical(class(loi), c("character"))) {
 
     if (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL")) {
-      poly <- cbind(c(Basins[loi, ]$xmin, Basins[loi, ]$xmax, Basins[loi, ]$xmax,
-                      Basins[loi, ]$xmin, Basins[loi, ]$xmin),
-                    c(Basins[loi, ]$ymin, Basins[loi, ]$ymin, Basins[loi, ]$ymax,
-                      Basins[loi, ]$ymax, Basins[loi, ]$ymin))
-      loiSf <- sf::st_polygon(list(poly))
-      loiSf <- sf::st_sfc(loiSf, crs = 4326)
-      loiSf <- sf::st_as_sf(loiSf)
+      loiSf <- sf::st_as_sf(basins[basins$Name == loi, ][[2]])
 
     }else {
       map <- rworldmap::getMap(resolution = "high")
       idCountry <- which(map@data$ADMIN == loi)
       stopifnot("invalid entry for loi" = length(idCountry) > 0)
-      loiSf <- map[idCountry,] |> sf::st_as_sf()
+      loiSf <- map[idCountry, ] |> sf::st_as_sf()
       loiSf <- loiSf$geometry |> sf::st_as_sf()
       sf::st_crs(loiSf) <- wgs84
     }
@@ -762,7 +756,7 @@ makeBuffer <- function(loi, loiSf, buffer) {
 
   if (buffer == 0){
     loiBuffer <- loiSf
-    
+
   }else if ((identical(class(loi), c("character"))) && (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))) {
     loiBuffer <- loiSf
   }else {
@@ -902,7 +896,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer, scale) {
   #Keep only valid iso times
   indIsotime <- which(listIsotime %% validTimeStep == 0)
   coords <- coords[indIsotime, ]
-  
+
 
   if (dim(coords)[1] == 0) {
     #ERROR
@@ -932,7 +926,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer, scale) {
                                                      na.rm = FALSE, rule = 2))
 
 
-    
+
     # scale is calculated using the scale input and the wind speed data
     storm@obs.all$scale <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = scale))
 
@@ -996,7 +990,7 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer, scale) {
 #' storm for which track data are extracted. Default `maxDist` is set to 300 km.
 #' @param scale numeric. List of storm scale thresholds used for the database.
 #'   Default value is set to the Saffir Simpson Hurricane Scale
-#' @param scalePalette character. Named vector containing the color hex code 
+#' @param scalePalette character. Named vector containing the color hex code
 #' corresponding to each category interval of `scale` input
 #' @param removeUnder numeric. Storms reaching this maximum level or less in the scale are removed.
 #'   Default value is set to NULL.
@@ -1059,27 +1053,27 @@ defStormsList <- function(sds,
   startTime <- Sys.time()
 
   checkInputsDefStormsList(sds, loi, seasons, names, maxDist, scale, scalePalette, verbose, removeUnder)
-  
+
   # order scale
   scale = scale[order(scale)]
-  
-  
+
+
   if(identical(scale, sshs) & is.null(scalePalette)){
     # Default palette should be SSHS
     scalePalette <- sshsPalette
-    
+
   }else if(!identical(scale, sshs) & is.null(scalePalette)){
     # Create a default color Palette based on the number of level in scale
     palette <- grDevices::colorRampPalette(colors = c("red", "green", "blue"))
     scalePalette <- rev(palette(length(scale) + 1))
   }
-  
+
   if(is.null(names(scalePalette))){
     # If scalePalette has no names, provide default ones
     names(scalePalette) <- paste0("Cat. ",seq(0, length(scale)))
-    
+
   }
-  
+
 
 
   if (length(seasons) == 2)

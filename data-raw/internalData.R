@@ -35,14 +35,26 @@ names(sshsPalette) = c("TD",
                         "Cat. 4",
                         "Cat. 5")
 
+northAtlantic <- sf::st_polygon(list(cbind(c(359, 359, 298, 300, 289, 282, 279, 263, 266, 281, 304, 308, 320, 359),
+                                           c(0, 60, 60, 50, 42, 34, 30, 28, 18, 10, 7, 0, 0, 0))))
+southAtlantic <- sf::st_polygon(list(cbind(c(290, 359, 359, 290, 290),
+                                           c(-60, -60, 0, 0, -60))))
+eastPacific <- sf::st_polygon(list(cbind(c(180, 180, 210, 217, 236, 236, 240, 250, 265, 280, 180),
+                                         c(0, 60, 60, 60, 49, 40, 34, 25, 15, 0, 0))))
+westPacific <- sf::st_polygon(list(cbind(c(85, 180, 180, 85, 85),
+                                         c(0, 0, 60, 60, 0))))
+southPacific <- sf::st_polygon(list(cbind(c(135, 290, 290, 135, 135),
+                                          c(-60, -60, 0, 0, -60))))
+southIndian <- sf::st_polygon(list(cbind(c(10, 135, 135, 10, 10),
+                                         c(-60, -60, 0, 0, -60))))
+northIndian <- sf::st_polygon(list(cbind(c(30, 100, 100, 30, 30),
+                                         c(0, 0, 60, 60, 0))))
+global <- sf::st_polygon(list(cbind(c(0, 359, 359, 0, 0),
+                                    c(-60, -60, 60, 60, -60))))
 
-basins <- data.frame(
-    row.names = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"),
-    xmin = c(270, 290, 180, 100, 135, 10, 30, 0),
-    xmax = c(359, 359, 290, 180, 290, 135, 100, 359),
-    ymin = c(0, -60, 0, 0, -60, -60, 0, -60),
-    ymax = c(60, 0, 60, 60, 0, 0, 30, 60)
-)
+all_basins <- sf::st_sfc(northAtlantic, southAtlantic, eastPacific, westPacific, southPacific, southIndian, northIndian, global, crs = wgs84)
+all_basins_names <- data.frame(Name = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))
+basins <- sf::st_sf(all_basins_names, geometry=all_basins)
 
 # Margin
 margin <- c(4, 12, 4, 8)
@@ -87,7 +99,7 @@ sdsFromCsv <- defStormsDataset(filename = system.file("extdata", "test_dataset.c
 
 usethis::use_data(resolutions,
     mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
-    km, wgs84, Basins, sshs,
+    km, wgs84, basins, sshs,
     margin,
     oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
     dfGetDataInterpolate,
