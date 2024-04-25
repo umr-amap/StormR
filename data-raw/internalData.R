@@ -19,7 +19,7 @@ wgs84 <- 4326
 # SSHS constants
 
 sshs <- c(18, 33, 42, 49, 58, 70)
-sshsPalette = c("#00CCFF",
+sshsPalette <- c("#00CCFF",
                  "#00CCCC",
                  "#FFFFB2",
                  "#FECC5C",
@@ -27,7 +27,7 @@ sshsPalette = c("#00CCFF",
                  "#F03B20",
                  "#BD0026")
 
-names(sshsPalette) = c("TD",
+names(sshsPalette) <- c("TD",
                         "TS",
                         "Cat. 1",
                         "Cat. 2",
@@ -52,9 +52,17 @@ northIndian <- sf::st_polygon(list(cbind(c(30, 100, 100, 30, 30),
 global <- sf::st_polygon(list(cbind(c(0, 359, 359, 0, 0),
                                     c(-60, -60, 60, 60, -60))))
 
-all_basins <- sf::st_sfc(northAtlantic, southAtlantic, eastPacific, westPacific, southPacific, southIndian, northIndian, global, crs = wgs84)
+all_basins <- sf::st_sfc(northAtlantic,
+                         southAtlantic,
+                         eastPacific,
+                         westPacific,
+                         southPacific,
+                         southIndian,
+                         northIndian,
+                         global,
+                         crs = wgs84)
 all_basins_names <- data.frame(Name = c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))
-basins <- sf::st_sf(all_basins_names, geometry=all_basins)
+basins <- sf::st_sf(all_basins_names, geometry = all_basins)
 
 # Margin
 margin <- c(4, 12, 4, 8)
@@ -84,10 +92,10 @@ exposurePalette <- rev(viridis::viridis(50))
 # spatialBehaviour functions
 suppressWarnings(sds <- defStormsDataset())
 pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 4, 3, FALSE, "Willoughby")
+dfGetDataInterpolate <- getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 60, FALSE, "Willoughby")
 mswPam <- spatialBehaviour(pam)
-mapPam <- plotStorms(pam, dynamicPlot=TRUE)
-mapPamMsw <- plotBehaviour(pam, mswPam, dynamicPlot=TRUE)
+mapPam <- plotStorms(pam, dynamicPlot = TRUE)
+mapPamMsw <- plotBehaviour(pam, mswPam, dynamicPlot = TRUE)
 
 
 # defStormsDataset functions
@@ -98,12 +106,13 @@ sdsFromCsv <- defStormsDataset(filename = system.file("extdata", "test_dataset.c
 
 
 usethis::use_data(resolutions,
-    mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
-    km, wgs84, basins, sshs,
-    margin,
-    oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
-    dfGetDataInterpolate,
-    sdsFromNc, sdsFromCsv,
-    mapPam, mapPamMsw,
-    internal = TRUE, overwrite = TRUE
+  mph2msC, knt2msC, kmh2msC, nm2kmC, b2paC, mb2paC, psi2paC, atm2paC,
+  km, wgs84, basins, sshs,
+  margin,
+  oceanColor, groundColor, sshsPalette, mswSSHSPalette, mswPalette, pdiPalette, exposurePalette,
+  dfGetDataInterpolate,
+  sdsFromNc, sdsFromCsv,
+  mapPam, mapPamMsw,
+  internal = TRUE, overwrite = TRUE
 )
+
