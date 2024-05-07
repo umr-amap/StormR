@@ -11,7 +11,7 @@ checkInputsPlotTemporal <- function(data, storm, var) {
 
   # Checking data input
   stopifnot("no data found" = !missing(data))
-  stopifnot("data must be temporal series. Be sure to use data generated from temporalBehaviour() 
+  stopifnot("data must be temporal series. Be sure to use data generated from temporalBehaviour()
   function run with product input set to 'TS'" = identical(class(data[[1]]), "list"))
 
   # Checking storm input
@@ -148,14 +148,14 @@ plotTemporal <- function(data, storm, var = "speed") {
                    col = cols,
                    legend = paste(names(subData), names(subData[[1]])),
                    bty = "n")
-  
-  
+
+
   # Handle x axis labels
   labels <- subData[[1]][[1]]$isoTimes[notNaIndices]
   t1 <- labels[1]
   t2 <- labels[2]
-  diffTime <- as.numeric(difftime(t2, t1, "hours"))
-  
+  diffTime <- as.numeric(difftime(t2, t1, units = "hours"))
+
   if(diffTime == 30){
     notNullLabels <- seq(1,length(labels)) %% 2 == 0
     labels[notNullLabels] <- ""
@@ -163,7 +163,7 @@ plotTemporal <- function(data, storm, var = "speed") {
     notNullLabels <- seq(1,length(labels)) %% 4 == 0
     labels[notNullLabels] <- ""
   }
-  
+
   graphics::axis(1,
                  at = seq(1, length(subData[[1]][[1]]$speed[notNaIndices])),
                  labels = labels,
