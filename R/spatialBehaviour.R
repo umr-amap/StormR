@@ -419,11 +419,14 @@ getDataInterpolate <- function(st, indices, tempRes, empiricalRMW, method) {
     # Case of interpolation time equal to observation time
     indObs <- which(timeIntervals > 0)[1]
     ind <- c(ind,
-      formatC(indObs - timeIntervals[indObs] / (timeIntervals[indObs] - timeIntervals[indObs - 1]),
+      formatC(indices[[1]] - 1 + indObs - timeIntervals[indObs] / (timeIntervals[indObs] - timeIntervals[indObs - 1]),
               digits = 2,
               format = "f")
     )
   }
+  # When interpolation time matches observation time, we keep "integer" indices
+  ind <- gsub(".00", "", ind)
+
   data$indices <- ind
   data$isoTimes <- timeInterpolated
 
