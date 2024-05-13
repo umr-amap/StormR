@@ -590,7 +590,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
   # Adding asymmetry
   if (asymmetry != "None") {
     output <- computeAsymmetry(
-      asymmetry, wind, direction, x, y,
+      asymmetry, wind, x, y,
       data$vxDeg[index], data$vyDeg[index],
       data$stormSpeed[index],
       distEye * 0.001, data$rmw[index], data$lat[index]
@@ -631,7 +631,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
 #'
 #' @return numeric vectors. Wind speed values (m/s) and wind direction (rad) at
 #'   each (x,y) position
-computeAsymmetry <- function(asymmetry, wind, direction, x, y, vx, vy, vh, r, rmw, lat) {
+computeAsymmetry <- function(asymmetry, wind, x, y, vx, vy, vh, r, rmw, lat) {
   # Circular symmetrical wind
   dir <- -(atan2(y, x) - pi / 2)
 
