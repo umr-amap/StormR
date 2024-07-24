@@ -4,6 +4,7 @@
 
 <!-- badges: start -->
 [![](https://www.r-pkg.org/badges/version/StormR?color=green)](https://cran.r-project.org/package=StormR)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/StormR)](https://cran.rstudio.com/web/packages/StormR/index.html)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.05766/status.svg)](https://doi.org/10.21105/joss.05766)
 [![codecov](https://codecov.io/github/umr-amap/StormR/branch/master/graph/badge.svg?token=5YMVL4TFB5)](https://app.codecov.io/github/umr-amap/StormR)
 ![R-CMD-check](https://github.com/umr-amap/StormR/actions/workflows/check-standard.yaml/badge.svg)
