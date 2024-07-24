@@ -1,114 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Behaviour.html</loc>
-  </url>
-  <url>
-    <loc>/articles/DataSource.html</loc>
-  </url>
-  <url>
-    <loc>/articles/ExtractStorms.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Models.html</loc>
-  </url>
-  <url>
-    <loc>/articles/SpatialBehaviour.html</loc>
-  </url>
-  <url>
-    <loc>/articles/TemporalBehaviour.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/defStormsDataset.html</loc>
-  </url>
-  <url>
-    <loc>/reference/defStormsList.html</loc>
-  </url>
-  <url>
-    <loc>/reference/eezNC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getBuffer-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getBufferSize-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getInObs-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getLOI-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getNames-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getNbObs-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getNbStorms-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getObs-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getScale-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getSeasons-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getStorm-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotBehaviour.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotStorms.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotTemporal.html</loc>
-  </url>
-  <url>
-    <loc>/reference/show-methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spatialBehaviour.html</loc>
-  </url>
-  <url>
-    <loc>/reference/storm-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/stormsDataset-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/stormsList-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/temporalBehaviour.html</loc>
-  </url>
-  <url>
-    <loc>/reference/writeRast.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/Behaviour.html</loc></url>
+<url><loc>/articles/DataSource.html</loc></url>
+<url><loc>/articles/ExtractStorms.html</loc></url>
+<url><loc>/articles/Models.html</loc></url>
+<url><loc>/articles/SpatialBehaviour.html</loc></url>
+<url><loc>/articles/TemporalBehaviour.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/defStormsDataset.html</loc></url>
+<url><loc>/reference/defStormsList.html</loc></url>
+<url><loc>/reference/eezNC.html</loc></url>
+<url><loc>/reference/getBuffer-methods.html</loc></url>
+<url><loc>/reference/getBufferSize-methods.html</loc></url>
+<url><loc>/reference/getInObs-methods.html</loc></url>
+<url><loc>/reference/getLOI-methods.html</loc></url>
+<url><loc>/reference/getNames-methods.html</loc></url>
+<url><loc>/reference/getNbObs-methods.html</loc></url>
+<url><loc>/reference/getNbStorms-methods.html</loc></url>
+<url><loc>/reference/getObs-methods.html</loc></url>
+<url><loc>/reference/getScale-methods.html</loc></url>
+<url><loc>/reference/getSeasons-methods.html</loc></url>
+<url><loc>/reference/getStorm-methods.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/plotBehaviour.html</loc></url>
+<url><loc>/reference/plotStorms.html</loc></url>
+<url><loc>/reference/plotTemporal.html</loc></url>
+<url><loc>/reference/show-methods.html</loc></url>
+<url><loc>/reference/spatialBehaviour.html</loc></url>
+<url><loc>/reference/storm-class.html</loc></url>
+<url><loc>/reference/stormsDataset-class.html</loc></url>
+<url><loc>/reference/stormsList-class.html</loc></url>
+<url><loc>/reference/temporalBehaviour.html</loc></url>
+<url><loc>/reference/writeRast.html</loc></url>
 </urlset>
+
