@@ -19,7 +19,7 @@
 
 ### Installing StormR
 
-`StormR` is now [available on CRAN](https://cran.r-project.org/package=StormR) on version `0.1.1`.
+`StormR` is now [available on CRAN](https://cran.r-project.org/package=StormR) on version `0.2.1`.
 You can install it as follows:
 
 ``` r
