@@ -1,3 +1,6 @@
+# StormR 0.2.2
+* Bugfix : [Issue with dynamic plots in plotBehaviour](https://github.com/umr-amap/StormR/pull/93)
+
 # StormR 0.2.1
 * JOSS paper : [Final version](https://joss.theoj.org/papers/10.21105/joss.05766)
 * New feature : [Interactive plot with leaflet](https://github.com/umr-amap/StormR/pull/77)
