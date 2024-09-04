@@ -21,7 +21,7 @@
 checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends, dynamicPlot) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
-  
+
   # Checking rasterProduct
   stopifnot("no data to plot" = !missing(rasterProduct))
   stopifnot("Raster stack are not allowed. Please subset your desired layer" = terra::nlyr(rasterProduct) == 1)
@@ -73,7 +73,7 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
     "legends must be either topright, topleft, bottomleft, bottomright, or none" =
       legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none")
   )
-  
+
   #Checking mode input
   stopifnot("dynamicPlot must be logical" = identical(class(dynamicPlot), "logical"))
   stopifnot("dynamicPlot must length 1" = length(dynamicPlot) == 1)
@@ -115,7 +115,7 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' `2` (on the left), `3` (below, default setting), and `4` (on the right).
 #' @param legends character. Indicates where to plot the legend, `"topright"`(default setting), `"topleft"`,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
-#' @param dynamicPlot logical. Whether (FALSE, default setting) or (TRUE) to plot the 
+#' @param dynamicPlot logical. Whether (FALSE, default setting) or (TRUE) to plot the
 #' data dynamicaly using leaflet library
 #' @returns A plot of the storm track data with the raster layer.
 #'
@@ -130,15 +130,15 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' # Plotting maximum sustained wind speed for Pam (2015) near Vanuatu
 #' pam.msw <- spatialBehaviour(pam, verbose = 0)
 #' plotBehaviour(pam, pam.msw)
-#' 
+#'
 #' # dynamicPlot mode
 #' plotBehaviour(pam, pam.msw, dynamicPlot = TRUE)
 #'
 #' # Plotting 2D wind speed profile for Pam (2015) near Vanuatu
 #' pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 #' plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
-#' 
-# 
+#'
+#
 #' }
 #' @export
 plotBehaviour <- function(sts,
@@ -182,35 +182,35 @@ plotBehaviour <- function(sts,
     ymin <- ylim[1]
     ymax <- ylim[2]
   }
-  
+
   # Choose color, range and legends depending on input raster
   if (product == "MSW") {
     col <- sts@scalePalette
     range <- c(17, 95)
     leg <- ifelse(dynamicPlot, "MSW (m.s <sup>-1</sup>)", expression(paste("MSW (m.s"^"-1", ")")))
-    
+
   } else if (product == "PDI") {
     col <- pdiPalette
     range <- c(0, max(terra::values(rasterProduct), na.rm = TRUE))
     leg <- ifelse(dynamicPlot, "PDI (J.m<sup>2</sup>)",expression(paste("PDI (J.m"^"2", ")")))
-    
+
   } else if (product == "Exposure") {
     col <- exposurePalette
     range <- c(0, max(terra::values(rasterProduct), na.rm = TRUE))
     leg <- ifelse(dynamicPlot, "Duration of exposure (h)",expression(paste("Duration of exposure (h)")))
-    
+
   } else if (product == "Speed") {
     col <- sts@scalePalette
     range <- c(17, 95)
     leg <- ifelse(dynamicPlot, "Radial wind speed (m.s <sup>-1</sup>)",expression(paste("Radial wind speed (m.s"^"-1", ")")))
-    
+
   } else if (product == "Direction") {
     col <- exposurePalette
     range <- c(0, 360)
     leg <- ifelse(dynamicPlot, "Wind direction (degree)",expression(paste("Wind direction (degree)")))
-    
+
   }
-  
+
   if (!is.null(colorPalette)) {
     col <- colorPalette
   }
@@ -299,7 +299,7 @@ plotBehaviour <- function(sts,
   }else{
 
     # dynamicPlot plot
-    map <- plotStorms(sts = sts, 
+    map <- plotStorms(sts = sts,
                       names = name,
                       xlim = c(xmin, xmax),
                       ylim = c(ymin, ymax),
@@ -310,11 +310,31 @@ plotBehaviour <- function(sts,
                                  terra::values(rasterProduct),
                                  na.color = "transparent")
 
-    map <- leaflet::addRasterImage(map,
-      rasterProduct,
-      colors = pal,
-      opacity = 0.8
-    )
+    # Case where raster overlaps the 180° meridian
+    if (terra::ext(rasterProduct)[2] > 180) {
+      rasterProductShifted  <- terra::shift(rasterProduct, -360)
+      rasterProduct1 <- terra::trim(terra::crop(rasterProductShifted, terra::ext(-180, 180, -90, 90), snap = "in"))
+      rasterProduct1 <- terra::shift(rasterProduct1, -180 - xmin(rasterProduct1))
+      rasterProduct2 <- terra::trim(terra::shift(terra::crop(rasterProductShifted, terra::ext(-360, -180, -90, 90), snap = "in"), 360))
+      rasterProduct2 <- terra::shift(rasterProduct2, 180 - xmax(rasterProduct2))
+      map <- leaflet::addRasterImage(map,
+        rasterProduct1,
+        colors = pal,
+        opacity = 0.8
+      )
+      map <- leaflet::addRasterImage(map,
+        rasterProduct2,
+        colors = pal,
+        opacity = 0.8
+      )
+    } else {
+      # Normal case
+      map <- leaflet::addRasterImage(map,
+        rasterProduct,
+        colors = pal,
+        opacity = 0.8
+      )
+    }
 
     #Adding legends
     map <- leaflet::addLegend(map,
