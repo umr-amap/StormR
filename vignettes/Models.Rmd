@@ -181,8 +181,8 @@ Wind direction is computed as follows,
 $$
 \left\{
 \begin{aligned}
-D = A_z - 90 - I \quad if \quad \phi > 0 \quad(Northern \quad Hemispher) \\
-D = A_z - 90 - I \quad if \quad \phi \leq 0 \quad(Southern \quad Hemispher) \\
+D = A_z - 90 - I \quad if \quad \phi > 0 \quad(Northern \quad Hemisphere) \\
+D = A_z + 90 + I \quad if \quad \phi \leq 0 \quad(Southern \quad Hemisphere) \\
 \end{aligned}
 \right.
 $$
