@@ -35,8 +35,8 @@ names(sshsPalette) <- c("TD",
                         "Cat. 4",
                         "Cat. 5")
 
-northAtlantic <- sf::st_polygon(list(cbind(c(359, 359, 298, 300, 289, 282, 279, 263, 266, 281, 304, 308, 320, 359),
-                                           c(0, 60, 60, 50, 42, 34, 30, 28, 18, 10, 7, 0, 0, 0))))
+northAtlantic <- sf::st_polygon(list(cbind(c(359, 359, 298, 290, 280, 270, 255, 266, 281, 304, 308, 320, 359),
+                                           c(0, 60, 60, 55, 50, 45, 28, 18, 10, 7, 0, 0, 0))))
 southAtlantic <- sf::st_polygon(list(cbind(c(290, 359, 359, 290, 290),
                                            c(-60, -60, 0, 0, -60))))
 eastPacific <- sf::st_polygon(list(cbind(c(180, 180, 210, 217, 236, 236, 240, 250, 265, 280, 180),
