@@ -62,58 +62,6 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
 
 
 
-#' rasterizePDI counterpart function for non raster data
-#'
-#' @noRd
-#' @param wind numeric vector. Wind speed values
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#'
-#' @return numeric. PDI computed using the wind speed values in wind
-computePDI <- function(wind, tempRes) {
-  # Computing surface drag coefficient
-  rho <- 1
-  cd <- 0.002
-  # Raising to power 3
-  pdi <- wind**3
-  # Applying both rho and surface drag coefficient
-  pdi <- pdi * rho * cd
-  # Integrating over the whole track
-  pdi <- sum(pdi, na.rm = TRUE) * tempRes
-
-  return(round(pdi, 3))
-}
-
-
-
-
-
-#' rasterizeExposure counterpart function for non raster data
-#'
-#' @noRd
-#' @param wind numeric vector. Wind speed values
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#' @param threshold numeric vector. Wind threshold
-#'
-#' @return numeric vector of length 5 (for each category). Exposure computed
-#'   using the wind speed values in wind
-computeExposure <- function(wind, tempRes, threshold) {
-  exposure <- c()
-  for (t in threshold) {
-    ind <- which(wind >= t)
-    expo <- rep(0, length(wind))
-    expo[ind] <- 1
-    exposure <- c(exposure, sum(expo, na.rm = TRUE) * tempRes)
-  }
-
-  return(exposure)
-}
-
-
-
-
-
 #' rasterizeProduct counterpart function for non raster data
 #'
 #' @noRd
