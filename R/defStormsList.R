@@ -83,7 +83,8 @@ setOldClass("sf")
 #' @slot scale numeric. List of storm scale thresholds to use in all functions of
 #' the package. Default value is set to the Saffir Simpson Hurricane Scale
 #' @slot scalePalette character. Named vector containing the color hex code
-#' corresponding to each category in `scale` slot. Default value is the palette associated with the Saffir Simpson Hurricane Scale
+#' corresponding to each category in `scale` slot. Default value is the palette
+#' associated with the Saffir Simpson Hurricane Scale
 #' @return A `stormsList` object.
 #' \itemize{
 #'  \item `data`, list.
@@ -651,10 +652,10 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
 
   # Checking scale input
   stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
-  stopifnot("invalid scale input" = all(scale>=0))
+  stopifnot("invalid scale input" = all(scale >= 0))
 
   # Checking scalePalette input
-  if(!is.null(scalePalette)){
+  if (!is.null(scalePalette)) {
     stopifnot("scalePalette must be a (named) character vector" = identical(class(scalePalette), "character"))
     stopifnot("(lenght(scalePalette) must be equal to lenght(scale) + 1)" =
                 length(scalePalette) == length(scale) + 1)
@@ -667,7 +668,7 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
   stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 
   #Checking removeUnder input
-  if(!is.null(removeUnder)){
+  if (!is.null(removeUnder)) {
     stopifnot("removeUnder must be numeric" = identical(class(removeUnder), "numeric"))
     stopifnot("removeUnder must a single integer" = length(removeUnder) == 1)
     stopifnot("Invalid removeUnder input" = removeUnder %in% seq(1, length(scale)))
@@ -754,7 +755,7 @@ convertLoi <- function(loi) {
 #' @return loi extended with buffer in a sf format
 makeBuffer <- function(loi, loiSf, buffer) {
 
-  if (buffer == 0){
+  if (buffer == 0) {
     loiBuffer <- loiSf
 
   }else if ((identical(class(loi), c("character"))) && (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))) {
@@ -764,7 +765,7 @@ makeBuffer <- function(loi, loiSf, buffer) {
     loiBuffer <- sf::st_shift_longitude(loiBuffer)
   }
 
-    return(loiBuffer)
+  return(loiBuffer)
 
 }
 
@@ -1007,7 +1008,8 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer, scale) {
 #' @details The available countries for the `loi` are those provided in the
 #'   `rwolrdxtra` package. This package provide high resolution vector country
 #'   boundaries derived from Natural Earth data. More informations on the Natural Earth data
-#'   here: [http://www.naturalearthdata.com/downloads/10m-cultural-vectors/](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/).
+#'   here:
+#'   [http://www.naturalearthdata.com/downloads/10m-cultural-vectors/](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/).
 #'
 #'@references
 #'Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann, C. J. (2010).
@@ -1041,36 +1043,36 @@ writeStorm <- function(stormList, stormNames, sds, index, loiSfBuffer, scale) {
 #' @importFrom methods as
 #' @export
 defStormsList <- function(sds,
-                   loi,
-                   seasons = c(sds@seasons["min"], sds@seasons["max"]),
-                   names = NULL,
-                   maxDist = 300,
-                   scale = sshs,
-                   scalePalette = NULL,
-                   removeUnder = NULL,
-                   verbose = 2) {
+                          loi,
+                          seasons = c(sds@seasons["min"], sds@seasons["max"]),
+                          names = NULL,
+                          maxDist = 300,
+                          scale = sshs,
+                          scalePalette = NULL,
+                          removeUnder = NULL,
+                          verbose = 2) {
 
   startTime <- Sys.time()
 
   checkInputsDefStormsList(sds, loi, seasons, names, maxDist, scale, scalePalette, verbose, removeUnder)
 
   # order scale
-  scale = scale[order(scale)]
+  scale <- scale[order(scale)]
 
 
-  if(identical(scale, sshs) & is.null(scalePalette)){
+  if (identical(scale, sshs) && is.null(scalePalette)) {
     # Default palette should be SSHS
     scalePalette <- sshsPalette
 
-  }else if(!identical(scale, sshs) & is.null(scalePalette)){
+  }else if (!identical(scale, sshs) && is.null(scalePalette)) {
     # Create a default color Palette based on the number of level in scale
     palette <- grDevices::colorRampPalette(colors = c("red", "green", "blue"))
     scalePalette <- rev(palette(length(scale) + 1))
   }
 
-  if(is.null(names(scalePalette))){
+  if (is.null(names(scalePalette))) {
     # If scalePalette has no names, provide default ones
-    names(scalePalette) <- paste0("Cat. ",seq(0, length(scale)))
+    names(scalePalette) <- paste0("Cat. ", seq(0, length(scale)))
 
   }
 
@@ -1087,8 +1089,8 @@ defStormsList <- function(sds,
   loiSf <- convertLoi(loi)
 
 
-   #Handling buffer
-   spatialBuffer <- makeBuffer(loi, loiSf, maxDist * km)
+  #Handling buffer
+  spatialBuffer <- makeBuffer(loi, loiSf, maxDist * km)
 
 
   if (verbose) {
@@ -1137,11 +1139,11 @@ defStormsList <- function(sds,
 
     for (i in indices) {
       stsOutput <- writeStorm(stormList = stormList,
-                               stormNames = stormNames,
-                               sds = sds,
-                               index = i,
-                               loiSfBuffer = spatialBuffer,
-                               scale = scale)
+                              stormNames = stormNames,
+                              sds = sds,
+                              index = i,
+                              loiSfBuffer = spatialBuffer,
+                              scale = scale)
 
       if (!is.null(stsOutput[[1]])) {
         stormList <- stsOutput[[1]]
