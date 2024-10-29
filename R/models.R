@@ -131,71 +131,89 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 # Helpers to handle Models/Asymmetry/Direction#
 ##############################################
 
+#' Compute distance to the eye of the storm in km
+#'
+#' @noRd
+#' @param points vector or SpatRaster. Coordinates of the points. 1st column is lon, 2nd column is lat
+#' @param eye vector. Coordinates of the eye of the storm
+#' @param isRaster logical. If TRUE, points is a SpatRaster
+#'
+#' @return SpatRaster if isRaster, else matrix. Distance to the eye of the storm in km
+computeDistanceEyeKm <- function(points, eye, isRaster = FALSE) {
+  # Computing distances to the eye of the storm in km
+  if (isRaster) {
+    distEyeKm <- terra::distance(
+      x = points,
+      y = terra::vect(rbind(eye), crs = "+proj=longlat +datum=WGS84"),
+      unit = "km"
+    )
+  } else {
+    distEyeKm <- terra::distance(
+      x = points,
+      y = eye,
+      unit = "km",
+      lonlat = TRUE
+    )
+  }
+
+  return(distEyeKm)
+}
+
+# ' Compute distance to the eye of the storm in degrees
+# '
+# ' @noRd
+# ' @param points vector. Coordinates of the points. 1st column is lon, 2nd column is lat
+# ' @param eye vector. Coordinates of the eye of the storm
+# '
+# ' @return list. xDistEyeDeg and yDistEyeDeg
+computeDistanceEyeDeg <- function(points, eye) {
+  # Computing distances to the eye of the storm for x and y axes in degrees
+  xDistEyeDeg <- points[, 1] - eye[1]
+  yDistEyeDeg <- points[, 2] - eye[2]
+
+  return(list(xDist = xDistEyeDeg, yDist = yDistEyeDeg))
+}
+
 
 #' Compute wind profile according to the selected method and asymmetry
 #'
 #' @noRd
-#' @param data data.frame. Data generated with getInterpolatedData function
-#' @param index numeric. Index of interpolated observation in data to use for
-#'   the computations
+#' @param data data.frame. Data generated with getInterpolatedData function at a given time step
+#'   containing all information for calculations
 #' @param method character. method input form stormBehaviour_sp
 #' @param asymmetry character. Asymmetry input form stormBehaviour
-#' @param buffer numeric. Buffer size (in degree) for the storm
+#' @param distEyeKm SpatRaster or matrix. Distance to the eye of the storm in km
+#' @param distEyeDeg list. xDist and yDist. Distance to the eye of the storm in degrees
+#' @param points SpatRaster or matrix. Coordinates of the points to calculate the wind profile
 #' @param resolution numeric. Resolution of the raster
 #' @param loi sf. loi to intersect for Boose model
 #' @param countries sf Geometry. countries to intersect for Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(data, index, method, asymmetry, buffer, resolution, loi, countries) {
-  # Making template to compute wind profiles
-  rasterTemplate <- makeTemplateModel(
-    data$lon[index],
-    data$lat[index],
-    buffer,
-    resolution,
-    data$isoTimes[index]
-  )
-  # Computing coordinates of raster
-  rasterCoords <- terra::crds(rasterTemplate, na.rm = FALSE)
-  # Computing distances to the eye of the storm in km
-  distEyeKm <- terra::distance(
-    x = rasterTemplate,
-    y = terra::vect(rbind(cbind(data$lon[index], data$lat[index])), crs = "+proj=longlat +datum=WGS84"),
-    unit = "km"
-  )
-  # Computing distances to the eye of the storm for x and y axes in degrees
-  xDistEyeDeg <- rasterCoords[, 1] - data$lon[index]
-  yDistEyeDeg <- rasterCoords[, 2] - data$lat[index]
-
+computeWindProfile <- function(data, method, asymmetry, distEyeKm, distEyeDeg,
+                               points, resolution, loi, countries) {
   # Computing wind speed according to the input model
   if (method == "Willoughby") {
     speed <- willoughby(
-      r = distEyeKm,
-      rmw = data$rmw[index],
-      msw = data$msw[index],
-      lat = data$lat[index]
+      r = distEyeKm, rmw = data$rmw, msw = data$msw, lat = data$lat
     )
     direction <- terra::rast(
-      x = rasterTemplate,
-      vals = computeDirection(xDistEyeDeg, yDistEyeDeg, data$lat[index])
+      x = points,
+      vals = computeDirection(distEyeDeg$xDist, distEyeDeg$yDist, data$lat)
     )
   } else if (method == "Holland") {
     speed <- holland(
-      r = distEyeKm,
-      rmw = data$rmw[index],
-      msw = data$msw[index],
-      pc = data$pc[index],
-      poci = data$poci[index],
-      lat = data$lat[index]
+      r = distEyeKm, rmw = data$rmw, msw = data$msw,
+      pc = data$pc, poci = data$poci, lat = data$lat
     )
     direction <- terra::rast(
-      x = rasterTemplate,
-      vals = computeDirection(xDistEyeDeg, yDistEyeDeg, data$lat[index])
+      x = points,
+      vals = computeDirection(distEyeDeg$xDist, distEyeDeg$yDist, data$lat)
     )
   } else if (method == "Boose") {
     # Intersect points coordinates with land
-    pts <- sf::st_as_sf(as.data.frame(rasterCoords), coords = c("x", "y"), crs = "wgs84")
-    landIntersect <- rep(0, length(xDistEyeDeg))
+    pts <- sf::st_as_sf(as.data.frame(terra::crds(points, na.rm = FALSE)), coords = c("x", "y"), crs = "wgs84")
+    landIntersect <- rep(0, nrow(pts))
 
     for (country in countries) {
       ind <- which(sf::st_intersects(pts, country, sparse = FALSE) == TRUE)
@@ -203,22 +221,14 @@ computeWindProfile <- function(data, index, method, asymmetry, buffer, resolutio
     }
     asymmetry <- "None"
     speed <- boose(
-      r = distEyeKm,
-      rmw = data$rmw[index],
-      msw = data$msw[index],
-      pc = data$pc[index],
-      poci = data$poci[index],
-      x = xDistEyeDeg,
-      y = yDistEyeDeg,
-      vx = data$vxDeg[index],
-      vy = data$vyDeg[index],
-      vh = data$stormSpeed[index],
-      landIntersect = landIntersect,
-      lat = data$lat[index]
+      r = distEyeKm, rmw = data$rmw, msw = data$msw,
+      pc = data$pc, poci = data$poci, x = distEyeDeg$xDist, y = distEyeDeg$yDist,
+      vx = data$vxDeg, vy = data$vyDeg, vh = data$stormSpeed,
+      landIntersect = landIntersect, lat = data$lat
     )
     direction <- terra::rast(
-      x = rasterTemplate,
-      vals = computeDirectionBoose(xDistEyeDeg, yDistEyeDeg, data$lat[index], landIntersect)
+      x = points,
+      vals = computeDirectionBoose(distEyeDeg$xDist, distEyeDeg$yDist, data$lat, landIntersect)
     )
   }
 
@@ -226,9 +236,8 @@ computeWindProfile <- function(data, index, method, asymmetry, buffer, resolutio
   if (asymmetry != "None") {
     output <- computeAsymmetry(
       asymmetry, speed, direction,
-      data$vxDeg[index], data$vyDeg[index],
-      data$stormSpeed[index], distEyeKm,
-      data$rmw[index], data$lat[index]
+      data$vxDeg, data$vyDeg, data$stormSpeed, distEyeKm,
+      data$rmw, data$lat
     )
   } else {
     output <- list(speed = speed, direction = direction)
@@ -351,7 +360,7 @@ computeDirectionBoose <- function(x, y, lat, landIntersect) {
     direction[landIntersect == 0] <- direction[landIntersect == 0] + 20
   }
 
-  return(round(rotate0360(direction, 3)))
+  return(round(rotate0360(direction), 3))
 }
 
 
@@ -393,7 +402,7 @@ computeMSWRaster <- function(speed, nbg, name) {
   # Applying focal function to smooth results
   msw <- terra::focal(msw, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, pad = TRUE)
   names(msw) <- paste0(name, "_MSW")
-  terra::time(pdi) <- as.POSIXct(terra::time(speed)[[1]])
+  terra::time(msw) <- as.POSIXct(terra::time(speed)[[1]])
 
   return(msw)
 }
@@ -500,4 +509,18 @@ computeExposure <- function(wind, tempRes, threshold) {
   }
 
   return(exposure)
+}
+
+#' Compute the countries intersecting with the LOI
+#'
+#' @noRd
+#' @param loi sf. Location of Interest
+#'
+#' @return sf. Countries intersecting with the LOI
+getCountriesInLoi <- function(loi) {
+  # Map for intersection
+  world <- rworldmap::getMap(resolution = "high")
+  world <- sf::st_as_sf(world, crs = wgs84)
+  indCountriesInLoi <- which(sf::st_intersects(loi, world$geometry, sparse = FALSE) == TRUE)
+  return(world$geometry[indCountriesInLoi])
 }
