@@ -108,16 +108,11 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
   vr <- r
   vr <- sqrt((rmw / r)**b * exp(1 - (rmw / r)**b))
 
+  # Northern Hemisphere, t is clockwise
+  # Southern Hemisphere, t is counterclockwise
+  angle <- ifelse(lat >= 0, atan2(vy, vx) - atan2(y, x), atan2(y, x) - atan2(vy, vx))
 
-  if (lat >= 0) {
-    # Northern Hemisphere, t is clockwise
-    angle <- atan2(vy, vx) - atan2(y, x)
-  } else {
-    # Southern Hemisphere, t is counterclockwise
-    angle <- atan2(y, x) - atan2(vy, vx)
-  }
-
-
+  # Land interaction
   vr[landIntersect == 1] <- 0.8 * (msw - (1 - sin(angle[landIntersect == 1])) * vh / 2) * vr[landIntersect == 1]
   vr[landIntersect == 0] <- (msw - (1 - sin(angle[landIntersect == 0])) * vh / 2) * vr[landIntersect == 0]
 
@@ -127,52 +122,9 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 
 
 
-##############################################
-# Helpers to handle Models/Asymmetry/Direction#
-##############################################
-
-#' Compute distance to the eye of the storm in km
-#'
-#' @noRd
-#' @param points vector or SpatRaster. Coordinates of the points. 1st column is lon, 2nd column is lat
-#' @param eye vector. Coordinates of the eye of the storm
-#' @param isRaster logical. If TRUE, points is a SpatRaster
-#'
-#' @return SpatRaster if isRaster, else matrix. Distance to the eye of the storm in km
-computeDistanceEyeKm <- function(points, eye, isRaster = FALSE) {
-  # Computing distances to the eye of the storm in km
-  if (isRaster) {
-    distEyeKm <- terra::distance(
-      x = points,
-      y = terra::vect(rbind(eye), crs = "+proj=longlat +datum=WGS84"),
-      unit = "km"
-    )
-  } else {
-    distEyeKm <- terra::distance(
-      x = points,
-      y = eye,
-      unit = "km",
-      lonlat = TRUE
-    )
-  }
-
-  return(distEyeKm)
-}
-
-# ' Compute distance to the eye of the storm in degrees
-# '
-# ' @noRd
-# ' @param points vector. Coordinates of the points. 1st column is lon, 2nd column is lat
-# ' @param eye vector. Coordinates of the eye of the storm
-# '
-# ' @return list. xDistEyeDeg and yDistEyeDeg
-computeDistanceEyeDeg <- function(points, eye) {
-  # Computing distances to the eye of the storm for x and y axes in degrees
-  xDistEyeDeg <- points[, 1] - eye[1]
-  yDistEyeDeg <- points[, 2] - eye[2]
-
-  return(list(xDist = xDistEyeDeg, yDist = yDistEyeDeg))
-}
+################################################
+# Helpers to handle Models/Asymmetry/Direction #
+################################################
 
 
 #' Compute wind profile according to the selected method and asymmetry
@@ -184,21 +136,20 @@ computeDistanceEyeDeg <- function(points, eye) {
 #' @param asymmetry character. Asymmetry input form stormBehaviour
 #' @param distEyeKm SpatRaster or matrix. Distance to the eye of the storm in km
 #' @param distEyeDeg list. xDist and yDist. Distance to the eye of the storm in degrees
-#' @param points SpatRaster or matrix. Coordinates of the points to calculate the wind profile
-#' @param resolution numeric. Resolution of the raster
+#' @param rasterTemplate SpatRaster. Template raster containing coordinates of the points to calculate the wind profile
 #' @param loi sf. loi to intersect for Boose model
 #' @param countries sf Geometry. countries to intersect for Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
 computeWindProfile <- function(data, method, asymmetry, distEyeKm, distEyeDeg,
-                               points, resolution, loi, countries) {
+                               loi, countries, rasterTemplate = NULL) {
   # Computing wind speed according to the input model
   if (method == "Willoughby") {
     speed <- willoughby(
       r = distEyeKm, rmw = data$rmw, msw = data$msw, lat = data$lat
     )
     direction <- terra::rast(
-      x = points,
+      x = rasterTemplate,
       vals = computeDirection(distEyeDeg$xDist, distEyeDeg$yDist, data$lat)
     )
   } else if (method == "Holland") {
@@ -207,18 +158,12 @@ computeWindProfile <- function(data, method, asymmetry, distEyeKm, distEyeDeg,
       pc = data$pc, poci = data$poci, lat = data$lat
     )
     direction <- terra::rast(
-      x = points,
+      x = rasterTemplate,
       vals = computeDirection(distEyeDeg$xDist, distEyeDeg$yDist, data$lat)
     )
   } else if (method == "Boose") {
     # Intersect points coordinates with land
-    pts <- sf::st_as_sf(as.data.frame(terra::crds(points, na.rm = FALSE)), coords = c("x", "y"), crs = "wgs84")
-    landIntersect <- rep(0, nrow(pts))
-
-    for (country in countries) {
-      ind <- which(sf::st_intersects(pts, country, sparse = FALSE) == TRUE)
-      landIntersect[ind] <- 1
-    }
+    landIntersect <- getLandIntersect(rasterTemplate, countries)
     asymmetry <- "None"
     speed <- boose(
       r = distEyeKm, rmw = data$rmw, msw = data$msw,
@@ -226,9 +171,13 @@ computeWindProfile <- function(data, method, asymmetry, distEyeKm, distEyeDeg,
       vx = data$vxDeg, vy = data$vyDeg, vh = data$stormSpeed,
       landIntersect = landIntersect, lat = data$lat
     )
+    direction <- computeDirectionBoose(distEyeDeg$xDist, distEyeDeg$yDist, data$lat, landIntersect)
+  }
+
+  if (is(speed, "SpatRaster")) {
     direction <- terra::rast(
-      x = points,
-      vals = computeDirectionBoose(distEyeDeg$xDist, distEyeDeg$yDist, data$lat, landIntersect)
+      x = rasterTemplate,
+      vals = direction
     )
   }
 
@@ -387,49 +336,6 @@ computeDirection <- function(x, y, lat) {
 }
 
 
-
-#' Compute MSW raster
-#'
-#' @noRd
-#' @param speed SpatRaster stack. Wind speed raster for all time steps
-#' @param nbg numeric. Number of cells to consider for the focal function
-#' @param name character. Name of the storm. Used to give the correct layer name
-#'   in finalStack
-#'
-#' @return MSW SpatRaster
-computeMSWRaster <- function(speed, nbg, name) {
-  msw <- max(speed, na.rm = TRUE)
-  # Applying focal function to smooth results
-  msw <- terra::focal(msw, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, pad = TRUE)
-  names(msw) <- paste0(name, "_MSW")
-  terra::time(msw) <- as.POSIXct(terra::time(speed)[[1]])
-
-  return(msw)
-}
-
-
-#' Compute PDI raster
-#'
-#' @noRd
-#' @param speed SpatRaster stack. Wind speed raster for all time steps
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#' @param nbg numeric. Number of cells to consider for the focal function
-#' @param name character. Name of the storm. Used to give the correct layer name
-#'   in finalStack
-#'
-#' @return PDI SpatRaster
-computePDIRaster <- function(speed, tempRes, nbg, name) {
-  pdi <- computePDI(speed, tempRes)
-  # Applying focal function to smooth results
-  pdi <- terra::focal(pdi, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, pad = TRUE)
-  names(pdi) <- paste0(name, "_PDI")
-  terra::time(pdi) <- terra::time(speed[[1]])
-
-  return(round(pdi, 3))
-}
-
-
 #' rasterizePDI counterpart function for non raster data
 #'
 #' @noRd
@@ -452,43 +358,6 @@ computePDI <- function(speed, tempRes) {
   return(round(pdi, 3))
 }
 
-
-
-
-
-#' Compute Exposure raster
-#'
-#' @noRd
-#' @param speed SpatRaster stack. Wind speed raster for all time steps
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#' @param nbg numeric. Number of cells to consider for the focal function
-#' @param name character. Name of the storm. Used to give the correct layer name
-#'   in finalStack
-#' @param threshold numeric vector. Wind threshold
-#'
-#' @return Exposure SpatRaster
-computeExposureRaster <- function(speed, tempRes, nbg, name, threshold) {
-  exposure <- terra::rast(
-    terra::ext(speed),
-    res = terra::res(speed),
-    vals = NA,
-    nlyr = length(threshold)
-  )
-  for (l in seq_along(threshold)) {
-    isGreaterSpeed <- terra::ifel(speed >= threshold[l], 1, NA)
-    prod <- sum(isGreaterSpeed, na.rm = TRUE) * tempRes
-    # Applying focal function to smooth results
-    prod <- terra::focal(prod, w = matrix(1, nbg, nbg), mean, na.rm = TRUE)
-    names(prod) <- paste0(name, "_Exposure_", threshold[l])
-    terra::time(prod) <- terra::time(speed[[1]])
-    exposure[[l]] <- prod
-  }
-
-  return(round(exposure, 3))
-}
-
-
 #' rasterizeExposure counterpart function for non raster data
 #'
 #' @noRd
@@ -509,18 +378,4 @@ computeExposure <- function(wind, tempRes, threshold) {
   }
 
   return(exposure)
-}
-
-#' Compute the countries intersecting with the LOI
-#'
-#' @noRd
-#' @param loi sf. Location of Interest
-#'
-#' @return sf. Countries intersecting with the LOI
-getCountriesInLoi <- function(loi) {
-  # Map for intersection
-  world <- rworldmap::getMap(resolution = "high")
-  world <- sf::st_as_sf(world, crs = wgs84)
-  indCountriesInLoi <- which(sf::st_intersects(loi, world$geometry, sparse = FALSE) == TRUE)
-  return(world$geometry[indCountriesInLoi])
 }

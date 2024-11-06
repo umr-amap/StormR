@@ -385,20 +385,10 @@ temporalBehaviour <- function(sts,
     cat("Initializing data ...")
   }
 
-  if (method == "Boose") {
-    # Map for intersection
-    world <- rworldmap::getMap(resolution = "high")
-    world <- sf::st_as_sf(world)
-    world <- sf::st_transform(world, crs = wgs84)
-    indCountries <- which(sf::st_intersects(sts@spatialLoiBuffer, world$geometry, sparse = FALSE) == TRUE)
-    asymmetry <- "None"
-  } else {
-    indCountries <- NULL
-  }
+  countriesGeometryInLoi <- if (method == "Boose") getCountriesInLoi(sts@spatialLoiBuffer) else NULL
 
   points$x[points$x < 0] <- points$x[points$x < 0] + 360
 
-  buffer <- 2.5
   # Initializing final result
   finalResult <- list()
 
@@ -423,50 +413,42 @@ temporalBehaviour <- function(sts,
   }
 
 
-  for (st in sts@data) {
+  for (storm in sts@data) {
     # Handling indices inside loi.buffer or not
-    ind <- getIndices(st, 2, "none")
+    ind <- getIndices(storm, 2, "none")
 
-    # Getting data associated with storm st
-    dataTC <- getDataInterpolate(st, ind, tempRes, empiricalRMW, method)
-
+    # Getting data associated with storm "storm"
+    dataTC <- getDataInterpolate(storm, ind, tempRes, empiricalRMW, method)
+    nbSteps <- dim(dataTC)[1] - 1
 
     # Computing distances from the eye of storm for every observations x, and
     # every points y
-    distEye <- terra::distance(
-      x = cbind(dataTC$lon, dataTC$lat),
-      y = cbind(points$x, points$y),
-      lonlat = TRUE
-    )
+    eye <- cbind(dataTC$lon, dataTC$lat)
+    distEyeKm <- computeDistanceEyeKm(points, eye)
+    distEyeDeg <- computeDistanceEyeDeg(points, eye)
 
     res <- c()
-    # For each point
+    # For each location to compute
     for (i in seq_len(dim(points)[1])) {
-      # Coordinates
-      pt <- points[i, ]
+      for (j in 1:nbSteps) {
+        # Computing wind speed/direction
+        output <- computeWindProfile(
+          dataTC[j, ], method, asymmetry, distEyeKm[i, j],
+          list(xDist = distEyeDeg$xDist[j, i], yDist = distEyeDeg$yDist[j, i]),
+          sts@spatialLoiBuffer, countriesGeometryInLoi
+        )
 
-      # Computing distance between eye of storm and point P
-      x <- pt$x - dataTC$lon
-      y <- pt$y - dataTC$lat
+        vr <- output$wind
+        dir <- output$direction
 
-      # Computing wind speed/direction
-      dist2p <- distEye[, i]
-      output <- computeWindProfile(
-        dataTC, i, method, asymmetry, x, y, pt, dist2p,
-        buffer, sts@spatialLoiBuffer,
-        world, indCountries
-      )
-
-      vr <- output$wind
-      dir <- output$direction
-
-      # Computing product
-      res <- computeProduct(product, vr, dir, tempRes, res, windThreshold)
+        # Computing product
+        res <- computeProduct(product, vr, dir, tempRes, res, windThreshold)
+      }
     }
 
     finalResult <- finalizeResult(
       finalResult, res, product, points,
-      dataTC$isoTimes, dataTC$indices, st,
+      dataTC$isoTimes, dataTC$indices, storm,
       windThreshold
     )
   }

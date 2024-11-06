@@ -70,366 +70,9 @@ checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asy
 
 
 
-
-
-#################################
-# Helpers to make template rasters#
-#################################
-
-
-
-
-
-#' Generate raster template for the computations
-#'
-#' @noRd
-#' @param buffer sf object. LOI + buffer extention
-#' @param res numeric. Space resolution min for the template
-#'
-#' @return a SpatRaster
-makeTemplateRaster <- function(buffer, res) {
-  # Deriving the raster template
-  ext <- sf::st_bbox(buffer)
-
-  template <- terra::rast(
-    xmin = ext$xmin,
-    xmax = ext$xmax,
-    ymin = ext$ymin,
-    ymax = ext$ymax,
-    resolution = res,
-    vals = NA,
-  )
-  terra::origin(template) <- c(0, 0)
-
-  return(template)
-}
-
-
-
-
-
-#' Generate raster template to compute wind speed according to the different
-#' models
-#'
-#' @noRd
-#' @param lon numeric. Longitude of the storm
-#' @param lat numeric. Latitude of the storm
-#' @param buffer_size numeric. Buffer size in degree
-#' @param resolution numeric. Resolution of the raster
-#' @param time numeric. Time of the storm
-#'
-#' @return SpatRaster
-makeTemplateModel <- function(lon, lat, buffer_size, resolution, time) {
-  template <- terra::rast(
-    xmin = lon - buffer_size,
-    xmax = lon + buffer_size,
-    ymin = lat - buffer_size,
-    ymax = lat + buffer_size,
-    resolution = resolution,
-    vals = NA,
-    time = as.POSIXct(time)
-  )
-  terra::origin(template) <- c(0, 0)
-
-  return(template)
-}
-
-
-
-
-
-###############################
-# Helpers to get the right data#
-###############################
-
-
-
-
-
-#' Get indices for computations
-#'
-#' Whether to get only observations inside LOI + buffer extention (+ offset) or
-#' getting all the observations
-#'
-#' @noRd
-#' @param st Storm Object
-#' @param offset numeric. Offset to apply at the begining and at the end
-#' @param product character. product input from spatialBehaviour
-#'
-#' @return numeric vector gathering the indices of observation to use to perform
-#'   the further computations
-getIndices <- function(st, offset, product) {
-  # Use observations within the loi for the computations
-  ind <- seq(st@obs[1], st@obs[length(st@obs)], 1)
-
-  if ("MSW" %in% product || "PDI" %in% product || "Exposure" %in% product) {
-    # Handling indices and offset (outside of loi at entry and exit)
-    for (o in 1:offset) {
-      ind <- c(st@obs[1] - o, ind)
-      ind <- c(ind, st@obs[length(st@obs)] + o)
-    }
-
-    # Remove negative values and values beyond the number of observations
-    ind <- ind[ind > 0 & ind <= getNbObs(st)]
-  }
-
-  return(ind)
-}
-
-
-
-
-
-#' Get data associated with one storm to perform further computations
-#'
-#' @noRd
-#' @param st Storm object
-#' @param indices numeric vector extracted from getIndices
-#' @param tempRes numeric. time step for interpolated data, in minutes
-#' @param empiricalRMW logical. Whether to use rmw from the data or to compute
-#'   them according to getRmw function
-#' @param method character. method input from spatialBehaviour
-#'
-#' @return a data.frame of dimension length(indices) : 9. Columns are
-#'  \itemize{
-#'    \item lon: numeric. Longitude coordinates (degree)
-#'    \item lat: numeric. Latitude coordinates (degree)
-#'    \item msw: numeric. Maximum Sustained Wind (m/s)
-#'    \item rmw: numeric. Radius of Maximum Wind (km)
-#'    \item pc: numeric. Pressure at the center of the storm (mb)
-#'    \item poci: numeric. Pressure of Outermost Closed Isobar (mb)
-#'    \item stormSpeed: numeric. Velocity of the storm (m/s)
-#'    \item vxDeg: numeric. Velocity of the speed in the x direction (deg/h)
-#'    \item vyDeg: numeric Velocity of the speed in the y direction (deg/h)
-#'  }
-getDataInterpolate <- function(st, indices, tempRes, empiricalRMW, method) {
-  # Nb of observations of storm and time associated
-  lenIndices <- length(indices)
-  timeObs <- st@obs.all$iso.time[indices]
-  # If data has irregular temporal resolution, we have to find the gcd of the time series
-  timeStepData <- as.numeric(difftime(timeObs[2:lenIndices],
-                                      timeObs[1:lenIndices - 1],
-                                      units = "mins"))
-  gcd2 <- function(a, b) {
-    if (b == 0) a else Recall(b, a %% b)
-  }
-  gcd <- function(...) Reduce(gcd2, c(...))
-  timeStepDataGCD <- gcd(timeStepData)
-  # Determine temporal interpolation time step
-  interpolatedRes <- min(timeStepDataGCD, tempRes)
-
-  # Get the total time of the storm (in mins)
-  timeInit <- timeObs[1]
-  timeEnd <- timeObs[lenIndices]
-  timeDiffObs <- as.numeric(difftime(timeEnd,
-                                     timeInit,
-                                     units = "mins"))
-
-  # Deal with length and time of interpolated data
-  lenInterpolated <- as.integer(timeDiffObs / interpolatedRes) + 1
-  timeInterpolated <- format(seq.POSIXt(as.POSIXct(timeInit),
-                                        as.POSIXct(timeEnd),
-                                        by = paste0(interpolatedRes, " min")),
-                             "%Y-%m-%d %H:%M:%S")
-  indicesObsInterpolated <- match(timeObs, timeInterpolated)
-  if (interpolatedRes == tempRes) {
-    # Case where interpolation is done at the frequency requested by the user
-    timeData <- timeInterpolated
-    indicesFinal <- seq(1, lenInterpolated)
-  } else {
-    # Case where interpolation time is smaller than requested by user
-    # (if the dataset has really short observation intervals,
-    # usualy when irregular observations).
-    timeData <- format(seq.POSIXt(as.POSIXct(timeInit),
-                                  as.POSIXct(timeEnd),
-                                  by = paste0(tempRes, " min")),
-                       "%Y-%m-%d %H:%M:%S")
-    indicesFinal <- match(timeData, timeInterpolated)
-  }
-
-  # Initiate the final data.frame
-  data <- data.frame(
-    lon = rep(NA, lenInterpolated),
-    lat = rep(NA, lenInterpolated),
-    stormSpeed = rep(NA, lenInterpolated),
-    vxDeg = rep(NA, lenInterpolated),
-    vyDeg = rep(NA, lenInterpolated),
-    msw = rep(NA, lenInterpolated),
-    rmw = rep(NA, lenInterpolated),
-    indices = rep(NA, lenInterpolated),
-    isoTimes = rep(NA, lenInterpolated)
-  )
-
-  # Filling indices and isoTimes
-  ind <- c()
-  for (i in seq(1, lenInterpolated)) {
-    timeIntervals <- as.numeric(difftime(timeObs,
-                                         timeInterpolated[i],
-                                         units = "mins"))
-    # Case of interpolation time equal to observation time
-    indObs <- which(timeIntervals > 0)[1]
-    ind <- c(ind,
-      formatC(indices[[1]] - 1 + indObs - timeIntervals[indObs] / (timeIntervals[indObs] - timeIntervals[indObs - 1]),
-              digits = 2,
-              format = "f")
-    )
-  }
-  # When interpolation time matches observation time, we keep "integer" indices
-  ind <- gsub(".00", "", ind)
-
-  data$indices <- ind
-  data$isoTimes <- timeInterpolated
-
-  # Get lon & lat
-  lon <- st@obs.all$lon[indices]
-  lat <- st@obs.all$lat[indices]
-
-  stormSpeed <- rep(NA, lenIndices)
-  vxDeg <- rep(NA, lenIndices)
-  vyDeg <- rep(NA, lenIndices)
-
-  # Computing storm velocity (m/s)
-  for (i in 1:(lenIndices - 1)) {
-    stormSpeed[i] <- terra::distance(
-      x = cbind(lon[i], lat[i]),
-      y = cbind(lon[i + 1], lat[i + 1]),
-      lonlat = TRUE
-    ) * (0.001 / 3) / 3.6
-
-    # component wise velocity in both x and y direction (degree/h)
-    vxDeg[i] <- (lon[i + 1] - lon[i]) / 3
-    vyDeg[i] <- (lat[i + 1] - lat[i]) / 3
-  }
-
-  # Prepare all fields
-  data$msw[indicesObsInterpolated] <- st@obs.all$msw[indices]
-  data$lon[indicesObsInterpolated] <- lon
-  data$lat[indicesObsInterpolated] <- lat
-  data$stormSpeed[indicesObsInterpolated] <- stormSpeed
-  data$vxDeg[indicesObsInterpolated] <- vxDeg
-  data$vyDeg[indicesObsInterpolated] <- vyDeg
-
-  if (empiricalRMW) {
-    data$rmw[indicesObsInterpolated] <- getRmw(data$msw[indicesObsInterpolated], lat)
-  } else {
-    if (!("rmw" %in% colnames(st@obs.all)) || (all(is.na(st@obs.all$rmw[indices])))) {
-      warning("Missing rmw data to perform model. empiricalRMW set to TRUE")
-      data$rmw[indicesObsInterpolated] <- getRmw(data$msw[indicesObsInterpolated], lat)
-    } else {
-      ##interpolatedRMW[indicesObsInterpolated] <- st@obs.all$rmw[indices]
-      data$rmw[indicesObsInterpolated] <- st@obs.all$rmw[indices]
-    }
-  }
-
-  # Interpolate data
-  data$lon <- zoo::na.approx(data$lon)
-  data$lat <- zoo::na.approx(data$lat)
-  data$msw <- zoo::na.approx(data$msw, rule = 2)
-  data$rmw <- zoo::na.approx(data$rmw, rule = 2)
-  # For velocities, we use na.locf instead of linear interpolation
-  data$stormSpeed <- zoo::na.locf(data$stormSpeed)
-  data$vxDeg <- zoo::na.locf(data$vxDeg)
-  data$vyDeg <- zoo::na.locf(data$vyDeg)
-
-  if (method == "Holland" || method == "Boose") {
-    if (all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices]))) {
-      stop("Missing pressure data to perform Holland model")
-    }
-
-    data$poci <- rep(NA, lenInterpolated)
-    data$pc <- rep(NA, lenInterpolated)
-    data$poci[indicesObsInterpolated] <- st@obs.all$poci[indices]
-    data$pc[indicesObsInterpolated] <- st@obs.all$pres[indices]
-
-    # Interpolate data
-    data$poci <- zoo::na.approx(data$poci)
-    data$pc <- zoo::na.approx(data$pc)
-  }
-
-  return(data[indicesFinal, ])
-}
-
-
-
-#################################
-# Helpers to raster manipulation#
-#################################
-
-
-#' Initialize rasters for the computations
-#'
-#' Note: Special case for "Profiles" product, where no raster is initialized as
-#' we don't know the number of observations yet.
-#'
-#' @noRd
-#' @param template SpatRaster. Raster template generated with makeTemplateRaster
-#' @param nbStorms numeric. Number of storms
-#' @param product character or character vector. Products to compute from spatialBehaviour
-#' @param thresholds numeric vector. Wind thresholds to compute the duration of exposure
-#'
-#' @return a list of rasters
-
-initRasters <- function(template, nbStorms, product, thresholds) {
-  mswRaster <- NULL
-  pdiRaster <- NULL
-  exposureRaster <- NULL
-  profilesRaster <- NULL
-  if ("MSW" %in% product) {
-    mswRaster <- rep(template, nbStorms)
-  }
-  if ("PDI" %in% product) {
-    pdiRaster <- rep(template, nbStorms)
-  }
-  if ("Exposure" %in% product) {
-    exposureRaster <- rep(template, nbStorms * length(thresholds))
-  }
-
-  return(list(mswRaster = mswRaster,
-              pdiRaster = pdiRaster,
-              exposureRaster = exposureRaster,
-              profilesRaster = profilesRaster))
-}
-
-#' Move the raster to the raster of the loi
-#'
-#' @noRd
-#' @param raster SpatRaster. Raster to move
-#' @param template SpatRaster. Raster of reference
-#' @param extent numeric vector. Extent of the loi (= extent of the raster of reference)
-#'
-#' @return SpatRaster. Raster moved to the template
-moveOnLoi <- function(raster, template, extent) {
-  # Move the raster to the raster of the loi
-  return(terra::crop(terra::merge(raster, template), extent))
-}
-
-
-#' Whether or not to mask final computed products
-#'
-#' @noRd
-#' @param finalStack SpatRaster stack. Where all final computed products are
-#'   gathered
-#' @param loi sf object. loi used as template to rasterize the mask
-#' @param template SpatRaster. rasterTemplate generated with makeTemplateRaster
-#'   function, used as a template to rasterize the mask
-#'
-#' @return finalStack masked or not
-maskProduct <- function(finalStack, loi, template) {
-  # Masking the stack to fit loi
-  v <- terra::vect(loi)
-  m <- terra::rasterize(v, template)
-  return(terra::mask(finalStack, m))
-}
-
-
-
-
 ############################
 # spatialBehaviour function#
 ############################
-
-
-
 
 
 #' Computing wind behaviour and summary statistics over given areas
@@ -665,15 +308,16 @@ spatialBehaviour <- function(sts,
                              spaceRes = "2.5min",
                              tempRes = 60,
                              verbose = 2) {
-  startTime <- Sys.time()
 
-  if (is.null(windThreshold)) {
-    windThreshold <- sts@scale
-  }
+  startTime <- Sys.time()
 
   checkInputsSpatialBehaviour(sts, product, windThreshold, method, asymmetry,
     empiricalRMW, spaceRes, tempRes, verbose
   )
+
+  if (is.null(windThreshold)) {
+    windThreshold <- sts@scale
+  }
 
   if (verbose > 0) {
     cat("=== spatialBehaviour processing ... ===\n\n")
@@ -683,7 +327,7 @@ spatialBehaviour <- function(sts,
   # Convert spatial resolution to numeric
   spatialResolution <- resolutions[spaceRes]
 
-  # Make raster template
+  # Make raster template from loi and buffer of the stormsList and spatialResolution
   rasterTemplate <- makeTemplateRaster(sts@spatialLoiBuffer, spatialResolution)
   extent <- terra::ext(rasterTemplate)
   # Smoothing factor for focal function
@@ -720,10 +364,10 @@ spatialBehaviour <- function(sts,
   s <- 1 # Initializing count of storms
   for (storm in sts@data) {
     # Handling indices inside loi.buffer or not
-    ind <- getIndices(storm, 2, product)
+    indicesInLoi <- getIndices(storm, 2, product)
 
-    # Getting data associated with storm st
-    dataTC <- getDataInterpolate(storm, ind, tempRes, empiricalRMW, method)
+    # Getting data associated with storm
+    dataTC <- getDataInterpolate(storm, indicesInLoi, tempRes, empiricalRMW, method)
 
     nbSteps <- dim(dataTC)[1] - 1
 
@@ -737,27 +381,27 @@ spatialBehaviour <- function(sts,
     stormDirection <- rep(rasterTemplate, nbSteps)
 
     for (j in 1:nbSteps) {
-      # Making template to compute wind profiles
-      rasterTemplateTS <- makeTemplateModel(
-        dataTC$lon[j],
-        dataTC$lat[j],
-        buffer_size,
-        spatialResolution,
-        dataTC$isoTimes[j]
+      # Making local raster template to compute wind profiles
+      extent <- data.frame(
+        dataTC$lon[j] - buffer_size,
+        dataTC$lon[j] + buffer_size,
+        dataTC$lat[j] - buffer_size,
+        dataTC$lat[j] + buffer_size
       )
+      names(extent) <- c("xmin", "xmax", "ymin", "ymax")
+      rasterTemplateTimeStep <- makeTemplateRaster(extent, spatialResolution, dataTC$isoTimes[j])
+
       # Computing distances to the eye of the storm in km
       eye <- cbind(dataTC$lon[j], dataTC$lat[j])
-      distEyekm <- computeDistanceEyeKm(rasterTemplateTS, eye, isRaster = TRUE)
-      # Computing coordinates of raster
-      rasterCoords <- terra::crds(rasterTemplateTS, na.rm = FALSE)
+      distEyeKm <- computeDistanceEyeKm(rasterTemplateTimeStep, eye)
       # Computing distances to the eye of the storm in degree
-      distEyeDeg <- computeDistanceEyeDeg(rasterCoords, eye)
+      rasterCoords <- makeCoordinatesRaster(rasterTemplateTimeStep)
+      distEyeDeg <- rasterCoords - eye
 
       # Computing wind speed/direction
       output <- computeWindProfile(
-        dataTC[j, ], method, asymmetry, distEyekm, distEyeDeg,
-        rasterTemplateTS, spatialResolution,
-        sts@spatialLoiBuffer, countriesGeometryInLoi
+        dataTC[j, ], method, asymmetry, distEyeKm, distEyeDeg,
+        sts@spatialLoiBuffer, countriesGeometryInLoi, rasterTemplateTimeStep
       )
 
       stormSpeed[[j]] <- moveOnLoi(output$speed, rasterTemplate, extent)
@@ -806,6 +450,7 @@ spatialBehaviour <- function(sts,
     }
   }
 
+  # Join all rasters in one stack
   rastersNames <- unlist(lapply(rasters, names))
   rasters <- terra::rast(rasters)
   names(rasters) <- rastersNames
