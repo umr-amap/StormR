@@ -225,14 +225,15 @@ getCountriesInLoi <- function(loi) {
 getLandIntersect <- function(points, countries) {
   if (class(points) == "SpatRaster") {
     pts <- sf::st_as_sf(as.data.frame(terra::crds(points, na.rm = FALSE)), coords = c("x", "y"), crs = "wgs84")
-    landIntersect <- rep(0, nrow(pts))
-    for (country in countries) {
-      ind <- which(sf::st_intersects(pts, country, sparse = FALSE) == TRUE)
-      landIntersect[ind] <- 1
-    }
   } else {
-    landIntersect <- rep(1, nrow(points))
+    pts <- sf::st_as_sf(points, coords = c("lon", "lat"), crs = "wgs84")
   }
+  landIntersect <- rep(0, nrow(pts))
+  for (country in countries) {
+    ind <- which(sf::st_intersects(pts, country, sparse = FALSE) == TRUE)
+    landIntersect[ind] <- 1
+  }
+
   return(landIntersect)
 }
 
@@ -250,6 +251,7 @@ getLandIntersect <- function(points, countries) {
 #' @return SpatRaster if isRaster, else matrix. Distance to the eye of the storm in km
 computeDistanceEyeKm <- function(points, eye) {
   # Computing distances to the eye of the storm in km
+  # Case for spatialBehaviour
   if (is(points, "SpatRaster")) {
     distEyeKm <- terra::distance(
       x = points,
@@ -257,12 +259,14 @@ computeDistanceEyeKm <- function(points, eye) {
       unit = "km"
     )
   } else {
+    # Case for temporalBehaviour
     distEyeKm <- terra::distance(
-      x = cbind(points$x, points$y),
-      y = eye,
-      unit = "km",
-      lonlat = TRUE
+      x = terra::vect(points, geom = c("lon", "lat"), crs = "+proj=longlat +datum=WGS84"),
+      y = terra::vect(rbind(eye), crs = "+proj=longlat +datum=WGS84"),
+      unit = "km"
     )
+    distEyeKm <- terra::vect(eye, atts = t(distEyeKm))
+    names(distEyeKm) <- rownames(points)
   }
 
   return(distEyeKm)
@@ -278,12 +282,18 @@ computeDistanceEyeKm <- function(points, eye) {
 computeDistanceEyeDeg <- function(points, eye) {
   # Computing distances to the eye of the storm for x and y axes in degrees
   if (dim(eye)[1] == 1) {
-    xDistEyeDeg <- points[, 1] - eye[1]
-    yDistEyeDeg <- points[, 2] - eye[2]
+    rasterCoords <- makeCoordinatesRaster(points)
+    distEyeDeg <- rasterCoords - eye
+    #    xDistEyeDeg <- points[, 1] - eye[1]
+    #    yDistEyeDeg <- points[, 2] - eye[2]
   } else {
     xDistEyeDeg <- apply(points, c(1, 2), function(p) p - eye[, 1])[, , 1]
     yDistEyeDeg <- apply(points, c(1, 2), function(p) p - eye[, 2])[, , 2]
+    distEyeDeg <- terra::vect(eye, atts = cbind(xDistEyeDeg, yDistEyeDeg))
+    names <- c()
+    for (rn in rownames(points)) for (c in c("lon", "lat")) names <- append(names, paste0(rn, "_", c))
+    names(distEyeDeg) <- names
   }
 
-  return(list(xDist = xDistEyeDeg, yDist = yDistEyeDeg))
+  return(distEyeDeg)
 }

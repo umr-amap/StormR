@@ -88,7 +88,7 @@ computeExposureRaster <- function(speed, tempRes, nbg, name, threshold) {
 #' @noRd
 #' @param raster SpatRaster. Raster to move
 #' @param template SpatRaster. Raster of reference
-#' @param extent numeric vector. Extent of the loi (= extent of the raster of reference)
+#' @param extent SpatialExtent. Extent of the loi from the raster of reference
 #'
 #' @return SpatRaster. Raster moved to the template
 moveOnLoi <- function(raster, template, extent) {

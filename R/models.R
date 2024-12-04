@@ -108,9 +108,16 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
   vr <- r
   vr <- sqrt((rmw / r)**b * exp(1 - (rmw / r)**b))
 
+  fr <- function(r) sqrt((rmw / r)**b * exp(1 - (rmw / r)**b))
+  vr <- lapply(r, fr)
   # Northern Hemisphere, t is clockwise
   # Southern Hemisphere, t is counterclockwise
-  angle <- ifelse(lat >= 0, atan2(vy, vx) - atan2(y, x), atan2(y, x) - atan2(vy, vx))
+  #if (lat >= 0) {
+  #  angle <- atan2(vy, vx) - terra::atan2(y, x)
+  #} else {
+  #  angle <- terra::atan2(y, x) - atan2(vy, vx)
+  #}
+  angle <- ifelse(lat >= 0, atan2(vy, vx) - terra::atan2(y, x), terra::atan2(y, x) - atan2(vy, vx))
 
   # Land interaction
   vr[landIntersect == 1] <- 0.8 * (msw - (1 - sin(angle[landIntersect == 1])) * vh / 2) * vr[landIntersect == 1]
@@ -135,49 +142,70 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #' @param method character. method input form stormBehaviour_sp
 #' @param asymmetry character. Asymmetry input form stormBehaviour
 #' @param distEyeKm SpatRaster or matrix. Distance to the eye of the storm in km
-#' @param distEyeDeg list. xDist and yDist. Distance to the eye of the storm in degrees
+#' @param distEyeDeg SpatRaster with two layers named 'lon' and 'lat'.
+#'   Distance to the eye of the storm in degrees for lon and lat dimensions.
 #' @param rasterTemplate SpatRaster. Template raster containing coordinates of the points to calculate the wind profile
 #' @param loi sf. loi to intersect for Boose model
 #' @param countries sf Geometry. countries to intersect for Boose model
+#' @param points sf Geometry or data.frame. Points for land / ocean intersection for Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
 computeWindProfile <- function(data, method, asymmetry, distEyeKm, distEyeDeg,
-                               loi, countries, rasterTemplate = NULL) {
+                               loi, countries, points) {
+
+  landIntersect <- NULL
+
   # Computing wind speed according to the input model
   if (method == "Willoughby") {
     speed <- willoughby(
-      r = distEyeKm, rmw = data$rmw, msw = data$msw, lat = data$lat
-    )
-    direction <- terra::rast(
-      x = rasterTemplate,
-      vals = computeDirection(distEyeDeg$xDist, distEyeDeg$yDist, data$lat)
+      r = distEyeKm, rmw = data$rmw,
+      msw = data$msw, lat = data$lat
     )
   } else if (method == "Holland") {
     speed <- holland(
-      r = distEyeKm, rmw = data$rmw, msw = data$msw,
-      pc = data$pc, poci = data$poci, lat = data$lat
-    )
-    direction <- terra::rast(
-      x = rasterTemplate,
-      vals = computeDirection(distEyeDeg$xDist, distEyeDeg$yDist, data$lat)
+      r = distEyeKm, rmw = data$rmw,
+      msw = data$msw, pc = data$pc,
+      poci = data$poci, lat = data$lat
     )
   } else if (method == "Boose") {
     # Intersect points coordinates with land
-    landIntersect <- getLandIntersect(rasterTemplate, countries)
+    landIntersect <- getLandIntersect(points, countries)
+    # No asymetry when using Boose model
     asymmetry <- "None"
     speed <- boose(
-      r = distEyeKm, rmw = data$rmw, msw = data$msw,
-      pc = data$pc, poci = data$poci, x = distEyeDeg$xDist, y = distEyeDeg$yDist,
-      vx = data$vxDeg, vy = data$vyDeg, vh = data$stormSpeed,
+      r = distEyeKm, rmw = data$rmw,
+      msw = data$msw, pc = data$pc,
+      poci = data$poci, x = distEyeDeg$lon,
+      y = distEyeDeg$lat, vx = data$vxDeg,
+      vy = data$vyDeg, vh = data$stormSpeed,
       landIntersect = landIntersect, lat = data$lat
     )
-    direction <- computeDirectionBoose(distEyeDeg$xDist, distEyeDeg$yDist, data$lat, landIntersect)
   }
 
-  if (is(speed, "SpatRaster")) {
+  # Computing wind direction
+  if (is(speed, "data.frame")) {
+    # temporalBehaviour case
+    direction <- speed
+    for (i in seq_along(rownames(df))) {
+      direction[, i] <- computeDirection(method,
+        distEyeDeg[, c(i * 2 - 1, i * 2)][[1]],
+        distEyeDeg[, c(i * 2 - 1, i * 2)][[2]],
+        data$lat,
+        landIntersect
+      )
+    }
+  } else {
+    # spatialBehaviour case
     direction <- terra::rast(
-      x = rasterTemplate,
-      vals = direction
+      x = points,
+      vals = terra::values(
+        computeDirection(method,
+                         distEyeDeg[[1]][[1]],
+                         distEyeDeg[[2]][[1]],
+                         data$lat,
+                         landIntersect),
+      ),
+      names = "direction"
     )
   }
 
@@ -191,11 +219,6 @@ computeWindProfile <- function(data, method, asymmetry, distEyeKm, distEyeDeg,
   } else {
     output <- list(speed = speed, direction = direction)
   }
-
-  ## Remove cells outside of buffer
-  #dist <- sqrt(xDistEyeDeg * xDistEyeDeg + yDistEyeDeg * yDistEyeDeg)
-  #output$speed[dist > buffer] <- NA
-  #output$direction[dist > buffer] <- NA
 
   return(output)
 }
@@ -211,7 +234,7 @@ computeWindProfile <- function(data, method, asymmetry, distEyeKm, distEyeDeg,
 #'
 #' @return numeric vector. Azimuthal direction at each (x,y) position
 azimuthalDirection <- function(x, y) {
-  azimuth <- -(atan2(y, x) - pi / 2)
+  azimuth <- -(terra::atan2(y, x) - pi / 2)
   azimuth[azimuth < 0] <- azimuth[azimuth < 0] + 2 * pi
   return(180 / pi * azimuth)
 }
@@ -257,9 +280,7 @@ computeAsymmetry <- function(asymmetry, speed, dir, vx, vy, vh, r, rmw, lat) {
 
   # Moving wind
   stormDir <- -(atan2(vy, vx) - pi / 2)
-  if (stormDir < 0) {
-    stormDir <- stormDir + 2 * pi
-  }
+  stormDir[stormDir < 0] <- stormDir[stormDir < 0] + 2 * pi
 
   mWindX <- vh * cos(stormDir)
   mWindY <- vh * sin(stormDir)
@@ -278,15 +299,26 @@ computeAsymmetry <- function(asymmetry, speed, dir, vx, vy, vh, r, rmw, lat) {
 
   speed <- sqrt(tWindX**2 + tWindY**2)
 
+  if (is(tWindX, "data.frame")) {
+    # temporalBehaviour case
+    at2 <- mapply(atan2, tWindY, tWindX)
+  } else {
+    # spatialBehaviour case
+    at2 <- terra::atan2(tWindY, tWindX)
+  }
   # New wind direction
-  direction <- (180 + terra::atan2(tWindY, tWindX) * 180 / pi) %% 360
+  direction <- (180 + at2 * 180 / pi) %% 360
 
   return(list(speed = round(speed, 3), direction = round(direction, 3)))
 }
 
 
-#' Compute wind direction according to Boose et al. (2004) model
+#' Compute wind direction. "Symetrical" in case of Willoughby or Holland model, following
+#' Boose et al. (2004) model otherwise
+#'
 #' @noRd
+#' @param method character. Method to compute the wind direction. Can be either
+#'  "Willoughby" or "Holland" or "Boose"
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x
 #'   direction (deg)
 #' @param y numeric vector. Distance(s) to the eye of the storm in the y
@@ -296,45 +328,28 @@ computeAsymmetry <- function(asymmetry, speed, dir, vx, vy, vh, r, rmw, lat) {
 #' @param landIntersect numeric array. 1 if coordinates intersect with land, 0 otherwise
 #'
 #' @return wind directions (rad) at each (x,y) position
-computeDirectionBoose <- function(x, y, lat, landIntersect) {
+computeDirection <- function(method, x, y, lat, landIntersect) {
   az <- azimuthalDirection(x, y)
 
+  direction <- ifelse(lat >= 0, az - 90, az + 90)
+
+  if (method == "Boose") {
+    direction <- mapply(landInteractionBoose, lat, direction, landIntersect)
+  }
+
+  return(round(rotate0360(direction), 3))
+}
+
+landInteractionBoose <- function(lat, direction, landIntersect) {
   if (lat >= 0) {
-    direction <- az - 90
     direction[landIntersect == 1] <- direction[landIntersect == 1] - 40
     direction[landIntersect == 0] <- direction[landIntersect == 0] - 20
   } else {
-    direction <- az + 90
     direction[landIntersect == 1] <- direction[landIntersect == 1] + 40
     direction[landIntersect == 0] <- direction[landIntersect == 0] + 20
   }
-
-  return(round(rotate0360(direction), 3))
+  return(direction)
 }
-
-
-#' Compute symetrical wind direction
-#' @noRd
-#' @param x numeric vector. Distance(s) to the eye of the storm in the x
-#'   direction (deg)
-#' @param y numeric vector. Distance(s) to the eye of the storm in the y
-#'   direction (deg)
-#' @param lat numeric. Should be between -90 and 90. Latitude of the eye of the
-#'   storm
-#'
-#' @return wind directions (rad) at each (x,y) position
-computeDirection <- function(x, y, lat) {
-  az <- azimuthalDirection(x, y)
-
-  if (lat >= 0) {
-    direction <- az - 90
-  } else {
-    direction <- az + 90
-  }
-
-  return(round(rotate0360(direction), 3))
-}
-
 
 #' rasterizePDI counterpart function for non raster data
 #'
@@ -353,7 +368,13 @@ computePDI <- function(speed, tempRes) {
   # Applying both rho and surface drag coefficient
   pdi <- pdi * rho * cd
   # Integrating over the whole track
-  pdi <- sum(pdi, na.rm = TRUE) * tempRes
+  if (is(pdi, data.frame)) {
+    # temporalBehaviour case
+    pdi <- colSums(pdi, na.rm = TRUE) * tempRes
+  } else {
+    # spatialBehaviour case
+    pdi <- sum(pdi, na.rm = TRUE) * tempRes
+  }
 
   return(round(pdi, 3))
 }
@@ -361,20 +382,18 @@ computePDI <- function(speed, tempRes) {
 #' rasterizeExposure counterpart function for non raster data
 #'
 #' @noRd
-#' @param wind numeric vector. Wind speed values
+#' @param speed numeric vector. Wind speed values
 #' @param tempRes numeric. Time resolution, used for the numerical integration
 #'   over the whole track
-#' @param threshold numeric vector. Wind threshold
+#' @param windThreshold numeric vector. Wind threshold
 #'
 #' @return numeric vector of length 5 (for each category). Exposure computed
 #'   using the wind speed values in wind
-computeExposure <- function(wind, tempRes, threshold) {
-  exposure <- c()
-  for (t in threshold) {
-    ind <- which(wind >= t)
-    expo <- rep(0, length(wind))
-    expo[ind] <- 1
-    exposure <- c(exposure, sum(expo, na.rm = TRUE) * tempRes)
+computeExposure <- function(speed, tempRes, windThreshold) {
+  exposure <- speed[FALSE, ]
+  for (l in seq_along(windThreshold)) {
+    isGreaterSpeed <- ifelse(speed >= windThreshold[l], 1, NA)
+    exposure[l, ] <- colSums(isGreaterSpeed, na.rm = TRUE) * tempRes
   }
 
   return(exposure)

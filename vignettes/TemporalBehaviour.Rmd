@@ -34,7 +34,7 @@ latitude = -15.53). The coordinates of the two locations of interest are
 provided in a data frame as follows:
 
 ``` {r}
-df <- data.frame(x = c(168.33, 167.17), y = c(-17.73, -15.53))
+df <- data.frame(lon = c(168.33, 167.17), lat = c(-17.73, -15.53))
 rownames(df) <- c("Port_Vila", "Luganville")
 ```
 

@@ -382,21 +382,20 @@ spatialBehaviour <- function(sts,
 
     for (j in 1:nbSteps) {
       # Making local raster template to compute wind profiles
-      extent <- data.frame(
+      local_extent <- data.frame(
         dataTC$lon[j] - buffer_size,
         dataTC$lon[j] + buffer_size,
         dataTC$lat[j] - buffer_size,
         dataTC$lat[j] + buffer_size
       )
-      names(extent) <- c("xmin", "xmax", "ymin", "ymax")
-      rasterTemplateTimeStep <- makeTemplateRaster(extent, spatialResolution, dataTC$isoTimes[j])
+      names(local_extent) <- c("xmin", "xmax", "ymin", "ymax")
+      rasterTemplateTimeStep <- makeTemplateRaster(local_extent, spatialResolution, dataTC$isoTimes[j])
 
       # Computing distances to the eye of the storm in km
       eye <- cbind(dataTC$lon[j], dataTC$lat[j])
       distEyeKm <- computeDistanceEyeKm(rasterTemplateTimeStep, eye)
       # Computing distances to the eye of the storm in degree
-      rasterCoords <- makeCoordinatesRaster(rasterTemplateTimeStep)
-      distEyeDeg <- rasterCoords - eye
+      distEyeDeg <- computeDistanceEyeDeg(rasterTemplateTimeStep, eye)
 
       # Computing wind speed/direction
       output <- computeWindProfile(

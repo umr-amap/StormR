@@ -21,10 +21,10 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
   stopifnot("no data found" = !missing(points))
   stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
   stopifnot(
-    "colnames of points must be \"x\" (Eastern degree), \"y\" (Northern degree)" = colnames(points) == c("x", "y")
+    "colnames of points must be \"lon\" (Eastern degree), \"lat\" (Northern degree)" = colnames(points) == c("lon", "lat")
   )
-  stopifnot("Invalid points coordinates" = points$x > -180 & points$x <= 360 &
-              points$y >= -90 & points$y <= 90)
+  stopifnot("Invalid points coordinates" = points$lon > -180 & points$lon <= 360 &
+              points$lat >= -90 & points$lat <= 90)
 
   # Checking product input
   stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
@@ -66,13 +66,11 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
 #'
 #' @noRd
 #' @param product character. Product input from temporalBehaviour
-#' @param wind numeric vector. Wind speed values
+#' @param speed numeric vector. Wind speed values
 #' @param direction numeric vector. Wind direction
 #' @param tempRes numeric. Time resolution, used for the numerical integration
 #'   over the whole track
-#' @param result numeric array. Similar as finalStack, i.e where to add the
-#'   computed product
-#' @param threshold numeric vector. Wind threshold
+#' @param windThreshold numeric vector. Wind threshold
 #'
 #' @return numeric array of dimension:
 #' \itemize{
@@ -80,16 +78,16 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
 #'   \item 1 : number of points. If product == "PDI"
 #'   \item 5 : number of points. If product == "Exposure"
 #' }
-computeProduct <- function(product, wind, direction, tempRes, result, threshold) {
+computeProduct <- function(product, speed, direction, tempRes, windThreshold) {
   if (product == "TS") {
-    prod <- cbind(wind, direction)
+    result <- cbind(speed, direction)
   } else if (product == "PDI") {
-    prod <- computePDI(wind, tempRes)
+    result <- computePDI(speed, tempRes)
   } else if (product == "Exposure") {
-    prod <- computeExposure(wind, tempRes, threshold)
+    result <- computeExposure(speed, tempRes, windThreshold)
   }
 
-  return(cbind(result, prod))
+  return(result)
 }
 
 
@@ -99,7 +97,6 @@ computeProduct <- function(product, wind, direction, tempRes, result, threshold)
 #' Arrange result before the end of temporalBehaviour
 #'
 #' @noRd
-#' @param finalResult list of data.frame. Where to add the computed product
 #' @param result result output from computeProduct function
 #' @param product character. Product input from temporalBehaviour
 #' @param points points input from temporalBehaviour
@@ -108,14 +105,14 @@ computeProduct <- function(product, wind, direction, tempRes, result, threshold)
 #' @param st Storm object.
 #' @param threshold numeric vector. Wind threshold
 #'
-#' @return finalResult
-finalizeResult <- function(finalResult, result, product, points, isoT, indices, st, threshold) {
+#' @return finalResult. List of data.frame with computed products
+finalizeResult <- function(result, product, points, isoT, indices, st, threshold) {
   if (product == "TS") {
     l <- list()
     for (i in seq_len(dim(points)[1])) {
-      j <- 2 * (i - 1) + 1
+      j <- 2 * i
 
-      df <- data.frame(result[, j], result[, j:j + 1], indices = indices, isoTimes = isoT)
+      df <- data.frame(result[, i], result[, j], indices = indices, isoTimes = isoT)
       colnames(df) <- c("speed", "direction", "indices", "isoTimes")
 
       l <- append(l, list(df))
@@ -131,9 +128,8 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 
   dfn <- list(l)
   names(dfn) <- st@name
-  finalResult <- append(finalResult, dfn)
 
-  return(finalResult)
+  return(dfn)
 }
 
 
@@ -155,8 +151,8 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #' It also allows to compute three associated summary statistics.
 #'
 #' @param sts `StormsList` object.
-#' @param points data.frame. Consisting of two columns names as "x" (for the longitude) and
-#' "y" (for the latitude), providing the coordinates in decimal degrees of the point locations. Row names
+#' @param points data.frame. Consisting of two columns names as "lon" (for the longitude) and
+#' "lat" (for the latitude), providing the coordinates in decimal degrees of the point locations. Row names
 #' can also be provided to named the locations.
 #' @param product character. Desired output statistics:
 #'   \itemize{
@@ -347,7 +343,7 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #' # Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #'
-#' pts <- data.frame(x = c(168.5, 168), y = c(-17.9, -16.3))
+#' pts <- data.frame(lon = c(168.5, 168), lat = c(-17.9, -16.3))
 #' row.names(pts) <- c("point_1", "point_2")
 #'
 #' # Computing time series of wind speed and direction for Pam
@@ -387,7 +383,7 @@ temporalBehaviour <- function(sts,
 
   countriesGeometryInLoi <- if (method == "Boose") getCountriesInLoi(sts@spatialLoiBuffer) else NULL
 
-  points$x[points$x < 0] <- points$x[points$x < 0] + 360
+  points$lon[points$lon < 0] <- points$lon[points$lon < 0] + 360
 
   # Initializing final result
   finalResult <- list()
@@ -412,44 +408,43 @@ temporalBehaviour <- function(sts,
     cat("  (", getNbStorms(sts), ") ", getNames(sts), "\n\n")
   }
 
-
   for (storm in sts@data) {
     # Handling indices inside loi.buffer or not
     ind <- getIndices(storm, 2, "none")
 
     # Getting data associated with storm "storm"
     dataTC <- getDataInterpolate(storm, ind, tempRes, empiricalRMW, method)
-    nbSteps <- dim(dataTC)[1] - 1
 
     # Computing distances from the eye of storm for every observations x, and
     # every points y
+    # in km
     eye <- cbind(dataTC$lon, dataTC$lat)
     distEyeKm <- computeDistanceEyeKm(points, eye)
+    # in degree
     distEyeDeg <- computeDistanceEyeDeg(points, eye)
 
-    res <- c()
-    # For each location to compute
-    for (i in seq_len(dim(points)[1])) {
-      for (j in 1:nbSteps) {
-        # Computing wind speed/direction
-        output <- computeWindProfile(
-          dataTC[j, ], method, asymmetry, distEyeKm[i, j],
-          list(xDist = distEyeDeg$xDist[j, i], yDist = distEyeDeg$yDist[j, i]),
-          sts@spatialLoiBuffer, countriesGeometryInLoi
-        )
+    # Computing wind speed/direction
+    output <- computeWindProfile(
+      dataTC, method, asymmetry,
+      terra::values(distEyeKm),
+      terra::values(distEyeDeg),
+      storm@spatialLoiBuffer, countriesGeometryInLoi, df
+    )
 
-        vr <- output$wind
-        dir <- output$direction
+    # Computing product
+    result <- computeProduct(
+      product, output$speed, output$direction,
+      tempRes, windThreshold
+    )
 
-        # Computing product
-        res <- computeProduct(product, vr, dir, tempRes, res, windThreshold)
-      }
-    }
-
-    finalResult <- finalizeResult(
-      finalResult, res, product, points,
-      dataTC$isoTimes, dataTC$indices, storm,
-      windThreshold
+    # Finalizing result rendering
+    finalResult <- append(
+      finalResult,
+      finalizeResult(
+        result, product, points,
+        dataTC$isoTimes, dataTC$indices,
+        storm, windThreshold
+      )
     )
   }
 
