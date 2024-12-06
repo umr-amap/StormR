@@ -21,7 +21,11 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
   stopifnot("no data found" = !missing(points))
   stopifnot("points must be data.frame" = identical(class(points), "data.frame"))
   stopifnot(
-    "colnames of points must be \"lon\" (Eastern degree), \"lat\" (Northern degree)" = colnames(points) == c("lon", "lat")
+    paste0(
+      "colnames of points must be \"lon\" (Eastern degree),",
+      " \"lat\" (Northern degree)"
+      = colnames(points) == c("lon", "lat")
+    )
   )
   stopifnot("Invalid points coordinates" = points$lon > -180 & points$lon <= 360 &
               points$lat >= -90 & points$lat <= 90)

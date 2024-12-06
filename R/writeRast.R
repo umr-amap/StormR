@@ -252,8 +252,8 @@ writeRast <- function(rast, filename = NULL, path = "./", ...) {
     splitVector <- c()
     for (i in 1:terra::nlyr(rast)) {
       ind <- which(paste(c(strsplit(names(rast[[i]]), split = "_", fixed = TRUE)[[1]][1:2]),
-        collapse = "_"
-      ) == varNames)
+                         collapse = "_"
+                        ) == varNames)
       splitVector <- c(splitVector, ind)
     }
     rastds <- terra::sds(terra::split(x = rast, f = splitVector))

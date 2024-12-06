@@ -1181,9 +1181,9 @@ defStormsList <- function(sds,
         cat("(*) LOI: ")
         if (identical(class(loi), "character")) {
           cat(loi, "\n")
-        }else if (identical(class(loi), "numeric")) {
+        } else if (identical(class(loi), "numeric")) {
           cat(loi, "lon-lat\n")
-        }else {
+        } else {
           cat("sf object (use getLOI function for further informations\n")
         }
         cat("(*) Buffer size:", getBufferSize(sts), "km\n")
@@ -1192,7 +1192,7 @@ defStormsList <- function(sds,
         }
         cat("(*) Number of storms:", getNbStorms(sts), "\n")
         cat("        Name - Tropical season - Scale - Number of observation within buffer:\n")
-        for (i in 1:getNbStorms(sts)){
+        for (i in 1:getNbStorms(sts)) {
           cat("       ",
               getNames(sts@data[[i]]), "-",
               getSeasons(sts@data[[i]]), "-",
