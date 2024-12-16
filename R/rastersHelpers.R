@@ -162,6 +162,7 @@ initRasters <- function(template, nbStorms, product, thresholds) {
 #' @param region "sf" object or data.frame with "xmin", "xmax", "ymin", "ymax".
 #'  Defines the LOI + buffer extention
 #' @param resolution numeric. Space resolution for the template
+#' @param time string. Time of the template
 #'
 #' @return a SpatRaster
 makeTemplateRaster <- function(region, res, time = NULL) {

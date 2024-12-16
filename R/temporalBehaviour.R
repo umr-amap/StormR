@@ -429,7 +429,7 @@ temporalBehaviour <- function(sts,
 
     # Computing wind speed/direction
     output <- computeWindProfile(
-      dataTC, method, asymmetry,
+      storm@name, dataTC, method, asymmetry,
       terra::values(distEyeKm),
       terra::values(distEyeDeg),
       storm@spatialLoiBuffer, countriesGeometryInLoi, df

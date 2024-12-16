@@ -309,8 +309,10 @@ spatialBehaviour <- function(sts,
                              tempRes = 60,
                              verbose = 2) {
 
+  # Start time
   startTime <- Sys.time()
 
+  # Check inputs
   checkInputsSpatialBehaviour(sts, product, windThreshold, method, asymmetry,
     empiricalRMW, spaceRes, tempRes, verbose
   )
@@ -377,8 +379,11 @@ spatialBehaviour <- function(sts,
       pb <- utils::txtProgressBar(min = step, max = nbSteps, style = 3)
     }
 
-    stormSpeed <- rep(rasterTemplate, nbSteps)
-    stormDirection <- rep(rasterTemplate, nbSteps)
+    stormsSpeed <- c()
+    stormsDirection <- c()
+
+    #stormSpeed <- rep(rasterTemplate, nbSteps)
+    #stormDirection <- rep(rasterTemplate, nbSteps)
 
     for (j in 1:nbSteps) {
       # Making local raster template to compute wind profiles
@@ -398,17 +403,19 @@ spatialBehaviour <- function(sts,
       distEyeDeg <- computeDistanceEyeDeg(rasterTemplateTimeStep, eye)
 
       # Computing wind speed/direction
-      output <- computeWindProfile(
+      output <- computeWindProfile(storm@name,
         dataTC[j, ], method, asymmetry, distEyeKm, distEyeDeg,
         sts@spatialLoiBuffer, countriesGeometryInLoi, rasterTemplateTimeStep
       )
 
-      stormSpeed[[j]] <- moveOnLoi(output$speed, rasterTemplate, extent)
-      stormDirection[[j]] <- moveOnLoi(output$direction, rasterTemplate, extent)
-      names(stormSpeed[[j]]) <- paste0(storm@name, "_Speed_", dataTC$indices[j])
-      names(stormDirection[[j]]) <- paste0(storm@name, "_Direction_", dataTC$indices[j])
-      terra::time(stormSpeed[[j]]) <- terra::time(output$speed)
-      terra::time(stormDirection[[j]]) <- terra::time(output$direction)
+      stormsSpeed <- c(stormsSpeed, moveOnLoi(output$speed, rasterTemplate, extent))
+      stormsDirection <- c(stormsDirection, moveOnLoi(output$direction, rasterTemplate, extent))
+      #stormSpeed[[j]] <- moveOnLoi(output$speed, rasterTemplate, extent)
+      #stormDirection[[j]] <- moveOnLoi(output$direction, rasterTemplate, extent)
+      #names(stormSpeed[[j]]) <- paste0(storm@name, "_Speed_", dataTC$indices[j])
+      #names(stormDirection[[j]]) <- paste0(storm@name, "_Direction_", dataTC$indices[j])
+      #terra::time(stormSpeed[[j]]) <- terra::time(output$speed)
+      #terra::time(stormDirection[[j]]) <- terra::time(output$direction)
 
       if (verbose > 0) {
         utils::setTxtProgressBar(pb, step)
@@ -420,16 +427,17 @@ spatialBehaviour <- function(sts,
       close(pb)
     }
 
-
+    stormsSpeed <- terra::rast(stormsSpeed)
+    stormsDirection <- terra::rast(stormsDirection)
     # Rasterize final products
     if ("MSW" %in% product) {
-      rasters$mswRaster[[s]] <- computeMSWRaster(stormSpeed, nbg, storm@name)
+      rasters$mswRaster[[s]] <- computeMSWRaster(stormsSpeed, nbg, storm@name)
     }
     if ("PDI" %in% product) {
-      rasters$pdiRaster[[s]] <- computePDIRaster(stormSpeed, tempRes, nbg, storm@name)
+      rasters$pdiRaster[[s]] <- computePDIRaster(stormsSpeed, tempRes, nbg, storm@name)
     }
     if ("Exposure" %in% product) {
-      rasters$exposureRaster[[seq(6 * (s - 1) + 1, 6 * s)]] <- computeExposureRaster(stormSpeed,
+      rasters$exposureRaster[[seq(6 * (s - 1) + 1, 6 * s)]] <- computeExposureRaster(stormsSpeed,
                                                                                      tempRes,
                                                                                      nbg,
                                                                                      storm@name,
@@ -437,9 +445,9 @@ spatialBehaviour <- function(sts,
     }
     if ("Profiles" %in% product) {
       if (s == 1) {
-        rasters$profilesRaster <- c(stormSpeed, stormDirection)
+        rasters$profilesRaster <- c(stormsSpeed, stormsDirection)
       } else {
-        terra::add(rasters$profilesRaster) <- c(stormSpeed, stormDirection)
+        terra::add(rasters$profilesRaster) <- c(stormsSpeed, stormsDirection)
       }
 
     }
