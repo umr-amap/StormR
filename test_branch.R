@@ -31,6 +31,9 @@ s <- 1 # Initializing count of storms
 storm <- st@data[[1]]
 indicesInLoi <- getIndices(storm, 2, product)
 dataTC <- getDataInterpolate(storm, indicesInLoi, tempRes, empiricalRMW, method)
+
+microbenchmark::microbenchmark(getDataInterpolate(storm, indicesInLoi, tempRes, empiricalRMW, method)) # OK (<) compared to 0.2.1
+
 nbSteps <- dim(dataTC)[1] - 1
 stormsSpeed <- c()
 stormsDirection <- c()
@@ -43,8 +46,15 @@ local_extent <- data.frame(
 )
 names(local_extent) <- c("xmin", "xmax", "ymin", "ymax")
 rasterTemplateTimeStep <- makeTemplateRaster(local_extent, spatialResolution, dataTC$isoTimes[j])
+
+microbenchmark::microbenchmark(makeTemplateRaster(local_extent, spatialResolution, dataTC$isoTimes[j])) # OK compared to 0.2.1
+
 eye <- cbind(dataTC$lon[j], dataTC$lat[j])
 distEyeKm <- computeDistanceEyeKm(rasterTemplateTimeStep, eye)
+
+rbenchmark::benchmark({eye <- cbind(dataTC$lon[j], dataTC$lat[j])
+          distEyeKm <- computeDistanceEyeKm(rasterTemplateTimeStep, eye)}) # OK (<) compared to 0.2.1
+
 distEyeDeg <- computeDistanceEyeDeg(rasterTemplateTimeStep, eye)
 output <- computeWindProfile(storm@name,
   dataTC[j, ], method, asymmetry, distEyeKm, distEyeDeg,
@@ -60,18 +70,45 @@ name <- storm@name
 speed <- willoughby(
   r = distEyeKm, rmw = data$rmw, msw = data$msw, lat = data$lat
 )
-names(speed) <- paste0(name, "_Speed_", data["indices"])
-direction <- terra::rast(
-  x = points,
-  vals = terra::values(
-    computeDirection(method,
-                     distEyeDeg$lon,
-                     distEyeDeg$lat,
+
+rbenchmark::benchmark(speed <- willoughby(
+          r = distEyeKm, rmw = data$rmw, msw = data$msw, lat = data$lat
+        ))
+# OK (~=) compared to 0.2.1
+# Only if distEyeKm <- terra::distance(x = terra::crds(points, na.rm = FALSE),y = eye,lonlat = TRUE,unit = "km")
+
+  direction <- computeDirection(method,
+                     distEyeDeg['lon',],
+                     distEyeDeg['lat',],
                      data$lat,
-                     landIntersect),
-  ),
-  names = paste0(name, "_Direction_", data["indices"])
-)
+                     landIntersect)
+
+rbenchmark::benchmark(computeDirection(method,
+                             distEyeDeg['lon',],
+                             distEyeDeg['lat',],
+                             data$lat,
+                             landIntersect)) # OK (~=) compared to 0.2.1
+
+###
+dir <- direction
+vx <- data$vxDeg
+vy <- data$vyDeg
+vh <- data$stormSpeed
+rmw <- data$rmw
+r <- distEyeKm
+windX <- speed * cos(dir)
+windY <- speed * sin(dir)
+stormDir <- -(atan2(vy, vx) - pi / 2)
+stormDir[stormDir < 0] <- stormDir[stormDir < 0] + 2 * pi
+mWindX <- vh * cos(stormDir)
+mWindY <- vh * sin(stormDir)
+formula <- 3 * rmw**(3 / 2) * r**(3 / 2) / (rmw**3 + r**3 + rmw**(3 / 2) * r**(3 / 2))
+tWindX <- windX + formula * mWindX
+tWindY <- windY + formula * mWindY
+speed <- sqrt(tWindX**2 + tWindY**2)
+at2 <- atan2(tWindY, tWindX)
+direction <- (180 + at2 * 180 / pi) %% 360
+
 output <- computeAsymmetry(
   asymmetry, speed, direction,
   data$vxDeg, data$vyDeg, data$stormSpeed, distEyeKm,

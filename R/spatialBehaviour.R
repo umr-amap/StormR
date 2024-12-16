@@ -398,24 +398,21 @@ spatialBehaviour <- function(sts,
 
       # Computing distances to the eye of the storm in km
       eye <- cbind(dataTC$lon[j], dataTC$lat[j])
-      distEyeKm <- computeDistanceEyeKm(rasterTemplateTimeStep, eye)
+      points <- terra::crds(rasterTemplateTimeStep, na.rm = FALSE)
+      distEyeKm <- computeDistanceEyeKm(points, eye)
       # Computing distances to the eye of the storm in degree
-      distEyeDeg <- computeDistanceEyeDeg(rasterTemplateTimeStep, eye)
+      distEyeDeg <- computeDistanceEyeDeg(points, eye)
 
       # Computing wind speed/direction
-      output <- computeWindProfile(storm@name,
+      wind <- computeWindProfile(
         dataTC[j, ], method, asymmetry, distEyeKm, distEyeDeg,
         sts@spatialLoiBuffer, countriesGeometryInLoi, rasterTemplateTimeStep
       )
 
-      stormsSpeed <- c(stormsSpeed, moveOnLoi(output$speed, rasterTemplate, extent))
-      stormsDirection <- c(stormsDirection, moveOnLoi(output$direction, rasterTemplate, extent))
-      #stormSpeed[[j]] <- moveOnLoi(output$speed, rasterTemplate, extent)
-      #stormDirection[[j]] <- moveOnLoi(output$direction, rasterTemplate, extent)
-      #names(stormSpeed[[j]]) <- paste0(storm@name, "_Speed_", dataTC$indices[j])
-      #names(stormDirection[[j]]) <- paste0(storm@name, "_Direction_", dataTC$indices[j])
-      #terra::time(stormSpeed[[j]]) <- terra::time(output$speed)
-      #terra::time(stormDirection[[j]]) <- terra::time(output$direction)
+      wind <- rasterizeWind(wind, rasterTemplateTimeStep, storm@name, dataTC$indices[j])
+
+      stormsSpeed <- c(stormsSpeed, moveOnLoi(wind$speed, rasterTemplate, extent))
+      stormsDirection <- c(stormsDirection, moveOnLoi(wind$direction, rasterTemplate, extent))
 
       if (verbose > 0) {
         utils::setTxtProgressBar(pb, step)

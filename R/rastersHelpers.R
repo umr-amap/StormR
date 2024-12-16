@@ -208,3 +208,21 @@ makeCoordinatesRaster <- function(raster) {
   names(rasterCoords) <- c("lon", "lat")
   return(rasterCoords)
 }
+
+#' Generate a raster of the wind field (wind & direction)
+#' from a template raster with the coordinates of each cell.
+#'
+#' @noRd
+#' @param wind matrix. List describing the wind field with two fields: "speed" and "direction"
+#' @param template SpatRaster. Raster template
+#' @param name character. Name of the storm
+#' @param index numeric. Index of the storm
+#'
+#' @return a SpatRaster. Raster with two layers: "speed" and "direction"
+rasterizeWind <- function(wind, template, name, index) {
+  # Rasterize the wind
+  windRaster <- rep(terra::rast(template), 2)
+  terra::values(windRaster) <- c(wind$speed, wind$direction)
+  names(windRaster) <- c(paste0(name, "_Speed_", index), paste0(name, "_Direction_", index))
+  return(windRaster)
+}

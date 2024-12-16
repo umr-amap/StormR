@@ -253,9 +253,15 @@ computeDistanceEyeKm <- function(points, eye) {
   # Computing distances to the eye of the storm in km
   # Case for spatialBehaviour
   if (is(points, "SpatRaster")) {
+    #distEyeKm <- terra::distance(
+    #  x = points,
+    #  y = terra::vect(rbind(eye), crs = "+proj=longlat +datum=WGS84"),
+    #  unit = "km"
+    #)
     distEyeKm <- terra::distance(
       x = points,
-      y = terra::vect(rbind(eye), crs = "+proj=longlat +datum=WGS84"),
+      y = eye,
+      lonlat = TRUE,
       unit = "km"
     )
   } else {
@@ -282,10 +288,14 @@ computeDistanceEyeKm <- function(points, eye) {
 computeDistanceEyeDeg <- function(points, eye) {
   # Computing distances to the eye of the storm for x and y axes in degrees
   if (dim(eye)[1] == 1) {
-    rasterCoords <- makeCoordinatesRaster(points)
-    distEyeDeg <- rasterCoords - eye
-    #    xDistEyeDeg <- points[, 1] - eye[1]
-    #    yDistEyeDeg <- points[, 2] - eye[2]
+    #rasterCoords <- makeCoordinatesRaster(points)
+    #distEyeDeg <- rasterCoords - eye
+    #xDistEyeDeg <- points[, 1] - eye[1]
+    #yDistEyeDeg <- points[, 2] - eye[2]
+    distEyeDeg <- rbind(
+      lon = points[, 1] - eye[1],
+      lat = points[, 2] - eye[2]
+    )
   } else {
     xDistEyeDeg <- apply(points, c(1, 2), function(p) p - eye[, 1])[, , 1]
     yDistEyeDeg <- apply(points, c(1, 2), function(p) p - eye[, 2])[, , 2]

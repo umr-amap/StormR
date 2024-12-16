@@ -137,7 +137,6 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #' Compute wind profile according to the selected method and asymmetry
 #'
 #' @noRd
-#' @param name character. Name of the storm.
 #' @param data data.frame. Data generated with getInterpolatedData function at a given time step
 #'   containing all information for calculations.
 #' @param method character. method input form stormBehaviour_sp.
@@ -151,7 +150,7 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #' @param points sf Geometry or data.frame. Points for land / ocean intersection for Boose model.
 #'
 #' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(name, data, method, asymmetry, distEyeKm, distEyeDeg,
+computeWindProfile <- function(data, method, asymmetry, distEyeKm, distEyeDeg,
                                loi, countries, points) {
 
   landIntersect <- NULL
@@ -191,18 +190,11 @@ computeWindProfile <- function(name, data, method, asymmetry, distEyeKm, distEye
     }
   } else {
     # spatialBehaviour case
-    names(speed) <- paste0(name, "_Speed_", data["indices"])
-    direction <- terra::rast(
-      x = points,
-      vals = terra::values(
-        computeDirection(method,
-                         distEyeDeg$lon,
-                         distEyeDeg$lat,
+    direction <- computeDirection(method,
+                         distEyeDeg["lon", ],
+                         distEyeDeg["lat", ],
                          data$lat,
-                         landIntersect),
-      ),
-      names = paste0(name, "_Direction_", data["indices"])
-    )
+                         landIntersect)
   }
 
   # Adding asymmetry
@@ -233,7 +225,8 @@ azimuthalDirection <- function(x, y) {
   #azimuth <- -(terra::atan2(y, x) - pi / 2)
   #azimuth[azimuth < 0] <- azimuth[azimuth < 0] + 2 * pi
   #return(180 / pi * azimuth)
-  return(180 / pi * ((-(terra::atan2(y, x) - pi / 2) + 2 * pi) %% (2 * pi)))
+  #return(180 / pi * ((-(terra::atan2(y, x) - pi / 2) + 2 * pi) %% (2 * pi)))
+  return(180 / pi * ((-(atan2(y, x) - pi / 2) + 2 * pi) %% (2 * pi)))
 }
 
 #' Rotate wind direction from -180/180 to 0/360
@@ -247,7 +240,8 @@ rotate0360 <- function(direction) {
   #direction[direction < 0] <- direction[direction < 0] + 360
   #direction[direction > 360] <- direction[direction > 360] - 360
   #return(direction)
-  return((terra::rotate(direction, left = FALSE)))
+  #return((terra::rotate(direction, left = FALSE)))
+  return((direction + 360) %% 360)
 }
 
 
@@ -301,8 +295,9 @@ computeAsymmetry <- function(asymmetry, speed, dir, vx, vy, vh, r, rmw, lat) {
     at2 <- mapply(atan2, tWindY, tWindX)
   } else {
     # spatialBehaviour case
-    at2 <- terra::atan2(tWindY, tWindX)
-    names(at2) <- names(dir)
+    at2 <- atan2(tWindY, tWindX)
+    #at2 <- terra::atan2(tWindY, tWindX)
+    #names(at2) <- names(dir)
   }
   # New wind direction
   direction <- (180 + at2 * 180 / pi) %% 360
@@ -345,7 +340,8 @@ computeDirection <- function(method, x, y, lat, landIntersect) {
     direction <- mapply(landInteractionBoose, lat, direction, landIntersect)
   }
 
-  return(round(rotate0360(direction), 3))
+  #return(round(rotate0360(direction), 3))
+  return(round((direction + 360) %% 360, 3))
 }
 
 landInteractionBoose <- function(lat, direction, landIntersect) {
