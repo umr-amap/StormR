@@ -230,11 +230,11 @@ computeWindProfile <- function(name, data, method, asymmetry, distEyeKm, distEye
 #'
 #' @return numeric vector. Azimuthal direction at each (x,y) position
 azimuthalDirection <- function(x, y) {
-  azimuth <- -(terra::atan2(y, x) - pi / 2)
-  azimuth[azimuth < 0] <- azimuth[azimuth < 0] + 2 * pi
-  return(180 / pi * azimuth)
+  #azimuth <- -(terra::atan2(y, x) - pi / 2)
+  #azimuth[azimuth < 0] <- azimuth[azimuth < 0] + 2 * pi
+  #return(180 / pi * azimuth)
+  return(180 / pi * ((-(terra::atan2(y, x) - pi / 2) + 2 * pi) %% (2 * pi)))
 }
-
 
 #' Rotate wind direction from -180/180 to 0/360
 #'
@@ -244,9 +244,9 @@ azimuthalDirection <- function(x, y) {
 #'
 #' @return numeric vector. Wind direction values between 0 and 360
 rotate0360 <- function(direction) {
-#  direction[direction < 0] <- direction[direction < 0] + 360
-#  direction[direction > 360] <- direction[direction > 360] - 360
-#  return(direction)
+  #direction[direction < 0] <- direction[direction < 0] + 360
+  #direction[direction > 360] <- direction[direction > 360] - 360
+  #return(direction)
   return((terra::rotate(direction, left = FALSE)))
 }
 
@@ -302,7 +302,7 @@ computeAsymmetry <- function(asymmetry, speed, dir, vx, vy, vh, r, rmw, lat) {
   } else {
     # spatialBehaviour case
     at2 <- terra::atan2(tWindY, tWindX)
-    names(at2) <- names(direction)
+    names(at2) <- names(dir)
   }
   # New wind direction
   direction <- (180 + at2 * 180 / pi) %% 360

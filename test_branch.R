@@ -56,6 +56,7 @@ loi <- st@spatialLoiBuffer
 countries <- countriesGeometryInLoi
 points <- rasterTemplateTimeStep
 landIntersect <- NULL
+name <- storm@name
 speed <- willoughby(
   r = distEyeKm, rmw = data$rmw, msw = data$msw, lat = data$lat
 )
