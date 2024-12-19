@@ -245,19 +245,14 @@ getLandIntersect <- function(points, countries) {
 #' Compute distance to the eye of the storm in km
 #'
 #' @noRd
-#' @param points vector or SpatRaster. Coordinates of the points. 1st column is lon, 2nd column is lat
+#' @param points vector. Coordinates of the points. 1st column is lon, 2nd column is lat
 #' @param eye vector. Coordinates of the eye of the storm
 #'
-#' @return SpatRaster if isRaster, else matrix. Distance to the eye of the storm in km
+#' @return vector. Distance to the eye of the storm in km
 computeDistanceEyeKm <- function(points, eye) {
   # Computing distances to the eye of the storm in km
   # Case for spatialBehaviour
-  if (is(points, "SpatRaster")) {
-    #distEyeKm <- terra::distance(
-    #  x = points,
-    #  y = terra::vect(rbind(eye), crs = "+proj=longlat +datum=WGS84"),
-    #  unit = "km"
-    #)
+  if (length(points > 1)) {
     distEyeKm <- terra::distance(
       x = points,
       y = eye,
@@ -288,10 +283,6 @@ computeDistanceEyeKm <- function(points, eye) {
 computeDistanceEyeDeg <- function(points, eye) {
   # Computing distances to the eye of the storm for x and y axes in degrees
   if (dim(eye)[1] == 1) {
-    #rasterCoords <- makeCoordinatesRaster(points)
-    #distEyeDeg <- rasterCoords - eye
-    #xDistEyeDeg <- points[, 1] - eye[1]
-    #yDistEyeDeg <- points[, 2] - eye[2]
     distEyeDeg <- rbind(
       lon = points[, 1] - eye[1],
       lat = points[, 2] - eye[2]

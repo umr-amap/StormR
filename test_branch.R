@@ -7,6 +7,8 @@ st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 ### spatialBehaviour
 pf <- spatialBehaviour(st, verbose = 1)
 
+microbenchmark::microbenchmark(spatialBehaviour(st, verbose = 1), times = 10)
+
 verbose <- 1
 product <- "Profiles"
 windThreshold <- st@scale
@@ -50,13 +52,15 @@ rasterTemplateTimeStep <- makeTemplateRaster(local_extent, spatialResolution, da
 microbenchmark::microbenchmark(makeTemplateRaster(local_extent, spatialResolution, dataTC$isoTimes[j])) # OK compared to 0.2.1
 
 eye <- cbind(dataTC$lon[j], dataTC$lat[j])
-distEyeKm <- computeDistanceEyeKm(rasterTemplateTimeStep, eye)
+points <- terra::crds(rasterTemplateTimeStep, na.rm = FALSE)
+distEyeKm <- computeDistanceEyeKm(points, eye)
 
-rbenchmark::benchmark({eye <- cbind(dataTC$lon[j], dataTC$lat[j])
-          distEyeKm <- computeDistanceEyeKm(rasterTemplateTimeStep, eye)}) # OK (<) compared to 0.2.1
+microbenchmark::microbenchmark({eye <- cbind(dataTC$lon[j], dataTC$lat[j])
+          points <- terra::crds(rasterTemplateTimeStep, na.rm = FALSE)
+          distEyeKm <- computeDistanceEyeKm(points, eye)}) # OK (<) compared to 0.2.1
 
-distEyeDeg <- computeDistanceEyeDeg(rasterTemplateTimeStep, eye)
-output <- computeWindProfile(storm@name,
+distEyeDeg <- computeDistanceEyeDeg(points, eye)
+wind <- computeWindProfile(
   dataTC[j, ], method, asymmetry, distEyeKm, distEyeDeg,
   st@spatialLoiBuffer, countriesGeometryInLoi, rasterTemplateTimeStep
 )
@@ -64,26 +68,25 @@ output <- computeWindProfile(storm@name,
 data <- dataTC[j, ]
 loi <- st@spatialLoiBuffer
 countries <- countriesGeometryInLoi
-points <- rasterTemplateTimeStep
 landIntersect <- NULL
 name <- storm@name
 speed <- willoughby(
   r = distEyeKm, rmw = data$rmw, msw = data$msw, lat = data$lat
 )
 
-rbenchmark::benchmark(speed <- willoughby(
+microbenchmark::microbenchmark(speed <- willoughby(
           r = distEyeKm, rmw = data$rmw, msw = data$msw, lat = data$lat
         ))
 # OK (~=) compared to 0.2.1
 # Only if distEyeKm <- terra::distance(x = terra::crds(points, na.rm = FALSE),y = eye,lonlat = TRUE,unit = "km")
 
-  direction <- computeDirection(method,
+direction <- computeDirection(method,
                      distEyeDeg['lon',],
                      distEyeDeg['lat',],
                      data$lat,
                      landIntersect)
 
-rbenchmark::benchmark(computeDirection(method,
+microbenchmark::microbenchmark(computeDirection(method,
                              distEyeDeg['lon',],
                              distEyeDeg['lat',],
                              data$lat,
@@ -109,20 +112,33 @@ speed <- sqrt(tWindX**2 + tWindY**2)
 at2 <- atan2(tWindY, tWindX)
 direction <- (180 + at2 * 180 / pi) %% 360
 
-output <- computeAsymmetry(
+wind <- computeAsymmetry(
   asymmetry, speed, direction,
   data$vxDeg, data$vyDeg, data$stormSpeed, distEyeKm,
   data$rmw, data$lat
 )
 
+microbenchmark::microbenchmark(wind <- computeAsymmetry(
+  asymmetry, speed, direction,
+  data$vxDeg, data$vyDeg, data$stormSpeed, distEyeKm,
+  data$rmw, data$lat
+))
 
+wind <- rasterizeWind(wind, rasterTemplateTimeStep, storm@name, dataTC$indices[j])
+stormsSpeed <- c(stormsSpeed, moveOnLoi(wind[[1]], rasterTemplate, extent))
+stormsDirection <- c(stormsDirection, moveOnLoi(wind[[2]], rasterTemplate, extent))
 
-stormSpeed[[j]] <- moveOnLoi(output$speed, rasterTemplate, extent)
-stormDirection[[j]] <- moveOnLoi(output$direction, rasterTemplate, extent)
-names(stormSpeed[[j]]) <- paste0(storm@name, "_Speed_", dataTC$indices[j])
-names(stormDirection[[j]]) <- paste0(storm@name, "_Direction_", dataTC$indices[j])
-terra::time(stormSpeed[[j]]) <- terra::time(output$speed)
-terra::time(stormDirection[[j]]) <- terra::time(output$direction)
+stormsSpeed <- terra::rast(stormsSpeed)
+stormsDirection <- terra::rast(stormsDirection)
+
+microbenchmark::microbenchmark({
+  wind2 <- rasterizeWind(wind, rasterTemplateTimeStep, storm@name, dataTC$indices[j])
+  stormsSpeed2 <- c(stormsSpeed, moveOnLoi(wind2[[1]], rasterTemplate, extent))
+  stormsDirection2 <- c(stormsDirection, moveOnLoi(wind2[[2]], rasterTemplate, extent))
+
+  stormsSpeed2 <- terra::rast(stormsSpeed2)
+  stormsDirection2 <- terra::rast(stormsDirection2)
+})
 
 # Does not work
 #TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)

@@ -229,22 +229,6 @@ azimuthalDirection <- function(x, y) {
   return(180 / pi * ((-(atan2(y, x) - pi / 2) + 2 * pi) %% (2 * pi)))
 }
 
-#' Rotate wind direction from -180/180 to 0/360
-#'
-#' @noRd
-#' @param direction numeric vector. Wind direction values
-#' between -180 and 180
-#'
-#' @return numeric vector. Wind direction values between 0 and 360
-rotate0360 <- function(direction) {
-  #direction[direction < 0] <- direction[direction < 0] + 360
-  #direction[direction > 360] <- direction[direction > 360] - 360
-  #return(direction)
-  #return((terra::rotate(direction, left = FALSE)))
-  return((direction + 360) %% 360)
-}
-
-
 #' Compute asymmetry
 #'
 #' @noRd
@@ -296,8 +280,6 @@ computeAsymmetry <- function(asymmetry, speed, dir, vx, vy, vh, r, rmw, lat) {
   } else {
     # spatialBehaviour case
     at2 <- atan2(tWindY, tWindX)
-    #at2 <- terra::atan2(tWindY, tWindX)
-    #names(at2) <- names(dir)
   }
   # New wind direction
   direction <- (180 + at2 * 180 / pi) %% 360
@@ -340,7 +322,6 @@ computeDirection <- function(method, x, y, lat, landIntersect) {
     direction <- mapply(landInteractionBoose, lat, direction, landIntersect)
   }
 
-  #return(round(rotate0360(direction), 3))
   return(round((direction + 360) %% 360, 3))
 }
 
@@ -372,7 +353,7 @@ computePDI <- function(speed, tempRes) {
   # Applying both rho and surface drag coefficient
   pdi <- pdi * rho * cd
   # Integrating over the whole track
-  if (is(pdi, data.frame)) {
+  if (is.data.frame(pdi)) {
     # temporalBehaviour case
     pdi <- colSums(pdi, na.rm = TRUE) * tempRes
   } else {

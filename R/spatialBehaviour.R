@@ -382,9 +382,6 @@ spatialBehaviour <- function(sts,
     stormsSpeed <- c()
     stormsDirection <- c()
 
-    #stormSpeed <- rep(rasterTemplate, nbSteps)
-    #stormDirection <- rep(rasterTemplate, nbSteps)
-
     for (j in 1:nbSteps) {
       # Making local raster template to compute wind profiles
       local_extent <- data.frame(
@@ -411,8 +408,8 @@ spatialBehaviour <- function(sts,
 
       wind <- rasterizeWind(wind, rasterTemplateTimeStep, storm@name, dataTC$indices[j])
 
-      stormsSpeed <- c(stormsSpeed, moveOnLoi(wind$speed, rasterTemplate, extent))
-      stormsDirection <- c(stormsDirection, moveOnLoi(wind$direction, rasterTemplate, extent))
+      stormsSpeed <- c(stormsSpeed, moveOnLoi(wind[[1]], rasterTemplate, extent))
+      stormsDirection <- c(stormsDirection, moveOnLoi(wind[[2]], rasterTemplate, extent))
 
       if (verbose > 0) {
         utils::setTxtProgressBar(pb, step)
@@ -434,19 +431,14 @@ spatialBehaviour <- function(sts,
       rasters$pdiRaster[[s]] <- computePDIRaster(stormsSpeed, tempRes, nbg, storm@name)
     }
     if ("Exposure" %in% product) {
-      rasters$exposureRaster[[seq(6 * (s - 1) + 1, 6 * s)]] <- computeExposureRaster(stormsSpeed,
-                                                                                     tempRes,
-                                                                                     nbg,
-                                                                                     storm@name,
-                                                                                     windThreshold)
+      rasters$exposureRaster[[s]] <- computeExposureRaster(stormsSpeed,
+                                                           tempRes,
+                                                           nbg,
+                                                           storm@name,
+                                                           windThreshold)
     }
     if ("Profiles" %in% product) {
-      if (s == 1) {
-        rasters$profilesRaster <- c(stormsSpeed, stormsDirection)
-      } else {
-        terra::add(rasters$profilesRaster) <- c(stormsSpeed, stormsDirection)
-      }
-
+      rasters$profilesRaster[[s]] <- c(stormsSpeed, stormsDirection)
     }
 
     if (verbose > 0) {
@@ -455,8 +447,8 @@ spatialBehaviour <- function(sts,
   }
 
   # Join all rasters in one stack
-  rastersNames <- unlist(lapply(rasters, names))
-  rasters <- terra::rast(rasters)
+  rastersNames <- unlist(lapply(unlist(rasters), names))
+  rasters <- terra::rast(unlist(rasters))
   names(rasters) <- rastersNames
   rasters <- maskProduct(rasters, sts@spatialLoiBuffer, rasterTemplate)
 
