@@ -1,8 +1,11 @@
 devtools::load_all()
+library(doFuture)
+
 points <- data.frame(lon = c(168.33, 167.17), lat = c(-17.73, -15.53))
 rownames(points) <- c("Port_Vila", "Luganville")
 sds <- defStormsDataset()
-st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
+#st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
+st <- defStormsList(sds = sds, loi = "Vanuatu", verbose = 0)
 
 ### spatialBehaviour
 pf <- spatialBehaviour(st, verbose = 1)
@@ -31,6 +34,7 @@ countriesGeometryInLoi <- if (method == "Boose") getCountriesInLoi(sts@spatialLo
 rasters <- initRasters(rasterTemplate, getNbStorms(sts), product, windThreshold)
 s <- 1 # Initializing count of storms
 storm <- st@data[[1]]
+stormName <- getNames(storm)
 indicesInLoi <- getIndices(storm, 2, product)
 dataTC <- getDataInterpolate(storm, indicesInLoi, tempRes, empiricalRMW, method)
 
@@ -39,6 +43,65 @@ microbenchmark::microbenchmark(getDataInterpolate(storm, indicesInLoi, tempRes, 
 nbSteps <- dim(dataTC)[1] - 1
 stormsSpeed <- c()
 stormsDirection <- c()
+
+plan(multisession)
+
+stormsBehaviours <- foreach (storm = st@data) %dofuture% {
+    # Get storm name
+    stormName <- getNames(storm)
+
+    # Handling indices inside loi.buffer or not
+    indicesInLoi <- getIndices(storm, 2, product)
+
+    # Getting data associated with storm
+    dataTC <- getDataInterpolate(storm, indicesInLoi, tempRes, empiricalRMW, method)
+
+    nbSteps <- dim(dataTC)[1] - 1
+
+    if (verbose > 0) {
+      step <- 1
+      cat(storm@name, " (", s, "/", getNbStorms(sts), ")\n")
+      pb <- utils::txtProgressBar(min = step, max = nbSteps, style = 3)
+    }
+
+    stormsSpeed <- c()
+    stormsDirection <- c()
+
+stormsResults <- foreach(j = seq_len(nbSteps),
+                         globals = structure(TRUE,
+                                             add = c("computeDistanceEyeKm", "computeDistanceEyeDeg",
+                                                     "computeWindProfile", "willoughby", "computeDirection",
+                                                     "rasterizeWind", "computeAsymmetry", "makeTemplateRaster")),
+                         .combine = "cbind") %dopar% {
+
+  wind <- spatialSpeedDirection(dataTC[j, ],
+                                stormName,
+                                buffer_size,
+                                spatialResolution,
+                                method,
+                                asymmetry,
+                                spatialLoiBuffer,
+                                countriesGeometryInLoi)
+
+  list(
+    speed = moveOnLoi(wind[[1]], rasterTemplate, extent),
+    direction = moveOnLoi(wind[[2]], rasterTemplate, extent)
+  )
+}
+
+
+# 4. Extraire les résultats
+stormsSpeed <- do.call(c, lapply(stormsResults, function(x) x$speed))
+stormsDirection <- do.call(c, lapply(stormsResults, function(x) x$direction))
+
+# 5. Convertir en raster
+stormsSpeed <- terra::rast(stormsSpeed)
+stormsDirection <- terra::rast(stormsDirection)
+
+# 6. À la fin de la fonction ou du script
+plan(sequential)
+
+
 j <- 1
 local_extent <- data.frame(
   dataTC$lon[j] - buffer_size,

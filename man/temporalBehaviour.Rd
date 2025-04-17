@@ -19,8 +19,8 @@ temporalBehaviour(
 \arguments{
 \item{sts}{\code{StormsList} object.}
 
-\item{points}{data.frame. Consisting of two columns names as "x" (for the longitude) and
-"y" (for the latitude), providing the coordinates in decimal degrees of the point locations. Row names
+\item{points}{data.frame. Consisting of two columns names as "lon" (for the longitude) and
+"lat" (for the latitude), providing the coordinates in decimal degrees of the point locations. Row names
 can also be provided to named the locations.}
 
 \item{product}{character. Desired output statistics:
@@ -204,7 +204,7 @@ sds <- defStormsDataset()
 # Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
-pts <- data.frame(x = c(168.5, 168), y = c(-17.9, -16.3))
+pts <- data.frame(lon = c(168.5, 168), lat = c(-17.9, -16.3))
 row.names(pts) <- c("point_1", "point_2")
 
 # Computing time series of wind speed and direction for Pam

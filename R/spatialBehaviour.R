@@ -69,6 +69,56 @@ checkInputsSpatialBehaviour <- function(sts, product, windThreshold, method, asy
 }
 
 
+#' Function to compute wind speed and direction for one storm at one time step on a raster grid
+#'
+#' @noRd
+#' @param dataTS data.frame. Data associated with the storm at a given time step.
+#' @param stormName character. Name of the storm.
+#' @param buffer_size numeric. Buffer size in degree.
+#' @param spatialResolution numeric. Spatial resolution in degree?
+#' @param method character. Model used to compute wind speed and direction.
+#' @param asymmetry character. If method = "Holland" or method = "Willoughby", this argument specifies the method.
+#' used to add asymmetry to the reconstructed wind field.
+#' @param spatialLoiBuffer sf POLYGON. LOI of interest with buffer extension.
+#' @param countriesGeometryInLoi Geometry set of MULTIPOLYGON. Countries geometry in the LOI.
+#' Only used if method = "Boose", otherwise NULL.
+#'
+#' @return SpatRaster object. Includes two layers: wind speed and wind direction.
+#' Centered on the storm at the given time step.
+spatialSpeedDirection <- function(dataTS,
+                                  stormName,
+                                  buffer_size,
+                                  spatialResolution,
+                                  method,
+                                  asymmetry,
+                                  spatialLoiBuffer,
+                                  countriesGeometryInLoi) {
+  # Making local raster template to compute wind profiles
+  local_extent <- data.frame(
+    dataTS$lon - buffer_size,
+    dataTS$lon + buffer_size,
+    dataTS$lat - buffer_size,
+    dataTS$lat + buffer_size
+  )
+  names(local_extent) <- c("xmin", "xmax", "ymin", "ymax")
+  rasterTemplateTimeStep <- makeTemplateRaster(local_extent, spatialResolution, dataTS$isoTimes)
+
+  # Computing distances to the eye of the storm in km
+  eye <- cbind(dataTS$lon, dataTS$lat)
+  points <- terra::crds(rasterTemplateTimeStep, na.rm = FALSE)
+  distEyeKm <- computeDistanceEyeKm(points, eye)
+  # Computing distances to the eye of the storm in degree
+  distEyeDeg <- computeDistanceEyeDeg(points, eye)
+
+  # Computing wind speed/direction
+  wind <- computeWindProfile(
+    dataTS, method, asymmetry, distEyeKm, distEyeDeg,
+    spatialLoiBuffer, countriesGeometryInLoi, rasterTemplateTimeStep
+  )
+
+  wind <- rasterizeWind(wind, rasterTemplateTimeStep, stormName, dataTS$indices)
+}
+
 
 ############################
 # spatialBehaviour function#
@@ -330,7 +380,8 @@ spatialBehaviour <- function(sts,
   spatialResolution <- resolutions[spaceRes]
 
   # Make raster template from loi and buffer of the stormsList and spatialResolution
-  rasterTemplate <- makeTemplateRaster(sts@spatialLoiBuffer, spatialResolution)
+  spatialLoiBuffer <- sts@spatialLoiBuffer
+  rasterTemplate <- makeTemplateRaster(spatialLoiBuffer, spatialResolution)
   extent <- terra::ext(rasterTemplate)
   # Smoothing factor for focal function
   nbg <- switch(spaceRes,
@@ -358,13 +409,21 @@ spatialBehaviour <- function(sts,
     cat("  (", getNbStorms(sts), ") ", getNames(sts), "\n\n")
   }
 
-  countriesGeometryInLoi <- if (method == "Boose") getCountriesInLoi(sts@spatialLoiBuffer) else NULL
+  countriesGeometryInLoi <- if (method == "Boose") getCountriesInLoi(spatialLoiBuffer) else NULL
 
   # Initializing final raster stacks
   rasters <- initRasters(rasterTemplate, getNbStorms(sts), product, windThreshold)
 
   s <- 1 # Initializing count of storms
+#  foreach::foreach(i=1:length(sts),
+#                   .options.future = list(globals  = c(
+#            "s", "sts", "product", "tempRes", "empiricalRMW", "method", "asymmetry", "buffer_size", "nbg",
+#            "countriesGeometryInLoi", "rasterTemplate", "extent", "spatialResolution", "verbose")
+#          )) %dofuture% {
   for (storm in sts@data) {
+    # Get storm name
+    stormName <- getNames(storm)
+
     # Handling indices inside loi.buffer or not
     indicesInLoi <- getIndices(storm, 2, product)
 
@@ -383,30 +442,15 @@ spatialBehaviour <- function(sts,
     stormsDirection <- c()
 
     for (j in 1:nbSteps) {
-      # Making local raster template to compute wind profiles
-      local_extent <- data.frame(
-        dataTC$lon[j] - buffer_size,
-        dataTC$lon[j] + buffer_size,
-        dataTC$lat[j] - buffer_size,
-        dataTC$lat[j] + buffer_size
-      )
-      names(local_extent) <- c("xmin", "xmax", "ymin", "ymax")
-      rasterTemplateTimeStep <- makeTemplateRaster(local_extent, spatialResolution, dataTC$isoTimes[j])
-
-      # Computing distances to the eye of the storm in km
-      eye <- cbind(dataTC$lon[j], dataTC$lat[j])
-      points <- terra::crds(rasterTemplateTimeStep, na.rm = FALSE)
-      distEyeKm <- computeDistanceEyeKm(points, eye)
-      # Computing distances to the eye of the storm in degree
-      distEyeDeg <- computeDistanceEyeDeg(points, eye)
-
-      # Computing wind speed/direction
-      wind <- computeWindProfile(
-        dataTC[j, ], method, asymmetry, distEyeKm, distEyeDeg,
-        sts@spatialLoiBuffer, countriesGeometryInLoi, rasterTemplateTimeStep
-      )
-
-      wind <- rasterizeWind(wind, rasterTemplateTimeStep, storm@name, dataTC$indices[j])
+#    foreach(j=seq(1, nbSteps), .export = c("spatialSpeedDirection")) %dopar% {
+      wind <- spatialSpeedDirection(dataTC[j, ],
+                                    stormName,
+                                    buffer_size,
+                                    spatialResolution,
+                                    method,
+                                    asymmetry,
+                                    spatialLoiBuffer,
+                                    countriesGeometryInLoi)
 
       stormsSpeed <- c(stormsSpeed, moveOnLoi(wind[[1]], rasterTemplate, extent))
       stormsDirection <- c(stormsDirection, moveOnLoi(wind[[2]], rasterTemplate, extent))
@@ -425,16 +469,16 @@ spatialBehaviour <- function(sts,
     stormsDirection <- terra::rast(stormsDirection)
     # Rasterize final products
     if ("MSW" %in% product) {
-      rasters$mswRaster[[s]] <- computeMSWRaster(stormsSpeed, nbg, storm@name)
+      rasters$mswRaster[[s]] <- computeMSWRaster(stormsSpeed, nbg, stormName)
     }
     if ("PDI" %in% product) {
-      rasters$pdiRaster[[s]] <- computePDIRaster(stormsSpeed, tempRes, nbg, storm@name)
+      rasters$pdiRaster[[s]] <- computePDIRaster(stormsSpeed, tempRes, nbg, stormName)
     }
     if ("Exposure" %in% product) {
       rasters$exposureRaster[[s]] <- computeExposureRaster(stormsSpeed,
                                                            tempRes,
                                                            nbg,
-                                                           storm@name,
+                                                           stormName,
                                                            windThreshold)
     }
     if ("Profiles" %in% product) {

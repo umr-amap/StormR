@@ -33,6 +33,7 @@ is EPSG:4326}
 the package. Default value is set to the Saffir Simpson Hurricane Scale}
 
 \item{\code{scalePalette}}{character. Named vector containing the color hex code
-corresponding to each category in \code{scale} slot. Default value is the palette associated with the Saffir Simpson Hurricane Scale}
+corresponding to each category in \code{scale} slot. Default value is the palette
+associated with the Saffir Simpson Hurricane Scale}
 }}
 
