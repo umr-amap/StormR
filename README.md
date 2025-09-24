@@ -3,6 +3,7 @@
 
 <!-- badges: start -->
 [![](https://www.r-pkg.org/badges/version/StormR?color=green)](https://cran.r-project.org/package=StormR)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/r-stormr.svg)](https://anaconda.org/conda-forge/r-stormr)
 ![GitHub Release](https://img.shields.io/github/v/release/umr-amap/StormR?color=green)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/StormR)](https://cran.r-project.org/package=StormR)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.05766/status.svg)](https://doi.org/10.21105/joss.05766)
@@ -32,6 +33,14 @@ The latest development version can be installed from GitHub as follows,
 ``` r
 #install.packages("devtools")
 devtools::install_github("umr-amap/StormR")
+```
+
+Alternatively, you can install `StormR` using `conda` / `mamba`. Check [here](https://github.com/conda-forge/r-stormr-feedstock) for more info.
+
+```bash
+conda config --add channels conda-forge      # make sure you add conda-forge to your channel list
+conda config --set channel_priority strict
+conda install r-stormr    # or mamba install r-stormr
 ```
 
 ### Loading StormR package
