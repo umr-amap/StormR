@@ -110,9 +110,9 @@
     "releaseNotes": "## What's Changed\n* Bump JamesIves/github-pages-deploy-action from 4.6.3 to 4.6.4 in the actions group by @dependabot in https://github.com/umr-amap/StormR/pull/92\n* Bugfix: [Bug]: Issue with dynamic plots in plotBehaviour #91 by @thomasarsouze in https://github.com/umr-amap/StormR/pull/93\n\n**Full Changelog**: https://github.com/umr-amap/StormR/compare/v0.2.1...v0.2.2",
     "version": "0.2.2",
     "codemeta:contIntegration": {
-        "id": "https://github.com/umr-amap/StormR/tree/master/.github/workflows"
+        "id": "https://github.com/umr-amap/StormR/tree/main/.github/workflows"
     },
-    "continuousIntegration": "https://github.com/umr-amap/StormR/tree/master/.github/workflows",
+    "continuousIntegration": "https://github.com/umr-amap/StormR/tree/main/.github/workflows",
     "developmentStatus": "active",
     "funding": "HSF 19105",
     "issueTracker": "https://github.com/umr-amap/StormR/issues",
