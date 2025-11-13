@@ -327,6 +327,40 @@ getIndices <- function(st, offset, product) {
 }
 
 
+#' Get Storm displacement speed
+#'
+#' Given vectors of longitude and latitude of the center of the storm, computes
+#' the displacement velocity of the storm
+#'
+#' @noRd
+#' @param longitude numeric vector. Vector of longitudes of the center of the storm.
+#' @param latitutde numeric vector. Vector of latitudes of the center of the storm.
+#' @param tempRes numeric. Temporal resolution of the data, in min.
+#'
+#' @return numeric vectors for storm displacement velocity (m.s-1), longitude and latitude
+#' components (degree.h-1)
+stormDisplacement <- function(longitude, latitude, tempRes) {
+  lenData <- length(longitude)
+  stormSpeed <- rep(NA, lenData)
+  vxDeg <- rep(NA, lenData)
+  vyDeg <- rep(NA, lenData)
+  tempResH <- tempRes / 60.
+
+  # Computing storm velocity (m/s)
+  for (i in 1:(lenData - 1)) {
+    stormSpeed[i] <- terra::distance(
+      x = cbind(longitude[i], latitude[i]),
+      y = cbind(longitude[i + 1], latitude[i + 1]),
+      lonlat = TRUE
+    ) * (0.001 / tempResH) / 3.6
+
+    # component wise velocity in both x and y direction (degree/h)
+    vxDeg[i] <- (longitude[i + 1] - longitude[i]) / tempResH
+    vyDeg[i] <- (latitude[i + 1] - latitude[i]) / tempResH
+  }
+
+  return(list(stormSpeed=stormSpeed, vxDeg=vxDeg, vyDeg=vyDeg))
+}
 
 
 
@@ -356,46 +390,15 @@ getDataInterpolate <- function(st, indices, tempRes, empiricalRMW, method) {
   # Nb of observations of storm and time associated
   lenIndices <- length(indices)
   timeObs <- st@obs.all$iso.time[indices]
-  # If data has irregular temporal resolution, we have to find the gcd of the time series
-  timeStepData <- as.numeric(difftime(timeObs[2:lenIndices],
-                                      timeObs[1:lenIndices - 1],
-                                      units = "mins"))
-  gcd2 <- function(a, b) {
-    if (b == 0) a else Recall(b, a %% b)
-  }
-  gcd <- function(...) Reduce(gcd2, c(...))
-  timeStepDataGCD <- gcd(timeStepData)
-  # Determine temporal interpolation time step
-  interpolatedRes <- min(timeStepDataGCD, tempRes)
 
-  # Get the total time of the storm (in mins)
   timeInit <- timeObs[1]
   timeEnd <- timeObs[lenIndices]
-  timeDiffObs <- as.numeric(difftime(timeEnd,
-                                     timeInit,
-                                     units = "mins"))
-
-  # Deal with length and time of interpolated data
-  lenInterpolated <- as.integer(timeDiffObs / interpolatedRes) + 1
   timeInterpolated <- format(seq.POSIXt(as.POSIXct(timeInit),
                                         as.POSIXct(timeEnd),
-                                        by = paste0(interpolatedRes, " min")),
+                                        by = paste0(tempRes, " min")),
                              "%Y-%m-%d %H:%M:%S")
-  indicesObsInterpolated <- match(timeObs, timeInterpolated)
-  if (interpolatedRes == tempRes) {
-    # Case where interpolation is done at the frequency requested by the user
-    timeData <- timeInterpolated
-    indicesFinal <- seq(1, lenInterpolated)
-  } else {
-    # Case where interpolation time is smaller than requested by user
-    # (if the dataset has really short observation intervals,
-    # usualy when irregular observations).
-    timeData <- format(seq.POSIXt(as.POSIXct(timeInit),
-                                  as.POSIXct(timeEnd),
-                                  by = paste0(tempRes, " min")),
-                       "%Y-%m-%d %H:%M:%S")
-    indicesFinal <- match(timeData, timeInterpolated)
-  }
+  timeInterpolatedNumeric <- as.numeric(as.POSIXct(timeInterpolated))
+  lenInterpolated <- length(timeInterpolated)
 
   # Initiate the final data.frame
   data <- data.frame(
@@ -410,93 +413,62 @@ getDataInterpolate <- function(st, indices, tempRes, empiricalRMW, method) {
     isoTimes = rep(NA, lenInterpolated)
   )
 
-  # Filling indices and isoTimes
-  ind <- c()
-  for (i in seq(1, lenInterpolated)) {
-    timeIntervals <- as.numeric(difftime(timeObs,
-                                         timeInterpolated[i],
-                                         units = "mins"))
-    # Case of interpolation time equal to observation time
-    indObs <- which(timeIntervals > 0)[1]
-    ind <- c(ind,
-      formatC(indices[[1]] - 1 + indObs - timeIntervals[indObs] / (timeIntervals[indObs] - timeIntervals[indObs - 1]),
-              digits = 2,
-              format = "f")
-    )
-  }
-  # When interpolation time matches observation time, we keep "integer" indices
-  ind <- gsub(".00", "", ind)
-
-  data$indices <- ind
-  data$isoTimes <- timeInterpolated
-
-  # Get lon & lat
-  lon <- st@obs.all$lon[indices]
-  lat <- st@obs.all$lat[indices]
-
-  stormSpeed <- rep(NA, lenIndices)
-  vxDeg <- rep(NA, lenIndices)
-  vyDeg <- rep(NA, lenIndices)
-
-  # Computing storm velocity (m/s)
-  for (i in 1:(lenIndices - 1)) {
-    stormSpeed[i] <- terra::distance(
-      x = cbind(lon[i], lat[i]),
-      y = cbind(lon[i + 1], lat[i + 1]),
-      lonlat = TRUE
-    ) * (0.001 / 3) / 3.6
-
-    # component wise velocity in both x and y direction (degree/h)
-    vxDeg[i] <- (lon[i + 1] - lon[i]) / 3
-    vyDeg[i] <- (lat[i + 1] - lat[i]) / 3
-  }
-
-  # Prepare all fields
-  data$msw[indicesObsInterpolated] <- st@obs.all$msw[indices]
-  data$lon[indicesObsInterpolated] <- lon
-  data$lat[indicesObsInterpolated] <- lat
-  data$stormSpeed[indicesObsInterpolated] <- stormSpeed
-  data$vxDeg[indicesObsInterpolated] <- vxDeg
-  data$vyDeg[indicesObsInterpolated] <- vyDeg
+  data$lon <- zoo::na.approx(st@obs.all$lon[indices],
+                             as.numeric(as.POSIXct(timeObs)),
+                             xout = timeInterpolatedNumeric,
+                             rule = 2)
+  data$lat <- zoo::na.approx(st@obs.all$lat[indices],
+                             as.numeric(as.POSIXct(timeObs)),
+                             xout = timeInterpolatedNumeric,
+                             rule = 2)
+  stormDisplacementSpeed <- stormDisplacement(data$lon, data$lat, tempRes)
+  data$stormSpeed <- stormDisplacementSpeed$stormSpeed
+  data$vxDeg <- stormDisplacementSpeed$vxDeg
+  data$vyDeg <- stormDisplacementSpeed$vyDeg
+  data$msw <- zoo::na.approx(st@obs.all$msw[indices],
+                             as.numeric(as.POSIXct(timeObs)),
+                             xout = timeInterpolatedNumeric,
+                             rule = 2)
 
   if (empiricalRMW) {
-    data$rmw[indicesObsInterpolated] <- getRmw(data$msw[indicesObsInterpolated], lat)
+    data$rmw <- getRmw(data$msw, data$lat)
   } else {
     if (!("rmw" %in% colnames(st@obs.all)) || (all(is.na(st@obs.all$rmw[indices])))) {
       warning("Missing rmw data to perform model. empiricalRMW set to TRUE")
-      data$rmw[indicesObsInterpolated] <- getRmw(data$msw[indicesObsInterpolated], lat)
+      data$rmw <- getRmw(data$msw, data$lat)
     } else {
-      ##interpolatedRMW[indicesObsInterpolated] <- st@obs.all$rmw[indices]
-      data$rmw[indicesObsInterpolated] <- st@obs.all$rmw[indices]
+      data$rmw <- zoo::na.approx(st@obs.all$rmw[indices],
+                                 as.numeric(as.POSIXct(timeObs)),
+                                 xout = timeInterpolatedNumeric,
+                                 rule = 2)
     }
   }
 
-  # Interpolate data
-  data$lon <- zoo::na.approx(data$lon)
-  data$lat <- zoo::na.approx(data$lat)
-  data$msw <- zoo::na.approx(data$msw, rule = 2)
-  data$rmw <- zoo::na.approx(data$rmw, rule = 2)
-  # For velocities, we use na.locf instead of linear interpolation
-  data$stormSpeed <- zoo::na.locf(data$stormSpeed)
-  data$vxDeg <- zoo::na.locf(data$vxDeg)
-  data$vyDeg <- zoo::na.locf(data$vyDeg)
+  indicesInterpolated <- formatC(
+    zoo::na.approx(indices,
+                   as.numeric(as.POSIXct(timeObs)),
+                   xout = timeInterpolatedNumeric),
+      digits = 2,
+      format = "f")
+  data$indices <- gsub(".00", "", indicesInterpolated)
+  data$isoTimes <- timeInterpolated
 
   if (method == "Holland" || method == "Boose") {
     if (all(is.na(st@obs.all$poci[indices])) || all(is.na(st@obs.all$pres[indices]))) {
       stop("Missing pressure data to perform Holland model")
     }
 
-    data$poci <- rep(NA, lenInterpolated)
-    data$pc <- rep(NA, lenInterpolated)
-    data$poci[indicesObsInterpolated] <- st@obs.all$poci[indices]
-    data$pc[indicesObsInterpolated] <- st@obs.all$pres[indices]
-
-    # Interpolate data
-    data$poci <- zoo::na.approx(data$poci)
-    data$pc <- zoo::na.approx(data$pc)
+    data$poci <- zoo::na.approx(st@obs.all$poci[indices],
+                                as.numeric(as.POSIXct(timeObs)),
+                                xout = timeInterpolatedNumeric,
+                                rule = 2)
+    data$pc <- zoo::na.approx(st@obs.all$pres[indices],
+                              as.numeric(as.POSIXct(timeObs)),
+                              xout = timeInterpolatedNumeric,
+                              rule = 2)
   }
 
-  return(data[indicesFinal, ])
+  return(data)
 }
 
 
