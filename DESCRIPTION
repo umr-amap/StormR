@@ -23,7 +23,7 @@ Description: Set of functions to quantify and map the
     and time. It includes functions to compute and analyze fields such as the maximum sustained wind field, power dissipation index and duration of exposure to winds above a given threshold. It also includes functions to map the trajectories as well as characteristics of the storms.
 License: GPL (>= 3)
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5)
 Imports: 
     graphics,
     leaflet,

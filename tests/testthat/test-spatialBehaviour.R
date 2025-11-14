@@ -362,12 +362,12 @@ test_that("Test spatialBehaviour function", {
   sb <- spatialBehaviour(pam, method = "Holland", verbose = 0)
 
   expect_equal(terra::minmax(sb[["PAM_MSW"]]),
-               matrix(c(6.846, 76.733942),
+               matrix(c(6.84600, 76.7339339),
                       dimnames = list(c("min", "max"), c("PAM_MSW"))))
 
   sb <- spatialBehaviour(pam, method = "Boose", verbose = 0)
   expect_equal(terra::minmax(sb[["PAM_MSW"]]),
-               matrix(c(8.086, 73.804678),
+               matrix(c(8.08600, 73.8047273),
                       dimnames = list(c("min", "max"), c("PAM_MSW"))))
 })
 
@@ -615,6 +615,18 @@ test_that("Test getIndices function", {
 })
 
 
+
+test_that("Test stormDisplacement function", {
+  # Displacement of 1deg in longitude in one hour.
+  expect_equal(stormDisplacement(c(0,1), c(0,0), 60),
+               list(stormSpeed=c(30.92208, 30.92208078), vxDeg=c(1, 1), vyDeg=c(0, 0)))
+  # Displacement of 1deg in latitude in one hour.
+  expect_equal(stormDisplacement(c(0,0), c(1,0), 60),
+               list(stormSpeed=c(30.7151079, 30.7151079), vxDeg=c(0, 0), vyDeg=c(-1, -1)))
+  # Displacement of 1deg in lat + lon in 3h.
+  expect_equal(stormDisplacement(c(1,0), c(1,0), 180),
+               list(stormSpeed=c(14.5277378, 14.5277378), vxDeg=c(-0.33333333, -0.33333333), vyDeg=c(-0.33333333, -0.33333333)))
+})
 
 
 

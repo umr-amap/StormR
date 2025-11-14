@@ -358,6 +358,9 @@ stormDisplacement <- function(longitude, latitude, tempRes) {
     vxDeg[i] <- (longitude[i + 1] - longitude[i]) / tempResH
     vyDeg[i] <- (latitude[i + 1] - latitude[i]) / tempResH
   }
+  stormSpeed[lenData] <- stormSpeed[lenData - 1]
+  vxDeg[lenData] <- vxDeg[lenData - 1]
+  vyDeg[lenData] <- vyDeg[lenData - 1]
 
   return(list(stormSpeed=stormSpeed, vxDeg=vxDeg, vyDeg=vyDeg))
 }
@@ -433,8 +436,8 @@ getDataInterpolate <- function(st, indices, tempRes, empiricalRMW, method) {
   if (empiricalRMW) {
     data$rmw <- getRmw(data$msw, data$lat)
   } else {
-    if (!("rmw" %in% colnames(st@obs.all)) || (all(is.na(st@obs.all$rmw[indices])))) {
-      warning("Missing rmw data to perform model. empiricalRMW set to TRUE")
+    if (!("rmw" %in% colnames(st@obs.all)) || (mean(is.na(st@obs.all$rmw[indices])) > 0.7)) {
+      warning("Missing or too few non NA rmw data to perform model. empiricalRMW set to TRUE")
       data$rmw <- getRmw(data$msw, data$lat)
     } else {
       data$rmw <- zoo::na.approx(st@obs.all$rmw[indices],
