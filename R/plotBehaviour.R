@@ -192,8 +192,7 @@ plotBehaviour <- function(sts,
   } else if (product == "PDI") {
     col <- pdiPalette
     range <- c(0, max(terra::values(rasterProduct), na.rm = TRUE))
-    leg <- ifelse(dynamicPlot, "PDI (J.m<sup>2</sup>)",expression(paste("PDI (J.m"^"2", ")")))
-
+    leg <- ifelse(dynamicPlot, "PDI (J.m<sup>-2</sup>)", expression(paste("PDI (J.m"^"-2", ")")))
   } else if (product == "Exposure") {
     col <- exposurePalette
     range <- c(0, max(terra::values(rasterProduct), na.rm = TRUE))

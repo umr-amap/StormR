@@ -71,15 +71,16 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
 #'
 #' @return numeric. PDI computed using the wind speed values in wind
 computePDI <- function(wind, tempRes) {
-  # Computing surface drag coefficient
+  # Surface sea-level air density in kg.m-3
   rho <- 1
+  # Surface drag coefficient
   cd <- 0.002
   # Raising to power 3
   pdi <- wind**3
   # Applying both rho and surface drag coefficient
   pdi <- pdi * rho * cd
-  # Integrating over the whole track
-  pdi <- sum(pdi, na.rm = TRUE) * tempRes
+  # Integrating over the whole track and converting minutes to seconds
+  pdi <- sum(pdi, na.rm = TRUE) * tempRes * 60
 
   return(round(pdi, 3))
 }
