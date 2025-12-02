@@ -94,10 +94,10 @@ computePDI <- function(wind, tempRes) {
 #' @noRd
 #' @param wind numeric vector. Wind speed values
 #' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
+#'   over the whole track (in min)
 #' @param threshold numeric vector. Wind threshold
 #'
-#' @return numeric vector of length 5 (for each category). Exposure computed
+#' @return numeric vector of length 5 (for each category). Exposure (in hours) computed
 #'   using the wind speed values in wind
 computeExposure <- function(wind, tempRes, threshold) {
   exposure <- c()
@@ -105,7 +105,8 @@ computeExposure <- function(wind, tempRes, threshold) {
     ind <- which(wind >= t)
     expo <- rep(0, length(wind))
     expo[ind] <- 1
-    exposure <- c(exposure, sum(expo, na.rm = TRUE) * tempRes)
+    # Converting to hours
+    exposure <- c(exposure, sum(expo, na.rm = TRUE) * tempRes / 60.)
   }
 
   return(exposure)
