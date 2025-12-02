@@ -1,5 +1,3 @@
-
-
 #' Check inputs for temporalBehaviour function
 #'
 #' @noRd
@@ -24,7 +22,7 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
     "colnames of points must be \"x\" (Eastern degree), \"y\" (Northern degree)" = colnames(points) == c("x", "y")
   )
   stopifnot("Invalid points coordinates" = points$x > -180 & points$x <= 360 &
-              points$y >= -90 & points$y <= 90)
+    points$y >= -90 & points$y <= 90)
 
   # Checking product input
   stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
@@ -427,7 +425,6 @@ temporalBehaviour <- function(sts,
                               empiricalRMW = FALSE,
                               tempRes = 60,
                               verbose = 1) {
-
   if (is.null(windThreshold)) {
     windThreshold <- sts@scale
   }

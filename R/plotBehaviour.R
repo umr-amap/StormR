@@ -1,8 +1,3 @@
-
-
-
-
-
 #' Check inputs for plotBehaviour function
 #'
 #' @noRd
@@ -74,7 +69,7 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
       legends %in% c("topright", "topleft", "bottomleft", "bottomright", "none")
   )
 
-  #Checking mode input
+  # Checking mode input
   stopifnot("dynamicPlot must be logical" = identical(class(dynamicPlot), "logical"))
   stopifnot("dynamicPlot must length 1" = length(dynamicPlot) == 1)
 }
@@ -138,7 +133,7 @@ checkInputsPlotBehaviour <- function(sts, rasterProduct, xlim, ylim, labels, by,
 #' pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 #' plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 #'
-#
+#' #
 #' }
 #' @export
 plotBehaviour <- function(sts,
@@ -188,7 +183,6 @@ plotBehaviour <- function(sts,
     col <- sts@scalePalette
     range <- c(17, 95)
     leg <- ifelse(dynamicPlot, "MSW (m.s <sup>-1</sup>)", expression(paste("MSW (m.s"^"-1", ")")))
-
   } else if (product == "PDI") {
     col <- pdiPalette
     range <- c(0, max(terra::values(rasterProduct), na.rm = TRUE))
@@ -196,18 +190,15 @@ plotBehaviour <- function(sts,
   } else if (product == "Exposure") {
     col <- exposurePalette
     range <- c(0, max(terra::values(rasterProduct), na.rm = TRUE))
-    leg <- ifelse(dynamicPlot, "Duration of exposure (h)",expression(paste("Duration of exposure (h)")))
-
+    leg <- ifelse(dynamicPlot, "Duration of exposure (h)", expression(paste("Duration of exposure (h)")))
   } else if (product == "Speed") {
     col <- sts@scalePalette
     range <- c(17, 95)
-    leg <- ifelse(dynamicPlot, "Radial wind speed (m.s <sup>-1</sup>)",expression(paste("Radial wind speed (m.s"^"-1", ")")))
-
+    leg <- ifelse(dynamicPlot, "Radial wind speed (m.s <sup>-1</sup>)", expression(paste("Radial wind speed (m.s"^"-1", ")")))
   } else if (product == "Direction") {
     col <- exposurePalette
     range <- c(0, 360)
-    leg <- ifelse(dynamicPlot, "Wind direction (degree)",expression(paste("Wind direction (degree)")))
-
+    leg <- ifelse(dynamicPlot, "Wind direction (degree)", expression(paste("Wind direction (degree)")))
   }
 
   if (!is.null(colorPalette)) {
@@ -295,23 +286,25 @@ plotBehaviour <- function(sts,
         )
       }
     }
-  }else{
-
+  } else {
     # dynamicPlot plot
-    map <- plotStorms(sts = sts,
-                      names = name,
-                      xlim = c(xmin, xmax),
-                      ylim = c(ymin, ymax),
-                      legends = legends, dynamicPlot = TRUE)
+    map <- plotStorms(
+      sts = sts,
+      names = name,
+      xlim = c(xmin, xmax),
+      ylim = c(ymin, ymax),
+      legends = legends, dynamicPlot = TRUE
+    )
 
 
     pal <- leaflet::colorNumeric(col,
-                                 terra::values(rasterProduct),
-                                 na.color = "transparent")
+      terra::values(rasterProduct),
+      na.color = "transparent"
+    )
 
     # Case where raster overlaps the 180° meridian
     if (terra::ext(rasterProduct)[2] > 180) {
-      rasterProductShifted  <- terra::shift(rasterProduct, -360)
+      rasterProductShifted <- terra::shift(rasterProduct, -360)
       rasterProduct1 <- terra::trim(terra::crop(rasterProductShifted, terra::ext(-180, 180, -90, 90), snap = "in"))
       rasterProduct1 <- terra::shift(rasterProduct1, -180 - xmin(rasterProduct1))
       rasterProduct2 <- terra::trim(terra::shift(terra::crop(rasterProductShifted, terra::ext(-360, -180, -90, 90), snap = "in"), 360))
@@ -335,15 +328,15 @@ plotBehaviour <- function(sts,
       )
     }
 
-    #Adding legends
+    # Adding legends
     map <- leaflet::addLegend(map,
-                              legends,
-                              pal = pal,
-                              values = terra::values(rasterProduct),
-                              title = leg,
-                              opacity = 0.8)
+      legends,
+      pal = pal,
+      values = terra::values(rasterProduct),
+      title = leg,
+      opacity = 0.8
+    )
 
     map
   }
-
 }
