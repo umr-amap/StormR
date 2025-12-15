@@ -1,5 +1,3 @@
-
-
 #' Check inputs for temporalBehaviour function
 #'
 #' @noRd
@@ -24,7 +22,7 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
     "colnames of points must be \"x\" (Eastern degree), \"y\" (Northern degree)" = colnames(points) == c("x", "y")
   )
   stopifnot("Invalid points coordinates" = points$x > -180 & points$x <= 360 &
-              points$y >= -90 & points$y <= 90)
+    points$y >= -90 & points$y <= 90)
 
   # Checking product input
   stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
@@ -71,15 +69,16 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
 #'
 #' @return numeric. PDI computed using the wind speed values in wind
 computePDI <- function(wind, tempRes) {
-  # Computing surface drag coefficient
+  # Surface sea-level air density in kg.m-3
   rho <- 1
+  # Surface drag coefficient
   cd <- 0.002
   # Raising to power 3
   pdi <- wind**3
   # Applying both rho and surface drag coefficient
   pdi <- pdi * rho * cd
-  # Integrating over the whole track
-  pdi <- sum(pdi, na.rm = TRUE) * tempRes
+  # Integrating over the whole track and converting minutes to seconds
+  pdi <- sum(pdi, na.rm = TRUE) * tempRes * 60
 
   return(round(pdi, 3))
 }
@@ -93,10 +92,10 @@ computePDI <- function(wind, tempRes) {
 #' @noRd
 #' @param wind numeric vector. Wind speed values
 #' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
+#'   over the whole track (in min)
 #' @param threshold numeric vector. Wind threshold
 #'
-#' @return numeric vector of length 5 (for each category). Exposure computed
+#' @return numeric vector of length 5 (for each category). Exposure (in hours) computed
 #'   using the wind speed values in wind
 computeExposure <- function(wind, tempRes, threshold) {
   exposure <- c()
@@ -104,7 +103,8 @@ computeExposure <- function(wind, tempRes, threshold) {
     ind <- which(wind >= t)
     expo <- rep(0, length(wind))
     expo[ind] <- 1
-    exposure <- c(exposure, sum(expo, na.rm = TRUE) * tempRes)
+    # Converting to hours
+    exposure <- c(exposure, sum(expo, na.rm = TRUE) * tempRes / 60.)
   }
 
   return(exposure)
@@ -425,7 +425,6 @@ temporalBehaviour <- function(sts,
                               empiricalRMW = FALSE,
                               tempRes = 60,
                               verbose = 1) {
-
   if (is.null(windThreshold)) {
     windThreshold <- sts@scale
   }
