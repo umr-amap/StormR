@@ -1195,7 +1195,7 @@ defStormsList <- function(sds,
               getNames(sts@data[[i]]), "-",
               getSeasons(sts@data[[i]]), "-",
               getScale(sts@data[[i]]), "-",
-              length(getInObs(sts, getNames(sts@data[[i]]), getSeasons(sts@data[[i]]))),
+              length(sts@data[[i]]@obs),
               "\n")
         }
         cat("\n")
