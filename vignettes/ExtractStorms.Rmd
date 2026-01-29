@@ -116,6 +116,7 @@ sp <- eezNC
 st <- defStormsList(sds = sds, loi = eezNC, season = c(2015, 2021), verbose = 0)
 ```
 
+
 Information about the spatial extent of the track data exaction can be obtained
 using the `getLOI()`, `getBuffer()`, and `getBufferSize()` functions as follows:
 
@@ -126,6 +127,23 @@ BufferSize <- getBufferSize(st)
 terra::plot(Buffer, lty = 3, main = paste(BufferSize, "km buffer arround New Caledonian EEZ", sep = " "))
 terra::plot(LOI, add = TRUE)
 terra::plot(countriesHigh, add = TRUE)
+```
+
+### Working with multiple storms
+
+When extracting multiple storms for a long period of time, you can find yourself 
+with multiple storms sharing the same name, that can later break `StormR`. You need 
+to avoid working with duplicated name (especially relevant when both storms in a 
+stormsList have the same name on the same season). Some 
+workarounds may help you with that:
+
+- use the "removeUnnamed" argument to `defStormsList`
+- use the `renameStorms` function:
+
+``` {r duplicatedNames}
+getNames(st)
+st_renamed <- renameStorms(st)
+getNames(st_renamed)
 ```
 
 ### Using different wind scale
@@ -188,7 +206,7 @@ plotStorms(sts_jpn)
 ```
 
 
-#### Dynamic plot
+### Dynamic plot
 
 `plotStorms` allows the user to dynamically plot tracks within an interactive map using leaflet
 library by setting `dynamicPlot` to `TRUE`. Doing so, the user can explore the map the way he wants
