@@ -1,3 +1,45 @@
+########################
+# Helper to check inputs#
+########################
+
+
+#' Check inputs for computeExposure function
+#'
+#' @noRd
+#' @param sts StormsList object
+#' @param dem object
+#' @param angle numeric
+#' @param product character
+#' @param threshold numeric
+#' @param verbose numeric
+#' @return NULL
+
+
+checkInputsComputeExposure <- function(sts, dem, angle, threshold, product, verbose) {
+  # Checking sts input
+  stopifnot("no data found" = !missing(sts))
+  
+  # Checking dem input
+  stopifnot("no dem data found" = !missing(dem))
+  
+  # Checking product input
+  stopifnot("Invalid product" = product %in% c("Max", "Mean", "Profiles"))
+  
+  # Checking threshold input
+  stopifnot("Threshold must be numeric" = identical(class(threshold), "numeric"))
+  stopifnot("invalid value(s) for threshold input (must be >= 0)" = threshold >= 0)
+  
+  # Checking angle input 
+  stopifnot("Angle must be numeric" = identical(class(angle), "numeric"))
+  stopifnot("invalid value(s) for angle input (must be >= 0)" = angle >= 0)
+  
+  # Checking verbose input
+  stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
+  stopifnot("verbose must length 1" = length(verbose) == 1)
+  stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
+}
+
+
 #' Get wind direction in azimuth
 #' 
 #' @noRd
@@ -145,7 +187,7 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold)
 #'   \itemize{
 #'     \item `"Profiles"`, for 2D exposure at each observation,
 #'     \item `"Max"`, for maximum exposure, or
-#'     \item `"Mean"`, for mean exposure
+#'     \item `"Mean"`, for mean exposure (default)
 #'   }
 #' @param verbose numeric. Whether or not the function should display 
 #'        information about the process and/or outputs. Can be:
@@ -164,14 +206,21 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold)
 computeExposure <- function(sts, dem, 
                             angle = 6, 
                             threshold = 0, 
-                            product = "Profiles", 
+                            product = "Mean", 
                             verbose = 2) {
   startTime <- Sys.time()
+  
+  checkInputsComputeExposure(
+    sts, dem, angle, threshold, product, verbose
+    )
   
   if (verbose > 0) cat("=== computeExposure processing ... ===\n\nInitializing data ...")
   
   topo <- getTerrain(dem)
   nbStorms <- getNbStorms(sts)
+  
+  # stack who will contains every storm
+  finalStack <- c() 
   
   if (verbose > 0) {
     cat(" Done\n\nComputation settings:\n")
@@ -197,7 +246,9 @@ computeExposure <- function(sts, dem,
     layersDir <- names(pf)[grep("_Direction_", names(pf))]
     
     #compute exposure profiles
-    exposureStack <- computeExpProfiles(pf, layersMSW, layersDir, topo, angle, threshold)
+    exposureStack <- computeExpProfiles(
+      pf, layersMSW, layersDir, topo, angle, threshold
+      )
     
     if (is.null(exposureStack)) {
       warning("No layers met the wind speed threshold for : ", stormName)
@@ -228,8 +279,7 @@ computeExposure <- function(sts, dem,
       else currentStormStack <- c(currentStormStack, finalStackMean)
     }
     
-    # stack who will contains every storm
-    finalStack <- c() 
+
     
     # stock the stack in global
     if (is.null(finalStack)) {
