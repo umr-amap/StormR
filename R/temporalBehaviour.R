@@ -68,7 +68,7 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
 #'   over the whole track
 #'
 #' @return numeric. PDI computed using the wind speed values in wind
-computePDI <- function(wind, tempRes) {
+computePDIOld <- function(wind, tempRes) {
   # Surface sea-level air density in kg.m-3
   rho <- 1
   # Surface drag coefficient
@@ -84,9 +84,6 @@ computePDI <- function(wind, tempRes) {
 }
 
 
-
-
-
 #' rasterizeExposure counterpart function for non raster data
 #'
 #' @noRd
@@ -97,7 +94,7 @@ computePDI <- function(wind, tempRes) {
 #'
 #' @return numeric vector of length 5 (for each category). Exposure (in hours) computed
 #'   using the wind speed values in wind
-computeExposure <- function(wind, tempRes, threshold) {
+computeExposureOld <- function(wind, tempRes, threshold) {
   exposure <- c()
   for (t in threshold) {
     ind <- which(wind >= t)
