@@ -452,4 +452,44 @@ computeDirection <- function(x, y, lat) {
 }
 
 
+#' Get Storm displacement speed
+#'
+#' Given vectors of longitude and latitude of the center of the storm, computes
+#' the displacement velocity of the storm
+#'
+#' @noRd
+#' @param longitude numeric vector. Vector of longitudes of the center of the storm.
+#' @param latitutde numeric vector. Vector of latitudes of the center of the storm.
+#' @param tempRes numeric. Temporal resolution of the data, in min.
+#'
+#' @return numeric vectors for storm displacement velocity (m.s-1), longitude and latitude
+#' components (degree.h-1)
+stormDisplacement <- function(longitude, latitude, tempRes) {
+  lenData <- length(longitude)
+  stormSpeed <- rep(NA, lenData)
+  vxDeg <- rep(NA, lenData)
+  vyDeg <- rep(NA, lenData)
+  tempResH <- tempRes / 60.
+
+  # Computing storm velocity (m/s)
+  for (i in 1:(lenData - 1)) {
+    stormSpeed[i] <- terra::distance(
+      x = cbind(longitude[i], latitude[i]),
+      y = cbind(longitude[i + 1], latitude[i + 1]),
+      lonlat = TRUE
+    ) * (0.001 / tempResH) / 3.6
+
+    # component wise velocity in both x and y direction (degree/h)
+    vxDeg[i] <- (longitude[i + 1] - longitude[i]) / tempResH
+    vyDeg[i] <- (latitude[i + 1] - latitude[i]) / tempResH
+  }
+  stormSpeed[lenData] <- stormSpeed[lenData - 1]
+  vxDeg[lenData] <- vxDeg[lenData - 1]
+  vyDeg[lenData] <- vyDeg[lenData - 1]
+
+  return(list(stormSpeed=stormSpeed, vxDeg=vxDeg, vyDeg=vyDeg))
+}
+
+
+
 

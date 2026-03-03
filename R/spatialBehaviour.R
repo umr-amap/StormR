@@ -126,10 +126,6 @@ makeTemplateModel <- function(rasterTemplate, buffer, data) {
 # Helpers to get the right data#
 ###############################
 
-
-
-
-
 #' Get indices for computations
 #'
 #' Whether to get only observations inside LOI + buffer extention (+ offset) or
@@ -159,46 +155,6 @@ getIndices <- function(st, offset, product) {
 
   return(ind)
 }
-
-
-#' Get Storm displacement speed
-#'
-#' Given vectors of longitude and latitude of the center of the storm, computes
-#' the displacement velocity of the storm
-#'
-#' @noRd
-#' @param longitude numeric vector. Vector of longitudes of the center of the storm.
-#' @param latitutde numeric vector. Vector of latitudes of the center of the storm.
-#' @param tempRes numeric. Temporal resolution of the data, in min.
-#'
-#' @return numeric vectors for storm displacement velocity (m.s-1), longitude and latitude
-#' components (degree.h-1)
-stormDisplacement <- function(longitude, latitude, tempRes) {
-  lenData <- length(longitude)
-  stormSpeed <- rep(NA, lenData)
-  vxDeg <- rep(NA, lenData)
-  vyDeg <- rep(NA, lenData)
-  tempResH <- tempRes / 60.
-
-  # Computing storm velocity (m/s)
-  for (i in 1:(lenData - 1)) {
-    stormSpeed[i] <- terra::distance(
-      x = cbind(longitude[i], latitude[i]),
-      y = cbind(longitude[i + 1], latitude[i + 1]),
-      lonlat = TRUE
-    ) * (0.001 / tempResH) / 3.6
-
-    # component wise velocity in both x and y direction (degree/h)
-    vxDeg[i] <- (longitude[i + 1] - longitude[i]) / tempResH
-    vyDeg[i] <- (latitude[i + 1] - latitude[i]) / tempResH
-  }
-  stormSpeed[lenData] <- stormSpeed[lenData - 1]
-  vxDeg[lenData] <- vxDeg[lenData - 1]
-  vyDeg[lenData] <- vyDeg[lenData - 1]
-
-  return(list(stormSpeed=stormSpeed, vxDeg=vxDeg, vyDeg=vyDeg))
-}
-
 
 
 #' Get data associated with one storm to perform further computations
@@ -338,74 +294,8 @@ toRasterTemplate.list <- function(rasterTemplate, rasterTemplateExtent, layer) {
 
 toRasterTemplate.SpatRaster <- function(rasterTemplate, rasterTemplateExtent, layer) {
   merged <- terra::merge(layer, rasterTemplate)
-  merged <- terra::crop(merged, rasterTemplateExtent)
-
-  return(merged)
+  return(terra::crop(merged, rasterTemplateExtent))
 }
-
-#' Stack a computed layer in a raster stack
-#'
-#' @noRd
-#' @param stack list of SpatRaster. where to stack the layer
-#' @param rasterTemplate SpatRaster. Raster template generated with
-#'   makeTemplateRaster function
-#' @param rasterWind SpatRaster. Layer to add to the stack
-#'
-#' @return list of SpatRaster
-stackRaster <- function(stack, rasterTemplate, rasterWind) {
-  ras <- rasterTemplate
-  extent <- terra::ext(ras)
-  ras <- terra::merge(rasterWind, ras)
-  ras <- terra::crop(ras, extent)
-
-  return(c(stack, ras))
-}
-
-
-smoothRaster <- function(rast, nbg, pad=TRUE) {
-  return(terra::focal(rast, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, pad = pad))
-}
-
-
-nameAndTimeRaster <- function(rast, name, product, timeRaster, threshold=NULL) {
-  if (!is.null(threshold)) {
-    names(rast) <- paste0(name, "_", product, "_", threshold)
-  } else {
-    names(rast) <- paste0(name, "_", product)
-  }
-  terra::time(rast) <- terra::time(timeRaster)
-  return(rast)
-}
-
-rasterizeStormProduct <- function(product, stormRastersProduct, spaceRes, name, windThreshold) {
-  nbg <- switch(spaceRes,
-    "30sec" = 59,
-    "2.5min" = 11,
-    "5min" = 5,
-    "10min" = 3
-  )
-
-  if (product == "MSW") {
-    rast <- max(stormRastersProduct, na.rm = TRUE)
-    rast <- smoothRaster(rast, nbg)
-    rast <- nameAndTimeRaster(rast, name, product, stormRastersProduct[[1]])
-  } else if (product == "PDI") {
-    rast <- sum(stormRastersProduct, na.rm = TRUE)
-    rast <- smoothRaster(rast, nbg)
-    rast <- nameAndTimeRaster(rast, name, product, stormRastersProduct[[1]])
-  } else if (product == "Exposure") {
-    for (l in seq_along(windThreshold)) {
-      ind <- seq(l, terra::nlyr(stormRastersProduct), length(windThreshold))
-      rast <- sum(terra::subset(stormRastersProduct, ind), na.rm = TRUE)
-      rast <- smoothRaster(rast, nbg, pad=FALSE)
-      rast <- nameAndTimeRaster(rast, name, product, stormRastersProduct[[1]], windThreshold[l])
-    }
-  }
-
-  return(rast)
-}
-
-
 
 #' Compute the products for a given storm at a given time step
 #'
@@ -461,7 +351,95 @@ computeProducts <- function(stormRasters, rasterTemplate, rasterTemplateExtent, 
 
 }
 
-rasterizeStorm <- function(stormRasters, product, spaceRes, name, windThreshold = c(0)){
+#' Short internal function used to smooth a raster
+#'
+#' @noRd
+#' @param rast SpatRaster. Raster to smooth
+#' @param nbg numeric. Size of the smoothing window
+#' @param pad logical. **Optional** Whether to pad the raster or not
+#'
+#' @return SpatRaster. The initial raster smoothed
+
+smoothRaster <- function(rast, nbg, pad=TRUE) {
+  return(terra::focal(rast, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, pad = pad))
+}
+
+#' Short internal function to name and give a correct time stamp to the raster
+#'
+#' @noRd
+#' @param rast SpatRaster. Raster to rename and provide a time stamp
+#' @param name character. Name of the storm
+#' @product character. Product to name the raster. Warning: used here for a single product
+#' @param timeRaster SpatRaster. Time stamp of the raster
+#' @param threshold numeric. **Optional** Wind threshold used for the Exposure product
+#'
+#' @return SpatRaster. The initial raster with a name and a time stamp
+
+nameAndTimeRaster <- function(rast, name, product, timeRaster, threshold=NULL) {
+  if (!is.null(threshold)) {
+    names(rast) <- paste0(name, "_", product, "_", threshold)
+  } else {
+    names(rast) <- paste0(name, "_", product)
+  }
+  terra::time(rast) <- terra::time(timeRaster)
+  return(rast)
+}
+
+#' Internal function to rasterize a single storm product. Called by "rasterizeStorm"
+#'
+#' @noRd
+#' @param product character. Product to rasterize. One storm with all time steps.
+#' @param stormRastersProduct SpatRaster. Raster of the product to rasterize
+#' @param spaceRes character. Space resolution. Used for defining smoothing window
+#' @param name character. Name of the storm
+#' @param windThreshold numeric. Wind threshold used for the Exposure product
+#'
+#' @return SpatRaster. The initial raster rasterized: only one layer (except for "Exposure")
+
+rasterizeStormProduct <- function(product, stormRastersProduct, spaceRes, name, windThreshold) {
+  nbg <- switch(spaceRes,
+    "30sec" = 59,
+    "2.5min" = 11,
+    "5min" = 5,
+    "10min" = 3
+  )
+
+  if (product == "MSW") {
+    rast <- max(stormRastersProduct, na.rm = TRUE)
+    rast <- smoothRaster(rast, nbg)
+    rast <- nameAndTimeRaster(rast, name, product, stormRastersProduct[[1]])
+  } else if (product == "PDI") {
+    rast <- sum(stormRastersProduct, na.rm = TRUE)
+    rast <- smoothRaster(rast, nbg)
+    rast <- nameAndTimeRaster(rast, name, product, stormRastersProduct[[1]])
+  } else if (product == "Exposure") {
+    rast <- c()
+    for (l in seq_along(windThreshold)) {
+      ind <- seq(l, terra::nlyr(stormRastersProduct), length(windThreshold))
+      rastl <- sum(terra::subset(stormRastersProduct, ind), na.rm = TRUE)
+      rastl <- smoothRaster(rastl, nbg, pad=FALSE)
+      rastl <- nameAndTimeRaster(rastl, name, product, stormRastersProduct[[1]], windThreshold[l])
+      rast <- c(rast, rastl)
+    }
+    rast <- terra::rast(rast)
+  }
+
+  return(rast)
+}
+
+
+#' Rasterize a storm for each product
+#'
+#' @noRd
+#' @param stormRasters list of SpatRaster. Each element of the list corresponds to one product.
+#' @param product character. List of products calculated.
+#' @param spaceRes character. Space resolution. Used for defining smoothing window
+#' @param name character. Name of the storm
+#' @param windThreshold numeric. **Optional** Wind threshold used for the Exposure product
+#'
+#' @return SpatRaster. The initial raster rasterized: all products calculated for one storm
+
+rasterizeStorm <- function(stormRasters, product, spaceRes, name, windThreshold = c(0)) {
   raster <- list(MSW = NULL, PDI = NULL, EXP = NULL, Speed = NULL, Direction = NULL)
   if ("MSW" %in% product) {
     raster$MSW <- rasterizeStormProduct("MSW", terra::rast(stormRasters$MSW), spaceRes, name)
@@ -869,23 +847,12 @@ spatialBehaviour <- function(sts,
     }
   }
 
-  finalStack <- c()
-
-  if ("MSW" %in% product) {
-    finalStack <- c(finalStack, rasterMSW)
-  }
-  if ("PDI" %in% product) {
-    finalStack <- c(finalStack, rasterPDI)
-  }
-  if ("Exposure" %in% product) {
-    finalStack <- c(finalStack, rasterEXP)
-  }
-  if ("Profiles" %in% product) {
-    finalStack <- c(finalStack, rasterWind)
-  }
-
-  finalStack <- terra::rast(finalStack)
-  finalStack <- maskProduct(finalStack, sts@spatialLoiBuffer, rasterTemplate)
+  # Build a final single raster
+  allStorms <- terra::rast(unlist(rasters, recursive = FALSE))
+  # Keep names
+  names(allStorms) <- unlist(lapply(unlist(rasters), names))
+  # Mask over loi
+  allStorms <- maskProduct(allStorms, sts@spatialLoiBuffer, rasterTemplate)
 
   endTime <- Sys.time()
 
@@ -894,10 +861,10 @@ spatialBehaviour <- function(sts,
 
     if (verbose > 1) {
       cat("Output:\n")
-      cat("SpatRaster stack with", terra::nlyr(finalStack), "layers:\n")
+      cat("SpatRaster stack with", terra::nlyr(allStorms), "layers:\n")
       cat("index - name of layers\n")
-      n <- names(finalStack)
-      names(n) <- seq(1, terra::nlyr(finalStack))
+      n <- names(allStorms)
+      names(n) <- seq(1, terra::nlyr(allStorms))
       for (i in seq_along(n)) {
         cat(" ", names(n[i]), "   ", n[i], "\n")
       }
@@ -905,5 +872,5 @@ spatialBehaviour <- function(sts,
     }
   }
 
-  return(finalStack)
+  return(allStorms)
 }
