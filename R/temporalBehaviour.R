@@ -57,94 +57,6 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
 }
 
 
-
-
-
-#' rasterizePDI counterpart function for non raster data
-#'
-#' @noRd
-#' @param wind numeric vector. Wind speed values
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#'
-#' @return numeric. PDI computed using the wind speed values in wind
-computePDIOld <- function(wind, tempRes) {
-  # Surface sea-level air density in kg.m-3
-  rho <- 1
-  # Surface drag coefficient
-  cd <- 0.002
-  # Raising to power 3
-  pdi <- wind**3
-  # Applying both rho and surface drag coefficient
-  pdi <- pdi * rho * cd
-  # Integrating over the whole track and converting minutes to seconds
-  pdi <- sum(pdi, na.rm = TRUE) * tempRes * 60
-
-  return(round(pdi, 3))
-}
-
-
-#' rasterizeExposure counterpart function for non raster data
-#'
-#' @noRd
-#' @param wind numeric vector. Wind speed values
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track (in min)
-#' @param threshold numeric vector. Wind threshold
-#'
-#' @return numeric vector of length 5 (for each category). Exposure (in hours) computed
-#'   using the wind speed values in wind
-computeExposureOld <- function(wind, tempRes, threshold) {
-  exposure <- c()
-  for (t in threshold) {
-    ind <- which(wind >= t)
-    expo <- rep(0, length(wind))
-    expo[ind] <- 1
-    # Converting to hours
-    exposure <- c(exposure, sum(expo, na.rm = TRUE) * tempRes / 60.)
-  }
-
-  return(exposure)
-}
-
-
-
-
-
-#' rasterizeProduct counterpart function for non raster data
-#'
-#' @noRd
-#' @param product character. Product input from temporalBehaviour
-#' @param wind numeric vector. Wind speed values
-#' @param direction numeric vector. Wind direction
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#' @param result numeric array. Similar as finalStack, i.e where to add the
-#'   computed product
-#' @param threshold numeric vector. Wind threshold
-#'
-#' @return numeric array of dimension:
-#' \itemize{
-#'   \item number of observations: number of points. If product == "MSW"
-#'   \item 1 : number of points. If product == "PDI"
-#'   \item 5 : number of points. If product == "Exposure"
-#' }
-computeProduct <- function(product, wind, direction, tempRes, result, threshold) {
-  if (product == "TS") {
-    prod <- cbind(wind, direction)
-  } else if (product == "PDI") {
-    prod <- computePDI(wind, tempRes)
-  } else if (product == "Exposure") {
-    prod <- computeExposure(wind, tempRes, threshold)
-  }
-
-  return(cbind(result, prod))
-}
-
-
-
-
-
 #' Arrange result before the end of temporalBehaviour
 #'
 #' @noRd
@@ -474,7 +386,6 @@ temporalBehaviour <- function(sts,
   for (st in sts@data) {
     # Handling indices inside loi.buffer or not
     ind <- getIndices(st, 2, "none")
-
     # Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, tempRes, empiricalRMW, method)
 
@@ -505,11 +416,11 @@ temporalBehaviour <- function(sts,
         world, indCountries
       )
 
-      vr <- output$wind
-      dir <- output$direction
-
+      speed <- as.numeric(output$speed)
+      direction <- as.numeric(output$direction)
       # Computing product
-      res <- computeProduct(product, vr, dir, tempRes, res, windThreshold)
+      resPoint <- computeProduct.numeric(speed, direction, product, tempRes, windThreshold)
+      res <- cbind(res, resPoint)
     }
 
     finalResult <- finalizeResult(

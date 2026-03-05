@@ -280,76 +280,42 @@ getDataInterpolate <- function(st, indices, tempRes, empiricalRMW, method) {
 #' @param layer SpatRaster. Layer to extend to the template grid
 #'
 #' @return a SpatRaster
-toRasterTemplate <- function(rasterTemplate, rasterTemplateExtent, layer, ...) {
+toRasterTemplate <- function(layer, rasterTemplate, rasterTemplateExtent, ...) {
    UseMethod("toRasterTemplate", layer)
 }
 
-toRasterTemplate.list <- function(rasterTemplate, rasterTemplateExtent, layer) {
+toRasterTemplate.list <- function(layer, rasterTemplate, rasterTemplateExtent) {
   merged <- c()
   for (l in seq_along(layer)) {
-    merged <- c(merged, toRasterTemplate(rasterTemplate, rasterTemplateExtent, layer[[l]]))
+    merged <- c(merged, toRasterTemplate(layer[[l]], rasterTemplate, rasterTemplateExtent))
   }
   return(merged)
 }
 
-toRasterTemplate.SpatRaster <- function(rasterTemplate, rasterTemplateExtent, layer) {
-  merged <- terra::merge(layer, rasterTemplate)
+toRasterTemplate.SpatRaster <- function(layer, rasterTemplate, rasterTemplateExtent) {
+  merged <- terra::resample(layer, rasterTemplate)
   return(terra::crop(merged, rasterTemplateExtent))
 }
 
-#' Compute the products for a given storm at a given time step
+#' Small function to resample a product to the template raster
 #'
-#' @noRd
-#' @param stormRasters list of SpatRaster. Where to stack the computed products.
-#' @param rasterTemplate SpatRaster. Raster template that need to be used for storing products computated.
-#' @param rasterTemplateExtent SpatExtent. Extents of the template raster.
-#' @param layerWind SpatRaster. Raster with one layer containing wind speeds.
-#' @param layerDirection SpatRaster. Raster with one layer containing wind directions.
-#' @param products list of character. Product(s) to compute.
-#' @param name character. Name of the storm. Used to give the correct layer name.
-#' @param indice numeric. Index of the time step.
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#' @param windThreshold numeric. Wind threshold used fior "Exposure" product computation.
+#' @NoRd
+#' @param x SpatRaster or list of SpatRaster. Product to resample
+#' @param template SpatRaster. Raster template
+#' @param templateExtent SpatExtent. Extent of the template raster
 #'
-#' @return list of SpatRaster. Layers computed for the current time step are added at the end of the list.
-
-computeProducts <- function(stormRasters, rasterTemplate, rasterTemplateExtent, layerWind, layerDirection, products, name, indice, tempRes, windThreshold) {
-  if ("MSW" %in% products) {
-    stormRasters$MSW <- c(
-      stormRasters$MSW,
-      toRasterTemplate(rasterTemplate, rasterTemplateExtent, layerWind)
-    )
+#' @return SpatRaster or list of SpatRaster. Resampled product
+resampleProductToTemplate <- function(x, template, templateExtent) {
+  if (inherits(x, "SpatRaster")) {
+    return(toRasterTemplate(x, template, templateExtent))
+  } else if (is.list(x)) {
+    return(lapply(x, resampleProductToTemplate, template = template, templateExtent = templateExtent))
+  } else {
+    return(x)
   }
-  if ("PDI" %in% products) {
-    layerPDI <- computePDI(layerWind, tempRes)
-    stormRasters$PDI <- c(
-      stormRasters$PDI,
-      toRasterTemplate(rasterTemplate, rasterTemplateExtent, layerPDI)
-    )
-  }
-  if ("Exposure" %in% products) {
-    layersExposure <- computeExposure(layerWind, tempRes, windThreshold)
-    stormRasters$EXP <- c(
-      stormRasters$EXP,
-      toRasterTemplate(rasterTemplate, rasterTemplateExtent, layersExposure)
-    )
-  }
-  if ("Profiles" %in% products) {
-    names(layerWind) <- paste0(name, "_", "Speed", "_", indice)
-    names(layerDirection) <- paste0(name, "_", "Direction", "_", indice)
-    stormRasters$Speed <- c(
-      stormRasters$Speed,
-      toRasterTemplate(rasterTemplate, rasterTemplateExtent, layerWind)
-      )
-    stormRasters$Direction <- c(
-      stormRasters$Direction,
-      toRasterTemplate(rasterTemplate, rasterTemplateExtent, layerDirection)
-    )
-  }
-
-  return(stormRasters)
-
 }
+
+
 
 #' Short internal function used to smooth a raster
 #'
@@ -435,11 +401,12 @@ rasterizeStormProduct <- function(product, stormRastersProduct, spaceRes, name, 
 #' @param product character. List of products calculated.
 #' @param spaceRes character. Space resolution. Used for defining smoothing window
 #' @param name character. Name of the storm
+#' @param indices numeric. Indices of the time step.
 #' @param windThreshold numeric. **Optional** Wind threshold used for the Exposure product
 #'
 #' @return SpatRaster. The initial raster rasterized: all products calculated for one storm
 
-rasterizeStorm <- function(stormRasters, product, spaceRes, name, windThreshold = c(0)) {
+rasterizeStorm <- function(stormRasters, product, spaceRes, name, indices, windThreshold = c(0)) {
   raster <- list(MSW = NULL, PDI = NULL, EXP = NULL, Speed = NULL, Direction = NULL)
   if ("MSW" %in% product) {
     raster$MSW <- rasterizeStormProduct("MSW", terra::rast(stormRasters$MSW), spaceRes, name)
@@ -453,7 +420,9 @@ rasterizeStorm <- function(stormRasters, product, spaceRes, name, windThreshold 
   if ("Profiles" %in% product) {
     # In this case, only need to convert list of rasters to a multi-layers raster
     raster$Speed <- terra::rast(stormRasters$Speed)
+    names(raster$Speed) <- paste0(name, "_", "Speed", "_", indices)
     raster$Direction <- terra::rast(stormRasters$Direction)
+    names(raster$Direction) <- paste0(name, "_", "Direction", "_", indices)
   }
 
   return(raster)
@@ -746,7 +715,7 @@ spatialBehaviour <- function(sts,
   buffer <- 2.5
 
   # Initializing final raster stacks
-  rasters = list(MSW = c(), PDI = c(), EXP = c(), Speed = c(), Direction = c())
+  rasters <- list(MSW = c(), PDI = c(), EXP = c(), Speed = c(), Direction = c())
 
   if (method == "Boose") {
     # Map for intersection
@@ -822,12 +791,15 @@ spatialBehaviour <- function(sts,
       terra::values(layerDirection) <- output$direction
       rm(output)
 
-      # Compute products for current time step and stack them on same rasterTemplate
-      stormRasters <- computeProducts(
-          stormRasters, rasterTemplate, rasterTemplateExtent,
-          layerSpeed, layerDirection, product, st@name,
-          dataTC$indices[j], tempRes, windThreshold
-          )
+      # Compute products for current time step
+      stormRastersTS <- computeProduct(layerSpeed, layerDirection, product, tempRes, windThreshold)
+      # Resample on same rasterTemplate
+      stormRastersTS <- lapply(stormRastersTS,
+                               resampleProductToTemplate,
+                               template = rasterTemplate,
+                               templateExtent = rasterTemplateExtent)
+      # Add to the stack of rasters for current storm
+      stormRasters <- Map(c, stormRasters, stormRastersTS)
 
       if (verbose > 0) {
         utils::setTxtProgressBar(pb, step)
@@ -840,7 +812,10 @@ spatialBehaviour <- function(sts,
     }
 
     # Rasterize to produce final products for the current Storm
-    rasters <- Map(c, rasters, rasterizeStorm(stormRasters, product, spaceRes, st@name, windThreshold))
+    rasters <- Map(c,
+                   rasters,
+                   rasterizeStorm(stormRasters, product, spaceRes, st@name, dataTC$indices[-length(dataTC$indices)], windThreshold)
+                   )
 
     if (verbose > 0) {
       s <- s + 1

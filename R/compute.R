@@ -2,6 +2,82 @@
 # PRODUCTS #
 ############
 
+#' Compute the products for a given storm at a given time step
+#'
+#' @noRd
+#' @param speed. Wind speeds.
+#' @param direction. Raster with one layer containing wind directions.
+#' @param product. Product(s) to compute.
+#' @param tempRes numeric. Time resolution, used for the numerical integration
+#' @param windThreshold list numeric. Wind threshold used fior "Exposure" product computation.
+#'
+#' @return Product computed for the current time step.
+computeProduct <- function(speed, direction, product, tempRes, windThreshold) {
+  UseMethod("computeProduct")
+}
+
+#' Compute the products for a given storm at a given time step
+#'
+#' @noRd
+#' @param speed SpatRaster. Raster with one layer containing wind speeds.
+#' @param direction SpatRaster. Raster with one layer containing wind directions.
+#' @param product list of character. Product(s) to compute.
+#' @param tempRes numeric. Time resolution, used for the numerical integration
+#' @param windThreshold numeric. Wind threshold used fior "Exposure" product computation.
+#'
+#' @return list of SpatRaster. Layers computed for the current time step.
+
+computeProduct.SpatRaster <- function(speed, direction, product, tempRes, windThreshold) {
+  stormRastersTS <- list(MSW = c(), PDI = c(), EXP = c(), Speed = c(), Direction = c())
+  if ("MSW" %in% product) {
+    stormRastersTS$MSW <- speed
+  }
+  if ("PDI" %in% product) {
+    stormRastersTS$PDI <- computePDI(speed, tempRes)
+  }
+  if ("Exposure" %in% product) {
+    stormRastersTS$EXP <- computeExposure(speed, tempRes, windThreshold)
+  }
+  if ("Profiles" %in% product) {
+    stormRastersTS$Speed <- speed
+    stormRastersTS$Direction <- direction
+  }
+  return(stormRastersTS)
+}
+
+
+
+#' Compute the products for a given storm for non raster data
+#'
+#' @noRd
+#' @param speed numeric vector. Wind speed values
+#' @param direction numeric vector. Wind direction
+#' @param product character. Product input from temporalBehaviour
+#' @param tempRes numeric. Time resolution, used for the numerical integration
+#'   over the whole track
+#' @param windThreshold numeric vector. Wind threshold
+#'
+#' @return numeric array of dimension:
+#' \itemize{
+#'   \item number of observations: number of points. If product == "MSW"
+#'   \item 1 : number of points. If product == "PDI"
+#'   \item number of thresholds : number of points. If product == "Exposure"
+#' }
+computeProduct.numeric <- function(speed, direction, product, tempRes, windThreshold) {
+  if (product == "TS") {
+    prod <- cbind(speed, direction)
+  } else if (product == "PDI") {
+    prod <- computePDI(speed, tempRes)
+  } else if (product == "Exposure") {
+    prod <- computeExposure(speed, tempRes, windThreshold)
+  }
+
+  return(prod)
+}
+
+computeProduct.default <- function(speed, ...) {
+  stop("No computeProduct method for objects of class: ", class(speed)[1])
+}
 
 #' Compute the PDI for a storm
 #'
