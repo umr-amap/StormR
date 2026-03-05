@@ -50,6 +50,7 @@ computeProduct.SpatRaster <- function(speed, direction, product, tempRes, windTh
 #' Compute the products for a given storm for non raster data
 #'
 #' @noRd
+#'
 #' @param speed numeric vector. Wind speed values
 #' @param direction numeric vector. Wind direction
 #' @param product character. Product input from temporalBehaviour
@@ -75,13 +76,9 @@ computeProduct.numeric <- function(speed, direction, product, tempRes, windThres
   return(prod)
 }
 
-computeProduct.default <- function(speed, ...) {
-  stop("No computeProduct method for objects of class: ", class(speed)[1])
-}
 
 #' Compute the PDI for a storm
 #'
-#' @noRd
 #' The `computePDI()` function allows computing the power dissipation index (PDI)
 #' as defined by K.A. Emanuel (1999)
 #'
@@ -92,7 +89,7 @@ computeProduct.default <- function(speed, ...) {
 #' @return numeric vector or SpatRaster. PDI computed using the wind speed values in wind
 #'
 #' @details The method is used for both the `spatialBehaviour` and `temporalBehaviour` computation
-#'
+#' @noRd
 computePDI <- function(wind, tempRes) {
   # Surface sea-level air density in kg.m-3
   rho <- 1
@@ -111,7 +108,6 @@ computePDI <- function(wind, tempRes) {
 
 #' Compute the time exposure for a storm
 #'
-#' @noRd
 #'
 #' @param x SpatRaster or numeric vector of wind field
 #' @param tempRes numeric. Temporal resolution, used for the temporal integration
@@ -119,12 +115,13 @@ computePDI <- function(wind, tempRes) {
 #' @param ... additional arguments
 #'
 #' @return raster or numeric vector. Exposure is computed using the wind speed values
-#'
+#' @noRd
 computeExposure <- function(x, tempRes, threshold, ...) {
   UseMethod("computeExposure")
 }
 
-#' @NoRd
+#' @noRd
+#'
 #' @method computeExposure numeric
 #'
 #' @param x A numeric vector of wind speeds.

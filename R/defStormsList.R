@@ -812,7 +812,7 @@ retrieveStorms <- function(database, filterNames, filterSeasons, scale, removeUn
   if (!is.null(filterNames)) {
     #We are interested in one or several storms given by their name (and season)
     ind <- c()
-    for (n in 1:seq_along(filterNames)) {
+    for (n in seq_along(filterNames)) {
       id <- NULL
       id <- which(database$names == filterNames[n])
       stopifnot("Storm not found, invalid name ?" = !is.null(id))
@@ -996,23 +996,22 @@ writeStorm <- function(sds, index, loiSfBuffer, scale) {
 #' that have the same name. It is very common for "UNNAMED" storms for example.
 #' These storms will be renamed "UNNAMED-YEAR-1", "UNNAMED-YEAR-2", ...
 #'
-#' @param sds `stormsDataset` object
-#' @returns `stormsDataset` object with no duplicated names of storms
+#' @param sts `stormsList` object
+#' @returns `stormsList` object with no duplicated names of storms
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' #Creating a stormsDataset
 #' sds <- defStormsDataset(...)
 #' sts <- defStormsList(...)
 #' getNames(sts)
-#' "UNNAMED"   "UNNAMED"   "UNNAMED"   "ALLEN"     "CHARLEY"   "DANIELLE"  "JEANNE"    "UNNAMED"   "UNNAMED"   "BRET"
-#' "UNNAMED"   "UNNAMED"   "DENNIS"    ...
+#' ## "UNNAMED"   "UNNAMED"   "UNNAMED"   "ALLEN"     "CHARLEY"   "DANIELLE"  "JEANNE"    "UNNAMED" 
+#' ## "UNNAMED"   "UNNAMED"   "DENNIS"    ...
 #'
 #' sts <- renameStorms(sts)
 #' getNames(sts)
-#' "UNNAMED-1980-1"   "UNNAMED-1980-2"   "UNNAMED-1980-3"   "ALLEN-1980"     "CHARLEY-1980"   "DANIELLE-1980"  "JEANNE-1980"    "UNNAMED-1980-4"   "UNNAMED-1980-5"   "BRET-1980"
-#' "UNNAMED-1980-6"   "UNNAMED-1980-7"   "DENNIS-1980"    ...
-#'
+#' ## "UNNAMED-1980-1"   "UNNAMED-1980-2"   "UNNAMED-1980-3"   "ALLEN-1980"     "CHARLEY-1980"  ...
+#' ## "UNNAMED-1980-6"   "UNNAMED-1980-7"   "DENNIS-1980"    ...
 #' }
 #' @export
 
@@ -1020,8 +1019,8 @@ renameStorms <- function(sts) {
   storms_names <- getNames(sts)
   storms_seasons <- getSeasons(sts)
   new_storms_names <- paste0(storms_names, "-", storms_seasons)
-  counts <- ave(seq_along(new_storms_names), new_storms_names, FUN = seq_along)
-  total  <- ave(seq_along(new_storms_names), new_storms_names, FUN = length)
+  counts <- stats::ave(seq_along(new_storms_names), new_storms_names, FUN = seq_along)
+  total  <- stats::ave(seq_along(new_storms_names), new_storms_names, FUN = length)
   detailed_storms_names <- ifelse(total > 1, paste0(new_storms_names, "-", counts), new_storms_names)
   names(sts@data) <- detailed_storms_names
   for (i in seq_along(sts@data)) {

@@ -280,10 +280,14 @@ getDataInterpolate <- function(st, indices, tempRes, empiricalRMW, method) {
 #' @param layer SpatRaster. Layer to extend to the template grid
 #'
 #' @return a SpatRaster
-toRasterTemplate <- function(layer, rasterTemplate, rasterTemplateExtent, ...) {
+toRasterTemplate <- function(layer, rasterTemplate, rasterTemplateExtent) {
    UseMethod("toRasterTemplate", layer)
 }
 
+
+#' Method for "Exposure" product
+#'
+#' @noRd
 toRasterTemplate.list <- function(layer, rasterTemplate, rasterTemplateExtent) {
   merged <- c()
   for (l in seq_along(layer)) {
@@ -292,6 +296,10 @@ toRasterTemplate.list <- function(layer, rasterTemplate, rasterTemplateExtent) {
   return(merged)
 }
 
+
+#' Method for all single layers products
+#'
+#' @noRd
 toRasterTemplate.SpatRaster <- function(layer, rasterTemplate, rasterTemplateExtent) {
   merged <- terra::resample(layer, rasterTemplate)
   return(terra::crop(merged, rasterTemplateExtent))
@@ -299,7 +307,8 @@ toRasterTemplate.SpatRaster <- function(layer, rasterTemplate, rasterTemplateExt
 
 #' Small function to resample a product to the template raster
 #'
-#' @NoRd
+#' @noRd
+#'
 #' @param x SpatRaster or list of SpatRaster. Product to resample
 #' @param template SpatRaster. Raster template
 #' @param templateExtent SpatExtent. Extent of the template raster
@@ -320,6 +329,7 @@ resampleProductToTemplate <- function(x, template, templateExtent) {
 #' Short internal function used to smooth a raster
 #'
 #' @noRd
+#'
 #' @param rast SpatRaster. Raster to smooth
 #' @param nbg numeric. Size of the smoothing window
 #' @param pad logical. **Optional** Whether to pad the raster or not
@@ -333,9 +343,10 @@ smoothRaster <- function(rast, nbg, pad=TRUE) {
 #' Short internal function to name and give a correct time stamp to the raster
 #'
 #' @noRd
+#'
 #' @param rast SpatRaster. Raster to rename and provide a time stamp
 #' @param name character. Name of the storm
-#' @product character. Product to name the raster. Warning: used here for a single product
+#' @param product character. Product to name the raster. Warning: used here for a single product
 #' @param timeRaster SpatRaster. Time stamp of the raster
 #' @param threshold numeric. **Optional** Wind threshold used for the Exposure product
 #'
