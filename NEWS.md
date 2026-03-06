@@ -1,3 +1,10 @@
+# StormR 0.2.3
+* Bugfix : [defStormsList fails to print results when multiple storms have the same name + season](https://github.com/umr-amap/StormR/issues/118)
+* Bugfix : [Incorrect units in PDI calculation and figures](https://github.com/umr-amap/StormR/issues/113)
+* Bugfix : [spatialBehaviour() fails with missing values in extent check (if ((e[1] >= e[2]) || e[3] >= e[4]))](https://github.com/umr-amap/StormR/issues/108)
+* Improvment : Large code simplification and refactoring
+
+
 # StormR 0.2.2
 * Bugfix : [Issue with dynamic plots in plotBehaviour](https://github.com/umr-amap/StormR/pull/93)
 
