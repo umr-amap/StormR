@@ -1,6 +1,6 @@
 
 test_that("Test conversions functions",{
-  
+
   expect_equal(knt2ms(1), 0.514)
   expect_equal(mph2ms(1), 0.44704)
   expect_equal(kmh2ms(1), 1 / 3.6)
@@ -9,7 +9,7 @@ test_that("Test conversions functions",{
   expect_equal(mb2pa(1), 100)
   expect_equal(psi2pa(1), 6895)
   expect_equal(atm2pa(1), 101300)
-  
+
 })
 
 
@@ -32,7 +32,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -44,7 +44,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = 1,
@@ -62,7 +62,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -74,7 +74,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = TRUE,
@@ -92,7 +92,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -104,8 +104,8 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
-  
+
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = c("data", ".nc"),
@@ -123,7 +123,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -135,7 +135,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   # Checking fields input
   expect_error(
     checkInputsdefStormsDataset(
@@ -154,7 +154,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -172,7 +172,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -190,7 +190,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -202,7 +202,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -220,7 +220,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -232,7 +232,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -250,7 +250,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -262,7 +262,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -280,7 +280,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -292,7 +292,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -320,8 +320,8 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
-  
+
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -349,7 +349,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -368,7 +368,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         rmw = "nm2km",
@@ -379,7 +379,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -408,7 +408,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -436,7 +436,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -465,7 +465,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -491,7 +491,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -520,7 +520,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -539,7 +539,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -550,7 +550,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -569,7 +569,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -580,7 +580,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = TRUE
     )
   )
-  
+
   # Checking basin input
   expect_error(
     checkInputsdefStormsDataset(
@@ -600,7 +600,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = 1,
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -612,8 +612,8 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
-  expect_error(
+
+  expect_warning(
     checkInputsdefStormsDataset(
       filename = "database.nc",
       sep = NULL,
@@ -630,7 +630,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -642,7 +642,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -661,7 +661,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = TRUE,
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -673,7 +673,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -692,7 +692,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = c("NA", "WP"),
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -703,7 +703,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -722,7 +722,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "basin",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -734,7 +734,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   # Checking seasons
   expect_error(
     checkInputsdefStormsDataset(
@@ -764,7 +764,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -793,7 +793,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -822,7 +822,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -851,8 +851,8 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
-  
+
+
   # Checking unitConversion input
   expect_error(
     checkInputsdefStormsDataset(
@@ -872,14 +872,14 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = 1,
       notNamed = "NOT_NAMED",
       verbose = 1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -898,14 +898,14 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = TRUE,
       notNamed = "NOT_NAMED",
       verbose = 1
     )
   )
-  
+
 
   # Checking verbose input
   expect_error(
@@ -927,7 +927,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -939,7 +939,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = -1
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -959,7 +959,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -971,7 +971,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = "1"
     )
   )
-  
+
   expect_error(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -990,7 +990,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -1002,7 +1002,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = TRUE
     )
   )
-  
+
 
   # Check Warnings
   expect_warning(
@@ -1022,7 +1022,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -1034,8 +1034,8 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
-  
+
+
   expect_warning(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -1053,7 +1053,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -1065,7 +1065,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       verbose = 1
     )
   )
-  
+
   expect_warning(
     checkInputsdefStormsDataset(
       filename = "database.nc",
@@ -1083,7 +1083,7 @@ test_that("Test checkInputsdefStormsDataset function", {
       ),
       basin = "SP",
       seasons = c(1980, as.numeric(format(Sys.time(
-        
+
       ), "%Y"))),
       unitConversion = c(
         msw = "knt2ms",
@@ -1099,7 +1099,7 @@ test_that("Test checkInputsdefStormsDataset function", {
 
 
 test_that("Test getDataFrom functions", {
-  
+
   fields = c(
     names = "name",
     seasons = "season",
@@ -1113,14 +1113,14 @@ test_that("Test getDataFrom functions", {
     pressure = "usa_pres",
     poci = "usa_poci"
   )
- 
+
   unitConversion = c(
     msw = "knt2ms",
     rmw = "nm2km",
     pressure = "mb2pa",
     poci = "mb2pa"
   )
-  
+
   filename = system.file("extdata", "test_dataset.csv", package = "StormR")
   databaseFromCsv <- getDataFromCsvFile(filename=filename,
                                         sep = ",",
@@ -1130,7 +1130,7 @@ test_that("Test getDataFrom functions", {
                                         unitConversion=unitConversion,
                                         notNamed="NOT_NAMED",
                                         verbose=0)
-  
+
   filename = system.file("extdata", "test_dataset.nc", package = "StormR")
   databaseFromNc <- getDataFromNcdfFile(filename=filename,
                                         fields=fields,
@@ -1139,8 +1139,8 @@ test_that("Test getDataFrom functions", {
                                         unitConversion=unitConversion,
                                         notNamed="NOT_NAMED",
                                         verbose=0)
-  
+
   expect_equal(convertVariables(databaseFromCsv, unitConversion), sdsFromCsv@database)
   expect_equal(convertVariables(databaseFromNc, unitConversion), sdsFromNc@database)
-  
+
 })

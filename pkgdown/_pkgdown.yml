@@ -35,6 +35,7 @@ reference:
   - '`storm-class`'
   - '`stormsList-class`'
   - '`defStormsList`'
+  - '`renameStorms`'
 
 
 - title: Getters

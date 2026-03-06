@@ -1,5 +1,3 @@
-
-
 #' Check inputs for temporalBehaviour function
 #'
 #' @noRd
@@ -24,7 +22,7 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
     "colnames of points must be \"x\" (Eastern degree), \"y\" (Northern degree)" = colnames(points) == c("x", "y")
   )
   stopifnot("Invalid points coordinates" = points$x > -180 & points$x <= 360 &
-              points$y >= -90 & points$y <= 90)
+    points$y >= -90 & points$y <= 90)
 
   # Checking product input
   stopifnot("Invalid product" = product %in% c("TS", "PDI", "Exposure"))
@@ -57,95 +55,6 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
   stopifnot("verbose must length 1" = length(verbose) == 1)
   stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 }
-
-
-
-
-
-#' rasterizePDI counterpart function for non raster data
-#'
-#' @noRd
-#' @param wind numeric vector. Wind speed values
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#'
-#' @return numeric. PDI computed using the wind speed values in wind
-computePDI <- function(wind, tempRes) {
-  # Computing surface drag coefficient
-  rho <- 1
-  cd <- 0.002
-  # Raising to power 3
-  pdi <- wind**3
-  # Applying both rho and surface drag coefficient
-  pdi <- pdi * rho * cd
-  # Integrating over the whole track
-  pdi <- sum(pdi, na.rm = TRUE) * tempRes
-
-  return(round(pdi, 3))
-}
-
-
-
-
-
-#' rasterizeExposure counterpart function for non raster data
-#'
-#' @noRd
-#' @param wind numeric vector. Wind speed values
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#' @param threshold numeric vector. Wind threshold
-#'
-#' @return numeric vector of length 5 (for each category). Exposure computed
-#'   using the wind speed values in wind
-computeExposure <- function(wind, tempRes, threshold) {
-  exposure <- c()
-  for (t in threshold) {
-    ind <- which(wind >= t)
-    expo <- rep(0, length(wind))
-    expo[ind] <- 1
-    exposure <- c(exposure, sum(expo, na.rm = TRUE) * tempRes)
-  }
-
-  return(exposure)
-}
-
-
-
-
-
-#' rasterizeProduct counterpart function for non raster data
-#'
-#' @noRd
-#' @param product character. Product input from temporalBehaviour
-#' @param wind numeric vector. Wind speed values
-#' @param direction numeric vector. Wind direction
-#' @param tempRes numeric. Time resolution, used for the numerical integration
-#'   over the whole track
-#' @param result numeric array. Similar as finalStack, i.e where to add the
-#'   computed product
-#' @param threshold numeric vector. Wind threshold
-#'
-#' @return numeric array of dimension:
-#' \itemize{
-#'   \item number of observations: number of points. If product == "MSW"
-#'   \item 1 : number of points. If product == "PDI"
-#'   \item 5 : number of points. If product == "Exposure"
-#' }
-computeProduct <- function(product, wind, direction, tempRes, result, threshold) {
-  if (product == "TS") {
-    prod <- cbind(wind, direction)
-  } else if (product == "PDI") {
-    prod <- computePDI(wind, tempRes)
-  } else if (product == "Exposure") {
-    prod <- computeExposure(wind, tempRes, threshold)
-  }
-
-  return(cbind(result, prod))
-}
-
-
-
 
 
 #' Arrange result before the end of temporalBehaviour
@@ -425,7 +334,6 @@ temporalBehaviour <- function(sts,
                               empiricalRMW = FALSE,
                               tempRes = 60,
                               verbose = 1) {
-
   if (is.null(windThreshold)) {
     windThreshold <- sts@scale
   }
@@ -478,7 +386,6 @@ temporalBehaviour <- function(sts,
   for (st in sts@data) {
     # Handling indices inside loi.buffer or not
     ind <- getIndices(st, 2, "none")
-
     # Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, tempRes, empiricalRMW, method)
 
@@ -509,11 +416,11 @@ temporalBehaviour <- function(sts,
         world, indCountries
       )
 
-      vr <- output$wind
-      dir <- output$direction
-
+      speed <- as.numeric(output$speed)
+      direction <- as.numeric(output$direction)
       # Computing product
-      res <- computeProduct(product, vr, dir, tempRes, res, windThreshold)
+      resPoint <- computeProduct.numeric(speed, direction, product, tempRes, windThreshold)
+      res <- cbind(res, resPoint)
     }
 
     finalResult <- finalizeResult(

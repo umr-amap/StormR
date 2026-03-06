@@ -13,6 +13,7 @@ defStormsList(
   scale = sshs,
   scalePalette = NULL,
   removeUnder = NULL,
+  removeUnnamed = NULL,
   verbose = 2
 )
 }
@@ -45,6 +46,10 @@ corresponding to each category interval of \code{scale} input}
 
 \item{removeUnder}{numeric. Storms reaching this maximum level or less in the scale are removed.
 Default value is set to NULL.}
+
+\item{removeUnnamed}{character vector. Remove unnamed storms. Need to specify how they are named in the stormsDataset
+(e.g "UNNAMED", "NOT_NAMED", etc...)
+Default value is set to NULL (do not remove any unnamed storm).}
 
 \item{verbose}{numeric. Type of information the function displays. Can be:
 \itemize{

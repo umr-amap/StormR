@@ -29,7 +29,7 @@ $T$ is the lifespan of the storm<br />
 
 ### Power Dissipation Index
 
-The power dissipation index (PDI, in $J.m^{2}$) or total power dissipated by a tropical storm over its lifespan [@emanuel_power_1999; @emanuel_increasing_2005] is computed as follows:
+The power dissipation index (PDI, in $J.m^{-2}$) or total power dissipated by unit area by a tropical storm over its lifespan [@emanuel_power_1999; @emanuel_increasing_2005] is computed as follows:
 
 $$
 \int_T \rho \times C_d \times v_r^3 \ dt

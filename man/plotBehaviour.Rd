@@ -84,5 +84,6 @@ plotBehaviour(pam, pam.msw, dynamicPlot = TRUE)
 pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 plotBehaviour(pam, pam.prof$PAM_Speed_37, labels = TRUE, pos = 4)
 
+#
 }
 }
