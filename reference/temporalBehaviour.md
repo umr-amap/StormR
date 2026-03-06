@@ -1,0 +1,372 @@
+# Computing wind behaviour time series and summary statistics at given point locations
+
+The `temporalBehaviour()` function allows computing wind speed and
+direction for a given location or set of locations along the lifespan of
+a tropical cyclone. It also allows to compute three associated summary
+statistics.
+
+## Usage
+
+``` r
+temporalBehaviour(
+  sts,
+  points,
+  product = "TS",
+  windThreshold = NULL,
+  method = "Willoughby",
+  asymmetry = "Chen",
+  empiricalRMW = FALSE,
+  tempRes = 60,
+  verbose = 1
+)
+```
+
+## Arguments
+
+- sts:
+
+  `StormsList` object.
+
+- points:
+
+  data.frame. Consisting of two columns names as "x" (for the longitude)
+  and "y" (for the latitude), providing the coordinates in decimal
+  degrees of the point locations. Row names can also be provided to
+  named the locations.
+
+- product:
+
+  character. Desired output statistics:
+
+  - `"TS"`, for time series of wind speeds and directions (default
+    setting),
+
+  - `"PDI"`, for power dissipation index, or
+
+  - `"Exposure"`, for the duration of exposure to defined wind
+    thresholds.
+
+- windThreshold:
+
+  numeric vector. Minimal wind threshold(s) (in \\m.s^{-1}\\) used to
+  compute the duration of exposure when `product="Exposure"`. Default
+  value is to set NULL, in this case, the windthresholds are the one
+  used in the scale defined in the stromsList.
+
+- method:
+
+  character. Model used to compute wind speed and direction. Three
+  different models are implemented:
+
+  - `"Willoughby"`, for the symmetrical model developed by Willoughby et
+    al. (2006) (default setting),
+
+  - `"Holland"`, for the symmetrical model developed by Holland (1980),
+    or
+
+  - `"Boose"`, for the asymmetrical model developed by Boose et al.
+    (2004).
+
+- asymmetry:
+
+  character. If `method="Holland"` or `method="Willoughby"`, this
+  argument specifies the method used to add asymmetry. Can be:
+
+  - `"Chen"`, for the model developed by Chen (1994) (default setting),
+
+  - `"Miyazaki"`, for the model developed by Miyazaki et al. (1962), or
+
+  - `"None"`, for no asymmetry.
+
+- empiricalRMW:
+
+  logical. Whether (TRUE) or not (FALSE) to compute the radius of
+  maximum wind (`rmw`) empirically using the model developed by
+  Willoughby et al. (2006). If `empiricalRMW==FALSE` (default setting)
+  then the `rmw` provided in the `StormsList` is used.
+
+- tempRes:
+
+  numeric. Temporal resolution (min). Can be `60` (default setting),
+  `30` or `15`.
+
+- verbose:
+
+  numeric. Information displayed. Can be:
+
+  - `2`, information about the processes and outputs are displayed
+    (default setting),
+
+  - `1`, information about the processes are displayed, or
+
+  - `0`, no information displayed.
+
+## Value
+
+For each storm and each point location, the `temporalBehaviour()`
+function returns a data.frame. The data frames are organised into named
+lists. Depending on the `product` argument different data.frame are
+returned:
+
+- if `product == "TS"`, the function returns a data.frame with one row
+  for each observation (or interpolated observation) and four columns
+  for wind speed (in \\m.s^{-1}\\), wind direction (in degree), the
+  observation number, and the ISO time of observations,
+
+- if `product == "PDI"`, the function returns a data.frame with one row
+  for each point location and one column for the PDI,
+
+- if `product == "Exposure"`, the function returns a data.frame with one
+  row for the duration of exposure to winds above each wind speed
+  threshold defined by the `windThreshold` argument and one column for
+  each point location.
+
+## Details
+
+Storm track data sets, such as those extracted from IBRTrACKS (Knapp et
+al., 2010), usually provide observation at a 3- or 6-hours temporal
+resolution. In the temporalBehaviour() function, linear interpolations
+are used to reach the temporal resolution specified in the `tempRes`
+argument (default value = 60 min).
+
+The Holland (1980) model, widely used in the literature, is based on the
+'gradient wind balance in mature tropical cyclones. The wind speed
+distribution is computed from the circular air pressure field, which can
+be derived from the central and environmental pressure and the radius of
+maximum winds.
+
+\\v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times
+(p\_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} +
+\left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times
+f}{2}\right)\\
+
+with,
+
+\\b = \frac{\rho \times e \times v_m^2}{p\_{oci} - p_c}\\
+
+\\f = 2 \times 7.29 \times 10^{-5} \sin(\phi)\\
+
+where, \\v_r\\ is the tangential wind speed (in \\m.s^{-1}\\), \\b\\ is
+the shape parameter, \\\rho\\ is the air density set to \\1.15
+kg.m^{-3}\\, \\e\\ being the base of natural logarithms (~2.718282),
+\\v_m\\ the maximum sustained wind speed (in \\m.s^{-1}\\), \\p\_{oci}\\
+is the pressure at outermost closed isobar of the storm (in \\Pa\\),
+\\p_c\\ is the pressure at the centre of the storm (in \\Pa\\), \\r\\ is
+the distance to the eye of the storm (in \\km\\), \\R_m\\ is the radius
+of maximum sustained wind speed (in \\km\\), \\f\\ is the Coriolis force
+(in \\N.kg^{-1}\\, and \\\phi\\ being the latitude).
+
+The Willoughby et al. (2006) model is an empirical model fitted to
+aircraft observations. The model considers two regions: inside the eye
+and at external radii, for which the wind formulations use different
+exponents to better match observations. In this model, the wind speed
+increases as a power function of the radius inside the eye and decays
+exponentially outside the eye after a smooth polynomial transition
+across the eyewall.
+
+\\\left\\\begin{aligned} v_r &= v_m \times
+\left(\frac{r}{R_m}\right)^{n} \quad if \quad r \< R_m \\ v_r &= v_m
+\times \left((1-A) \times e^{-\frac{\|r-R_m\|}{X1}} + A \times
+e^{-\frac{\|r-R_m\|}{X2}}\right) \quad if \quad r \geq R_m \\
+\end{aligned} \right. \\
+
+with,
+
+\\n = 2.1340 + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038
+\times \|\phi\|\\
+
+\\X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times
+\|\phi\|\\
+
+\\A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042
+\times \|\phi\|\\ and \\A\ge0\\
+
+where, \\v_r\\ is the tangential wind speed (in \\m.s^{-1}\\), \\v_m\\
+is the maximum sustained wind speed (in \\m.s^{-1}\\), \\r\\ is the
+distance to the eye of the storm (in \\km\\), \\R_m\\ is the radius of
+maximum sustained wind speed (in \\km\\), \\\phi\\ is the latitude of
+the centre of the storm, \\X2 = 25\\.
+
+Asymmetry can be added to Holland (1980) and Willoughby et al. (2006)
+wind fields as follows,
+
+\\\vec{V} = \vec{V_c} + C \times \vec{V_t}\\
+
+where, \\\vec{V}\\ is the combined asymmetric wind field, \\\vec{V_c}\\
+is symmetric wind field, \\\vec{V_t}\\ is the translation speed of the
+storm, and \\C\\ is function of \\r\\, the distance to the eye of the
+storm (in \\km\\).
+
+Two formulations of C proposed by Miyazaki et al. (1962) and Chen (1994)
+are implemented.
+
+Miyazaki et al. (1962) \\C = e^{(-\frac{r}{500} \times \pi)}\\
+
+Chen (1994) \\C = \frac{3 \times R_m^{\frac{3}{2}} \times
+r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times
+r^{\frac{3}{2}}}\\
+
+where, \\R_m\\ is the radius of maximum sustained wind speed (in \\km\\)
+
+The Boose et al. (2004) model, or “HURRECON” model, is a modification of
+the Holland (1980) model. In addition to adding asymmetry, this model
+treats of water and land differently, using different surface friction
+coefficient for each.
+
+\\v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right)
+\times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 -
+\left(\frac{R_m}{r}\right)^b}}\\
+
+with,
+
+\\b = \frac{\rho \times e \times v_m^2}{p\_{oci} - p_c}\\
+
+where, \\v_r\\ is the tangential wind speed (in \\m.s^{-1}\\), \\F\\ is
+a scaling parameter for friction (\\1.0\\ in water, \\0.8\\ in land),
+\\v_m\\ is the maximum sustained wind speed (in \\m.s^{-1}\\), \\S\\ is
+a scaling parameter for asymmetry (usually set to \\1\\), \\T\\ is the
+oriented angle (clockwise/counter clockwise in Northern/Southern
+Hemisphere) between the forward trajectory of the storm and a radial
+line from the eye of the storm to point \$r\$ \\v_h\\ is the storm
+velocity (in \\m.s^{-1}\\), \\R_m\\ is the radius of maximum sustained
+wind speed (in \\km\\), \\r\\ is the distance to the eye of the storm
+(in \\km\\), \\b\\ is the shape parameter, \\\rho = 1.15\\ is the air
+density (in \\kg.m^{-3}\\), \\p\_{oci}\\ is the pressure at outermost
+closed isobar of the storm (in \\Pa\\), and \\p_c\\ is the pressure at
+the centre of the storm (\\pressure\\ in \\Pa\\).
+
+## References
+
+Boose, E. R., Serrano, M. I., & Foster, D. R. (2004). Landscape and
+regional impacts of hurricanes in Puerto Rico. Ecological Monographs,
+74(2), Article 2. https://doi.org/10.1890/02-4057
+
+Chen, K.-M. (1994). A computation method for typhoon wind field. Tropic
+Oceanology, 13(2), 41–48.
+
+Holland, G. J. (1980). An Analytic Model of the Wind and Pressure
+Profiles in Hurricanes. Monthly Weather Review, 108(8), 1212–1218.
+https://doi.org/10.1175/1520-0493(1980)108\<1212:AAMOTW\>2.0.CO;2
+
+Knapp, K. R., Kruk, M. C., Levinson, D. H., Diamond, H. J., & Neumann,
+C. J. (2010). The International Best Track Archive for Climate
+Stewardship (IBTrACS). Bulletin of the American Meteorological Society,
+91(3), Article 3. https://doi.org/10.1175/2009bams2755.1
+
+Miyazaki, M., Ueno, T., & Unoki, S. (1962). The theoretical
+investigations of typhoon surges along the Japanese coast (II).
+Oceanographical Magazine, 13(2), 103–117.
+
+Willoughby, H. E., Darling, R. W. R., & Rahn, M. E. (2006). Parametric
+Representation of the Primary Hurricane Vortex. Part II: A New Family of
+Sectionally Continuous Profiles. Monthly Weather Review, 134(4),
+1102–1120. https://doi.org/10.1175/MWR3106.1
+
+## Examples
+
+``` r
+# \donttest{
+# Creating a stormsDataset
+sds <- defStormsDataset()
+#> Warning: No basin argument specified. StormR will work as expected
+#>              but cannot use basin filtering for speed-up when collecting data
+#> === Loading data  ===
+#> Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened
+#> Collecting data ...
+#> === DONE ===
+
+# Geting storm track data for tropical cyclone Pam (2015) near Vanuatu
+pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
+#> === Storms processing ... ===
+#> 
+#> -> Making buffer: Done
+#> -> Searching for PAM storm ...
+#>    -> Identifying Storms: Done
+#> -> Gathering storm(s) ... 
+#> 
+#> === DONE with run time 0.4700053 sec ===
+#> 
+#> SUMMARY:
+#> (*) LOI: Vanuatu 
+#> (*) Buffer size: 300 km
+#> (*) Number of storms: 1 
+#>         Name - Tropical season - Scale - Number of observation within buffer:
+#>         PAM - 2015 - 6 - 20 
+#> 
+
+pts <- data.frame(x = c(168.5, 168), y = c(-17.9, -16.3))
+row.names(pts) <- c("point_1", "point_2")
+
+# Computing time series of wind speed and direction for Pam
+# over points 1 and 2 defined above
+ts.pam <- temporalBehaviour(pam, points = pts)
+#> === temporalBehaviour processing ... ===
+#> 
+#> Initializing data ... Done
+#> 
+#> Computation settings:
+#>   (*) Temporal resolution: Every 60 min
+#>   (*) Method used: Willoughby 
+#>   (*) Product(s) to compute: TS 
+#>   (*) Asymmetry used: Chen 
+#>   (*) Points: lon-lat
+#>        168.5   -17.9 
+#>        168   -16.3 
+#> 
+#> 
+#> Storm(s):
+#>   ( 1 )  PAM 
+#> 
+#> 
+#> === DONE ===
+#> 
+
+# Computing PDI for Pam over points 1 and 2 defined above
+pdi.pam <- temporalBehaviour(pam, points = pts, product = "PDI")
+#> === temporalBehaviour processing ... ===
+#> 
+#> Initializing data ... Done
+#> 
+#> Computation settings:
+#>   (*) Temporal resolution: Every 60 min
+#>   (*) Method used: Willoughby 
+#>   (*) Product(s) to compute: PDI 
+#>   (*) Asymmetry used: Chen 
+#>   (*) Points: lon-lat
+#>        168.5   -17.9 
+#>        168   -16.3 
+#> 
+#> 
+#> Storm(s):
+#>   ( 1 )  PAM 
+#> 
+#> 
+#> === DONE ===
+#> 
+
+# Computing the duration of exposure to wind speeds above the thresholds
+# used by the Saffir-Simpson hurricane wind scale for Pam
+# over points 1 and 2 defined above
+exp.pam <- temporalBehaviour(pam, points = pts, product = "Exposure")
+#> === temporalBehaviour processing ... ===
+#> 
+#> Initializing data ... Done
+#> 
+#> Computation settings:
+#>   (*) Temporal resolution: Every 60 min
+#>   (*) Method used: Willoughby 
+#>   (*) Product(s) to compute: Exposure 
+#>   (*) Asymmetry used: Chen 
+#>   (*) Points: lon-lat
+#>        168.5   -17.9 
+#>        168   -16.3 
+#> 
+#> 
+#> Storm(s):
+#>   ( 1 )  PAM 
+#> 
+#> 
+#> === DONE ===
+#> 
+# }
+```

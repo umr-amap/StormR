@@ -6,16 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>temporalBehaviour • StormR</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="temporalBehaviour">
 </head>
 <body>
@@ -57,9 +56,9 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>temporalBehaviour</h1>
             
-            <h4 data-toc-skip class="date">2024-10-24</h4>
+            <h4 data-toc-skip class="date">2026-03-06</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/master/vignettes/TemporalBehaviour.Rmd" class="external-link"><code>vignettes/TemporalBehaviour.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/v0.2.3/vignettes/TemporalBehaviour.Rmd" class="external-link"><code>vignettes/TemporalBehaviour.Rmd</code></a></small>
       <div class="d-none name"><code>TemporalBehaviour.Rmd</code></div>
     </div>
 
@@ -93,7 +92,7 @@ follows:</p>
 <p>The track data for Pam nearby Vanuatu are extracted as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defStormsDataset.html">defStormsDataset</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in checkInputsdefStormsDataset(filename, sep, fields, basin, seasons, : No basin argument specified. StormR will work as expected</span></span>
+<pre><code><span><span class="co">## Warning: No basin argument specified. StormR will work as expected</span></span>
 <span><span class="co">##              but cannot use basin filtering for speed-up when collecting data</span></span></code></pre>
 <pre><code><span><span class="co">## === Loading data  ===</span></span>
 <span><span class="co">## Open database... /home/runner/work/_temp/Library/StormR/extdata/test_dataset.nc opened</span></span>
@@ -104,7 +103,7 @@ follows:</p>
 <span><span class="fu"><a href="../reference/plotStorms.html">plotStorms</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">df</span><span class="op">$</span><span class="va">y</span>, pch <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">df</span><span class="op">$</span><span class="va">y</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Port Vila"</span>, <span class="st">"Luganville"</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></code></pre></div>
-<p><img src="TemporalBehaviour_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p><img src="TemporalBehaviour_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="700"></p>
 <p>Then the <code><a href="../reference/temporalBehaviour.html">temporalBehaviour()</a></code> function with the
 <code>product = "TS"</code> argument is used to compute time series. By
 default the temporal resolution of is set to 1 hour but can be changed
@@ -134,10 +133,10 @@ observations and the date and time of the observation (“isoTimes”).</p>
 draw time series plots for wind speed and wind direction as follows:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTemporal.html">plotTemporal</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">TS</span>, storm<span class="op">=</span><span class="st">"PAM"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="TemporalBehaviour_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="TemporalBehaviour_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTemporal.html">plotTemporal</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">TS</span>, storm<span class="op">=</span><span class="st">"PAM"</span>, var<span class="op">=</span><span class="st">'direction'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="TemporalBehaviour_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="TemporalBehaviour_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="700"></p>
 <p>Maximum sustained wind speed for Port Vila and Luganville can be
 computed as follows:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -157,7 +156,7 @@ computed as follows:</p>
 <span><span class="va">PDI</span></span></code></pre></div>
 <pre><code><span><span class="co">## $PAM</span></span>
 <span><span class="co">##     Port_Vila Luganville</span></span>
-<span><span class="co">## PDI  126105.2   20111.64</span></span></code></pre>
+<span><span class="co">## PDI   7566313    1206699</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="getting-duration-of-exposure">Getting duration of exposure<a class="anchor" aria-label="anchor" href="#getting-duration-of-exposure"></a>
@@ -169,12 +168,12 @@ computed as follows:</p>
 <span><span class="va">exposure_SS</span></span></code></pre></div>
 <pre><code><span><span class="co">## $PAM</span></span>
 <span><span class="co">##                       Port_Vila Luganville</span></span>
-<span><span class="co">## Min threshold: 18 m/s      1380        960</span></span>
-<span><span class="co">## Min threshold: 33 m/s       570          0</span></span>
-<span><span class="co">## Min threshold: 42 m/s       300          0</span></span>
-<span><span class="co">## Min threshold: 49 m/s       120          0</span></span>
-<span><span class="co">## Min threshold: 58 m/s         0          0</span></span>
-<span><span class="co">## Min threshold: 70 m/s         0          0</span></span></code></pre>
+<span><span class="co">## Min threshold: 18 m/s      23.0         16</span></span>
+<span><span class="co">## Min threshold: 33 m/s       9.5          0</span></span>
+<span><span class="co">## Min threshold: 42 m/s       5.0          0</span></span>
+<span><span class="co">## Min threshold: 49 m/s       2.0          0</span></span>
+<span><span class="co">## Min threshold: 58 m/s       0.0          0</span></span>
+<span><span class="co">## Min threshold: 70 m/s       0.0          0</span></span></code></pre>
 <p>By default, the function returns the duration of exposure (in hours)
 to wind speeds above the thresholds used by the Saffir-Simpson hurricane
 wind scale (i.e., 18, 33, 42, 49, 58, and 70
@@ -189,11 +188,11 @@ as follow:</p>
 <span><span class="va">exposure_BOM</span></span></code></pre></div>
 <pre><code><span><span class="co">## $PAM</span></span>
 <span><span class="co">##                         Port_Vila Luganville</span></span>
-<span><span class="co">## Min threshold: 17.2 m/s      1440       1050</span></span>
-<span><span class="co">## Min threshold: 24.4 m/s       960          0</span></span>
-<span><span class="co">## Min threshold: 32.5 m/s       600          0</span></span>
-<span><span class="co">## Min threshold: 44.2 m/s       240          0</span></span>
-<span><span class="co">## Min threshold: 55 m/s           0          0</span></span></code></pre>
+<span><span class="co">## Min threshold: 17.2 m/s        24       17.5</span></span>
+<span><span class="co">## Min threshold: 24.4 m/s        16        0.0</span></span>
+<span><span class="co">## Min threshold: 32.5 m/s        10        0.0</span></span>
+<span><span class="co">## Min threshold: 44.2 m/s         4        0.0</span></span>
+<span><span class="co">## Min threshold: 55 m/s           0        0.0</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -206,7 +205,7 @@ as follow:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
