@@ -322,6 +322,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
       rmw = data$rmw[index]
     )
   } else if (method == "Holland") {
+    data$poci[data$pc == data$poci] <-  data$poci[data$pc == data$poci] + 1 # avoid case pc = poci
     speed <- holland(
       r = distEye * 0.001,
       rmw = data$rmw[index],
@@ -342,6 +343,7 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
       landIntersect[ind] <- 1
     }
 
+    data$poci[data$pc == data$poci] <-  data$poci[data$pc == data$poci] + 1 # avoid case pc = poci
     speed <- boose(
       r = distEye * 0.001,
       rmw = data$rmw[index],
@@ -452,7 +454,7 @@ computeAsymmetry <- function(asymmetry, speed, x, y, vx, vy, vh, r, rmw, lat) {
 
   # New wind direction
   direction <- atan2(tWindY, tWindX) * 180 / pi
-  direction[direction < 0] <- direction[direction < 0] + 360
+  direction <- direction %% 360
 
   return(list(speed = round(speed, 3), direction = round(direction, 3)))
 }
