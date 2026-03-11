@@ -839,16 +839,17 @@ retrieveStorms <- function(database, filterNames, filterSeasons, scale, removeUn
   }
 
   # Warn the user if there are still duplicated names
-  duplicates_idx <- which(duplicated(database$names) | duplicated(database$names, fromLast = TRUE))
+  duplicates_idx <- which(duplicated(database$names[indices]) | duplicated(database$names[indices], fromLast = TRUE))
   if (length(duplicates_idx) > 0) {
     pairs <- paste0(
-      "Storm ", database$names[duplicates_idx], ", year ", database$seasons[duplicates_idx]
+      "Storm ", database$names[indices][duplicates_idx], ", year ", database$seasons[indices][duplicates_idx]
     )
 
     warning(
       paste(
         "Duplicate storms names detected :\n",
         paste(pairs, collapse = "\n"),
+        "\n",
         "This will lead to failure in further StormR computations. We strongly recommend to avoid name duplicates by either:
         - using filters to narrow down your stormsList according to 'names', 'seasons', 'loi', 'removeUnder' or 'removeUnnamed' criterias
         - using the renameStorms() function right after this defStormsList function"
@@ -1005,7 +1006,7 @@ writeStorm <- function(sds, index, loiSfBuffer, scale) {
 #' sds <- defStormsDataset(...)
 #' sts <- defStormsList(...)
 #' getNames(sts)
-#' ## "UNNAMED"   "UNNAMED"   "UNNAMED"   "ALLEN"     "CHARLEY"   "DANIELLE"  "JEANNE"    "UNNAMED" 
+#' ## "UNNAMED"   "UNNAMED"   "UNNAMED"   "ALLEN"     "CHARLEY"   "DANIELLE"  "JEANNE"    "UNNAMED"
 #' ## "UNNAMED"   "UNNAMED"   "DENNIS"    ...
 #'
 #' sts <- renameStorms(sts)
