@@ -68,15 +68,18 @@ convertAzimuth <- function(dir_meteo) {
 #' 
 #' @return azimuth raster direction (0-360, 0 = North)
 
+#convertAzimuthRaster <- function(dir_meteo_rast) {
+  
+#  azimuth <- 90 - dir_meteo_rast
+#  azimuth <- terra::ifel(azimuth < 0, azimuth + 360, azimuth)
+  
+#  return(azimuth)
+#}
+
 convertAzimuthRaster <- function(dir_meteo_rast) {
-  
-  azimuth <- 90 - dir_meteo_rast
-  azimuth <- terra::ifel(azimuth < 0, azimuth + 360, azimuth)
-  
+  azimuth <- dir_meteo_rast %% 360
   return(azimuth)
 }
-
-
 
 
 
