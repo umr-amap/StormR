@@ -138,7 +138,7 @@ vanuatu.st <- defStormsList(sds = sds, loi = "Vanuatu")
 #> -> Gathering storm(s) ... 
 #>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
 #> 
-#> === DONE with run time 5.505461 sec ===
+#> === DONE with run time 5.255937 sec ===
 #> 
 #> SUMMARY:
 #> (*) LOI: Vanuatu 
@@ -164,7 +164,7 @@ pam.pt <- defStormsList(sds = sds, loi = pt, names = "PAM")
 #>    -> Identifying Storms: Done
 #> -> Gathering storm(s) ... 
 #> 
-#> === DONE with run time 0.03518367 sec ===
+#> === DONE with run time 0.03484273 sec ===
 #> 
 #> SUMMARY:
 #> (*) LOI: 169 -19 lon-lat
@@ -183,7 +183,7 @@ niran.nc <- defStormsList(sds = sds, loi = "New Caledonia", names = c("NIRAN"))
 #>    -> Identifying Storms: Done
 #> -> Gathering storm(s) ... 
 #> 
-#> === DONE with run time 0.4721828 sec ===
+#> === DONE with run time 0.4661763 sec ===
 #> 
 #> SUMMARY:
 #> (*) LOI: New Caledonia 
@@ -207,7 +207,7 @@ sts_sp <- defStormsList(sds = sds, loi = sp)
 #> -> Gathering storm(s) ... 
 #>   |                                                                              |                                                                      |   0%  |                                                                              |=========                                                             |  12%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  62%  |                                                                              |====================================================                  |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
 #> 
-#> === DONE with run time 0.1345172 sec ===
+#> === DONE with run time 0.1364515 sec ===
 #> 
 #> SUMMARY:
 #> (*) LOI: sf object (use getLOI function for further informations

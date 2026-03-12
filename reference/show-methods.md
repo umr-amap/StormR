@@ -42,7 +42,7 @@ sts <- defStormsList(sds = sds, loi = "New Caledonia", names = c("LUCAS","NIRAN"
 #> -> Gathering storm(s) ... 
 #>   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%
 #> 
-#> === DONE with run time 0.4669662 sec ===
+#> === DONE with run time 0.4619088 sec ===
 #> 
 #> SUMMARY:
 #> (*) LOI: New Caledonia 
