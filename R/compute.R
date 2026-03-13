@@ -454,7 +454,7 @@ computeAsymmetry <- function(asymmetry, speed, x, y, vx, vy, vh, r, rmw, lat) {
 
   # New wind direction
   direction <- atan2(tWindY, tWindX) * 180 / pi
-  direction <- direction %% 360
+  direction <- (direction + 180) %% 360 
 
   return(list(speed = round(speed, 3), direction = round(direction, 3)))
 }
@@ -491,6 +491,8 @@ computeDirectionBoose <- function(x, y, lat, landIntersect) {
 
   direction[direction < 0] <- direction[direction < 0] + 360
   direction[direction > 360] <- direction[direction > 360] - 360
+  
+  direction <- (direction + 180) %% 360
 
   return(direction)
 }
@@ -522,6 +524,8 @@ computeDirection <- function(x, y, lat) {
 
   direction[direction < 0] <- direction[direction < 0] + 360
   direction[direction > 360] <- direction[direction > 360] - 360
+  
+  direction <- (direction + 180) %% 360
 
   return(direction)
 }

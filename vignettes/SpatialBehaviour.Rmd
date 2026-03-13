@@ -57,6 +57,7 @@ indices (e.g., 41, 42, ...) while interpolated observation have decimals (e.g.,
 41.1, 41.2, ...). Most tropical cyclone track data sets are based on
 observations gathered every 3 or 6 hours. Therefore, to be able to compute wind
 fields every 1 hour, the observations are interpolated.
+Wind direction follows the meteorological convention : it indicates where the wind is blowing from, with 0° at North and increasing clockwise. 
 
 Wind speed and direction profiles at the 41^th^ observation can be plotted as
 follows:
