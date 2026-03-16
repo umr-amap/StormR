@@ -523,11 +523,21 @@ test_that("Tests checkInputsPlotBehaviour function", {
 })
 
 
-# TODO do not know why it is not working on remote repo
-# test_that("test result dynamic plot", {
-#   msw <- spatialBehaviour(pam, verbose = 0)
-#
-#   map <- plotBehaviour(pam, msw, dynamicPlot = TRUE)
-#
-#   expect_equal(map, mapPamMsw)
-# })
+test_that("plotBehaviour works without errors", {
+  msw <- spatialBehaviour(pam, verbose = 0)
+
+  pdf(NULL)
+  # Basic call (non-dynamic)
+  expect_silent(plotBehaviour(pam, msw))
+
+  # Call with custom xlim/ylim
+  expect_silent(plotBehaviour(pam, msw, xlim = c(160, 180), ylim = c(-20, 0)))
+
+  # Call with dynamicPlot = TRUE
+  expect_silent(plotBehaviour(pam, msw, dynamicPlot = TRUE))
+
+  # Call with labels
+  expect_silent(plotBehaviour(pam, msw, labels = TRUE, by = 1, pos = 3))
+
+  dev.off()
+})
