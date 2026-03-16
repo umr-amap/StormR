@@ -1,17 +1,6 @@
-
-
-
-
-
 test_that("Tests checkInputsPlotBehaviour function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
   msw <- spatialBehaviour(pam, verbose = 0)
-  
+
   # Checking sts input
   expect_error(
     checkInputsPlotBehaviour(
@@ -27,7 +16,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking raster_product input
   expect_error(
     checkInputsPlotBehaviour(
@@ -43,7 +32,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking color_palette input
   expect_error(
     checkInputsPlotBehaviour(
@@ -60,7 +49,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -76,7 +65,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking xlim/ylim input
   expect_error(
     checkInputsPlotBehaviour(
@@ -93,7 +82,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -109,7 +98,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -125,7 +114,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -141,7 +130,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -157,7 +146,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -173,7 +162,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking labels input
   expect_error(
     checkInputsPlotBehaviour(
@@ -190,7 +179,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -206,7 +195,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking by input
   expect_error(
     checkInputsPlotBehaviour(
@@ -223,7 +212,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -239,7 +228,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -255,7 +244,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -271,7 +260,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking pos input
   expect_error(
     checkInputsPlotBehaviour(
@@ -288,7 +277,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -304,7 +293,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -320,7 +309,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -336,7 +325,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -352,7 +341,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -368,7 +357,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking main input
   expect_error(
     checkInputsPlotBehaviour(
@@ -385,7 +374,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -401,7 +390,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -417,7 +406,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking legends input
   expect_error(
     checkInputsPlotBehaviour(
@@ -434,7 +423,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -450,7 +439,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -466,7 +455,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -482,7 +471,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPLot = FALSE
     )
   )
-  
+
   # Checking dynamicPlot input
   expect_error(
     checkInputsPlotBehaviour(
@@ -499,7 +488,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPlot = 1
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -515,7 +504,7 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPlot = "1"
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
@@ -531,22 +520,14 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPlot = c(TRUE, TRUE)
     )
   )
-  
 })
 
 
 # TODO do not know why it is not working on remote repo
 # test_that("test result dynamic plot", {
-#   suppressWarnings(sds <- defStormsDataset())
-#   pam <-
-#     defStormsList(sds,
-#                   loi = "Vanuatu",
-#                   names = "PAM",
-#                   verbose = 0)
-#   
 #   msw <- spatialBehaviour(pam, verbose = 0)
-#   
+#
 #   map <- plotBehaviour(pam, msw, dynamicPlot = TRUE)
-#   
+#
 #   expect_equal(map, mapPamMsw)
 # })

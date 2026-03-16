@@ -1,17 +1,11 @@
-
-
-
-
-
-
-
-
-
-
 test_that("Test getRmw function", {
-  expect_equal(getRmw(seq(0, 80, 5), -15),
-               c(60, 55, 51, 47, 44, 41, 38, 35, 32,
-                 30, 28, 25, 24, 22, 20, 19, 17))
+  expect_equal(
+    getRmw(seq(0, 80, 5), -15),
+    c(
+      60, 55, 51, 47, 44, 41, 38, 35, 32,
+      30, 28, 25, 24, 22, 20, 19, 17
+    )
+  )
 })
 
 
@@ -352,23 +346,22 @@ test_that("Test Willougbhy / Holland / Boose functions", {
 })
 
 test_that("Test spatialBehaviour function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-
-  pam <- defStormsList(sds = sds,
-                       loi = "Vanuatu",
-                       names = "PAM",
-                       verbose = 0)
-
   sb <- spatialBehaviour(pam, method = "Holland", verbose = 0)
 
-  expect_equal(terra::minmax(sb[["PAM_MSW"]]),
-               matrix(c(6.84600, 76.7339339),
-                      dimnames = list(c("min", "max"), c("PAM_MSW"))))
+  expect_equal(
+    terra::minmax(sb[["PAM_MSW"]]),
+    matrix(c(6.84600, 76.7339339),
+      dimnames = list(c("min", "max"), c("PAM_MSW"))
+    )
+  )
 
   sb <- spatialBehaviour(pam, method = "Boose", verbose = 0)
-  expect_equal(terra::minmax(sb[["PAM_MSW"]]),
-               matrix(c(8.08600, 73.8047273),
-                      dimnames = list(c("min", "max"), c("PAM_MSW"))))
+  expect_equal(
+    terra::minmax(sb[["PAM_MSW"]]),
+    matrix(c(8.08600, 73.8047273),
+      dimnames = list(c("min", "max"), c("PAM_MSW"))
+    )
+  )
 })
 
 
@@ -603,11 +596,6 @@ test_that("Test checkInputsSpatialBehaviour function", {
 
 
 test_that("Test getIndices function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-
-  pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-
-
   expect_equal(getIndices(pam@data[["PAM"]], 2, "MSW"), seq(26, 49))
   expect_equal(getIndices(pam@data[["PAM"]], 20, "MSW"), seq(8, 57))
   expect_equal(getIndices(pam@data[["PAM"]], 30, "MSW"), seq(1, 57))
@@ -618,25 +606,26 @@ test_that("Test getIndices function", {
 
 test_that("Test stormDisplacement function", {
   # Displacement of 1deg in longitude in one hour.
-  expect_equal(stormDisplacement(c(0,1), c(0,0), 60),
-               list(stormSpeed=c(30.92208, 30.92208078), vxDeg=c(1, 1), vyDeg=c(0, 0)))
+  expect_equal(
+    stormDisplacement(c(0, 1), c(0, 0), 60),
+    list(stormSpeed = c(30.92208, 30.92208078), vxDeg = c(1, 1), vyDeg = c(0, 0))
+  )
   # Displacement of 1deg in latitude in one hour.
-  expect_equal(stormDisplacement(c(0,0), c(1,0), 60),
-               list(stormSpeed=c(30.7151079, 30.7151079), vxDeg=c(0, 0), vyDeg=c(-1, -1)))
+  expect_equal(
+    stormDisplacement(c(0, 0), c(1, 0), 60),
+    list(stormSpeed = c(30.7151079, 30.7151079), vxDeg = c(0, 0), vyDeg = c(-1, -1))
+  )
   # Displacement of 1deg in lat + lon in 3h.
-  expect_equal(stormDisplacement(c(1,0), c(1,0), 180),
-               list(stormSpeed=c(14.5277378, 14.5277378), vxDeg=c(-0.33333333, -0.33333333), vyDeg=c(-0.33333333, -0.33333333)))
+  expect_equal(
+    stormDisplacement(c(1, 0), c(1, 0), 180),
+    list(stormSpeed = c(14.5277378, 14.5277378), vxDeg = c(-0.33333333, -0.33333333), vyDeg = c(-0.33333333, -0.33333333))
+  )
 })
 
 
 
 test_that("Test getDataInterpolate function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-
-  pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
-
   expect_equal(getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 60, FALSE, "Willoughby"), dfGetDataInterpolate)
-
 })
 
 
@@ -663,7 +652,6 @@ test_that("Test computeDirection function", {
   expect_equal(computeDirection(1, 0, -30), 180)
   expect_equal(computeDirection(0, -1, -30), 270)
   expect_equal(computeDirection(-1, 0, -30), 360)
-
 })
 
 
@@ -679,5 +667,4 @@ test_that("Test computeDirectionBoose function", {
   expect_equal(computeDirectionBoose(1, 1, -30, 0), 155)
   expect_equal(computeDirectionBoose(-1, -1, -30, 1), 355)
   expect_equal(computeDirectionBoose(-1, -1, -30, 0), 335)
-
 })
