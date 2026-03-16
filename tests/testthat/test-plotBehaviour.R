@@ -1,22 +1,11 @@
-
-
-
-
-
 test_that("Tests checkInputsPlotBehaviour function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
   msw <- spatialBehaviour(pam, verbose = 0)
-  
+
   # Checking sts input
   expect_error(
     checkInputsPlotBehaviour(
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -24,15 +13,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
-  # Checking raster_product input
+
+  # Checking rasterProduct input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      color_palette = NULL,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -40,16 +29,16 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
-  # Checking color_palette input
+
+  # Checking colorPalette input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = TRUE,
+      rasterProduct = msw,
+      colorPalette = TRUE,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -57,15 +46,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = c(1, 2, 3),
+      rasterProduct = msw,
+      colorPalette = c(1, 2, 3),
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -73,16 +62,16 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   # Checking xlim/ylim input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = "132",
@@ -90,15 +79,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = 160,
@@ -106,15 +95,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = c(400, 500),
@@ -122,15 +111,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -138,15 +127,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -154,15 +143,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -170,16 +159,16 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   # Checking labels input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -187,15 +176,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = "TRUE",
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -203,16 +192,16 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = 1,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   # Checking by input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -220,15 +209,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = TRUE,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -236,15 +225,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = "hui",
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -252,15 +241,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 5.6,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -268,16 +257,16 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = c(1, 2),
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   # Checking pos input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -285,15 +274,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = TRUE,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -301,15 +290,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = "hui",
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -317,15 +306,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 5.6,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -333,15 +322,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = -2,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -349,15 +338,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 5,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -365,16 +354,16 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = c(1, 2),
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   # Checking main input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = TRUE,
       legends = "topleft",
       xlim = NULL,
@@ -382,15 +371,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = 3,
       legends = "topleft",
       xlim = NULL,
@@ -398,15 +387,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = c("pam", "cyclone"),
       legends = "topleft",
       xlim = NULL,
@@ -414,16 +403,16 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   # Checking legends input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = 1,
       xlim = NULL,
@@ -431,15 +420,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = TRUE,
       xlim = NULL,
@@ -447,15 +436,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = c("topleft", "topright"),
       xlim = NULL,
@@ -463,15 +452,15 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "top",
       xlim = NULL,
@@ -479,16 +468,16 @@ test_that("Tests checkInputsPlotBehaviour function", {
       labels = FALSE,
       by = 8,
       pos = 3,
-      dynamicPLot = FALSE
+      dynamicPlot = FALSE
     )
   )
-  
+
   # Checking dynamicPlot input
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -499,12 +488,12 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPlot = 1
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -515,12 +504,12 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPlot = "1"
     )
   )
-  
+
   expect_error(
     checkInputsPlotBehaviour(
       sts = pam,
-      raster_product = msw,
-      color_palette = NULL,
+      rasterProduct = msw,
+      colorPalette = NULL,
       main = NULL,
       legends = "topleft",
       xlim = NULL,
@@ -531,22 +520,24 @@ test_that("Tests checkInputsPlotBehaviour function", {
       dynamicPlot = c(TRUE, TRUE)
     )
   )
-  
 })
 
 
-# TODO do not know why it is not working on remote repo
-# test_that("test result dynamic plot", {
-#   suppressWarnings(sds <- defStormsDataset())
-#   pam <-
-#     defStormsList(sds,
-#                   loi = "Vanuatu",
-#                   names = "PAM",
-#                   verbose = 0)
-#   
-#   msw <- spatialBehaviour(pam, verbose = 0)
-#   
-#   map <- plotBehaviour(pam, msw, dynamicPlot = TRUE)
-#   
-#   expect_equal(map, mapPamMsw)
-# })
+test_that("plotBehaviour works without errors", {
+  msw <- spatialBehaviour(pam, verbose = 0)
+
+  pdf(NULL)
+  # Basic call (non-dynamic)
+  expect_silent(plotBehaviour(pam, msw))
+
+  # Call with custom xlim/ylim
+  expect_silent(plotBehaviour(pam, msw, xlim = c(160, 180), ylim = c(-20, 0)))
+
+  # Call with dynamicPlot = TRUE
+  expect_silent(plotBehaviour(pam, msw, dynamicPlot = TRUE))
+
+  # Call with labels
+  expect_silent(plotBehaviour(pam, msw, labels = TRUE, by = 1, pos = 3))
+
+  dev.off()
+})
