@@ -3,7 +3,6 @@
 
 
 test_that("Tests invalid inputs", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
 
   # Checking sdb input
   expect_error(
@@ -485,7 +484,6 @@ test_that("Tests invalid inputs", {
 
 
 test_that("Test numeric vector loi input", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts <-
     defStormsList(sds = sds,
                   loi = c(168.33,-17.73),
@@ -499,14 +497,6 @@ test_that("Test numeric vector loi input", {
 
 
 test_that("Storm class getters", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(
-      sds = sds,
-      loi = "Vanuatu",
-      names = "PAM",
-      verbose = 0
-    )
 
   expect_identical(getNames(pam@data[["PAM"]]), "PAM")
   expect_identical(getSeasons(pam@data[["PAM"]]), 2015)
@@ -521,7 +511,6 @@ test_that("Storm class getters", {
 
 
 test_that("StormsList class getters", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <-
     defStormsList(sds = sds,
                   loi = "New Caledonia",
@@ -599,7 +588,6 @@ test_that("Storm and stormsList class getters", {
 
 
 test_that("Storms class getters for storm class", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <-
     defStormsList(sds = sds,
                   loi = "New Caledonia",
@@ -615,7 +603,6 @@ test_that("Storms class getters for storm class", {
 
 
 test_that("Test convert loi function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <-
     defStormsList(sds,
                   loi = "Vanuatu",
@@ -671,13 +658,6 @@ test_that("Test makeBuffer function", {
 
 
 test_that("Test retrieveStorms function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
-
   expect_identical(retrieveStorms(sds@database,
                                   "PAM",
                                   c(2015, 2021),
@@ -690,20 +670,12 @@ test_that("Test retrieveStorms function", {
 
 
 test_that("Test writeStorm function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
-
   expect_identical(writeStorm(sds, 1, getBuffer(pam), sshs),
                    getStorm(pam, "PAM"))
 })
 
 
 test_that("Test default scale and scaleInput", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <-
     defStormsList(sds = sds,
                   loi = "New Caledonia",
