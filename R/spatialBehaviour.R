@@ -537,7 +537,7 @@ maskProduct <- function(finalStack, loi, template) {
 #'    The names of the layer follow the following terminology, the name of the storm in capital letters,
 #'    "Speed" or "Direction", and the indices of the observation separated by underscores
 #'    (e.g., "PAM_Speed_41", "PAM_Direction_41",...). Wind direction layers indicate where
-#'    the wind is blowing from, measured from 0°(North) clockwise.
+#'    the wind is blowing from, measured from 0° (North) clockwise.
 #' }
 #' @details Storm track data sets, such as those extracted from IBRTrACKS (Knapp et
 #'   al., 2010), usually provide observation at a 3- or 6-hours temporal
