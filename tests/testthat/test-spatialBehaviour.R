@@ -1,13 +1,3 @@
-<<<<<<< 123-wind-direction-flipped
-test_that("Test spatialBehaviour function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-
-  pam <- defStormsList(
-    sds = sds,
-    loi = "Vanuatu",
-    names = "PAM",
-    verbose = 0
-=======
 test_that("Test getRmw function", {
   expect_equal(
     getRmw(seq(0, 80, 5), -15),
@@ -127,29 +117,9 @@ test_that("Test Willougbhy / Holland / Boose functions", {
       27.026,
       26.895
     )
->>>>>>> main
-  )
-
-  sb <- spatialBehaviour(pam, method = "Holland", verbose = 0)
-
-  expect_equal(
-    terra::minmax(sb[["PAM_MSW"]]),
-    matrix(c(6.84600, 76.7339339),
-      dimnames = list(c("min", "max"), c("PAM_MSW"))
-    )
-  )
-
-  sb <- spatialBehaviour(pam, method = "Boose", verbose = 0)
-  expect_equal(
-    terra::minmax(sb[["PAM_MSW"]]),
-    matrix(c(8.08600, 73.8047273),
-      dimnames = list(c("min", "max"), c("PAM_MSW"))
-    )
   )
 })
 
-<<<<<<< 123-wind-direction-flipped
-=======
 test_that("Test spatialBehaviour function", {
   sb <- spatialBehaviour(pam, method = "Holland", verbose = 0)
 
@@ -168,8 +138,6 @@ test_that("Test spatialBehaviour function", {
     )
   )
 })
-
->>>>>>> main
 
 
 test_that("Test checkInputsSpatialBehaviour function", {
@@ -410,8 +378,6 @@ test_that("Test getIndices function", {
 
 
 
-<<<<<<< 123-wind-direction-flipped
-=======
 test_that("Test stormDisplacement function", {
   # Displacement of 1deg in longitude in one hour.
   expect_equal(
@@ -430,13 +396,9 @@ test_that("Test stormDisplacement function", {
   )
 })
 
->>>>>>> main
-
 
 test_that("Test getDataInterpolate function", {
   expect_equal(getDataInterpolate(pam@data[["PAM"]], seq(26, 49), 60, FALSE, "Willoughby"), dfGetDataInterpolate)
-<<<<<<< 123-wind-direction-flipped
-=======
 })
 
 
@@ -478,5 +440,4 @@ test_that("Test computeDirectionBoose function", {
   expect_equal(computeDirectionBoose(1, 1, -30, 0), 155)
   expect_equal(computeDirectionBoose(-1, -1, -30, 1), 355)
   expect_equal(computeDirectionBoose(-1, -1, -30, 0), 335)
->>>>>>> main
 })
