@@ -72,11 +72,12 @@ checkInputsTemporalBehaviour <- function(sts, points, product, windThreshold, me
 #' @return finalResult
 finalizeResult <- function(finalResult, result, product, points, isoT, indices, st, threshold) {
   if (product == "TS") {
+    nbp <- dim(points)[1]
     l <- list()
-    for (i in seq_len(dim(points)[1])) {
-      j <- 2 * (i - 1) + 1
+    for (i in seq_len(nbp)) {
+      j <- nbp + i
 
-      df <- data.frame(result[, j], result[, j:j + 1], indices = indices, isoTimes = isoT)
+      df <- data.frame(result[, i], result[, j], indices = indices, isoTimes = isoT)
       colnames(df) <- c("speed", "direction", "indices", "isoTimes")
 
       l <- append(l, list(df))
@@ -93,8 +94,6 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
   dfn <- list(l)
   names(dfn) <- st@name
   finalResult <- append(finalResult, dfn)
-
-  return(finalResult)
 }
 
 
@@ -353,6 +352,7 @@ temporalBehaviour <- function(sts,
     indCountries <- which(sf::st_intersects(sts@spatialLoiBuffer, world$geometry, sparse = FALSE) == TRUE)
     asymmetry <- "None"
   } else {
+    world <- NULL
     indCountries <- NULL
   }
 
@@ -388,6 +388,7 @@ temporalBehaviour <- function(sts,
     ind <- getIndices(st, 2, "none")
     # Getting data associated with storm st
     dataTC <- getDataInterpolate(st, ind, tempRes, empiricalRMW, method)
+    nbStep <- dim(dataTC)[1]
 
 
     # Computing distances from the eye of storm for every observations x, and
@@ -398,33 +399,27 @@ temporalBehaviour <- function(sts,
       lonlat = TRUE
     )
 
-    res <- c()
-    # For each point
-    for (i in seq_len(dim(points)[1])) {
-      # Coordinates
-      pt <- points[i, ]
+    # Computing distance between eye of storm and point P
+    x <- outer(points$x, dataTC$lon, "-")
+    y <- outer(points$y, dataTC$lat, "-")
 
-      # Computing distance between eye of storm and point P
-      x <- pt$x - dataTC$lon
-      y <- pt$y - dataTC$lat
-
-      # Computing wind speed/direction
-      dist2p <- distEye[, i]
-      output <- computeWindProfile(
-        dataTC, i, method, asymmetry, x, y, pt, dist2p,
+    # Loop for each time step of the storm
+    output <- lapply(1:nbStep, function(j) {
+      computeWindProfile(
+        dataTC[j, ], method, asymmetry, x[, j], y[, j], points, distEye[j, ],
         buffer, sts@spatialLoiBuffer,
         world, indCountries
       )
+    })
 
-      speed <- as.numeric(output$speed)
-      direction <- as.numeric(output$direction)
-      # Computing product
-      resPoint <- computeProduct.numeric(speed, direction, product, tempRes, windThreshold)
-      res <- cbind(res, resPoint)
-    }
+    speed <- do.call(rbind, lapply(output, function(res) res$speed))
+    direction <- do.call(rbind, lapply(output, function(res) res$direction))
+
+    # Computing product
+    resPoint <- computeProduct.numeric(speed, direction, product, tempRes, windThreshold)
 
     finalResult <- finalizeResult(
-      finalResult, res, product, points,
+      finalResult, resPoint, product, points,
       dataTC$isoTimes, dataTC$indices, st,
       windThreshold
     )
