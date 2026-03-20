@@ -18,7 +18,6 @@ test_that("Test spatialBehaviour function", {
 })
 
 
-
 test_that("Test checkInputsSpatialBehaviour function", {
   # Checking sts input
   expect_error(checkInputsSpatialBehaviour(

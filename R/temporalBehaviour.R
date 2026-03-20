@@ -160,7 +160,8 @@ finalizeResult <- function(finalResult, result, product, points, isoT, indices, 
 #'    \item if `product == "TS"`, the function returns a data.frame with
 #'    one row for each observation (or interpolated observation) and
 #'    four columns for wind speed (in \eqn{m.s^{-1}}), wind direction (in degree),
-#'    the observation number, and the ISO time of observations,
+#'    the observation number, and the ISO time of observations. Wind direction 
+#'    indicates where the wind is blowing from, measured from 0° (North) clockwise.
 #'    \item if `product == "PDI"`, the function returns a data.frame with one row
 #'    for each point location and one column for the PDI,
 #'    \item if `product == "Exposure"`, the function returns a data.frame with one
