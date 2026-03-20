@@ -795,7 +795,7 @@ spatialBehaviour <- function(sts,
 
       # Computing wind speed/direction
       output <- computeWindProfile(
-        dataTC, j, method, asymmetry, x, y, crds, distEye, buffer,
+        dataTC[j, ], method, asymmetry, x, y, crds, distEye, buffer,
         sts@spatialLoiBuffer, world, indCountries
       )
 

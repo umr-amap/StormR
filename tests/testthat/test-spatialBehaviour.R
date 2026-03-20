@@ -244,16 +244,12 @@ test_that("Test checkInputsSpatialBehaviour function", {
 
 
 
-
-
-
 test_that("Test getIndices function", {
   expect_equal(getIndices(pam@data[["PAM"]], 2, "MSW"), seq(26, 49))
   expect_equal(getIndices(pam@data[["PAM"]], 20, "MSW"), seq(8, 57))
   expect_equal(getIndices(pam@data[["PAM"]], 30, "MSW"), seq(1, 57))
   expect_equal(getIndices(pam@data[["PAM"]], 30, "Profiles"), seq(28, 47))
 })
-
 
 
 test_that("Test getDataInterpolate function", {

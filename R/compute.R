@@ -294,8 +294,6 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #'
 #' @noRd
 #' @param data data.frame. Data generated with getInterpolatedData function
-#' @param index numeric. Index of interpolated observation in data to use for
-#'   the computations
 #' @param method character. method input form stormBehaviour_sp
 #' @param asymmetry character. Asymmetry input form stormBehaviour
 #' @param x numeric vector. Distance(s) to the eye of the storm in the x
@@ -312,24 +310,24 @@ boose <- function(r, rmw, msw, pc, poci, x, y, vx, vy, vh, landIntersect, lat) {
 #'   Boose model
 #'
 #' @return  numeric vector. Wind speed values (m/s)
-computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distEye, buffer, loi, world, indCountries) {
+computeWindProfile <- function(data, method, asymmetry, x, y, crds, distEye, buffer, loi, world, indCountries) {
   # Computing wind speed according to the input model
   if (method == "Willoughby") {
     speed <- willoughby(
-      msw = data$msw[index],
-      lat = data$lat[index],
+      msw = data$msw,
+      lat = data$lat,
       r = distEye * 0.001,
-      rmw = data$rmw[index]
+      rmw = data$rmw
     )
   } else if (method == "Holland") {
     data$poci[data$pc == data$poci] <- data$poci[data$pc == data$poci] + 1 # avoid case pc = poci
     speed <- holland(
       r = distEye * 0.001,
-      rmw = data$rmw[index],
-      msw = data$msw[index],
-      pc = data$pc[index],
-      poci = data$poci[index],
-      lat = data$lat[index]
+      rmw = data$rmw,
+      msw = data$msw,
+      pc = data$pc,
+      poci = data$poci,
+      lat = data$lat
     )
   } else if (method == "Boose") {
     # Intersect points coordinates with land
@@ -346,26 +344,26 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
     data$poci[data$pc == data$poci] <- data$poci[data$pc == data$poci] + 1 # avoid case pc = poci
     speed <- boose(
       r = distEye * 0.001,
-      rmw = data$rmw[index],
-      msw = data$msw[index],
-      pc = data$pc[index],
-      poci = data$poci[index],
+      rmw = data$rmw,
+      msw = data$msw,
+      pc = data$pc,
+      poci = data$poci,
       x = x,
       y = y,
-      vx = data$vxDeg[index],
-      vy = data$vyDeg[index],
-      vh = data$stormSpeed[index],
+      vx = data$vxDeg,
+      vy = data$vyDeg,
+      vh = data$stormSpeed,
       landIntersect = landIntersect,
-      lat = data$lat[index]
+      lat = data$lat
     )
 
-    direction <- computeDirection(x, y, data$lat[index], landIntersect)
+    direction <- computeDirection(x, y, data$lat, landIntersect)
   }
 
 
   # Compute wind direction
   if (method != "Boose") {
-    direction <- computeDirection(x, y, data$lat[index])
+    direction <- computeDirection(x, y, data$lat)
   }
 
 
@@ -373,9 +371,9 @@ computeWindProfile <- function(data, index, method, asymmetry, x, y, crds, distE
   if (asymmetry != "None") {
     output <- computeAsymmetry(
       asymmetry, speed, x, y,
-      data$vxDeg[index], data$vyDeg[index],
-      data$stormSpeed[index],
-      distEye * 0.001, data$rmw[index], data$lat[index]
+      data$vxDeg, data$vyDeg,
+      data$stormSpeed,
+      distEye * 0.001, data$rmw, data$lat
     )
   } else {
     output <- list(speed = round(speed, 3), direction = round(direction, 3))
@@ -458,9 +456,6 @@ computeAsymmetry <- function(asymmetry, speed, x, y, vx, vy, vh, r, rmw, lat) {
 
   return(list(speed = round(speed, 3), direction = round(direction, 3)))
 }
-
-
-
 
 
 #' Compute wind direction
