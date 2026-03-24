@@ -1,37 +1,24 @@
-
-
-
-
-
 # TODO to adapt with scale merge
-# test_that("Test getColors function", {
-#   # expect_error(getColors(50))
-#   # expect_equal(getColors(NA, sshs), NA)
-#   # expect_equal(getColors(10, sshs), "#00CCFF")
-#   # expect_equal(getColors(18, sshs), "#00CCCC")
-#   # expect_equal(getColors(25, sshs), "#00CCCC")
-#   # expect_equal(getColors(33, sshs), "#FFFFB2")
-#   # expect_equal(getColors(36, sshs), "#FFFFB2")
-#   # expect_equal(getColors(42, sshs), "#FECC5C")
-#   # expect_equal(getColors(46, sshs), "#FECC5C")
-#   # expect_equal(getColors(49, sshs), "#FD8D3C")
-#   # expect_equal(getColors(53, sshs), "#FD8D3C")
-#   # expect_equal(getColors(58, sshs), "#F03B20")
-#   # expect_equal(getColors(65, sshs), "#F03B20")
-#   # expect_equal(getColors(70, sshs), "#BD0026")
-#   # expect_equal(getColors(100, sshs), "#BD0026")
-# })
+test_that("Test getColors function", {
+  expect_equal(getColors(NA, sshs, sshsPalette)[[1]], NA)
+  expect_equal(getColors(10, sshs, sshsPalette)[[1]], "#00CCFF")
+  expect_equal(getColors(18, sshs, sshsPalette)[[1]], "#00CCCC")
+  expect_equal(getColors(25, sshs, sshsPalette)[[1]], "#00CCCC")
+  expect_equal(getColors(33, sshs, sshsPalette)[[1]], "#FFFFB2")
+  expect_equal(getColors(36, sshs, sshsPalette)[[1]], "#FFFFB2")
+  expect_equal(getColors(42, sshs, sshsPalette)[[1]], "#FECC5C")
+  expect_equal(getColors(46, sshs, sshsPalette)[[1]], "#FECC5C")
+  expect_equal(getColors(49, sshs, sshsPalette)[[1]], "#FD8D3C")
+  expect_equal(getColors(53, sshs, sshsPalette)[[1]], "#FD8D3C")
+  expect_equal(getColors(58, sshs, sshsPalette)[[1]], "#F03B20")
+  expect_equal(getColors(65, sshs, sshsPalette)[[1]], "#F03B20")
+  expect_equal(getColors(70, sshs, sshsPalette)[[1]], "#BD0026")
+  expect_equal(getColors(100, sshs, sshsPalette)[[1]], "#BD0026")
+})
 
 
 
 test_that("Test checkInputsPlotStorms function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
-  
   # Checking sts input
   expect_error(
     checkInputsPlotStorms(
@@ -47,7 +34,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   # Checking names input
   expect_error(
     checkInputsPlotStorms(
@@ -64,7 +51,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -80,7 +67,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   # Checking category input
   expect_error(
     checkInputsPlotStorms(
@@ -97,7 +84,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -113,7 +100,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -129,7 +116,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -145,7 +132,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -161,7 +148,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   # Checking xlim/ylim input
   expect_error(
     checkInputsPlotStorms(
@@ -178,7 +165,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -194,7 +181,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -210,7 +197,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -226,7 +213,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -242,7 +229,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -258,9 +245,9 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
-  
-  
+
+
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -276,7 +263,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -292,7 +279,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -308,7 +295,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   # Checking by input
   expect_error(
     checkInputsPlotStorms(
@@ -325,7 +312,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -341,7 +328,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -357,7 +344,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -373,7 +360,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   # Checking pos input
   expect_error(
     checkInputsPlotStorms(
@@ -390,7 +377,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -406,7 +393,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -422,7 +409,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -438,7 +425,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -454,7 +441,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -470,7 +457,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   # Checking legends input
   expect_error(
     checkInputsPlotStorms(
@@ -487,7 +474,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -503,7 +490,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -519,7 +506,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -535,7 +522,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = FALSE
     )
   )
-  
+
   # Checking dynamicPlot input
   expect_error(
     checkInputsPlotStorms(
@@ -552,7 +539,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = 1
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -568,7 +555,7 @@ test_that("Test checkInputsPlotStorms function", {
       dynamicPlot = "1"
     )
   )
-  
+
   expect_error(
     checkInputsPlotStorms(
       sts = pam,
@@ -586,9 +573,36 @@ test_that("Test checkInputsPlotStorms function", {
   )
 })
 
+
+test_that("plotStorms plot works", {
+  pdf(NULL)
+
+  plot(0, 0, type = "n")
+  expect_no_error(
+    plotTrack(pam@data[[1]], sshs, sshsPalette)
+  )
+
+  expect_no_error(
+    plotStorms(
+      sts = pam,
+      labels = FALSE,
+      legends = "none"
+    )
+  )
+
+  map <- plotStorms(
+    sts = pam,
+    dynamicPlot = TRUE
+  )
+
+  expect_s3_class(map, "leaflet")
+
+  dev.off()
+})
+
 # TODO do not know why it is not working on remote repo
 # test_that("test result dynamic plot", {
-#   
+#
 #   suppressWarnings(sds <- defStormsDataset())
 #   pam <- defStormsList(sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 #   map <- plotStorms(pam, dynamicPlot=TRUE)

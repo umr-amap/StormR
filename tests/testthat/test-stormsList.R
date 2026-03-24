@@ -3,8 +3,7 @@
 
 
 test_that("Tests invalid inputs", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  
+
   # Checking sdb input
   expect_error(
     checkInputsDefStormsList(
@@ -18,7 +17,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   # Checking loi input
   expect_error(
     checkInputsDefStormsList(
@@ -32,7 +31,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -46,7 +45,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -60,7 +59,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -74,7 +73,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -88,7 +87,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -102,8 +101,8 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
-  
+
+
   # Checking seasons input
   expect_error(
     checkInputsDefStormsList(
@@ -118,7 +117,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -132,7 +131,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -146,7 +145,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -160,7 +159,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -174,7 +173,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   # Checking names input
   expect_error(
     checkInputsDefStormsList(
@@ -189,7 +188,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -203,7 +202,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -217,8 +216,8 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
-  
+
+
   # Checking maxDist input
   expect_error(
     checkInputsDefStormsList(
@@ -231,7 +230,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -243,7 +242,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -255,7 +254,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -267,7 +266,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   # Checking scale input
   expect_error(
     checkInputsDefStormsList(
@@ -282,7 +281,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -296,7 +295,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -310,7 +309,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -324,7 +323,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -338,7 +337,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   # Checking scalePalette input
   expect_error(
     checkInputsDefStormsList(
@@ -353,7 +352,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -367,7 +366,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -381,7 +380,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   # Checking verbose input
   expect_error(
     checkInputsDefStormsList(
@@ -396,7 +395,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -410,7 +409,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -424,7 +423,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -438,7 +437,7 @@ test_that("Tests invalid inputs", {
       removeUnder = NULL
     )
   )
-  
+
   # Checking removeUnder input
   expect_error(
     checkInputsDefStormsList(
@@ -453,7 +452,7 @@ test_that("Tests invalid inputs", {
       removeUnder = c(1, 2)
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -467,7 +466,7 @@ test_that("Tests invalid inputs", {
       removeUnder = "hui"
     )
   )
-  
+
   expect_error(
     checkInputsDefStormsList(
       sds = sds,
@@ -485,7 +484,6 @@ test_that("Tests invalid inputs", {
 
 
 test_that("Test numeric vector loi input", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts <-
     defStormsList(sds = sds,
                   loi = c(168.33,-17.73),
@@ -499,15 +497,7 @@ test_that("Test numeric vector loi input", {
 
 
 test_that("Storm class getters", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(
-      sds = sds,
-      loi = "Vanuatu",
-      names = "PAM",
-      verbose = 0
-    )
-  
+
   expect_identical(getNames(pam@data[["PAM"]]), "PAM")
   expect_identical(getSeasons(pam@data[["PAM"]]), 2015)
   expect_identical(getScale(pam@data[["PAM"]]), as.integer(6))
@@ -521,12 +511,11 @@ test_that("Storm class getters", {
 
 
 test_that("StormsList class getters", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <-
     defStormsList(sds = sds,
                   loi = "New Caledonia",
                   verbose = 0)
-  
+
   expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
   expect_error(getStorm(sts_nc, "NIRAN", 2015))
   expect_identical(getNames(sts_nc),
@@ -568,7 +557,7 @@ test_that("Storm and stormsList class getters", {
                   loi = "New Caledonia",
                   verbose = 0)
   out <- capture_output_lines(print(sts_nc@data$PAM))
-  
+
   # Check that the Storm output is correct
   expect_match(out[1], "Name: PAM")
   expect_match(out[2], "Season: 2015")
@@ -576,7 +565,7 @@ test_that("Storm and stormsList class getters", {
   expect_match(out[4], "Indices of observations within buffer: 43 44 45 46 47")
   expect_match(out[7], "1  2015-03-08 12:00:00 168.9000  -7.500000  13     0  93 100400 100500")
   expect_match(tail(out, n = 1), "57 2015-03-15 12:00:00 178.5000 -33.799999  28     1  37  98200  99300")
-  
+
   out <- capture_output_lines(print(sts_nc))
   # Check that the Storm output is correct
   expect_match(out[3], "Number of storms: 7 ")
@@ -599,12 +588,11 @@ test_that("Storm and stormsList class getters", {
 
 
 test_that("Storms class getters for storm class", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <-
     defStormsList(sds = sds,
                   loi = "New Caledonia",
                   verbose = 0)
-  
+
   expect_identical(getNbObs(sts_nc, "NIRAN"), getNbObs(getStorm(sts_nc, "NIRAN")))
   expect_identical(getObs(sts_nc, "NIRAN"), getObs(getStorm(sts_nc, "NIRAN")))
   expect_identical(getInObs(sts_nc, "NIRAN"), getInObs(getStorm(sts_nc, "NIRAN")))
@@ -615,13 +603,12 @@ test_that("Storms class getters for storm class", {
 
 
 test_that("Test convert loi function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   pam <-
     defStormsList(sds,
                   loi = "Vanuatu",
                   names = "PAM",
                   verbose = 0)
-  
+
   expect_warning(convertLoi(c(-30, 20)))
   expect_identical(convertLoi("Vanuatu"), pam@spatialLoi)
   expect_identical(sf::st_crs(convertLoi(eezNC))$input, "EPSG:4326")
@@ -629,7 +616,7 @@ test_that("Test convert loi function", {
                    sf::st_coordinates(sf::st_polygon(list(
                      rbind(c(135,-60), c(290,-60), c(290, 0), c(135, 0), c(135,-60))
                    ))))
-  
+
   sr1 <-
     sf::st_polygon(list(rbind(
       c(135,-60), c(290,-60), c(290, 0), c(135, 0), c(135,-60)
@@ -661,7 +648,7 @@ test_that("Test makeBuffer function", {
                   loi = "Vanuatu",
                   names = "PAM",
                   verbose = 0)
-  
+
   expect_identical(makeBuffer("Vanuatu", pam@spatialLoi, 300 * km),
                    pam@spatialLoiBuffer)
 })
@@ -671,18 +658,11 @@ test_that("Test makeBuffer function", {
 
 
 test_that("Test retrieveStorms function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
-  
   expect_identical(retrieveStorms(sds@database,
                                   "PAM",
                                   c(2015, 2021),
                                   sshs,
-                                  NULL), as.integer(1))
+                                  NULL, NULL), as.integer(1))
 })
 
 
@@ -690,26 +670,18 @@ test_that("Test retrieveStorms function", {
 
 
 test_that("Test writeStorm function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
-  
-  expect_identical(writeStorm(list(), list(), sds, 1, getBuffer(pam), sshs),
-                   list(list(getStorm(pam, "PAM")), list("PAM")))
+  expect_identical(writeStorm(sds, 1, getBuffer(pam), sshs),
+                   getStorm(pam, "PAM"))
 })
 
 
 test_that("Test default scale and scaleInput", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
   sts_nc <-
     defStormsList(sds = sds,
                   loi = "New Caledonia",
                   scale = c(10,30,50),
                   verbose = 0)
-  
+
   palette <- c('#0000FF', '#00AA54', '#55AA00', '#FF0000')
   names(palette) <- c('Cat. 0', 'Cat. 1', 'Cat. 2', 'Cat. 3')
   expect_equal(sts_nc@scalePalette, palette)
