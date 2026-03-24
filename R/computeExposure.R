@@ -7,7 +7,7 @@
 #'
 #' @noRd
 #' @param sts StormsList object
-#' @param dem object
+#' @param dtm object
 #' @param angle numeric
 #' @param product character
 #' @param threshold numeric
@@ -15,12 +15,12 @@
 #' @return NULL
 
 
-checkInputsComputeExposure <- function(sts, dem, angle, threshold, product, verbose) {
+checkInputsComputeExposure <- function(sts, dtm, angle, threshold, product, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
   
-  # Checking dem input
-  stopifnot("no dem data found" = !missing(dem))
+  # Checking dtm input
+  stopifnot("no dtm data found" = !missing(dtm))
   
   # Checking product input
   stopifnot("Invalid product" = product %in% c("Max", "Mean", "Profiles","PixProfiles","Summary"))
@@ -38,50 +38,6 @@ checkInputsComputeExposure <- function(sts, dem, angle, threshold, product, verb
   stopifnot("verbose must length 1" = length(verbose) == 1)
   stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 }
-
-
-#' Get wind direction in azimuth
-#' 
-#' @noRd
-#' @param dir_meteo numeric. direction in degrees (0-360, 90 = North)
-#' 
-#' @return azimuth direction (0-360, 0 = North)
-
-convertAzimuth <- function(dir_meteo) {
-  if (is.na(dir_meteo)) {
-    return(NA)
-  } 
-  
-  azimuth <- 90 - dir_meteo
-  if (azimuth < 0){
-    azimuth <- azimuth + 360
-  } 
-  
-  return(azimuth)
-}
-
-
-#' Get raster of direction in azimuth
-#' 
-#' @noRd
-#' @param dir_meteo_rast raster. direction in degrees (0-360, 90 = North)
-#' 
-#' @return azimuth raster direction (0-360, 0 = North)
-
-#convertAzimuthRaster <- function(dir_meteo_rast) {
-  
-#  azimuth <- 90 - dir_meteo_rast
-#  azimuth <- terra::ifel(azimuth < 0, azimuth + 360, azimuth)
-  
-#  return(azimuth)
-#}
-
-convertAzimuthRaster <- function(dir_meteo_rast) {
-  azimuth <- dir_meteo_rast %% 360
-  return(azimuth)
-}
-
-
 
 
 
@@ -129,31 +85,30 @@ computePixelShade <- function(slope, aspect, angle = 6, rasterDir) {
 #'@return SpatRaster of the topographic exposure summary
 computeSummary <- function(pf, layersMSW, layersDir, topo, angle, threshold) {
   
-  speed_stack <- pf[[layersMSW]]
-  dir_stack <- pf[[layersDir]]
+  speedStack <- pf[[layersMSW]]
+  dirStack <- pf[[layersDir]]
   
   # resample to mnt
-  if (!terra::compareGeom(topo$slope, speed_stack, stopOnError = FALSE)) {
-    speed_stack <- terra::resample(speed_stack, topo$slope, method = "bilinear")
-    dir_stack <- terra::resample(dir_stack, topo$slope, method = "near")
+  if (!terra::compareGeom(topo$slope, speedStack, stopOnError = FALSE)) {
+    speedStack <- terra::resample(speedStack, topo$slope, method = "bilinear")
+    dirStack <- terra::resample(dirStack, topo$slope, method = "near")
   }
   
   #compute layer with maximum speed for each pixel
-  max_speed_pixel <- terra::app(speed_stack, fun = "max", na.rm = TRUE)
+  maxSpeedLayer <- terra::app(speedStack, fun = "max", na.rm = TRUE)
   
   #get index of layer where the speed is maximal
-  idx_max <- terra::which.max(speed_stack)
+  idx <- terra::which.max(speedStack)
   #get assign direction
-  dir_at_max <- terra::selectRange(dir_stack, idx_max)
+  dirAtMax <- terra::selectRange(dirStack, idx)
   
   #compute topographic exposition
-  dir_azimuth <- convertAzimuthRaster(dir_at_max)
-  exp_rast <- computePixelShade(topo$slope, topo$aspect, angle, dir_azimuth)
-  exp_rast <- terra::ifel(max_speed_pixel < threshold, NA, exp_rast)
+  expRast <- computePixelShade(topo$slope, topo$aspect, angle, dirAtMax)
+  expRast <- terra::ifel(maxSpeedLayer < threshold, NA, expRast)
   
-  exp_rast <- terra::mask(exp_rast, topo$slope)
+  expRast <- terra::mask(expRast, topo$slope)
   
-  return(exp_rast)
+  return(expRast)
 }
 
 
@@ -161,14 +116,14 @@ computeSummary <- function(pf, layersMSW, layersDir, topo, angle, threshold) {
 #' Get the direction value from maximum speed
 #' 
 #' @noRd
-#' @param ref_layer speed layer from profile (type. NAME_Speed_n)
-#' @param target_layer direction layer (type. NAME_Direction_n)
+#' @param refLayer speed layer from profile (type. NAME_Speed_n)
+#' @param targetLayer direction layer (type. NAME_Direction_n)
 #' 
 #' @return value of the direction in degrees
 
-getValueMaxSpeed <- function(target_layer, ref_layer) {
-  id_cell <- terra::where.max(ref_layer)[1,"cell"]
-  val <- as.numeric(target_layer[id_cell])
+getValueMaxSpeed <- function(targetLayer, refLayer) {
+  idCell <- terra::where.max(refLayer)[1,"cell"]
+  val <- as.numeric(targetLayer[idCell])
   
   return(val)
 }
@@ -183,8 +138,7 @@ getValueMaxSpeed <- function(target_layer, ref_layer) {
 #' @return direction in azimuth
 
 getWindDirection <- function(speed_layer, dir_layer) {
-  dir_brut <- getValueMaxSpeed(dir_layer, speed_layer)
-  dir <- convertAzimuth(dir_brut)
+  dir <- getValueMaxSpeed(dir_layer, speed_layer)
   
   return(dir)
 }
@@ -192,14 +146,14 @@ getWindDirection <- function(speed_layer, dir_layer) {
 #' Get terrain data
 #' 
 #' @noRd
-#' @param dem File of elevation data .tif 
+#' @param dtm File of elevation data .tif 
 #' 
 #' @return compute slope and aspect
 
-getTerrain <- function(dem) {
+getTerrain <- function(dtm) {
   list(
-    slope = terra::terrain(dem, v = "slope", unit = "radians"),
-    aspect = terra::terrain(dem, v = "aspect", unit = "radians")
+    slope = terra::terrain(dtm, v = "slope", unit = "radians"),
+    aspect = terra::terrain(dtm, v = "aspect", unit = "radians")
   )
 }
 
@@ -220,9 +174,9 @@ computeShade <- function(slope, aspect, angle = 6, direction) {
     return(NULL)
   }
   
-  exp_rast <- terra::shade(slope, aspect, angle, direction)
+  expRast <- terra::shade(slope, aspect, angle, direction)
   
-  return(exp_rast)
+  return(expRast)
 }
 
 #' Compute Profiles Exposure
@@ -239,33 +193,33 @@ computeShade <- function(slope, aspect, angle = 6, direction) {
 
 
 computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold, usePixel = FALSE) {
-  topo_list <- list()
+  topoList <- list()
   
   for (i in seq_along(layersMSW)) {
-    max_speed <- terra::global(pf[[layersMSW[i]]], "max", na.rm = TRUE)[1, 1]
+    maxSpeed <- terra::global(pf[[layersMSW[i]]], "max", na.rm = TRUE)[1, 1]
     
-    if (!is.na(max_speed) && max_speed >= threshold) {
+    if (!is.na(maxSpeed) && maxSpeed >= threshold) {
       
       if (usePixel) {
-        dir_azimuth_rast <- convertAzimuthRaster(pf[[layersDir[i]]])
-        exp_rast <- computePixelShade(topo$slope, topo$aspect, angle, dir_azimuth_rast)
+        dirRaster <- pf[[layersDir[i]]]
+        expRast <- computePixelShade(topo$slope, topo$aspect, angle, dirRaster)
       } else {
-        dir_t <- getWindDirection(pf[[layersMSW[i]]], pf[[layersDir[i]]])
-        exp_rast <- computeShade(topo$slope, topo$aspect, angle, direction = dir_t)
+        dir <- getWindDirection(pf[[layersMSW[i]]], pf[[layersDir[i]]])
+        expRast <- computeShade(topo$slope, topo$aspect, angle, direction = dir)
       }
       
-      if (!is.null(exp_rast)){
-        var_name <- gsub("Speed_", "Exposure_", layersMSW[i])
-        if (usePixel) var_name <- paste0(var_name, "_Pix")
+      if (!is.null(expRast)){
+        varName <- gsub("Speed_", "Exposure_", layersMSW[i])
+        if (usePixel) varName <- paste0(varName, "_Pix")
         
-        names(exp_rast) <- var_name
-        topo_list[[var_name]] <- exp_rast
+        names(expRast) <- varName
+        topoList[[varName]] <- expRast
       }
     }
   }
   
-  if (length(topo_list) == 0) return(NULL)
-  return(terra::rast(topo_list))
+  if (length(topoList) == 0) return(NULL)
+  return(terra::rast(topoList))
 }
 
 
@@ -284,15 +238,16 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 #' or set of tropical cyclones.
 #' 
 #' @param sts StormsList object
-#' @param dem character. Name of the .tiff file which contains elevation data for a given location. 
+#' @param dtm character. Name of the .tiff file which contains elevation data for a given location. 
 #' @param angle numeric. Inflection angle of the wind (in degrees). default is 6°. 
 #' @param threshold numeric. Minimum wind speed threshold (in m/s) requirred to compute exposure. default is 0
 #' @param product character vector. Desired output statistics:
 #'   \itemize{
-#'     \item `"Profiles"`, for 2D exposure at each observation,
+#'     \item `"Profiles"`, for exposure at each observation,
 #'     \item `"Max"`, for maximum exposure, or
 #'     \item `"Mean"`, for mean exposure (default)
-#'     \item `"PixProfiles"`, for 2D exposure at each observation with one direction by pixel
+#'     \item `"PixProfiles"`, for exposure at each observation with one direction by pixel
+#'     \item `"Summary"`, for the summary of exposure when speed was maximal in each pixel
 #'   }
 #' @param verbose numeric. Whether or not the function should display 
 #'        information about the process and/or outputs. Can be:
@@ -308,20 +263,20 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 #' (e.g., "PAM_Exposure_41", ...)
 #' @export
 
-computeExposure <- function(sts, dem, 
+computeExposure <- function(sts, dtm, 
                             angle = 6, 
                             threshold = 0, 
-                            product = "Mean", 
+                            product = "Summary", 
                             verbose = 2) {
   startTime <- Sys.time()
   
   checkInputsComputeExposure(
-    sts, dem, angle, threshold, product, verbose
+    sts, dtm, angle, threshold, product, verbose
   )
   
   if (verbose > 0) cat("=== computeExposure processing ... ===\n\nInitializing data ...")
   
-  topo <- getTerrain(dem)
+  topo <- getTerrain(dtm)
   nbStorms <- getNbStorms(sts)
   
   # stack who will contains every storm
