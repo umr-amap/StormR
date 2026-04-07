@@ -3,7 +3,7 @@
 ########################
 
 
-#' Check inputs for computeExposure function
+#' Check inputs for computeTEW function
 #'
 #' @noRd
 #' @param sts StormsList object
@@ -15,7 +15,7 @@
 #' @return NULL
 
 
-checkInputsComputeExposure <- function(sts, dtm, angle, threshold, product, verbose) {
+checkInputscomputeTEW <- function(sts, dtm, angle, threshold, product, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
   
@@ -209,7 +209,7 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
       }
       
       if (!is.null(expRast)){
-        varName <- gsub("Speed_", "Exposure_", layersMSW[i])
+        varName <- gsub("Speed_", "TEW_", layersMSW[i])
         if (usePixel) varName <- paste0(varName, "_Pix")
         
         names(expRast) <- varName
@@ -224,7 +224,7 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 
 
 ############################
-# function computeExposure #
+# function computeTEW #
 ############################
 
 
@@ -233,12 +233,12 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 
 #' Compute the topographic exposure to wind 
 #' 
-#' The `computeExposure()` function allows computing topographic exposure to wind
+#' The `computeTEW()` function allows computing topographic exposure to wind (TEW)
 #' for each cell of a regular grid (i.e., a raster) for a given tropical cyclone 
 #' or set of tropical cyclones.
 #' 
 #' @param sts StormsList object
-#' @param dtm character. Name of the .tiff file which contains elevation data for a given location. 
+#' @param dtm character. Name of the .tiff file which contains elevation data (Digital Terrain Model) for a given location. 
 #' @param angle numeric. Inflection angle of the wind (in degrees). default is 6°. 
 #' @param threshold numeric. Minimum wind speed threshold (in m/s) requirred to compute exposure. default is 0
 #' @param product character vector. Desired output statistics:
@@ -256,25 +256,25 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 #'    \item `1`, information about the processes are displayed, pr
 #'    \item `0`, no information displayed.
 #' 
-#' @return the function returns one layer for topographic exposure
+#' @return the function returns one layer for topographic exposure to wind (TEW)
 #' for each observation or interpolated observation and each `Storm`.
 #' The names of the layer follow the following terminology, the name of the storm in capital letters,
 #' "Exposure", and the indices of the observation separated by underscores
 #' (e.g., "PAM_Exposure_41", ...)
 #' @export
 
-computeExposure <- function(sts, dtm, 
+computeTEW <- function(sts, dtm, 
                             angle = 6, 
                             threshold = 0, 
                             product = "Summary", 
                             verbose = 2) {
   startTime <- Sys.time()
   
-  checkInputsComputeExposure(
+  checkInputscomputeTEW(
     sts, dtm, angle, threshold, product, verbose
   )
   
-  if (verbose > 0) cat("=== computeExposure processing ... ===\n\nInitializing data ...")
+  if (verbose > 0) cat("=== computeTEW processing ... ===\n\nInitializing data ...")
   
   topo <- getTerrain(dtm)
   nbStorms <- getNbStorms(sts)
@@ -322,13 +322,13 @@ computeExposure <- function(sts, dtm,
         
         if ("Max" %in% product) {
           finalStackMax <- terra::app(exposureStack, fun = "max", na.rm = TRUE)
-          names(finalStackMax) <- paste0(stormName, "_Exposure_Max")
+          names(finalStackMax) <- paste0(stormName, "_TEW_Max")
           currentStormStack <- c(currentStormStack, finalStackMax)
         }
         
         if ("Mean" %in% product) {
           finalStackMean <- terra::app(exposureStack, fun = "mean", na.rm = TRUE)
-          names(finalStackMean) <- paste0(stormName, "_Exposure_Mean")
+          names(finalStackMean) <- paste0(stormName, "_TEW_Mean")
           currentStormStack <- c(currentStormStack, finalStackMean)
         }
       }
@@ -345,7 +345,7 @@ computeExposure <- function(sts, dtm,
     if ("Summary" %in% product) {
       finalSummary <- computeSummary(pf, layersMSW, layersDir, topo, angle,threshold)
       if (!is.null(finalSummary)) {
-        names(finalSummary) <- paste0(stormName, "_Exposure_Summary")
+        names(finalSummary) <- paste0(stormName, "_TEW_Summary")
         currentStormStack <- c(currentStormStack, finalSummary)
       }
     }

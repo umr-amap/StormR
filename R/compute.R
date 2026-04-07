@@ -36,7 +36,7 @@ computeProduct.SpatRaster <- function(speed, direction, product, tempRes, windTh
     stormRastersTS$PDI <- computePDI(speed, tempRes)
   }
   if ("Exposure" %in% product) {
-    stormRastersTS$EXP <- computeExposure(speed, tempRes, windThreshold)
+    stormRastersTS$EXP <- computeTempExposure(speed, tempRes, windThreshold)
   }
   if ("Profiles" %in% product) {
     stormRastersTS$Speed <- speed
@@ -70,7 +70,7 @@ computeProduct.numeric <- function(speed, direction, product, tempRes, windThres
   } else if (product == "PDI") {
     prod <- computePDI(speed, tempRes)
   } else if (product == "Exposure") {
-    prod <- computeExposure(speed, tempRes, windThreshold)
+    prod <- computeTempExposure(speed, tempRes, windThreshold)
   }
 
   return(prod)
@@ -116,19 +116,19 @@ computePDI <- function(wind, tempRes) {
 #'
 #' @return raster or numeric vector. Exposure is computed using the wind speed values
 #' @noRd
-computeExposure <- function(x, tempRes, threshold, ...) {
-  UseMethod("computeExposure")
+computeTempExposure <- function(x, tempRes, threshold, ...) {
+  UseMethod("computeTempExposure")
 }
 
 #' @noRd
 #'
-#' @method computeExposure numeric
+#' @method computeTempExposure numeric
 #'
 #' @param x A numeric vector of wind speeds.
 #' @param tempRes numeric. Temporal resolution, used for the temporal integration
 #'
 #' @details The method is used for the `temporalBehaviour` computation
-computeExposure.numeric <- function(x, tempRes, threshold, ...) {
+computeTempExposure.numeric <- function(x, tempRes, threshold, ...) {
   exposure <- c()
   for (t in threshold) {
     exposureT <- rep(0, length(x))
@@ -142,14 +142,14 @@ computeExposure.numeric <- function(x, tempRes, threshold, ...) {
 }
 
 #' @noRd
-#' @method computeExposure SpatRaster
+#' @method computeTempExposure SpatRaster
 #'
 #' @param x A \code{terra::SpatRaster} containing wind speed values.
 #' @param tempRes numeric. Temporal resolution, used for the temporal integration
 #' @param threshold character.
 #'
 #' @return list of SpatRaster
-computeExposure.SpatRaster <- function(x, tempRes, threshold, ...) {
+computeTempExposure.SpatRaster <- function(x, tempRes, threshold, ...) {
   exposure <- c()
   for (t in threshold) {
     exposureT <- terra::deepcopy(x)

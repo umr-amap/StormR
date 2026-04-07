@@ -1,4 +1,4 @@
-#' Check inputs for plotExposure function
+#' Check inputs for plotTEW function
 #'
 #' @noRd
 #' @param sts StormsList object
@@ -16,7 +16,7 @@
 #' @return NULL, just stops the function if an error is found
 #' @noRd
 
-checkInputsPlotExposure <- function(sts, dtm, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends, fan, dynamicPlot) {
+checkInputsplotTEW <- function(sts, dtm, rasterProduct, xlim, ylim, labels, by, pos, colorPalette, main, legends, fan, dynamicPlot) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
   
@@ -86,7 +86,7 @@ checkInputsPlotExposure <- function(sts, dtm, rasterProduct, xlim, ylim, labels,
 }
 
 
-#' compute wind fan for plotExposure
+#' compute wind fan for plotTEW
 #' @param sts StormsList object
 #' @param rasterProduct raster object
 #' 
@@ -117,8 +117,8 @@ computeWindFan <- function(sts, rasterProduct) {
 
 #' Plotting topographic exposure to wind
 #'
-#' The `plotExposure()` function allows plotting topographic exposure to wind products generated using
-#' the `computeExposure()` function and stored in `SpatRaster` objects.
+#' The `plotTEW()` function allows plotting topographic exposure to wind products generated using
+#' the `computeTEW()` function and stored in `SpatRaster` objects.
 #'
 #' @param sts `StormsList` object.
 #' @param dtm  SpatRaster of Digital Terrain Model object.
@@ -164,19 +164,19 @@ computeWindFan <- function(sts, rasterProduct) {
 #' mnt <- 
 #'
 #' # Plotting topographic exposure to wind (tew) for Pam (2015) near Vanuatu
-#' pam.tew <- computeExposure(pam, mnt, verbose = 0)
-#' plotExposure(pam, mnt, pam.tew)
+#' pam.tew <- computeTEW(pam, mnt, verbose = 0)
+#' plotTEW(pam, mnt, pam.tew)
 #'
 #' # Plotting with the range of wind direction
-#' plotExposure(pam, mnt, pam.tew, fan = TRUE)
+#' plotTEW(pam, mnt, pam.tew, fan = TRUE)
 #' 
 #' # dynamicPlot mode
-#' plotExposure(pam, mnt, pam.msw, dynamicPlot = TRUE)
+#' plotTEW(pam, mnt, pam.msw, dynamicPlot = TRUE)
 #'
 #' }
 #' @export
 
-plotExposure <- function(sts,
+plotTEW <- function(sts,
                          dtm,
                          rasterProduct,
                          colorPalette = NULL,
@@ -190,7 +190,7 @@ plotExposure <- function(sts,
                          fan = FALSE,
                          dynamicPlot = FALSE) {
   
-  checkInputsPlotExposure(
+  checkInputsplotTEW(
     sts, dtm, rasterProduct, xlim, ylim, labels, by, pos, colorPalette,
     main, legends, fan, dynamicPlot
   )
