@@ -63,10 +63,10 @@ p = processes()
 
 #define wanted data
 data = p$load_collection(id = 'COPERNICUS_30',
-                         spatial_extent = list(west=168.0798, 
-                                               south=-17.8480,
-                                               east=168.6373,
-                                               north=-17.3925),
+                         spatial_extent = list(west=168.310547, 
+                                               south=-17.651056,
+                                               east=168.422470,
+                                               north=-17.573830),
                          bands = c("DEM"))
 
 
@@ -125,7 +125,7 @@ either separately or together. Here, we compute all three summary
 statistics together as follows:
 
 ```{r}
-ss <- computeTEW(st, product = c("Max", "Mean", "Summary"), verbose = 0)
+ss <- computeTEW(st, dtm,product = c("Max", "Mean", "Summary"), verbose = 0)
 ss
 ```
 
@@ -142,19 +142,19 @@ names(ss)
 The maximum topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st, ss$PAM_TEW_Max)
+plotTEW(st,dtm, ss$PAM_TEW_Max)
 ```
 
 The mean topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st, ss$PAM_TEW_Mean)
+plotTEW(st, dtm,ss$PAM_TEW_Mean)
 ```
 
 The summary of topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st, ss$PAM_TEW_Summary)
+plotTEW(st,dtm, ss$PAM_TEW_Summary)
 ```
 
 
@@ -164,7 +164,7 @@ plotTEW(st, ss$PAM_TEW_Summary)
 Here is an example based on the same parameters as above.
 
 ```{r, eval = FALSE}
-plotTEW(st, ss$PAM_TEW_Summary, dynamicPlot = TRUE)
+plotTEW(st, dtm,ss$PAM_TEW_Summary, dynamicPlot = TRUE)
 ```
 **warning : ne fonctionne peut être pas pour le moment**
 
