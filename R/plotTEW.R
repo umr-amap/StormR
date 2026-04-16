@@ -328,7 +328,7 @@ plotTEW <- function(sts,
     track <- sts@data[[name]]@obs.all
     
     pal <- leaflet::colorNumeric(
-      palette  = hcl.colors(100, palette = "RdBu", rev = TRUE),
+      palette  = hcl.colors(100, palette = "RdBu", rev = TRUE), 
       domain   = c(-1,1),
       na.color = "transparent"
     )

@@ -9,25 +9,29 @@ vignette: >
 editor_options: 
   markdown: 
     wrap: 72
+bibliography: stormr.bib
 ---
 
 ```{r setup, include = FALSE}
-library(StormR)
+devtools::load_all()
+#library(StormR)
 library(terra)
 ```
 
-The `computeTEW()` function allows computing topographic exposure (TEW)
-to wind for each cell of a regular grid (i.e., a raster) for a given
+The `computeTEW()` function allows computing topographic exposure to wind (TEW)
+@boose_hurricane_1994 for each cell of a regular grid (i.e., a raster) for a given
 tropical cyclone or set of tropical cyclones. The `product="Profiles"`
 and `product="PixProfiles"` argument allows producing exposure fields
-during the lifespan of the cyclone at a temporal resolution of 1 hour.
+during the lifespan of the cyclone.
 The `computeTEW()` function also allows to compute three associated
-summary statistics: the maximum topographic exposure for each cell
-during the cyclone (`product="Max"`), the power dissipation index
-(`product="Mean"`) and the topographic exposure to wind computed for
+summary statistics: the maximum and mean TEW for each cell
+during the cyclone (`product="Max"` and `product="Mean"`, respectively) 
+and the TEW computed for
 each pixel with the direction at maximal sustained speed along the
-cyclone (`product="Summary"`). Then the `plotTEW()` and the
-`writeRast()` functions can be used to visualise and export the output.
+cyclone (`product="Summary"`). 
+
+Then the `plotTEW()` and the `writeRast()` functions can be used to visualize and export the output.
+
 In the following example we use the `test_dataset` and `test_datadtm`
 provided with the package to illustrate how cyclone track data can be
 used to compute, plot, and export topographic exposure profiles or
@@ -49,8 +53,8 @@ plotStorms(st)
 #### Exctracting topography
 
 Then a Digital Terrain Model (DTM) is essential to compute topographic
-exposure to wind (TEW). In this tutorial, DTM is from Copernicus DEM30 data and is
-extracted thanks to the `openEO` package as follows :
+exposure to wind (TEW). In this tutorial, DTM used is [Copernicus DEM30 data](dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM) and is
+extracted thanks to the [`openEO` package](https://open-eo.github.io/openeo-r-client/index.html) as follows :
 
 ```{r connection, eval=FALSE}
 library(openeo)
@@ -82,6 +86,8 @@ compute_result(graph = result, output_file = "../filepath/name.tif")
 dtm <- rast("../inst/extdata/test_datadtm.tif")
 ```
 
+Other DTM products should work seemlessly with StormR.
+
 #### Topographic exposure profiles
 
 Using track data and the `computeTEW()` function with the
@@ -93,21 +99,25 @@ pf <- computeTEW(st, dtm, product = "Profiles", verbose = 0)
 pf
 ```
 
-The product `Profiles` compute topographic exposure to wind (TEW) from one and
-only direction taken at maximal speed for the entire location of
-interest whereas `PixProfiles` compute topographic exposure to wind from
-one direction per pixel. The first one consider an homogeneous wind
-direction but the second one compute a more accurate picture.
+The product `Profiles` compute TEW from one and
+only one direction taken at maximal wind speed location for the entire location of
+interest. This option should be used for small locations of interest, where 
+wind direction is considered homogeneous.
+
+On the other hand, `PixProfiles` option computes TEW from
+one direction per pixel. This gives a more accurate picture for large scale areas 
+where wind direction variations are important.
 
 The function returns a `SpatRaster` one raster for each observation or
 interpolated observation. Rasters' names follow the following
-terminology, the name of the storm in capital letters, "Exposure", and
+terminology, the name of the storm in capital letters, "TEW", and
 the index of the observation, separated by underscores. Note that actual
 observations have entire indices (e.g., 41, 42, ...) while interpolated
 observation have decimals (e.g., 41.1, 41.2, ...). Most tropical cyclone
 track data sets are based on observations gathered every 3 or 6 hours.
 Therefore, to be able to compute wind fields every 1 hour, the
-observations are interpolated.
+observations are interpolated. This naming is coherent with `spatialBehaviour` and
+`temporalBehaviour` functions.
 
 Topographic exposure profiles at the 41^th^ observation can be plotted
 as follows:
@@ -121,7 +131,8 @@ plotTEW(st,dtm, pf$PAM_TEW_41)
 
 The `computeTEW()` function can compute the different `products`
 (i.e., `"Profiles"`, `"PixProfiles"`, `"Max"`, `"Mean"`, `"Summary"`)
-either separately or together. Here, we compute all three summary
+either separately or together. "Summary" statistics are products integrated over 
+the lifespan of the storm. Here, we compute all three summary
 statistics together as follows:
 
 ```{r}
@@ -130,10 +141,16 @@ ss
 ```
 
 The `computeTEW()` function returns a `SpatRaster` object with
-three rasters: one for the maximum topographic exposure (`"Max"`), one
-for the mean topographic exposure (`"Mean"`), and one for the
-topographic exposure computed at maximum speed for each pixel
-(`"Summary"`).
+three rasters: 
+
+- one for the maximum TEW (`"Max"`): TEW is computed for each time step
+using "Profiles", and the the maximum value is return for each pixel.
+- one for the mean TEW (`"Mean"`, also taken as default value): TEW is 
+computed for each time step using "Profiles", 
+and the the mean value is return for each pixel.
+- one for the maximum speed for each pixel TEW (`"Summary"`): TEW is computed 
+using wind direction associated with maximum wind speed over the whole lifespan 
+of the storm for each pixel.
 
 ```{r}
 names(ss)
@@ -178,3 +195,5 @@ the working directory as follows:
 ```{r}
 writeRast(ss$PAM_TEW_Summary)
 ```
+
+## References

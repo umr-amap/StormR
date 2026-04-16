@@ -8,7 +8,7 @@
 #' @noRd
 #' @param sts StormsList object
 #' @param dtm object
-#' @param spProfiles spatRaster
+#' @param spProfiles spatRaster 
 #' @param angle numeric
 #' @param product character
 #' @param threshold numeric
