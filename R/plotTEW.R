@@ -212,7 +212,7 @@ plotTEW <- function(sts,
   if (!is.null(ylim)) { ylim <- ylim[order(ylim)]; ymin <- ylim[1]; ymax <- ylim[2] }
   
   # legend and color
-  col   <- grDevices::hcl.colors(100, palette = "RdBu")
+  col   <- grDevices::hcl.colors(100, palette = "RdBu", rev = TRUE)
   range <- c(-1,1)
   leg   <- name
   
@@ -269,8 +269,8 @@ plotTEW <- function(sts,
         y0 <- ymin + y_span * 0.88
         r  <- x_span * 0.06
         
-        d_min_rad <- (90 - fan_data$d_max) * pi / 180
-        d_max_rad <- (90 - fan_data$d_min) * pi / 180
+        d_min_rad <- (90 - fan_data$d_max) * pi /180
+        d_max_rad <- (90 - fan_data$d_min) * pi /180
         
         t_seq <- seq(d_min_rad, d_max_rad, length.out = 40)
         x_arc <- x0 + r * cos(t_seq)
@@ -328,7 +328,7 @@ plotTEW <- function(sts,
     track <- sts@data[[name]]@obs.all
     
     pal <- leaflet::colorNumeric(
-      palette  = "RdBu",
+      palette  = hcl.colors(100, palette = "RdBu", rev = TRUE),
       domain   = c(-1,1),
       na.color = "transparent"
     )

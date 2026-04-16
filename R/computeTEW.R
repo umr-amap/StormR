@@ -8,19 +8,30 @@
 #' @noRd
 #' @param sts StormsList object
 #' @param dtm object
+#' @param spProfiles spatRaster
 #' @param angle numeric
 #' @param product character
 #' @param threshold numeric
+#' @param spaceRes character
+#' @param tempRes numeric
 #' @param verbose numeric
 #' @return NULL
 
 
-checkInputscomputeTEW <- function(sts, dtm, angle, threshold, product, verbose) {
+checkInputscomputeTEW <- function(sts, dtm, spProfiles, angle, threshold, product, spaceRes, tempRes, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
   
   # Checking dtm input
   stopifnot("no dtm data found" = !missing(dtm))
+  
+  # Checking spProfiles input
+  if (!is.null(spProfiles)) {
+    stopifnot("'spProfiles' must be a SpatRaster object." = inherits(spProfiles, "SpatRaster"))
+    stopifnot("'spProfiles' must contain Profiles layers with '_Speed_' and '_Direction_' in their names." = 
+                length(grep("_Speed_", names(spProfiles))) > 0 && 
+                length(grep("_Direction_", names(spProfiles))) > 0)
+  }
   
   # Checking product input
   stopifnot("Invalid product" = product %in% c("Max", "Mean", "Profiles","PixProfiles","Summary"))
@@ -32,6 +43,19 @@ checkInputscomputeTEW <- function(sts, dtm, angle, threshold, product, verbose) 
   # Checking angle input 
   stopifnot("Angle must be numeric" = identical(class(angle), "numeric"))
   stopifnot("invalid value(s) for angle input (must be >= 0)" = angle >= 0)
+  
+  # Checking spaceRes input
+  stopifnot("spaceRes must be character" = identical(class(spaceRes), "character"))
+  stopifnot("spaceRes must be length 1" = length(spaceRes) == 1)
+  stopifnot(
+    "invalid spaceRes: must be either 30s, 2.5min, 5min or 10min" =
+      spaceRes %in% c("30sec", "2.5min", "5min", "10min")
+  )
+  
+  # Checking tempRes input
+  stopifnot("tempRes must be numeric" = identical(class(tempRes), "numeric"))
+  stopifnot("tempRes must be length 1" = length(tempRes) == 1)
+  stopifnot("invalid tempRes: must be either 60, 30 or 15" = tempRes %in% c(60, 30, 15))
   
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -239,6 +263,7 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 #' 
 #' @param sts StormsList object
 #' @param dtm character. Name of the .tiff file which contains elevation data (Digital Terrain Model) for a given location. 
+#' @param spProfiles SpatRaster. Profiles of `spatialBehaviour()` function. Default is NULL. 
 #' @param angle numeric. Inflection angle of the wind (in degrees). default is 6°. 
 #' @param threshold numeric. Minimum wind speed threshold (in m/s) requirred to compute exposure. default is 0
 #' @param product character vector. Desired output statistics:
@@ -249,6 +274,11 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 #'     \item `"PixProfiles"`, for exposure at each observation with one direction by pixel
 #'     \item `"Summary"`, for the summary of exposure when speed was maximal in each pixel
 #'   }
+#' @param spaceRes character. Spatial resolution. Can be `"30 sec"` (~1 km at the equator),
+#' `"2.5 min"` (~4.5 km at the equator), `"5 min"` (~9 km at the equator) or `"10 min"` (~18.6 km at the equator).
+#'  Default setting is `"2.5 min"`.
+#' @param tempRes numeric. Temporal resolution (min). Can be `60` ( default setting),
+#'   `30` or `15`.
 #' @param verbose numeric. Whether or not the function should display 
 #'        information about the process and/or outputs. Can be:
 #' \itemize{
@@ -264,17 +294,23 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 #' @export
 
 computeTEW <- function(sts, dtm, 
+                            spProfiles = NULL,
                             angle = 6, 
                             threshold = 0, 
                             product = "Summary", 
+                            spaceRes = "2.5min",
+                            tempRes = 60,
                             verbose = 2) {
   startTime <- Sys.time()
   
   checkInputscomputeTEW(
-    sts, dtm, angle, threshold, product, verbose
+    sts, dtm, spProfiles, angle, threshold, product, spaceRes, tempRes, verbose
   )
   
-  if (verbose > 0) cat("=== computeTEW processing ... ===\n\nInitializing data ...")
+  if (verbose > 0) {
+    cat("=== computeTEW processing ... ===\n")
+    cat("Initializing data ...")
+  }
   
   topo <- getTerrain(dtm)
   nbStorms <- getNbStorms(sts)
@@ -282,28 +318,39 @@ computeTEW <- function(sts, dtm,
   # stack who will contains every storm
   finalStack <- c() 
   
-  if (verbose > 0) {
-    cat(" Done\n\nComputation settings:\n")
-    cat("  (*) Temporal resolution: Every 60 minutes\n")
-    cat("  (*) Product(s) to compute:", paste(product, collapse = ", "), "\n")
-    cat("\nStorm(s):\n")
-    cat("  (", nbStorms, ") ", paste(getNames(sts), collapse = ", "), "\n\n")
-  }
-  
   for (i in 1:nbStorms) {
     
     stormName <- getNames(sts)[i]
     
-    if (verbose > 0) cat("\n --> Computing for :", stormName, "...")
+    if (verbose > 0) cat("\n --> Computing for :", stormName, "...\n\n")
     
     # extracting information for one storm 
     st <- sts
     st@data <- list(sts@data[[i]])
     
-    #compute spatial profiles
-    pf <- spatialBehaviour(st, product = "Profiles", verbose = 0)
+    # compute or reuse spatial profiles
+    if (!is.null(spProfiles)) {
+      pf <- spProfiles
+    } else {
+      pf <- spatialBehaviour(st, product = "Profiles",
+                             tempRes = tempRes, 
+                             spaceRes = spaceRes, 
+                             verbose = 1)
+    }
+
+    
     layersMSW <- names(pf)[grep("_Speed_", names(pf))]
     layersDir <- names(pf)[grep("_Direction_", names(pf))]
+    
+      if (verbose > 0) {
+    cat(" Done\n\nComputation settings:\n")
+    cat("  (*) Temporal resolution: Every", tempRes, " minutes\n")
+    cat("  (*) Space resolution:", names(resolutions[spaceRes]), "\n")
+    cat("  (*) Product(s) to compute:", paste(product, collapse = ", "), "\n")
+    cat("\nStorm(s):\n")
+    cat("  (", nbStorms, ") ", paste(getNames(sts), collapse = ", "), "\n\n")
+  }
+    
     
     # stack for one storm
     currentStormStack <- NULL
