@@ -88,6 +88,17 @@ dtm <- rast("../inst/extdata/test_datadtm.tif")
 
 Other DTM products should work seemlessly with StormR.
 
+#### Extracting spatial profiles
+
+Spatial profiles must be computed to run the `computeTEW()` function. 
+
+```{r}
+spProfiles <- spatialBehaviour(st, product = "Profiles", verbose = 0)
+spProfiles
+```
+
+Other spatial profiles can be used as long as the layers of the spatRaster respect the following terminology : the name of the storm in capital letters, "Speed" or "Direction", and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41", ...).
+
 #### Topographic exposure profiles
 
 Using track data and the `computeTEW()` function with the
@@ -95,7 +106,7 @@ Using track data and the `computeTEW()` function with the
 topographic exposure fields at any time as follows:
 
 ```{r}
-pf <- computeTEW(st, dtm, product = "Profiles", verbose = 0)
+pf <- computeTEW(st, dtm, spProfiles, product = "Profiles", verbose = 0)
 pf
 ```
 
@@ -136,7 +147,7 @@ the lifespan of the storm. Here, we compute all three summary
 statistics together as follows:
 
 ```{r}
-ss <- computeTEW(st, dtm,product = c("Max", "Mean", "Summary"), verbose = 0)
+ss <- computeTEW(st, dtm, spProfiles, product = c("Max", "Mean", "Summary"), verbose = 0)
 ss
 ```
 

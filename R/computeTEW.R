@@ -12,13 +12,11 @@
 #' @param angle numeric
 #' @param product character
 #' @param threshold numeric
-#' @param spaceRes character
-#' @param tempRes numeric
 #' @param verbose numeric
 #' @return NULL
 
 
-checkInputscomputeTEW <- function(sts, dtm, spProfiles, angle, threshold, product, spaceRes, tempRes, verbose) {
+checkInputscomputeTEW <- function(sts, dtm, spProfiles, angle, threshold, product, verbose) {
   # Checking sts input
   stopifnot("no data found" = !missing(sts))
   
@@ -26,12 +24,12 @@ checkInputscomputeTEW <- function(sts, dtm, spProfiles, angle, threshold, produc
   stopifnot("no dtm data found" = !missing(dtm))
   
   # Checking spProfiles input
-  if (!is.null(spProfiles)) {
-    stopifnot("'spProfiles' must be a SpatRaster object." = inherits(spProfiles, "SpatRaster"))
-    stopifnot("'spProfiles' must contain Profiles layers with '_Speed_' and '_Direction_' in their names." = 
-                length(grep("_Speed_", names(spProfiles))) > 0 && 
-                length(grep("_Direction_", names(spProfiles))) > 0)
-  }
+  stopifnot("no spProfiles found" = !missing(spProfiles))
+  stopifnot("'spProfiles' must be a SpatRaster object." = inherits(spProfiles, "SpatRaster"))
+  stopifnot("'spProfiles' must contain Profiles layers with '_Speed_' and '_Direction_' in their names." = 
+              length(grep("_Speed_", names(spProfiles))) > 0 && 
+              length(grep("_Direction_", names(spProfiles))) > 0)
+
   
   # Checking product input
   stopifnot("Invalid product" = product %in% c("Max", "Mean", "Profiles","PixProfiles","Summary"))
@@ -43,19 +41,6 @@ checkInputscomputeTEW <- function(sts, dtm, spProfiles, angle, threshold, produc
   # Checking angle input 
   stopifnot("Angle must be numeric" = identical(class(angle), "numeric"))
   stopifnot("invalid value(s) for angle input (must be >= 0)" = angle >= 0)
-  
-  # Checking spaceRes input
-  stopifnot("spaceRes must be character" = identical(class(spaceRes), "character"))
-  stopifnot("spaceRes must be length 1" = length(spaceRes) == 1)
-  stopifnot(
-    "invalid spaceRes: must be either 30s, 2.5min, 5min or 10min" =
-      spaceRes %in% c("30sec", "2.5min", "5min", "10min")
-  )
-  
-  # Checking tempRes input
-  stopifnot("tempRes must be numeric" = identical(class(tempRes), "numeric"))
-  stopifnot("tempRes must be length 1" = length(tempRes) == 1)
-  stopifnot("invalid tempRes: must be either 60, 30 or 15" = tempRes %in% c(60, 30, 15))
   
   # Checking verbose input
   stopifnot("verbose must be numeric" = identical(class(verbose), "numeric"))
@@ -98,7 +83,7 @@ computePixelShade <- function(slope, aspect, angle = 6, rasterDir) {
 #' 
 #' @noRd
 #' 
-#' @param pf SpatRaster with profiles from spatialBehaviour
+#' @param spProfiles SpatRaster with profiles from spatialBehaviour
 #' @param layersMSW SpatRaster with speed layers
 #' @param layersDir SpatRaster with direction layers
 #' @param topo SpatRaster with topographic characteristics (slope and aspect)
@@ -107,10 +92,10 @@ computePixelShade <- function(slope, aspect, angle = 6, rasterDir) {
 #'
 #'
 #'@return SpatRaster of the topographic exposure summary
-computeSummary <- function(pf, layersMSW, layersDir, topo, angle, threshold) {
+computeSummary <- function(spProfiles, layersMSW, layersDir, topo, angle, threshold) {
   
-  speedStack <- pf[[layersMSW]]
-  dirStack <- pf[[layersDir]]
+  speedStack <- spProfiles[[layersMSW]]
+  dirStack <- spProfiles[[layersDir]]
   
   # resample to mnt
   if (!terra::compareGeom(topo$slope, speedStack, stopOnError = FALSE)) {
@@ -206,9 +191,9 @@ computeShade <- function(slope, aspect, angle = 6, direction) {
 #' Compute Profiles Exposure
 #' 
 #' @noRd
-#' @param pf SpatRaster. profiles from spatialBehaviour
-#' @param layersMSW layers of speed from pf
-#' @param layersDir layers of direction from pf
+#' @param spProfiles SpatRaster. profiles from spatialBehaviour
+#' @param layersMSW layers of speed from spProfiles
+#' @param layersDir layers of direction from spProfiles
 #' @param topo topography of the loi (slope and aspect)
 #' @param angle numeric. angle of inflection (6°)
 #' @param threshold numeric. speed threshold. default is 0
@@ -216,19 +201,19 @@ computeShade <- function(slope, aspect, angle = 6, direction) {
 #' @return Profiles of Exposure, one layer per observation
 
 
-computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold, usePixel = FALSE) {
+computeExpProfiles <- function(spProfiles, layersMSW, layersDir, topo, angle, threshold, usePixel = FALSE) {
   topoList <- list()
   
   for (i in seq_along(layersMSW)) {
-    maxSpeed <- terra::global(pf[[layersMSW[i]]], "max", na.rm = TRUE)[1, 1]
+    maxSpeed <- terra::global(spProfiles[[layersMSW[i]]], "max", na.rm = TRUE)[1, 1]
     
     if (!is.na(maxSpeed) && maxSpeed >= threshold) {
       
       if (usePixel) {
-        dirRaster <- pf[[layersDir[i]]]
+        dirRaster <- spProfiles[[layersDir[i]]]
         expRast <- computePixelShade(topo$slope, topo$aspect, angle, dirRaster)
       } else {
-        dir <- getWindDirection(pf[[layersMSW[i]]], pf[[layersDir[i]]])
+        dir <- getWindDirection(spProfiles[[layersMSW[i]]], spProfiles[[layersDir[i]]])
         expRast <- computeShade(topo$slope, topo$aspect, angle, direction = dir)
       }
       
@@ -263,16 +248,16 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 #' 
 #' @param sts StormsList object
 #' @param dtm character. Name of the .tiff file which contains elevation data (Digital Terrain Model) for a given location. 
-#' @param spProfiles SpatRaster. Profiles of `spatialBehaviour()` function. Default is NULL. 
+#' @param spProfiles SpatRaster. Profiles of `spatialBehaviour()` function which must respect the following terminology : 'STORM_Speed_N', 'STORM_Direction_N'
 #' @param angle numeric. Inflection angle of the wind (in degrees). default is 6°. 
 #' @param threshold numeric. Minimum wind speed threshold (in m/s) requirred to compute exposure. default is 0
 #' @param product character vector. Desired output statistics:
 #'   \itemize{
 #'     \item `"Profiles"`, for exposure at each observation,
 #'     \item `"Max"`, for maximum exposure, or
-#'     \item `"Mean"`, for mean exposure (default)
+#'     \item `"Mean"`, for mean exposure
 #'     \item `"PixProfiles"`, for exposure at each observation with one direction by pixel
-#'     \item `"Summary"`, for the summary of exposure when speed was maximal in each pixel
+#'     \item `"Summary"`, for the summary of exposure when speed was maximal in each pixel (default)
 #'   }
 #' @param spaceRes character. Spatial resolution. Can be `"30 sec"` (~1 km at the equator),
 #' `"2.5 min"` (~4.5 km at the equator), `"5 min"` (~9 km at the equator) or `"10 min"` (~18.6 km at the equator).
@@ -289,8 +274,8 @@ computeExpProfiles <- function(pf, layersMSW, layersDir, topo, angle, threshold,
 #' @return the function returns one layer for topographic exposure to wind (TEW)
 #' for each observation or interpolated observation and each `Storm`.
 #' The names of the layer follow the following terminology, the name of the storm in capital letters,
-#' "Exposure", and the indices of the observation separated by underscores
-#' (e.g., "PAM_Exposure_41", ...)
+#' "TEW", and the indices of the observation separated by underscores
+#' (e.g., "PAM_TEW_41", ...)
 #' @export
 
 computeTEW <- function(sts, dtm, 
@@ -298,13 +283,11 @@ computeTEW <- function(sts, dtm,
                             angle = 6, 
                             threshold = 0, 
                             product = "Summary", 
-                            spaceRes = "2.5min",
-                            tempRes = 60,
                             verbose = 2) {
   startTime <- Sys.time()
   
   checkInputscomputeTEW(
-    sts, dtm, spProfiles, angle, threshold, product, spaceRes, tempRes, verbose
+    sts, dtm, spProfiles, angle, threshold, product, verbose
   )
   
   if (verbose > 0) {
@@ -328,24 +311,12 @@ computeTEW <- function(sts, dtm,
     st <- sts
     st@data <- list(sts@data[[i]])
     
-    # compute or reuse spatial profiles
-    if (!is.null(spProfiles)) {
-      pf <- spProfiles
-    } else {
-      pf <- spatialBehaviour(st, product = "Profiles",
-                             tempRes = tempRes, 
-                             spaceRes = spaceRes, 
-                             verbose = 1)
-    }
-
-    
-    layersMSW <- names(pf)[grep("_Speed_", names(pf))]
-    layersDir <- names(pf)[grep("_Direction_", names(pf))]
+    # get speed and direction layers
+    layersMSW <- names(spProfiles)[grep("_Speed_", names(spProfiles))]
+    layersDir <- names(spProfiles)[grep("_Direction_", names(spProfiles))]
     
       if (verbose > 0) {
     cat(" Done\n\nComputation settings:\n")
-    cat("  (*) Temporal resolution: Every", tempRes, " minutes\n")
-    cat("  (*) Space resolution:", names(resolutions[spaceRes]), "\n")
     cat("  (*) Product(s) to compute:", paste(product, collapse = ", "), "\n")
     cat("\nStorm(s):\n")
     cat("  (", nbStorms, ") ", paste(getNames(sts), collapse = ", "), "\n\n")
@@ -357,7 +328,7 @@ computeTEW <- function(sts, dtm,
     
     
     if (any(c("Profiles", "Max", "Mean") %in% product)) {
-      exposureStack <- computeExpProfiles(pf, layersMSW, layersDir, topo, angle, threshold, usePixel = FALSE)
+      exposureStack <- computeExpProfiles(spProfiles, layersMSW, layersDir, topo, angle, threshold, usePixel = FALSE)
       
       if (is.null(exposureStack)) {
         warning("No layers met the wind speed threshold for : ", stormName)
@@ -383,14 +354,14 @@ computeTEW <- function(sts, dtm,
     
     
     if ("PixProfiles" %in% product) {
-      pixExposureStack <- computeExpProfiles(pf, layersMSW, layersDir, topo, angle, threshold, usePixel = TRUE)
+      pixExposureStack <- computeExpProfiles(spProfiles, layersMSW, layersDir, topo, angle, threshold, usePixel = TRUE)
       if (!is.null(pixExposureStack)) {
         currentStormStack <- c(currentStormStack, pixExposureStack)
       }
     }    
     
     if ("Summary" %in% product) {
-      finalSummary <- computeSummary(pf, layersMSW, layersDir, topo, angle,threshold)
+      finalSummary <- computeSummary(spProfiles, layersMSW, layersDir, topo, angle,threshold)
       if (!is.null(finalSummary)) {
         names(finalSummary) <- paste0(stormName, "_TEW_Summary")
         currentStormStack <- c(currentStormStack, finalSummary)
