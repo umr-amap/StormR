@@ -511,11 +511,6 @@ test_that("Storm class getters", {
 
 
 test_that("StormsList class getters", {
-  sts_nc <-
-    defStormsList(sds = sds,
-                  loi = "New Caledonia",
-                  verbose = 0)
-
   expect_identical(getStorm(sts_nc, "NIRAN"), sts_nc@data[["NIRAN"]])
   expect_error(getStorm(sts_nc, "NIRAN", 2015))
   expect_identical(getNames(sts_nc),
@@ -552,10 +547,6 @@ test_that("StormsList class getters", {
 
 test_that("Storm and stormsList class getters", {
   suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  sts_nc <-
-    defStormsList(sds = sds,
-                  loi = "New Caledonia",
-                  verbose = 0)
   out <- capture_output_lines(print(sts_nc@data$PAM))
 
   # Check that the Storm output is correct
@@ -588,38 +579,108 @@ test_that("Storm and stormsList class getters", {
 
 
 test_that("Storms class getters for storm class", {
-  sts_nc <-
-    defStormsList(sds = sds,
-                  loi = "New Caledonia",
-                  verbose = 0)
-
   expect_identical(getNbObs(sts_nc, "NIRAN"), getNbObs(getStorm(sts_nc, "NIRAN")))
   expect_identical(getObs(sts_nc, "NIRAN"), getObs(getStorm(sts_nc, "NIRAN")))
   expect_identical(getInObs(sts_nc, "NIRAN"), getInObs(getStorm(sts_nc, "NIRAN")))
 })
 
 
+test_that("removeStorms removes a single storm", {
+  original_count <- getNbStorms(sts_nc)
+  result <- removeStorms(sts_nc, names = "PAM", seasons = 2015)
+  expect_identical(getNbStorms(result), original_count - 1L)
+  expect_false("PAM" %in% getNames(result))
+  expect_true("NIRAN" %in% getNames(result))
+})
+
+test_that("removeStorms removes multiple storms", {
+  result <- removeStorms(
+    sts_nc,
+    names = c("PAM", "SOLO"),
+    seasons = c(2015, 2015)
+  )
+  expect_identical(getNbStorms(result), getNbStorms(sts_nc) - 2L)
+  expect_false("PAM" %in% getNames(result))
+  expect_false("SOLO" %in% getNames(result))
+})
+
+test_that("removeStorms warns when storm not found", {
+  expect_warning(
+    removeStorms(sts_nc, names = "FAKE", seasons = 2020),
+    "No matching storms found"
+  )
+})
+
+test_that("removeStorms validates inputs", {
+  expect_error(
+    removeStorms(sts_nc, names = c("PAM", "SOLO"), seasons = 2015)
+  )
+  expect_error(
+    removeStorms("not_a_stormsList", names = "PAM", seasons = 2015)
+  )
+})
+
+test_that("removeStorms preserves stormsList structure", {
+  result <- removeStorms(sts_nc, names = "PAM", seasons = 2015)
+  expect_identical(result@buffer, sts@buffer)
+  expect_identical(result@spatialLoi, sts@spatialLoi)
+  expect_identical(result@spatialLoiBuffer, sts@spatialLoiBuffer)
+  expect_identical(result@scale, sts@scale)
+})
 
 
+test_that("subsetStorms keeps only a single storm", {
+  result <- subsetStorms(sts_nc, names = "PAM", seasons = 2015)
+  expect_identical(getNbStorms(result), 1L)
+  expect_identical(getNames(result), "PAM")
+})
+
+test_that("subsetStorms keeps only multiple storms", {
+  result <- subsetStorms(
+    sts_nc,
+    names = c("PAM", "NIRAN"),
+    seasons = c(2015, 2021)
+  )
+  expect_identical(getNbStorms(result), 2L)
+  expect_identical(getNames(result), c("PAM", "NIRAN"))
+})
+
+test_that("subsetStorms warns when no storms match", {
+  expect_warning(
+    subsetStorms(sts_nc, names = "FAKE", seasons = 2020),
+    "No matching storms found"
+  )
+})
+
+test_that("subsetStorms validates inputs", {
+  expect_error(
+    subsetStorms(sts_nc, names = c("PAM", "NIRAN"), seasons = 2015)
+  )
+  expect_error(
+    subsetStorms("not_a_stormsList", names = "PAM", seasons = 2015)
+  )
+})
+
+test_that("subsetStorms preserves stormsList structure", {
+  result <- subsetStorms(sts_nc, names = "PAM", seasons = 2015)
+  expect_identical(result@buffer, sts@buffer)
+  expect_identical(result@spatialLoi, sts@spatialLoi)
+  expect_identical(result@spatialLoiBuffer, sts@spatialLoiBuffer)
+  expect_identical(result@scale, sts@scale)
+})
 
 test_that("Test convert loi function", {
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
-
   expect_warning(convertLoi(c(-30, 20)))
   expect_identical(convertLoi("Vanuatu"), pam@spatialLoi)
   expect_identical(sf::st_crs(convertLoi(eezNC))$input, "EPSG:4326")
   expect_identical(sf::st_coordinates(convertLoi("SP")),
                    sf::st_coordinates(sf::st_polygon(list(
-                     rbind(c(135,-60), c(290,-60), c(290, 0), c(135, 0), c(135,-60))
+                     rbind(c(135,-60), c(290,-60), c(290, 0), c(135, 0), c(135, -60))
                    ))))
 
   sr1 <-
     sf::st_polygon(list(rbind(
-      c(135,-60), c(290,-60), c(290, 0), c(135, 0), c(135,-60)
+      c(135,-60), c(290,-60), c(290, 0), c(135, 0), c(135, -60)
     )))
   sr2 <-
     sf::st_polygon(list(rbind(
@@ -642,13 +703,6 @@ test_that("Test computeScaleIndice function", {
 
 
 test_that("Test makeBuffer function", {
-  suppressWarnings(sds <- defStormsDataset(verbose = 0))
-  pam <-
-    defStormsList(sds,
-                  loi = "Vanuatu",
-                  names = "PAM",
-                  verbose = 0)
-
   expect_identical(makeBuffer("Vanuatu", pam@spatialLoi, 300 * km),
                    pam@spatialLoiBuffer)
 })

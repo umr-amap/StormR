@@ -606,7 +606,18 @@ setMethod("getInObs", signature("storm"), function(s) s@obs)
 #' @param removeUnder numeric
 #' @param removeUnnamed character vector
 #' @return NULL, stops the function if an error is detected
-checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, scalePalette, verbose, removeUnder, removeUnnamed) {
+checkInputsDefStormsList <- function(
+  sds,
+  loi,
+  seasons,
+  names,
+  maxDist,
+  scale,
+  scalePalette,
+  verbose,
+  removeUnder,
+  removeUnnamed
+) {
 
   #checking sds input
   stopifnot("sds is missing" = !missing(sds))
@@ -658,10 +669,10 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
 
   # Checking scale input
   stopifnot("scale must be vector of numeric" = identical(class(scale), "numeric"))
-  stopifnot("invalid scale input" = all(scale>=0))
+  stopifnot("invalid scale input" = all(scale >= 0))
 
   # Checking scalePalette input
-  if(!is.null(scalePalette)){
+  if (!is.null(scalePalette)) {
     stopifnot("scalePalette must be a (named) character vector" = identical(class(scalePalette), "character"))
     stopifnot("(lenght(scalePalette) must be equal to lenght(scale) + 1)" =
                 length(scalePalette) == length(scale) + 1)
@@ -674,14 +685,14 @@ checkInputsDefStormsList <- function(sds, loi, seasons, names, maxDist, scale, s
   stopifnot("verbose must be either 0, 1 or 2" = verbose %in% c(0, 1, 2))
 
   #Checking removeUnder input
-  if(!is.null(removeUnder)){
+  if (!is.null(removeUnder)) {
     stopifnot("removeUnder must be numeric" = identical(class(removeUnder), "numeric"))
     stopifnot("removeUnder must a single integer" = length(removeUnder) == 1)
     stopifnot("Invalid removeUnder input" = removeUnder %in% seq(1, length(scale)))
   }
 
   #Checking removeUnnamed input
-  if(!is.null(removeUnnamed)){
+  if (!is.null(removeUnnamed)) {
     stopifnot("removeUnnamed must be character vector" = identical(class(removeUnder), "character"))
   }
 
@@ -766,7 +777,7 @@ convertLoi <- function(loi) {
 #' @return loi extended with buffer in a sf format
 makeBuffer <- function(loi, loiSf, buffer) {
 
-  if (buffer == 0){
+  if (buffer == 0) {
     loiBuffer <- loiSf
 
   }else if ((identical(class(loi), c("character"))) && (loi %in% c("NA", "SA", "EP", "WP", "SP", "SI", "NI", "ALL"))) {
@@ -850,9 +861,11 @@ retrieveStorms <- function(database, filterNames, filterSeasons, scale, removeUn
         "Duplicate storms names detected :\n",
         paste(pairs, collapse = "\n"),
         "\n",
-        "This will lead to failure in further StormR computations. We strongly recommend to avoid name duplicates by either:
-        - using filters to narrow down your stormsList according to 'names', 'seasons', 'loi', 'removeUnder' or 'removeUnnamed' criterias
-        - using the renameStorms() function right after this defStormsList function"
+        "This will lead to failure in further StormR computations. 
+        We strongly recommend to avoid name duplicates by either:
+          - using filters to narrow down your stormsList according 
+              to 'names', 'seasons', 'loi', 'removeUnder' or 'removeUnnamed' criterias
+          - using the renameStorms() function right after this defStormsList function"
       ), call. = FALSE
     )
   }
@@ -902,46 +915,37 @@ computeScaleIndice <- function(msw, scale) {
 #' @param scale numeric vector. Thresholds for the scale used
 #' @return a storm object
 writeStorm <- function(sds, index, loiSfBuffer, scale) {
-
   #Getting lon/lat coordinates
   lon <- sds@database$longitude[, index]
   lat <- sds@database$latitude[, index]
   coords <- data.frame(lon = lon, lat = lat)
-
   #Keep only non NA data (that are either the first or last observations)
   validIndices <- which(!is.na(coords$lon))
   coords <- coords[validIndices, ]
 
+  if (length(validIndices) == 0) {
+    warning(paste("No valid coordinates data found, skipping this entry. Please check your stormsDatabase for storm",
+                  sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
+    return(NULL)
+  }
+
   #Removing invalid iso_time
   isotime <- sds@database$isotimes[validIndices, index]
   listIsotime <- as.numeric(stringr::str_sub(isotime, 12, 13))
-
   # database should not contain irregular isotimes
   validTimeStep <- listIsotime[2] - listIsotime[1]
   #Keep only valid iso times
   indIsotime <- which(listIsotime %% validTimeStep == 0)
   coords <- coords[indIsotime, ]
-
-
-  if (dim(coords)[1] == 0) {
-    stop(paste("Invalid coordinates found, please check your stormsDatabase for storm",
-               sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
-    return(NULL)
-  }
   row.names(coords) <- seq(1, dim(coords)[1])
-
 
   #Creating sf point coordinates to intersect with loiSfBuffer
   pts <- sf::st_as_sf(coords, coords = c("lon", "lat"))
   sf::st_crs(pts) <- wgs84
-
   #Intersect points coordinates with loiSfBuffer
   ind <- which(sf::st_intersects(pts, loiSfBuffer, sparse = FALSE) == TRUE)
-
-
   #Add TC only if it intersects with loiSfBuffer
   if (length(ind) > 0) {
-
     storm <- storm()
     storm@name <- sds@database$names[index]
     storm@season <- sds@database$seasons[index]
@@ -950,21 +954,29 @@ writeStorm <- function(sds, index, loiSfBuffer, scale) {
                                 lat = lat[validIndices],
                                 msw = zoo::na.approx(round(sds@database$msw[validIndices, index]),
                                                      na.rm = FALSE, rule = 2))
-
-
-
     # scale is calculated using the scale input and the wind speed data
     storm@obs.all$scale <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = scale))
-
-    if ("rmw" %in% names(sds@fields))
+    if ("rmw" %in% names(sds@fields)) {
       storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[validIndices, index]), na.rm = FALSE, rule = 2)
-
-
-    if ("pressure" %in% names(sds@fields))
+      if (all(is.na(storm@obs.all$rmw))) {
+        warning(paste("All 'rmw' values are 'NA'. This can lead to unexpected behviour during reconsturctions if you do not want to use 'empiricalRMW=TRUE' during reconstruction.",
+                      sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
+      }
+    }
+    if ("pressure" %in% names(sds@fields)) {
       storm@obs.all$pres <- zoo::na.approx(sds@database$pres[validIndices, index], na.rm = FALSE, rule = 2)
-
-    if ("poci" %in% names(sds@fields))
+      if (all(is.na(storm@obs.all$pres))) {
+        warning(paste("All 'pres' values are 'NA'. This will likely be a problem in further computations if you want to use 'Holland' or 'Boose' models.",
+                      sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
+      }
+    }
+    if ("poci" %in% names(sds@fields)) {
       storm@obs.all$poci <- zoo::na.approx(sds@database$poci[validIndices, index], na.rm = FALSE, rule = 2)
+      if (all(is.na(storm@obs.all$poci))) {
+        warning(paste("All 'poci' values are 'NA'. This will likely be a problem in further computations if you want to use 'Holland' or 'Boose' models.",
+                      sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
+      }
+    }
 
 
     #Wrapping longitudes from -180/180 to 0/360
@@ -980,7 +992,7 @@ writeStorm <- function(sds, index, loiSfBuffer, scale) {
 
     return(storm)
 
-  }else {
+  } else {
     #warning(paste("Cannot create a 'storm' object for storm", sds@database$names[index],
     #              ", season", sds@database$seasons[index],
     #              ", as it does not intersect with loi"), call. = FALSE)
@@ -1027,6 +1039,79 @@ renameStorms <- function(sts) {
   for (i in seq_along(sts@data)) {
     sts@data[[i]]@name <- detailed_storms_names[i]
   }
+
+  return(sts)
+}
+
+#' Removing specific storms from a `stormsList` object
+#'
+#' The `removeStorms()` function removes specified storms from a `stormsList`
+#' object based on their names and seasons.
+#'
+#' @param sts `stormsList` object
+#' @param names character vector. Names of storms to remove (in capital letters)
+#' @param seasons numeric vector. Seasons of storms to remove (same length as `names`)
+#' @returns `stormsList` object without the specified storms
+#'
+#' @examples
+#' \dontrun{
+#' sds <- defStormsDataset(...)
+#' sts <- defStormsList(sds, loi="Vanuatu", seasons=c(1990, 2000))
+#'
+#' # Remove specific storms
+#' sts <- removeStorms(sts, names=c("UNNAMED", "BARRY"), seasons=c(1990, 1989))
+#' }
+#' @export
+removeStorms <- function(sts, names, seasons) {
+  stopifnot("names and seasons must have the same length" = length(names) == length(seasons))
+  stopifnot("sts must be a stormsList object" = inherits(sts, "stormsList"))
+  storms_names <- getNames(sts)
+  storms_seasons <- getSeasons(sts)
+  remove_keys <- paste0(names, "-", seasons)
+  all_keys <- paste0(storms_names, "-", storms_seasons)
+  to_remove <- which(all_keys %in% remove_keys)
+  if (length(to_remove) == 0) {
+    warning("No matching storms found to remove", call. = FALSE)
+    return(sts)
+  }
+  to_keep <- setdiff(seq_along(sts@data), to_remove)
+  sts@data <- sts@data[to_keep]
+
+  return(sts)
+}
+
+#' Keeping only specific storms from a `stormsList` object
+#'
+#' The `subsetStorms()` function keeps only specified storms from a `stormsList`
+#' object based on their names and seasons, removing all others.
+#'
+#' @param sts `stormsList` object
+#' @param names character vector. Names of storms to keep (in capital letters)
+#' @param seasons numeric vector. Seasons of storms to keep (same length as `names`)
+#' @returns `stormsList` object containing only the specified storms
+#'
+#' @examples
+#' \dontrun{
+#' sds <- defStormsDataset(...)
+#' sts <- defStormsList(sds, loi="Vanuatu", seasons=c(1990, 2000))
+#'
+#' # Keep only specific storms
+#' sts <- subsetStorms(sts, names=c("PAM", "NIRAN"), seasons=c(2015, 2021))
+#' }
+#' @export
+subsetStorms <- function(sts, names, seasons) {
+  stopifnot("names and seasons must have the same length" = length(names) == length(seasons))
+  stopifnot("sts must be a stormsList object" = inherits(sts, "stormsList"))
+  storms_names <- getNames(sts)
+  storms_seasons <- getSeasons(sts)
+  keep_keys <- paste0(names, "-", seasons)
+  all_keys <- paste0(storms_names, "-", storms_seasons)
+  to_keep <- which(all_keys %in% keep_keys)
+  if (length(to_keep) == 0) {
+    warning("No matching storms found to keep", call. = FALSE)
+    return(sts)
+  }
+  sts@data <- sts@data[to_keep]
 
   return(sts)
 }
@@ -1108,37 +1193,38 @@ renameStorms <- function(sts) {
 #' @importFrom methods as
 #' @export
 defStormsList <- function(sds,
-                   loi,
-                   seasons = c(sds@seasons["min"], sds@seasons["max"]),
-                   names = NULL,
-                   maxDist = 300,
-                   scale = sshs,
-                   scalePalette = NULL,
-                   removeUnder = NULL,
-                   removeUnnamed = NULL,
-                   verbose = 2) {
+  loi,
+  seasons = c(sds@seasons["min"], sds@seasons["max"]),
+  names = NULL,
+  maxDist = 300,
+  scale = sshs,
+  scalePalette = NULL,
+  removeUnder = NULL,
+  removeUnnamed = NULL,
+  verbose = 2
+) {
 
   startTime <- Sys.time()
 
   checkInputsDefStormsList(sds, loi, seasons, names, maxDist, scale, scalePalette, verbose, removeUnder, removeUnnamed)
 
   # order scale
-  scale = scale[order(scale)]
+  scale <- scale[order(scale)]
 
 
-  if(identical(scale, sshs) & is.null(scalePalette)){
+  if (identical(scale, sshs) && is.null(scalePalette)) {
     # Default palette should be SSHS
     scalePalette <- sshsPalette
 
-  }else if(!identical(scale, sshs) & is.null(scalePalette)){
+  } else if(!identical(scale, sshs) && is.null(scalePalette)) {
     # Create a default color Palette based on the number of level in scale
     palette <- grDevices::colorRampPalette(colors = c("red", "green", "blue"))
     scalePalette <- rev(palette(length(scale) + 1))
   }
 
-  if(is.null(names(scalePalette))){
+  if (is.null(names(scalePalette))) {
     # If scalePalette has no names, provide default ones
-    names(scalePalette) <- paste0("Cat. ",seq(0, length(scale)))
+    names(scalePalette) <- paste0("Cat. ", seq(0, length(scale)))
 
   }
 
@@ -1155,8 +1241,8 @@ defStormsList <- function(sds,
   loiSf <- convertLoi(loi)
 
 
-   #Handling buffer
-   spatialBuffer <- makeBuffer(loi, loiSf, maxDist * km)
+  #Handling buffer
+  spatialBuffer <- makeBuffer(loi, loiSf, maxDist * km)
 
 
   if (verbose) {
@@ -1206,9 +1292,9 @@ defStormsList <- function(sds,
 
     for (i in indices) {
       storm_i <- writeStorm(sds = sds,
-                              index = i,
-                              loiSfBuffer = spatialBuffer,
-                              scale = scale)
+                            index = i,
+                            loiSfBuffer = spatialBuffer,
+                            scale = scale)
 
       if (!is.null(storm_i)) {
         stormList <- append(stormList, storm_i)

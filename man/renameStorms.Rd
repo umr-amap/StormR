@@ -23,7 +23,7 @@ These storms will be renamed "UNNAMED-YEAR-1", "UNNAMED-YEAR-2", ...
 sds <- defStormsDataset(...)
 sts <- defStormsList(...)
 getNames(sts)
-## "UNNAMED"   "UNNAMED"   "UNNAMED"   "ALLEN"     "CHARLEY"   "DANIELLE"  "JEANNE"    "UNNAMED" 
+## "UNNAMED"   "UNNAMED"   "UNNAMED"   "ALLEN"     "CHARLEY"   "DANIELLE"  "JEANNE"    "UNNAMED"
 ## "UNNAMED"   "UNNAMED"   "DENNIS"    ...
 
 sts <- renameStorms(sts)
