@@ -913,8 +913,9 @@ computeScaleIndice <- function(msw, scale) {
 #' @param index numeric, index of the storm in the database
 #' @param loiSfBuffer sf object. Location of interest extended with buffer
 #' @param scale numeric vector. Thresholds for the scale used
+#' @param verbose numeric. Whether or not the function should display
 #' @return a storm object
-writeStorm <- function(sds, index, loiSfBuffer, scale) {
+writeStorm <- function(sds, index, loiSfBuffer, scale, verbose) {
   #Getting lon/lat coordinates
   lon <- sds@database$longitude[, index]
   lat <- sds@database$latitude[, index]
@@ -923,7 +924,7 @@ writeStorm <- function(sds, index, loiSfBuffer, scale) {
   validIndices <- which(!is.na(coords$lon))
   coords <- coords[validIndices, ]
 
-  if (length(validIndices) == 0) {
+  if ((length(validIndices) == 0) && (verbose > 0)) {
     warning(paste("No valid coordinates data found, skipping this entry. Please check your stormsDatabase for storm",
                   sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
     return(NULL)
@@ -958,22 +959,22 @@ writeStorm <- function(sds, index, loiSfBuffer, scale) {
     storm@obs.all$scale <- unlist(lapply(X = storm@obs.all$msw, FUN = computeScaleIndice, scale = scale))
     if ("rmw" %in% names(sds@fields)) {
       storm@obs.all$rmw <- zoo::na.approx(round(sds@database$rmw[validIndices, index]), na.rm = FALSE, rule = 2)
-      if (all(is.na(storm@obs.all$rmw))) {
+      if ((all(is.na(storm@obs.all$rmw))) && (verbose > 0)) {
         warning(paste("All 'rmw' values are 'NA'. This can lead to unexpected behviour during reconsturctions if you do not want to use 'empiricalRMW=TRUE' during reconstruction.",
                       sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
       }
     }
     if ("pressure" %in% names(sds@fields)) {
       storm@obs.all$pres <- zoo::na.approx(sds@database$pres[validIndices, index], na.rm = FALSE, rule = 2)
-      if (all(is.na(storm@obs.all$pres))) {
-        warning(paste("All 'pres' values are 'NA'. This will likely be a problem in further computations if you want to use 'Holland' or 'Boose' models.",
+      if ((all(is.na(storm@obs.all$pres))) && (verbose > 0)) {
+        warning(paste("All 'pres' values are 'NA'. This will be a problem in further computations if you want to use 'Holland' or 'Boose' models.",
                       sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
       }
     }
     if ("poci" %in% names(sds@fields)) {
       storm@obs.all$poci <- zoo::na.approx(sds@database$poci[validIndices, index], na.rm = FALSE, rule = 2)
-      if (all(is.na(storm@obs.all$poci))) {
-        warning(paste("All 'poci' values are 'NA'. This will likely be a problem in further computations if you want to use 'Holland' or 'Boose' models.",
+      if ((all(is.na(storm@obs.all$poci))) && (verbose > 0)) {
+        warning(paste("All 'poci' values are 'NA'. This will be a problem in further computations if you want to use 'Holland' or 'Boose' models.",
                       sds@database$names[index], "season ", sds@database$seasons[index]), call. = FALSE)
       }
     }
@@ -1294,7 +1295,8 @@ defStormsList <- function(sds,
       storm_i <- writeStorm(sds = sds,
                             index = i,
                             loiSfBuffer = spatialBuffer,
-                            scale = scale)
+                            scale = scale,
+                            verbose = verbose)
 
       if (!is.null(storm_i)) {
         stormList <- append(stormList, storm_i)

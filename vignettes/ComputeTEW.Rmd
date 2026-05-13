@@ -13,8 +13,7 @@ bibliography: stormr.bib
 ---
 
 ```{r setup, include = FALSE}
-devtools::load_all()
-#library(StormR)
+library(StormR)
 library(terra)
 ```
 
@@ -59,22 +58,26 @@ extracted thanks to the [`openEO` package](https://open-eo.github.io/openeo-r-cl
 ```{r connection, eval=FALSE}
 library(openeo)
 # connect to the backend and authenticate (an account is requirred)
-connection = connect(host = "https://openeofed.dataspace.copernicus.eu")
+connection <- connect(host = "https://openeofed.dataspace.copernicus.eu")
 login()
 
 # get the process collection to use the predefined processes of the back-end
-p = processes()
+p <- processes()
 
-#define wanted data
-data = p$load_collection(id = 'COPERNICUS_30',
-                         spatial_extent = list(west=168.310547, 
-                                               south=-17.651056,
-                                               east=168.422470,
-                                               north=-17.573830),
-                         bands = c("DEM"))
+# define wanted data
+data <- p$load_collection(
+  id = "COPERNICUS_30",
+  spatial_extent = list(
+    west = 168.310547,
+    south = -17.651056,
+    east = 168.422470,
+    north = -17.573830
+  ),
+  bands = c("DEM")
+)
 
 
-result = p$save_result(data = data, format = "GTiff")
+result <- p$save_result(data = data, format = "GTiff")
 ```
 
 ```{r save tif file, eval = FALSE}
@@ -86,11 +89,11 @@ compute_result(graph = result, output_file = "../filepath/name.tif")
 dtm <- rast("../inst/extdata/test_datadtm.tif")
 ```
 
-Other DTM products should work seemlessly with StormR.
+Other DTM / elevation products should work seemlessly with StormR. 
 
 #### Extracting spatial profiles
 
-Spatial profiles must be computed to run the `computeTEW()` function. 
+Spatial profiles must be computed prior to run the `computeTEW()` function. 
 
 ```{r}
 spProfiles <- spatialBehaviour(st, product = "Profiles", verbose = 0)
@@ -99,25 +102,27 @@ spProfiles
 
 Other spatial profiles can be used as long as the layers of the spatRaster respect the following terminology : the name of the storm in capital letters, "Speed" or "Direction", and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41", ...).
 
-#### Topographic exposure profiles
+#### Topographic exposure to wind profiles
 
 Using track data and the `computeTEW()` function with the
-`product="Profiles"` or `product="PixProfiles"` argument we can generate
+`product="TEW1wd"` or `product="TEW"` argument we can generate
 topographic exposure fields at any time as follows:
 
 ```{r}
-pf <- computeTEW(st, dtm, spProfiles, product = "Profiles", verbose = 0)
+pf <- computeTEW(spProfiles, st, dtm, product = "TEW", verbose = 0)
 pf
 ```
 
-The product `Profiles` compute TEW from one and
-only one direction taken at maximal wind speed location for the entire location of
+The product `TEW1wd` compute TEW from one and
+only one wind direction taken at maximal wind speed location for the entire location of
 interest. This option should be used for small locations of interest, where 
 wind direction is considered homogeneous.
 
-On the other hand, `PixProfiles` option computes TEW from
+On the other hand, `TEW` option computes TEW from
 one direction per pixel. This gives a more accurate picture for large scale areas 
 where wind direction variations are important.
+
+Multiple products can be computed at the same time, by simply providing a vector of product names, e.g. `product = c("TEW1wd", "TEW")`.
 
 The function returns a `SpatRaster` one raster for each observation or
 interpolated observation. Rasters' names follow the following
@@ -134,32 +139,50 @@ Topographic exposure profiles at the 41^th^ observation can be plotted
 as follows:
 
 ```{r}
-plotTEW(st,dtm, pf$PAM_TEW_41)
+plotTEW(st, pf$PAM_TEW_41)
+```
 
+#### Topographic exposure to wind at specified locations
+
+Topographic exposure to wind can also be computed at any location of interest.
+
+This can be used in association with the `temporalBehaviour` function:
+
+```{r}
+df <- data.frame(x = c(168.36), y = c(-17.62))
+rownames(df) <- c("Forest Plot")
+TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)
+pf <- computeTEW(TS, df, dtm, verbose = 0)
+```
+And you can then plot the time series of the topographic exposure to wind at your location of interest as follows:
+
+```{r}
+plotTemporalTEW(pf, "PAM")
 ```
 
 #### Summary Statistics
 
-The `computeTEW()` function can compute the different `products`
-(i.e., `"Profiles"`, `"PixProfiles"`, `"Max"`, `"Mean"`, `"Summary"`)
-either separately or together. "Summary" statistics are products integrated over 
-the lifespan of the storm. Here, we compute all three summary
+In addition  to TEW at all observations time, the `computeTEW()` function can compute 
+different "summary" `products`, either separately or together. 
+"Summary" statistics are products integrated over 
+the lifespan of the storm. Here, we compute all three integrated summary
 statistics together as follows:
 
 ```{r}
-ss <- computeTEW(st, dtm, spProfiles, product = c("Max", "Mean", "Summary"), verbose = 0)
+ss <- computeTEW(spProfiles, st, dtm, product = c("TEW1wdMax", "TEW1wdMean", "TEWIntegrated"), verbose = 0)
 ss
 ```
 
 The `computeTEW()` function returns a `SpatRaster` object with
 three rasters: 
 
-- one for the maximum TEW (`"Max"`): TEW is computed for each time step
-using "Profiles", and the the maximum value is return for each pixel.
-- one for the mean TEW (`"Mean"`, also taken as default value): TEW is 
-computed for each time step using "Profiles", 
+- one for the maximum TEW (`"TEW1wd_Max"`): TEW is computed for each time step
+using "Profiles" and only one wind direction (associated with the maximum wind speed for each layer of "Profiles"), 
+and the the maximum value is return for each pixel.
+- one for the mean TEW (`"TEW1d_Mean"`): TEW is computed for each time step using "Profiles", 
+and only one wind direction (associated with the maximum wind speed for each layer of "Profiles"), 
 and the the mean value is return for each pixel.
-- one for the maximum speed for each pixel TEW (`"Summary"`): TEW is computed 
+- one for the maximum speed for each pixel TEW (`"TEW_Integrated"`): TEW is computed 
 using wind direction associated with maximum wind speed over the whole lifespan 
 of the storm for each pixel.
 
@@ -170,19 +193,19 @@ names(ss)
 The maximum topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st,dtm, ss$PAM_TEW_Max)
+plotTEW(st, ss$PAM_TEW1wd_Max)
 ```
 
 The mean topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st, dtm,ss$PAM_TEW_Mean)
+plotTEW(st, ss$PAM_TEW1wd_Mean)
 ```
 
 The summary of topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st,dtm, ss$PAM_TEW_Summary)
+plotTEW(st, ss$PAM_TEW_Integrated)
 ```
 
 
@@ -191,20 +214,19 @@ plotTEW(st,dtm, ss$PAM_TEW_Summary)
 `plotTEW` function also provide (See ExtractStorms vignette) a dynamic plot.
 Here is an example based on the same parameters as above.
 
-```{r, eval = FALSE}
-plotTEW(st, dtm,ss$PAM_TEW_Summary, dynamicPlot = TRUE)
+```{r}
+plotTEW(st, ss$PAM_TEW_Integrated, dynamicPlot = TRUE)
 ```
-**warning : ne fonctionne peut être pas pour le moment**
 
 ### Exporting computeTEW products
 
 The `computeTEW()` function returns rasters stored in a `SpatRaster`
 object than can be exported either in ".tiff" or ".nc" (NetCDF) formats using
-the `writeRast()` function. Here, we export the summary of topographic exposure in
+the `writeRast()` function. Here, we export the topographic exposure to wind in
 the working directory as follows:
 
 ```{r}
-writeRast(ss$PAM_TEW_Summary)
+writeRast(ss$PAM_TEW_Integrated)
 ```
 
 ## References

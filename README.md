@@ -52,15 +52,19 @@ library(StormR)
 
 ## Main functions
 
-|       **Name**        |                                             **Description**                                             |             **Inputs**              |         **Outputs**         |
-| :-------------------: | :-----------------------------------------------------------------------------------------------------: | :---------------------------------: | :-------------------------: |
-| `defStormsDataset()`  |                                    Creates a `stormsDataset` object                                     |         ".nc" (NetCDF) file         |   `stormsDataset` object    |
-|   `defStormsList()`   |                                             Extracts storms                                             |       `stormsDataset` object        |     `stormsList` object     |
-|    `plotStorms()`     |                                         Plots storms track data                                         |         `stormsList` object         |                             |
-| `temporalBehaviour()` | Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |         `stormsList` object         | lists of data.frame objects |
-| `spatialBehaviour()`  |            Computes 2D wind fields and summary statistics over a given location of interest             |         `stormsList` object         |     `SpatRaster` object     |
-|   `plotBehaviour()`   |                               Plots 2D wind fields and summary statistics                               | `stormsList` + `SpatRaster` objects |                             |
-|     `writeRast()`     |                           Exports wind fields and summary statistics to file                            |         `SpatRaster` object         |    `.tiff` or `.nc` file    |
+|       **Name**        |                                             **Description**                                             |                                  **Inputs**                                   |         **Outputs**          |
+| :-------------------: | :-----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------: | :--------------------------: |
+| `defStormsDataset()`  |                                    Creates a `stormsDataset` object                                     |                              ".nc" (NetCDF) file                              |    `stormsDataset` object    |
+|   `defStormsList()`   |                                             Extracts storms                                             |                            `stormsDataset` object                             |     `stormsList` object      |
+|    `plotStorms()`     |                                         Plots storms track data                                         |                              `stormsList` object                              |                              |
+| `temporalBehaviour()` | Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |                              `stormsList` object                              | list of `data.frame` objects |
+| `spatialBehaviour()`  |            Computes 2D wind fields and summary statistics over a given location of interest             |                              `stormsList` object                              |     `SpatRaster` object      |
+|   `plotBehaviour()`   |                               Plots 2D wind fields and summary statistics                               |                      `stormsList` + `SpatRaster` objects                      |                              |
+|    plotTemporal()     | Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |                      `stormsList` & `data.frame` objects                      |                              |
+|    `computeTEW()`     | Computes Topographic Exposure to Wind (TEW) for a given set of storms and a given location of interest  | `stormsList` + "Digital Terrain Model" + `SpatRaster` or `data.frame` objects |     `SpatRaster` object      |
+|      `plotTEW()`      |                                            Plots TEW fields                                             |                          `stormsList` + `SpatRaster`                          |                              |
+|  `plotTemporalTEW()`  |                       Plots TEW time series for a given set of point coordinates                        |              `data.frame` coordinates + list of `data.frame` TEW              |                              |
+|     `writeRast()`     |                         Exports wind fields, TEW and summary statistics to file                         |                              `SpatRaster` object                              |    `.tiff` or `.nc` file     |
 
 ## Contributing
 

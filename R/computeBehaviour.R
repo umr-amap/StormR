@@ -68,9 +68,13 @@ computeProduct.numeric <- function(speed, direction, product, tempRes, windThres
   if (product == "TS") {
     prod <- cbind(speed, direction)
   } else if (product == "PDI") {
-    prod <- computePDI(speed, tempRes)
+    prod <- lapply(seq_len(ncol(speed)), function(i) {
+      computePDI(speed[, i], tempRes)
+    })
   } else if (product == "Exposure") {
-    prod <- computeTempExposure(speed, tempRes, windThreshold)
+    prod <- lapply(seq_len(ncol(speed)), function(i) {
+      computeTempExposure(speed[, i], tempRes, windThreshold)
+    })
   }
 
   return(prod)
