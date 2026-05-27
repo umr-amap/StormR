@@ -622,10 +622,10 @@ test_that("removeStorms validates inputs", {
 
 test_that("removeStorms preserves stormsList structure", {
   result <- removeStorms(sts_nc, names = "PAM", seasons = 2015)
-  expect_identical(result@buffer, sts@buffer)
-  expect_identical(result@spatialLoi, sts@spatialLoi)
-  expect_identical(result@spatialLoiBuffer, sts@spatialLoiBuffer)
-  expect_identical(result@scale, sts@scale)
+  expect_identical(result@buffer, sts_nc@buffer)
+  expect_identical(result@spatialLoi, sts_nc@spatialLoi)
+  expect_identical(result@spatialLoiBuffer, sts_nc@spatialLoiBuffer)
+  expect_identical(result@scale, sts_nc@scale)
 })
 
 
@@ -663,10 +663,10 @@ test_that("subsetStorms validates inputs", {
 
 test_that("subsetStorms preserves stormsList structure", {
   result <- subsetStorms(sts_nc, names = "PAM", seasons = 2015)
-  expect_identical(result@buffer, sts@buffer)
-  expect_identical(result@spatialLoi, sts@spatialLoi)
-  expect_identical(result@spatialLoiBuffer, sts@spatialLoiBuffer)
-  expect_identical(result@scale, sts@scale)
+  expect_identical(result@buffer, sts_nc@buffer)
+  expect_identical(result@spatialLoi, sts_nc@spatialLoi)
+  expect_identical(result@spatialLoiBuffer, sts_nc@spatialLoiBuffer)
+  expect_identical(result@scale, sts_nc@scale)
 })
 
 test_that("Test convert loi function", {
