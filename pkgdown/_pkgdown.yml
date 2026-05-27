@@ -59,6 +59,7 @@ reference:
   contents:
   - '`spatialBehaviour`'
   - '`temporalBehaviour`'
+  - '`computeTEW`'
 
 
 - title: Plot
@@ -67,6 +68,8 @@ reference:
   - '`plotStorms`'
   - '`plotBehaviour`'
   - '`plotTemporal`'
+  - '`plotTEW`'
+  - '`plotTemporalTEW`'
 
 
 - title: Write
@@ -100,3 +103,4 @@ articles:
   - '`Models`'
   - '`SpatialBehaviour`'
   - '`TemporalBehaviour`'
+  - '`ComputeTEW`'

@@ -7,6 +7,7 @@
 plotTEW(
   sts,
   rasterProduct,
+  dtm = NULL,
   colorPalette = NULL,
   main = NULL,
   xlim = NULL,
@@ -31,6 +32,10 @@ statistic separated by underscores (e.g.,"PAM_TEW1wd_Mean", "PAM_TEW1wd_Max", "P
 \item for multiple profiles, the name of the storm in capital letters, "TEW" or "TEW1wd",
 and the indices of the observation separated by underscores (e.g., "PAM_TEW_18", "PAM_TEW1wd_33", ...).
 }}
+
+\item{dtm}{\code{SpatRaster}. Digital terrain model used to compute the TEW.
+If provided, the land/ocean mask is derived from the DTM at its native resolution,
+giving a much finer coastline than world map polygons.}
 
 \item{colorPalette}{character vector. The color palette used to plot the raster layer.
 If \code{colorPalette=NULL} (default setting), the default color palette is used.}
@@ -76,17 +81,22 @@ sds <- defStormsDataset()
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 
 # Getting digital terrain model for PortVilla island
-mnt <- rast("../inst/extdata/test_datadtm.tif")
+mnt <- rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
 
 # Plotting topographic exposure to wind (tew) for Pam (2015) near Vanuatu
 pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 pam.tew <- computeTEW(pam, mnt, pam.prof, verbose = 0)
+
+# Basic plot
 plotTEW(pam, pam.tew)
+
+# Plot with DTM-derived land mask for finer coastline
+plotTEW(pam, pam.tew, dtm = mnt)
 
 # Plotting with the range of wind direction
 plotTEW(pam, pam.tew, fan = TRUE)
 
 # dynamicPlot mode
-plotTEW(pam, pam.msw, dynamicPlot = TRUE)
+plotTEW(pam, pam.tew, dynamicPlot = TRUE)
 }
 }

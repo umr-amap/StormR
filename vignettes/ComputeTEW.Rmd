@@ -139,7 +139,7 @@ Topographic exposure profiles at the 41^th^ observation can be plotted
 as follows:
 
 ```{r}
-plotTEW(st, pf$PAM_TEW_41)
+plotTEW(st, pf$PAM_TEW_41, dtm = dtm)
 ```
 
 #### Topographic exposure to wind at specified locations
@@ -193,19 +193,19 @@ names(ss)
 The maximum topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st, ss$PAM_TEW1wd_Max)
+plotTEW(st, ss$PAM_TEW1wd_Max, dtm = dtm)
 ```
 
 The mean topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st, ss$PAM_TEW1wd_Mean)
+plotTEW(st, ss$PAM_TEW1wd_Mean, dtm = dtm)
 ```
 
 The summary of topographic exposure can be plotted as follows:
 
 ```{r}
-plotTEW(st, ss$PAM_TEW_Integrated)
+plotTEW(st, ss$PAM_TEW_Integrated, dtm = dtm)
 ```
 
 
@@ -215,7 +215,7 @@ plotTEW(st, ss$PAM_TEW_Integrated)
 Here is an example based on the same parameters as above.
 
 ```{r}
-plotTEW(st, ss$PAM_TEW_Integrated, dynamicPlot = TRUE)
+plotTEW(st, ss$PAM_TEW_Integrated, dtm = dtm, dynamicPlot = TRUE)
 ```
 
 ### Exporting computeTEW products

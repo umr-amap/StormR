@@ -26,7 +26,8 @@ checkInputsplotTEW <- function(sts,
                                main,
                                legends,
                                fan,
-                               dynamicPlot) {
+                               dynamicPlot,
+                               dtm) {
   # Checking sts input
   stopifnot("no data to plot" = !missing(sts))
 
@@ -90,6 +91,11 @@ checkInputsplotTEW <- function(sts,
   # Checking mode input
   stopifnot("dynamicPlot must be logical" = identical(class(dynamicPlot), "logical"))
   stopifnot("dynamicPlot must length 1" = length(dynamicPlot) == 1)
+
+  # Checking dtm input
+  if (!is.null(dtm)) {
+    stopifnot("dtm must be a SpatRaster" = inherits(dtm, "SpatRaster"))
+  }
 }
 
 ##' Check inputs for plotTemporalTEW function
@@ -176,6 +182,9 @@ computeWindFan <- function(sts, rasterProduct) {
 #' @param legends character. Indicates where to plot the legend, `"topright"`(default setting), `"topleft"`,
 #' `"bottomleft"`, `"bottomright"`, or `"none"` (legend not plotted).
 #' @param fan logical. Whether (FALSE, default setting) or (TRUE) to add the range of wind direction along the storm.
+#' @param dtm `SpatRaster`. Digital terrain model used to compute the TEW.
+#' If provided, the land/ocean mask is derived from the DTM at its native resolution,
+#' giving a much finer coastline than world map polygons.
 #' @param dynamicPlot logical. Whether (FALSE, default setting) or (TRUE) to plot the
 #' data dynamicaly using leaflet library
 #' @returns A plot of the storm track data with the raster layer.
@@ -189,23 +198,29 @@ computeWindFan <- function(sts, rasterProduct) {
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #'
 #' # Getting digital terrain model for PortVilla island
-#' mnt <- rast("../inst/extdata/test_datadtm.tif")
+#' mnt <- rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
 #'
 #' # Plotting topographic exposure to wind (tew) for Pam (2015) near Vanuatu
 #' pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 #' pam.tew <- computeTEW(pam, mnt, pam.prof, verbose = 0)
+#'
+#' # Basic plot
 #' plotTEW(pam, pam.tew)
+#'
+#' # Plot with DTM-derived land mask for finer coastline
+#' plotTEW(pam, pam.tew, dtm = mnt)
 #'
 #' # Plotting with the range of wind direction
 #' plotTEW(pam, pam.tew, fan = TRUE)
 #'
 #' # dynamicPlot mode
-#' plotTEW(pam, pam.msw, dynamicPlot = TRUE)
+#' plotTEW(pam, pam.tew, dynamicPlot = TRUE)
 #' }
 #' @export
 
 plotTEW <- function(sts,
                     rasterProduct,
+                    dtm = NULL,
                     colorPalette = NULL,
                     main = NULL,
                     xlim = NULL,
@@ -218,7 +233,7 @@ plotTEW <- function(sts,
                     dynamicPlot = FALSE) {
   checkInputsplotTEW(
     sts, rasterProduct, xlim, ylim, labels, by, pos, colorPalette,
-    main, legends, fan, dynamicPlot
+    main, legends, fan, dynamicPlot, dtm
   )
 
   product <- strsplit(names(rasterProduct), split = "_", fixed = TRUE)[[1]]
@@ -280,19 +295,45 @@ plotTEW <- function(sts,
   if (!is.null(colorPalette)) col <- colorPalette
   if (!is.null(main)) leg <- main
 
+  # Build land mask from DTM (preferred) or world map polygons
+  if (!is.null(dtm)) {
+    land_mask <- terra::ifel(dtm > 0, 1, NA)
+    land_contour <- terra::ifel(dtm > 0, 1, 0)
+  } else {
+    world <- terra::project(terra::vect(rworldmap::getMap(resolution = "high")),
+      terra::crs(rasterProduct)
+    )
+    land_mask <- terra::rasterize(world, rasterProduct, field = 1)
+    land_contour <- terra::subst(land_mask, NA, 0)
+  }
+  raster_land <- terra::mask(rasterProduct, land_mask)
+
   # static plot
   if (!dynamicPlot) {
-    # plot on rasterProduct extent
-    terra::plot(rasterProduct,
+    # Plot land/ocean background
+    terra::plot(land_mask,
+      col = groundColor,
+      colNA = oceanColor,
+      axes = TRUE,
+      legend = FALSE,
+      main = leg
+    )
+
+    # Overlay TEW raster
+    terra::plot(raster_land,
       col = col,
       type = "continuous",
-      xlim = c(xmin, xmax),
-      ylim = c(ymin, ymax),
       alpha = 0.7,
-      axes = TRUE,
+      axes = FALSE,
       range = range,
       legend = TRUE,
-      main = leg
+      add = TRUE
+    )
+
+    # Draw coastline at raster resolution
+    terra::contour(land_contour,
+      levels = 0.5, col = "grey30", lwd = 0.6,
+      drawlabels = FALSE, add = TRUE
     )
 
     # track storm
@@ -389,12 +430,14 @@ plotTEW <- function(sts,
     )
 
     map <- leaflet::leaflet() |>
-      leaflet::addTiles() |>
+      leaflet::addProviderTiles(leaflet::providers$Esri.NatGeoWorldMap,
+        options = leaflet::providerTileOptions(errorTileUrl = "Tile not found")
+      ) |>
       leaflet::fitBounds(
         lng1 = ext[1], lat1 = ext[3],
         lng2 = ext[2], lat2 = ext[4]
       ) |>
-      leaflet::addRasterImage(rasterProduct,
+      leaflet::addRasterImage(raster_land,
         colors  = pal,
         opacity = 0.8
       ) |>
@@ -415,7 +458,7 @@ plotTEW <- function(sts,
       ) |>
       leaflet::addLegend(legends,
         pal     = pal,
-        values  = terra::values(rasterProduct, na.rm = TRUE),
+        values  = terra::values(raster_land, na.rm = TRUE),
         title   = leg,
         opacity = 0.8
       )
