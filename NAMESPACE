@@ -2,6 +2,7 @@
 
 S3method(computeTEW,SpatRaster)
 S3method(computeTEW,list)
+export(computeTEW)
 export(defStormsDataset)
 export(defStormsList)
 export(getBuffer)

@@ -305,9 +305,7 @@ computeTEWProfiles <- function(profiles, layersMSW, layersDir, topo, angle, thre
 #' or
 #' 2) a data.frame with the coordinates of the points of interest,
 #' for a given tropical cyclone or a set of tropical cyclones.
-#'
-
-
+#' @export
 computeTEW <- function(profiles, ...) {
   UseMethod("computeTEW")
 }
