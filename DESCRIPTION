@@ -15,6 +15,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-5389-0532")),
     person("Christophe", "Menkes", , "Christophe.Menkes@ird.fr", role = "aut",
            comment = c(ORCID = "0000-0002-1457-9696")),
+    person("Alix", "Biton", , "biton.alix@gmail.com", role = "aut"),
     person("Thomas", "Arsouze", , "thomas.arsouze@cirad.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-8871-6120"))
   )
