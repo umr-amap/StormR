@@ -11,7 +11,8 @@
   angle = 6,
   threshold = 0,
   product = "TEWIntegrated",
-  verbose = 2
+  verbose = 2,
+  ...
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ information about the process and/or outputs. Can be:
 \item \code{1}, information about the processes are displayed,
 \item \code{0}, no information displayed.
 }}
+
+\item{...}{additional arguments (not used)}
 }
 \value{
 the function returns one layer for topographic exposure to wind (TEW)

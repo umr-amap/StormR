@@ -6,6 +6,11 @@
 \usage{
 computeTEW(profiles, ...)
 }
+\arguments{
+\item{profiles}{SpatRaster or list. Wind speed and direction profiles from \code{spatialBehaviour()} or \code{temporalBehaviour()}}
+
+\item{...}{additional arguments depending on the type of \code{profilees} input}
+}
 \description{
 The \code{computeTEW()} function allows computing topographic exposure to wind (TEW)
 for either:

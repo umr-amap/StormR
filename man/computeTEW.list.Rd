@@ -4,7 +4,7 @@
 \alias{computeTEW.list}
 \title{Compute the topographic exposure to wind}
 \usage{
-\method{computeTEW}{list}(profiles, points, dtm, angle = 6, threshold = 0, verbose = 2)
+\method{computeTEW}{list}(profiles, points, dtm, angle = 6, threshold = 0, verbose = 2, ...)
 }
 \arguments{
 \item{profiles}{list Wind speed and direction profiles from \code{temporalBehaviour()} function which must respect
@@ -27,6 +27,8 @@ information about the process and/or outputs. Can be:
 \item \code{1}, information about the processes are displayed,
 \item \code{0}, no information displayed.
 }}
+
+\item{...}{additional arguments (not used)}
 }
 \value{
 the function returns a list of data.frame with one additional column for topographic exposure to wind (TEW)

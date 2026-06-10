@@ -305,6 +305,9 @@ computeTEWProfiles <- function(profiles, layersMSW, layersDir, topo, angle, thre
 #' or
 #' 2) a data.frame with the coordinates of the points of interest,
 #' for a given tropical cyclone or a set of tropical cyclones.
+#'
+#' @param profiles SpatRaster or list. Wind speed and direction profiles from `spatialBehaviour()` or `temporalBehaviour()`
+#' @param ... additional arguments depending on the type of `profilees` input
 #' @export
 computeTEW <- function(profiles, ...) {
   UseMethod("computeTEW")
@@ -339,6 +342,7 @@ computeTEW <- function(profiles, ...) {
 #'    \item `1`, information about the processes are displayed,
 #'    \item `0`, no information displayed.
 #' }
+#' @param ... additional arguments (not used)
 #' @return the function returns one layer for topographic exposure to wind (TEW)
 #' for each observation or interpolated observation and each `Storm`.
 #' The names of the layer follow the following terminology, the name of the storm in capital letters,
@@ -352,7 +356,8 @@ computeTEW.SpatRaster <- function(profiles,
                                   angle = 6,
                                   threshold = 0,
                                   product = "TEWIntegrated",
-                                  verbose = 2) {
+                                  verbose = 2,
+                                  ...) {
   startTime <- Sys.time()
 
   checkInputscomputeTEW.SpatRaster(
@@ -486,6 +491,7 @@ computeTEW.SpatRaster <- function(profiles,
 #'    \item `1`, information about the processes are displayed,
 #'    \item `0`, no information displayed.
 #' }
+#' @param ... additional arguments (not used)
 #' @return the function returns a list of data.frame with one additional column for topographic exposure to wind (TEW)
 #' for each observation or interpolated observation and each `Storm`.
 #' @export
@@ -495,7 +501,8 @@ computeTEW.list <- function(profiles,
                             dtm,
                             angle = 6,
                             threshold = 0,
-                            verbose = 2) {
+                            verbose = 2,
+                            ...) {
   startTime <- Sys.time()
 
   checkInputscomputeTEW.list(

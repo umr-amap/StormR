@@ -198,11 +198,11 @@ computeWindFan <- function(sts, rasterProduct) {
 #' pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #'
 #' # Getting digital terrain model for PortVilla island
-#' mnt <- rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
+#' mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
 #'
 #' # Plotting topographic exposure to wind (tew) for Pam (2015) near Vanuatu
 #' pam.prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-#' pam.tew <- computeTEW(pam, mnt, pam.prof, verbose = 0)
+#' pam.tew <- computeTEW(pam.prof, pam, mnt, verbose = 0)
 #'
 #' # Basic plot
 #' plotTEW(pam, pam.tew)
@@ -424,7 +424,7 @@ plotTEW <- function(sts,
     track <- sts@data[[name]]@obs.all
 
     pal <- leaflet::colorNumeric(
-      palette  = hcl.colors(100, palette = "RdBu", rev = TRUE),
+      palette  = grDevices::hcl.colors(100, palette = "RdBu", rev = TRUE),
       domain   = c(-1, 1),
       na.color = "transparent"
     )
