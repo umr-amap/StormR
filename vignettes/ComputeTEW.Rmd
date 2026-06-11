@@ -68,10 +68,10 @@ p <- processes()
 data <- p$load_collection(
   id = "COPERNICUS_30",
   spatial_extent = list(
-    west = 168.310547,
-    south = -17.651056,
-    east = 168.422470,
-    north = -17.573830
+    west = 168.982086,
+    south = -19.002400,
+    east = 169.348755,
+    north = -18.614363
   ),
   bands = c("DEM")
 )
