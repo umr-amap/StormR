@@ -224,26 +224,6 @@ getTerrain <- function(elevation) {
 
 
 
-#' Compute the topographic exposure with shade
-#'
-#' @noRd
-#' @param slope SpatRaster with slope values (in radians)
-#' @param aspect SpatRaster with aspect values (in radians)
-#' @param angle numeric. inflection angle of the wind (in degrees)
-#' @param direction numeric. wind direction (in degrees)
-#'
-#' @return SpatRaster of the topographic exposure
-
-# computeShade <- function(slope, aspect, angle = 6, direction) {
-#  if (is.na(direction)) {
-#    return(NULL)
-#  }
-#
-#  expRast <- terra::shade(slope, aspect, angle, direction)
-#
-#  return(expRast)
-# }
-
 #' Compute TEW Profiles for all observations
 #'
 #' @noRd
