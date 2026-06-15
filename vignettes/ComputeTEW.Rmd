@@ -19,15 +19,15 @@ library(terra)
 
 The `computeTEW()` function allows computing topographic exposure to wind (TEW)
 @boose_hurricane_1994 for each cell of a regular grid (i.e., a raster) for a given
-tropical cyclone or set of tropical cyclones. The `product="Profiles"`
-and `product="PixProfiles"` argument allows producing exposure fields
+tropical cyclone or set of tropical cyclones. The `product="TEW1wd"`
+and `product="TEW"` argument allows producing exposure fields
 during the lifespan of the cyclone.
 The `computeTEW()` function also allows to compute three associated
 summary statistics: the maximum and mean TEW for each cell
-during the cyclone (`product="Max"` and `product="Mean"`, respectively) 
+during the cyclone (`product="TEW1wdMax"` and `product="TEW1wdMean"`, respectively) 
 and the TEW computed for
 each pixel with the direction at maximal sustained speed along the
-cyclone (`product="Summary"`). 
+cyclone (`product="TEWIntegrated"`). 
 
 Then the `plotTEW()` and the `writeRast()` functions can be used to visualize and export the output.
 
@@ -149,7 +149,7 @@ Topographic exposure to wind can also be computed at any location of interest.
 This can be used in association with the `temporalBehaviour` function:
 
 ```{r}
-df <- data.frame(x = c(168.36), y = c(-17.62))
+df <- data.frame(x = c(169.097), y = c(-18.723))
 rownames(df) <- c("Forest Plot")
 TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)
 pf <- computeTEW(TS, df, dtm, verbose = 0)
