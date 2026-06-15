@@ -287,7 +287,7 @@ computeTEWProfiles <- function(profiles, layersMSW, layersDir, topo, angle, thre
 #' for a given tropical cyclone or a set of tropical cyclones.
 #'
 #' @param profiles SpatRaster or list. Wind speed and direction profiles from `spatialBehaviour()` or `temporalBehaviour()`
-#' @param ... additional arguments depending on the type of `profilees` input
+#' @param ... additional arguments depending on the type of `profiles` input
 #' @export
 computeTEW <- function(profiles, ...) {
   UseMethod("computeTEW")
