@@ -368,8 +368,8 @@ computeTEW.SpatRaster <- function(profiles,
     if (verbose > 0) cat("\n --> Computing for :", stormName, "...\n\n")
 
     # get speed and direction layers
-    layersMSW <- names(profiles)[grep("_Speed_", names(profiles))]
-    layersDir <- names(profiles)[grep("_Direction_", names(profiles))]
+    layersMSW <- names(profiles)[grep(paste0(stormName, "_Speed_"), names(profiles))]
+    layersDir <- names(profiles)[grep(paste0(stormName, "_Direction_"), names(profiles))]
 
     # stack for one storm
     currentStormStack <- NULL
