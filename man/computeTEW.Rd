@@ -9,15 +9,15 @@ computeTEW(profiles, ...)
 \arguments{
 \item{profiles}{SpatRaster or list. Wind speed and direction profiles from \code{spatialBehaviour()} or \code{temporalBehaviour()}}
 
-\item{...}{additional arguments depending on the type of \code{profilees} input}
+\item{...}{additional arguments depending on the type of \code{profiles} input}
 }
 \description{
 The \code{computeTEW()} function allows computing topographic exposure to wind (TEW)
 for either:
 \enumerate{
-\item each cell of a regular grid (i.e., a raster)
+\item each cell of a regular grid (i.e., a raster). See \code{\link{computeTEW.SpatRaster}} documentation.
 or
 \item a data.frame with the coordinates of the points of interest,
-for a given tropical cyclone or a set of tropical cyclones.
+for a given tropical cyclone or a set of tropical cyclones. See \code{\link{computeTEW.list}} documentation.
 }
 }

@@ -281,10 +281,10 @@ computeTEWProfiles <- function(profiles, layersMSW, layersDir, topo, angle, thre
 #'
 #' The `computeTEW()` function allows computing topographic exposure to wind (TEW)
 #' for either:
-#' 1) each cell of a regular grid (i.e., a raster)
+#' 1) each cell of a regular grid (i.e., a raster). See \code{\link{computeTEW.SpatRaster}} documentation.
 #' or
 #' 2) a data.frame with the coordinates of the points of interest,
-#' for a given tropical cyclone or a set of tropical cyclones.
+#' for a given tropical cyclone or a set of tropical cyclones. See \code{\link{computeTEW.list}} documentation.
 #'
 #' @param profiles SpatRaster or list. Wind speed and direction profiles from `spatialBehaviour()` or `temporalBehaviour()`
 #' @param ... additional arguments depending on the type of `profiles` input
