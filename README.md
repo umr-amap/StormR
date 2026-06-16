@@ -72,7 +72,7 @@ library(StormR)
   <p align="center">
     <img src="man/figures/stormR_workflow_TEWincluded.png" alt="Workflow StormR" width="600">
   </p>
-  <figcaption align="center"><em>Simplified workflow and main functions of the `stormR` R package. External storm track database and Digital Terrain Model in grey, main functions in blue, and R objects created by the stormR functions in yellow. The numbers (1 to 6) indicate the suggested step-by-step workflow.</em></figcaption>
+  <figcaption align="center"><em>Simplified workflow and main functions of the StormR R package. External storm track database and Digital Terrain Model in grey, main functions in blue, and R objects created by the stormR functions in yellow. The numbers (1 to 6) indicate the suggested step-by-step workflow.</em></figcaption>
 </figure>
 
 ## Contributing
