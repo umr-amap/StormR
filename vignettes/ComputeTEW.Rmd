@@ -229,4 +229,12 @@ the working directory as follows:
 writeRast(ss$PAM_TEW_Integrated)
 ```
 
+### Cumulative index
+
+The time-series layers produced by `computeTEW()` (e.g., one layer per observation time from "`TEW`" or "`TEW1wd`" products) can be post-processed to build advanced ecological proxies. For instance, following the methodology defined by @mclaren_ev_2019, Exposure Vulnerability (EV) can be computed to a specific storm or set of storms.
+
+$EV = \frac{\sum_{i=1}^{n} (\text{MSW}_i \times \text{TEW}_i)}{n}$
+
+This cumulative index can be an extended landscape-scale predictor for long-term forest dynamics.
+
 ## References
