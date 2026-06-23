@@ -17,19 +17,19 @@ library(StormR)
 library(terra)
 ```
 
-The `computeTEW()` function allows computing topographic exposure to wind (TEW)
-@boose_hurricane_1994 for each cell of a regular grid (i.e., a raster) for a given
-tropical cyclone or set of tropical cyclones. The `product="TEW1wd"`
-and `product="TEW"` argument allows producing exposure fields
-during the lifespan of the cyclone.
-The `computeTEW()` function also allows to compute three associated
-summary statistics: the maximum and mean TEW for each cell
-during the cyclone (`product="TEW1wdMax"` and `product="TEW1wdMean"`, respectively) 
-and the TEW computed for
-each pixel with the direction at maximal sustained speed along the
-cyclone (`product="TEWIntegrated"`). 
+The `computeTEW()` function allows computing topographic exposure to
+wind (TEW) @boose_hurricane_1994 for each cell of a regular grid (i.e.,
+a raster) for a given tropical cyclone or set of tropical cyclones. The
+`product="TEW1wd"` and `product="TEW"` argument allows producing
+exposure fields during the lifespan of the cyclone. The `computeTEW()`
+function also allows to compute three associated summary statistics: the
+maximum and mean TEW for each cell during the cyclone
+(`product="TEW1wdMax"` and `product="TEW1wdMean"`, respectively) and the
+TEW computed for each pixel with the direction at maximal sustained
+speed along the cyclone (`product="TEWIntegrated"`).
 
-Then the `plotTEW()` and the `writeRast()` functions can be used to visualize and export the output.
+Then the `plotTEW()` and the `writeRast()` functions can be used to
+visualize and export the output.
 
 In the following example we use the `test_dataset` and `test_datadtm`
 provided with the package to illustrate how cyclone track data can be
@@ -52,8 +52,11 @@ plotStorms(st)
 #### Exctracting topography
 
 Then a Digital Terrain Model (DTM) is essential to compute topographic
-exposure to wind (TEW). In this tutorial, DTM used is [Copernicus DEM30 data](dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM) and is
-extracted thanks to the [`openEO` package](https://open-eo.github.io/openeo-r-client/index.html) as follows :
+exposure to wind (TEW). In this tutorial, DTM used is [Copernicus DEM30
+data](dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM)
+and is extracted thanks to the [`openEO`
+package](https://open-eo.github.io/openeo-r-client/index.html) as
+follows :
 
 ```{r connection, eval=FALSE}
 library(openeo)
@@ -85,22 +88,29 @@ result <- p$save_result(data = data, format = "GTiff")
 compute_result(graph = result, output_file = "../filepath/name.tif")
 ```
 
+Here, a sample DTM of Erromango Island included in `StormR` can be used:
+
 ```{r}
-dtm <- rast("../inst/extdata/test_datadtm.tif")
+dtm <- rast(system.file("extdata","test_datadtm.tif",package = "StormR"))
 ```
 
-Other DTM / elevation products should work seemlessly with StormR. 
+Other DTM / elevation products should work seemlessly with StormR.
 
 #### Extracting spatial profiles
 
-Spatial profiles must be computed prior to run the `computeTEW()` function. 
+Spatial profiles must be computed prior to run the `computeTEW()`
+function.
 
 ```{r}
 spProfiles <- spatialBehaviour(st, product = "Profiles", verbose = 0)
 spProfiles
 ```
 
-Other spatial profiles can be used as long as the layers of the spatRaster respect the following terminology : the name of the storm in capital letters, "Speed" or "Direction", and the indices of the observation separated by underscores (e.g., "PAM_Speed_41", "PAM_Direction_41", ...).
+Other spatial profiles can be used as long as the layers of the
+spatRaster respect the following terminology : the name of the storm in
+capital letters, "Speed" or "Direction", and the indices of the
+observation separated by underscores (e.g., "PAM_Speed_41",
+"PAM_Direction_41", ...).
 
 #### Topographic exposure to wind profiles
 
@@ -113,27 +123,28 @@ pf <- computeTEW(spProfiles, st, dtm, product = "TEW", verbose = 0)
 pf
 ```
 
-The product `TEW1wd` compute TEW from one and
-only one wind direction taken at maximal wind speed location for the entire location of
-interest. This option should be used for small locations of interest, where 
-wind direction is considered homogeneous.
+The product `TEW1wd` compute TEW from one and only one wind direction
+taken at maximal wind speed location for the entire location of
+interest. This option should be used for small locations of interest,
+where wind direction is considered homogeneous.
 
-On the other hand, `TEW` option computes TEW from
-one direction per pixel. This gives a more accurate picture for large scale areas 
-where wind direction variations are important.
+On the other hand, `TEW` option computes TEW from one direction per
+pixel. This gives a more accurate picture for large scale areas where
+wind direction variations are important.
 
-Multiple products can be computed at the same time, by simply providing a vector of product names, e.g. `product = c("TEW1wd", "TEW")`.
+Multiple products can be computed at the same time, by simply providing
+a vector of product names, e.g. `product = c("TEW1wd", "TEW")`.
 
 The function returns a `SpatRaster` one raster for each observation or
 interpolated observation. Rasters' names follow the following
-terminology, the name of the storm in capital letters, "TEW", and
-the index of the observation, separated by underscores. Note that actual
+terminology, the name of the storm in capital letters, "TEW", and the
+index of the observation, separated by underscores. Note that actual
 observations have entire indices (e.g., 41, 42, ...) while interpolated
 observation have decimals (e.g., 41.1, 41.2, ...). Most tropical cyclone
 track data sets are based on observations gathered every 3 or 6 hours.
 Therefore, to be able to compute wind fields every 1 hour, the
-observations are interpolated. This naming is coherent with `spatialBehaviour` and
-`temporalBehaviour` functions.
+observations are interpolated. This naming is coherent with
+`spatialBehaviour` and `temporalBehaviour` functions.
 
 Topographic exposure profiles at the 41^th^ observation can be plotted
 as follows:
@@ -144,7 +155,8 @@ plotTEW(st, pf$PAM_TEW_41, dtm = dtm)
 
 #### Topographic exposure to wind at specified locations
 
-Topographic exposure to wind can also be computed at any location of interest.
+Topographic exposure to wind can also be computed at any location of
+interest.
 
 This can be used in association with the `temporalBehaviour` function:
 
@@ -152,39 +164,43 @@ This can be used in association with the `temporalBehaviour` function:
 df <- data.frame(x = c(169.097), y = c(-18.723))
 rownames(df) <- c("Forest Plot")
 TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)
-pf <- computeTEW(TS, df, dtm, verbose = 0)
+pfTemp <- computeTEW(TS, df, dtm, verbose = 0)
 ```
-And you can then plot the time series of the topographic exposure to wind at your location of interest as follows:
+
+And you can then plot the time series of the topographic exposure to
+wind at your location of interest as follows:
 
 ```{r}
-plotTemporalTEW(pf, "PAM")
+plotTemporalTEW(pfTemp, "PAM")
 ```
 
 #### Summary Statistics
 
-In addition  to TEW at all observations time, the `computeTEW()` function can compute 
-different "summary" `products`, either separately or together. 
-"Summary" statistics are products integrated over 
-the lifespan of the storm. Here, we compute all three integrated summary
-statistics together as follows:
+In addition to TEW at all observations time, the `computeTEW()` function
+can compute different "summary" `products`, either separately or
+together. "Summary" statistics are products integrated over the lifespan
+of the storm. Here, we compute all three integrated summary statistics
+together as follows:
 
 ```{r}
 ss <- computeTEW(spProfiles, st, dtm, product = c("TEW1wdMax", "TEW1wdMean", "TEWIntegrated"), verbose = 0)
 ss
 ```
 
-The `computeTEW()` function returns a `SpatRaster` object with
-three rasters: 
+The `computeTEW()` function returns a `SpatRaster` object with three
+rasters:
 
-- one for the maximum TEW (`"TEW1wd_Max"`): TEW is computed for each time step
-using "Profiles" and only one wind direction (associated with the maximum wind speed for each layer of "Profiles"), 
-and the the maximum value is return for each pixel.
-- one for the mean TEW (`"TEW1d_Mean"`): TEW is computed for each time step using "Profiles", 
-and only one wind direction (associated with the maximum wind speed for each layer of "Profiles"), 
-and the the mean value is return for each pixel.
-- one for the maximum speed for each pixel TEW (`"TEW_Integrated"`): TEW is computed 
-using wind direction associated with maximum wind speed over the whole lifespan 
-of the storm for each pixel.
+-   one for the maximum TEW (`"TEW1wd_Max"`): TEW is computed for each
+    time step using "Profiles" and only one wind direction (associated
+    with the maximum wind speed for each layer of "Profiles"), and the
+    the maximum value is return for each pixel.
+-   one for the mean TEW (`"TEW1d_Mean"`): TEW is computed for each time
+    step using "Profiles", and only one wind direction (associated with
+    the maximum wind speed for each layer of "Profiles"), and the the
+    mean value is return for each pixel.
+-   one for the maximum speed for each pixel TEW (`"TEW_Integrated"`):
+    TEW is computed using wind direction associated with maximum wind
+    speed over the whole lifespan of the storm for each pixel.
 
 ```{r}
 names(ss)
@@ -208,11 +224,10 @@ The summary of topographic exposure can be plotted as follows:
 plotTEW(st, ss$PAM_TEW_Integrated, dtm = dtm)
 ```
 
-
 #### Dynamic plot
 
-`plotTEW` function also provide (See ExtractStorms vignette) a dynamic plot.
-Here is an example based on the same parameters as above.
+`plotTEW` function also provide (See ExtractStorms vignette) a dynamic
+plot. Here is an example based on the same parameters as above.
 
 ```{r}
 plotTEW(st, ss$PAM_TEW_Integrated, dtm = dtm, dynamicPlot = TRUE)
@@ -221,20 +236,54 @@ plotTEW(st, ss$PAM_TEW_Integrated, dtm = dtm, dynamicPlot = TRUE)
 ### Exporting computeTEW products
 
 The `computeTEW()` function returns rasters stored in a `SpatRaster`
-object than can be exported either in ".tiff" or ".nc" (NetCDF) formats using
-the `writeRast()` function. Here, we export the topographic exposure to wind in
-the working directory as follows:
+object than can be exported either in ".tiff" or ".nc" (NetCDF) formats
+using the `writeRast()` function. Here, we export the topographic
+exposure to wind in the working directory as follows:
 
 ```{r}
 writeRast(ss$PAM_TEW_Integrated)
 ```
 
-### Cumulative index
+### Example of application : computing the Exposure Vulnerability Index
 
-The time-series layers produced by `computeTEW()` (e.g., one layer per observation time from "`TEW`" or "`TEW1wd`" products) can be post-processed to build advanced ecological proxies. For instance, following the methodology defined by @mclaren_ev_2019, Exposure Vulnerability (EV) can be computed to a specific storm or set of storms.
+The time-series layers produced by `computeTEW()` (e.g., one layer per
+observation time from "`TEW`" or "`TEW1wd`" products) can be
+post-processed to build advanced ecological proxies. For instance,
+following the methodology defined by @mclaren_ev_2019, Exposure
+Vulnerability (EV) can be computed to a specific storm or set of storms.
 
 $EV = \frac{\sum_{i=1}^{n} (\text{MSW}_i \times \text{TEW}_i)}{n}$
 
-This cumulative index can be an extended landscape-scale predictor for long-term forest dynamics.
+It can be computed as follows :
+
+```{r, include = FALSE}
+dtm <- clamp(dtm, lower = 0.001, values = FALSE)
+col <- colorRampPalette(c("darkgreen", "yellow", "red"))(100)
+```
+
+```{r}
+# align msw on dtm
+msw <- mask(project(spProfiles[[grep("_Speed", names(spProfiles))]], dtm), dtm)
+# normalise
+rg <- global(pf, c("min", "max"), na.rm = TRUE)
+tew <- (pf - min(rg$min)) / (max(rg$max) - min(rg$min))
+```
+
+```{r}
+ev <- app(msw * tew, mean, na.rm = TRUE)
+```
+
+High EV index values indicate critical vulnerability zones, highlighting
+areas at peak risk for severe forest canopy damage and mechanical
+disturbance.
+
+The EV index can be plotted as follows :
+
+```{r}
+plot(ev, col = col)
+```
+
+This cumulative index can be an extended landscape-scale predictor for
+long-term forest dynamics.
 
 ## References
