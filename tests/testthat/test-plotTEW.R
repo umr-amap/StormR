@@ -469,7 +469,7 @@ test_that("Tests checkInputsPlotTemporalTEW function", {
 
 test_that("plotTemporalTEW works without errors", {
   mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  df <- data.frame(x = c(168.36), y = c(-17.62))
+  df <- data.frame(x = c(169.097), y = c(-18.723))
   TS <- temporalBehaviour(pam, points = df, product = "TS", tempRes = 30, verbose = 0)
   tew_data <- computeTEW(TS, df, mnt, angle = 6, threshold = 0, verbose = 0)
 

@@ -481,9 +481,9 @@ plotTemporalTEW <- function(data, storm) {
   checkInputsPlotTemporalTEW(data, storm)
 
   # Filter by storm
-  subData <- data[storm]
+  subData <- data[storm][[1]]
 
-  nbOfPositions <- length(subData[[1]])
+  nbOfPositions <- length(subData)
 
   # Generate a sequence of colors
 
@@ -494,17 +494,17 @@ plotTemporalTEW <- function(data, storm) {
   # Generate a sequence of symbols
   symbols <- seq(1, nbOfPositions, 1)
 
-  notNaIndices <- which(!is.na(subData[[1]][[1]]$tew))
+  notNaIndices <- which(!is.na(subData[[1]]$tew))
 
   # Define x-axis range
-  for (location in subData[[1]][c(2:nbOfPositions)]) {
+  for (location in subData[c(2:nbOfPositions)]) {
 
     notNaIndices <- union(notNaIndices,
                           which(!is.na(location$tew)))
   }
 
   notNaIndices <- seq(min(notNaIndices), max(notNaIndices))
-  dat <- subData[[1]][[1]]$tew[notNaIndices]
+  dat <- subData[[1]]$tew[notNaIndices]
   ylim <- c(-1., 1.)
   ylab <- "Topographic Exposure to Wind"
   dy <- .25 # dashed lines every 0.25
@@ -520,7 +520,7 @@ plotTemporalTEW <- function(data, storm) {
   graphics::points(dat, col = cols[1], pch = symbols[1])
 
   i <- 2
-  for (location in subData[[1]][c(2:nbOfPositions)]) {
+  for (location in subData[c(2:nbOfPositions)]) {
     dat <- location$tew[notNaIndices]
 
     graphics::lines(dat, col = cols[i])
@@ -536,7 +536,7 @@ plotTemporalTEW <- function(data, storm) {
 
 
   # Handle x axis labels
-  labels <- subData[[1]][[1]]$isoTimes[notNaIndices]
+  labels <- subData[[1]]$isoTimes[notNaIndices]
   t1 <- labels[1]
   t2 <- labels[2]
   diffTime <- as.numeric(difftime(t2, t1, units = "hours"))
@@ -550,7 +550,7 @@ plotTemporalTEW <- function(data, storm) {
   }
 
   graphics::axis(1,
-                 at = seq(1, length(subData[[1]][[1]]$tew[notNaIndices])),
+                 at = seq(1, length(subData[[1]]$tew[notNaIndices])),
                  labels = labels,
                  las = 2,
                  cex.axis = 0.5)
