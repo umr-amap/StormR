@@ -156,10 +156,10 @@ plotTemporal <- function(data, storm, var = "speed") {
   t2 <- labels[2]
   diffTime <- as.numeric(difftime(t2, t1, units = "hours"))
 
-  if(diffTime == 30){
+  if(diffTime == 30) {
     notNullLabels <- seq(1,length(labels)) %% 2 == 0
     labels[notNullLabels] <- ""
-  }else if(diffTime == 15){
+  }else if(diffTime == 15) {
     notNullLabels <- seq(1,length(labels)) %% 4 == 0
     labels[notNullLabels] <- ""
   }

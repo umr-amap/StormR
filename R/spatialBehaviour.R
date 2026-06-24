@@ -825,9 +825,9 @@ spatialBehaviour <- function(sts,
 
     # Rasterize to produce final products for the current Storm
     rasters <- Map(c,
-                   rasters,
-                   rasterizeStorm(stormRasters, product, spaceRes, st@name, dataTC$indices[-length(dataTC$indices)], windThreshold)
-                   )
+      rasters,
+      rasterizeStorm(stormRasters, product, spaceRes, st@name, dataTC$indices[-length(dataTC$indices)], windThreshold)
+    )
 
     if (verbose > 0) {
       s <- s + 1

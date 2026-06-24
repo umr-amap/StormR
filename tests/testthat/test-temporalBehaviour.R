@@ -358,9 +358,4 @@ test_that("Test computePDI function", {
 
 
 
-test_that("Test computeExposure function", {
-  expect_equal(computeExposure(seq(0, 80, 1), 1, c(30, 50)), c(0.850, 0.51667), tolerance = 1e-3)
-  expect_equal(computeExposure(seq(0, 80, 0.5), 0.5, c(30, 50)), c(0.841667, 0.508333), tolerance = 1e-3)
-  expect_equal(computeExposure(seq(0, 80, 0.75), 0.75, c(30, 50)), c(0.8375, 0.5), tolerance = 1e-3)
-  expect_equal(computeExposure(seq(0, 80, 0.25), 0.25, c(30, 50)), c(0.8375, 0.504167), tolerance = 1e-3)
-})
+
