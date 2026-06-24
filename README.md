@@ -22,7 +22,7 @@
 
 ### Installing StormR
 
-`StormR` is now [available on CRAN](https://cran.r-project.org/package=StormR) on version `0.2.1`.
+`StormR` is [available on CRAN](https://cran.r-project.org/package=StormR).
 You can install it as follows:
 
 ```r
@@ -52,19 +52,19 @@ library(StormR)
 
 ## Main functions
 
-|       **Name**        |                                             **Description**                                                 |                                  **Inputs**                                   |         **Outputs**          |
-| :-------------------: | :--------------------------------------------------------------------------------------------------------:  | :---------------------------------------------------------------------------: | :--------------------------: |
-| `defStormsDataset()`  |                                    Creates a `stormsDataset` object  (1)                                    |                              ".nc" (NetCDF) file                              |    `stormsDataset` object    |
-|   `defStormsList()`   |                                             Extracts storms  (2)                                            |                            `stormsDataset` object                             |     `stormsList` object      |
-|    `plotStorms()`     |                                         Plots storms track data                                             |                              `stormsList` object                              |                              |
+|       **Name**        |                                               **Description**                                               |                                  **Inputs**                                   |         **Outputs**          |
+| :-------------------: | :---------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------: | :--------------------------: |
+| `defStormsDataset()`  |                                    Creates a `stormsDataset` object (1)                                     |                              ".nc" (NetCDF) file                              |    `stormsDataset` object    |
+|   `defStormsList()`   |                                             Extracts storms (2)                                             |                            `stormsDataset` object                             |     `stormsList` object      |
+|    `plotStorms()`     |                                           Plots storms track data                                           |                              `stormsList` object                              |                              |
 | `temporalBehaviour()` | Computes wind speed, direction time series, and summary statistics for a given set of point coordinates (3) |                              `stormsList` object                              | list of `data.frame` objects |
-| `spatialBehaviour()`  |            Computes 2D wind fields and summary statistics over a given location of interest  (3)            |                              `stormsList` object                              |     `SpatRaster` object      |
-|   `plotBehaviour()`   |                               Plots 2D wind fields and summary statistics  (4)                              |                      `stormsList` + `SpatRaster` objects                      |                              |
-|    `plotTemporal()`   | Computes wind speed, direction time series, and summary statistics for a given set of point coordinates     |                      `stormsList` & `data.frame` objects                      |                              |
+| `spatialBehaviour()`  |            Computes 2D wind fields and summary statistics over a given location of interest (3)             |                              `stormsList` object                              |     `SpatRaster` object      |
+|   `plotBehaviour()`   |                               Plots 2D wind fields and summary statistics (4)                               |                      `stormsList` + `SpatRaster` objects                      |                              |
+|   `plotTemporal()`    |   Computes wind speed, direction time series, and summary statistics for a given set of point coordinates   |                      `stormsList` & `data.frame` objects                      |                              |
 |    `computeTEW()`     | Computes Topographic Exposure to Wind (TEW) for a given set of storms and a given location of interest (5)  | `stormsList` + "Digital Terrain Model" + `SpatRaster` or `data.frame` objects |     `SpatRaster` object      |
-|      `plotTEW()`      |                                            Plots TEW fields  (6)                                            |                          `stormsList` + `SpatRaster`                          |                              |
-|  `plotTemporalTEW()`  |                       Plots TEW time series for a given set of point coordinates  (6)                       |              `data.frame` coordinates + list of `data.frame` TEW              |                              |
-|     `writeRast()`     |                         Exports wind fields, TEW and summary statistics to file  (4, 6)                     |                              `SpatRaster` object                              |    `.tiff` or `.nc` file     |
+|      `plotTEW()`      |                                            Plots TEW fields (6)                                             |                          `stormsList` + `SpatRaster`                          |                              |
+|  `plotTemporalTEW()`  |                       Plots TEW time series for a given set of point coordinates (6)                        |              `data.frame` coordinates + list of `data.frame` TEW              |                              |
+|     `writeRast()`     |                       Exports wind fields, TEW and summary statistics to file (4, 6)                        |                              `SpatRaster` object                              |    `.tiff` or `.nc` file     |
 
 ## Workflow
 
