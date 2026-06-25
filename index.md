@@ -13,17 +13,19 @@ to winds reaching defined speed thresholds.
 
 ### Installing StormR
 
-`StormR` is now [available on
-CRAN](https://cran.r-project.org/package=StormR) on version `0.2.1`. You
-can install it as follows:
+`StormR` is [available on
+CRAN](https://cran.r-project.org/package=StormR). You can install it as
+follows:
 
 ``` r
+
 install.packages("StormR")
 ```
 
 The latest development version can be installed from GitHub as follows,
 
 ``` r
+
 #install.packages("devtools")
 devtools::install_github("umr-amap/StormR")
 ```
@@ -40,20 +42,35 @@ conda install r-stormr    # or mamba install r-stormr
 ### Loading StormR package
 
 ``` r
+
 library(StormR)
 ```
 
 ## Main functions
 
-|                        **Name**                         |                                             **Description**                                             |             **Inputs**              |         **Outputs**         |
-|:-------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|:-----------------------------------:|:---------------------------:|
-|  [`defStormsDataset()`](reference/defStormsDataset.md)  |                                    Creates a `stormsDataset` object                                     |         “.nc” (NetCDF) file         |   `stormsDataset` object    |
-|     [`defStormsList()`](reference/defStormsList.md)     |                                             Extracts storms                                             |       `stormsDataset` object        |     `stormsList` object     |
-|        [`plotStorms()`](reference/plotStorms.md)        |                                         Plots storms track data                                         |         `stormsList` object         |                             |
-| [`temporalBehaviour()`](reference/temporalBehaviour.md) | Computes wind speed, direction time series, and summary statistics for a given set of point coordinates |         `stormsList` object         | lists of data.frame objects |
-|  [`spatialBehaviour()`](reference/spatialBehaviour.md)  |            Computes 2D wind fields and summary statistics over a given location of interest             |         `stormsList` object         |     `SpatRaster` object     |
-|     [`plotBehaviour()`](reference/plotBehaviour.md)     |                               Plots 2D wind fields and summary statistics                               | `stormsList` + `SpatRaster` objects |                             |
-|         [`writeRast()`](reference/writeRast.md)         |                           Exports wind fields and summary statistics to file                            |         `SpatRaster` object         |    `.tiff` or `.nc` file    |
+| **Name** | **Description** | **Inputs** | **Outputs** |
+|:--:|:--:|:--:|:--:|
+| [`defStormsDataset()`](reference/defStormsDataset.md) | Creates a `stormsDataset` object (1) | “.nc” (NetCDF) file | `stormsDataset` object |
+| [`defStormsList()`](reference/defStormsList.md) | Extracts storms (2) | `stormsDataset` object | `stormsList` object |
+| [`plotStorms()`](reference/plotStorms.md) | Plots storms track data | `stormsList` object |  |
+| [`temporalBehaviour()`](reference/temporalBehaviour.md) | Computes wind speed, direction time series, and summary statistics for a given set of point coordinates (3) | `stormsList` object | list of `data.frame` objects |
+| [`spatialBehaviour()`](reference/spatialBehaviour.md) | Computes 2D wind fields and summary statistics over a given location of interest (3) | `stormsList` object | `SpatRaster` object |
+| [`plotBehaviour()`](reference/plotBehaviour.md) | Plots 2D wind fields and summary statistics (4) | `stormsList` + `SpatRaster` objects |  |
+| [`plotTemporal()`](reference/plotTemporal.md) | Computes wind speed, direction time series, and summary statistics for a given set of point coordinates | `stormsList` & `data.frame` objects |  |
+| [`computeTEW()`](reference/computeTEW.md) | Computes Topographic Exposure to Wind (TEW) for a given set of storms and a given location of interest (5) | `stormsList` + “Digital Terrain Model” + `SpatRaster` or `data.frame` objects | `SpatRaster` object |
+| [`plotTEW()`](reference/plotTEW.md) | Plots TEW fields (6) | `stormsList` + `SpatRaster` |  |
+| [`plotTemporalTEW()`](reference/plotTemporalTEW.md) | Plots TEW time series for a given set of point coordinates (6) | `data.frame` coordinates + list of `data.frame` TEW |  |
+| [`writeRast()`](reference/writeRast.md) | Exports wind fields, TEW and summary statistics to file (4, 6) | `SpatRaster` object | `.tiff` or `.nc` file |
+
+## Workflow
+
+![Workflow StormR](reference/figures/stormR_workflow_TEWincluded.png)
+
+*Simplified workflow and main functions of the StormR R package.
+External storm track database and Digital Terrain Model in grey, main
+functions in blue, and R objects created by the stormR functions in
+yellow. The numbers (1 to 6) indicate the suggested step-by-step
+workflow.*
 
 ## Contributing
 

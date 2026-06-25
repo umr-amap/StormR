@@ -40,24 +40,31 @@ distribution is computed from the circular air pressure field, which can
 be derived from the central and environmental pressure and the radius of
 maximum winds.
 
-$$v_{r} = \sqrt{\frac{b}{\rho} \times \left( \frac{R_{m}}{r} \right)^{b} \times \left( p_{oci} - p_{c} \right) \times e^{- {(\frac{R_{m}}{r})}^{b}} + \left( \frac{r \times f}{2} \right)^{2}} - \left( \frac{r \times f}{2} \right)$$
+``` math
+v_r = \sqrt{\frac{b}{\rho} \times \left(\frac{R_m}{r}\right)^b \times (p_{oci} - p_c) \times e^{-\left(\frac{R_m}{r}\right)^b} + \left(\frac{r \times f}{2}\right)^2} - \left(\frac{r \times f}{2}\right)
+```
 
 with,
-$$b = \frac{\rho \times e \times v_{m}^{2}}{p_{oci} - p_{c}}$$$$f = 2 \times 7.29 \times 10^{- 5}\sin(\phi)$$
+``` math
+b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
+```
+``` math
+f = 2 \times 7.29 \times 10^{-5} \sin(\phi)
+```
 
 where,  
-$v_{r}$ is the tangential wind speed (in $m.s^{- 1}$),  
-$b$ is the shape parameter,  
-$\rho$ is the air density set to $1.15kg.m^{- 3}$,  
-$e$ is the base of natural logarithms (~2.718282),  
-$v_{m}$ the maximum sustained wind speed (in $m.s^{- 1}$),  
-$p_{oci}$ is the pressure at outermost closed isobar of the storm (in
-$Pa$),  
-$p_{c}$ is the pressure at the centre of the storm (in $Pa$),  
-$r$ is the distance to the eye of the storm (in $km$),  
-$R_{m}$ is the radius of maximum sustained wind speed (in $km$),  
-$f$ is the Coriolis force (in $N.kg^{- 1}$), and  
-$\phi$ is the latitude.  
+$`v_r`$ is the tangential wind speed (in $`m.s^{-1}`$),  
+$`b`$ is the shape parameter,  
+$`\rho`$ is the air density set to $`1.15 kg.m^{-3}`$,  
+$`e`$ is the base of natural logarithms (~2.718282),  
+$`v_m`$ the maximum sustained wind speed (in $`m.s^{-1}`$),  
+$`p_{oci}`$ is the pressure at outermost closed isobar of the storm (in
+$`Pa`$),  
+$`p_c`$ is the pressure at the centre of the storm (in $`Pa`$),  
+$`r`$ is the distance to the eye of the storm (in $`km`$),  
+$`R_m`$ is the radius of maximum sustained wind speed (in $`km`$),  
+$`f`$ is the Coriolis force (in $`N.kg^{-1}`$), and  
+$`\phi`$ is the latitude.  
   
 
 ### Willoughby *et al.* (2006) symmetric wind field
@@ -71,51 +78,61 @@ exponentially outside the eye after a smooth polynomial transition
 across the eyewall (see also Willoughby (1995), Willoughby *et al.*
 (2004)).
 
-$$\left\{ \begin{aligned}
-v_{r} & {= v_{m} \times \left( \frac{r}{R_{m}} \right)^{n}\quad if\quad r < R_{m}} \\
-v_{r} & {= v_{m} \times \left( (1 - A) \times e^{- \frac{|r - R_{m}|}{X1}} + A \times e^{- \frac{|r - R_{m}|}{X2}} \right)\quad if\quad r \geq R_{m}} \\
- & 
-\end{aligned} \right.$$
+``` math
+\left\{
+\begin{aligned}
+v_r &= v_m \times \left(\frac{r}{R_m}\right)^{n} \quad if \quad r < R_m \\
+v_r &= v_m \times \left((1-A) \times e^{-\frac{|r-R_m|}{X1}} + A \times e^{-\frac{|r-R_m|}{X2}}\right) \quad if \quad r \geq R_m \\
+\end{aligned}
+\right.
+```
 
 with,
-$$n = 2.1340 + 0.0077 \times v_{m} - 0.4522 \times \ln\left( R_{m} \right) - 0.0038 \times |\phi|$$$$X1 = 287.6 - 1.942 \times v_{m} + 7.799 \times \ln\left( R_{m} \right) + 1.819 \times |\phi|$$$$A = 0.5913 + 0.0029 \times v_{m} - 0.1361 \times \ln\left( R_{m} \right) - 0.0042 \times |\phi|\quad and\quad A \geq 0$$
+``` math
+n = 2.1340 + 0.0077 \times v_m - 0.4522 \times \ln(R_m) - 0.0038 \times |\phi|
+```
+``` math
+X1 = 287.6 - 1.942 \times v_m + 7.799 \times \ln(R_m) + 1.819 \times |\phi|
+```
+``` math
+A = 0.5913 + 0.0029 \times v_m - 0.1361 \times \ln(R_m) - 0.0042 \times |\phi| \quad and \quad A\ge0
+```
 
 where,  
-$v_{r}$ is the tangential wind speed (in $m.s^{- 1}$),  
-$v_{m}$ is the maximum sustained wind speed (in $m.s^{- 1}$),  
-$r$ is the distance to the eye of the storm (in $km$),  
-$R_{m}$ is the radius of maximum sustained wind speed (in $km$),  
-$\phi$ is the latitude of the centre of the storm, and  
-$X2 = 25$.  
+$`v_r`$ is the tangential wind speed (in $`m.s^{-1}`$),  
+$`v_m`$ is the maximum sustained wind speed (in $`m.s^{-1}`$),  
+$`r`$ is the distance to the eye of the storm (in $`km`$),  
+$`R_m`$ is the radius of maximum sustained wind speed (in $`km`$),  
+$`\phi`$ is the latitude of the centre of the storm, and  
+$`X2 = 25`$.  
 
 ### Adding asymmetry to Holland (1980) and Willoughby *et al.* (2006) wind fields
 
 The asymmetry caused by the translation of the storm can be added as
 follows,
 
-$\overset{\rightarrow}{V} = \overset{\rightarrow}{V_{c}} + C \times \overset{\rightarrow}{V_{t}}$
+$`\vec{V} = \vec{V_c} + C \times \vec{V_t}`$
 
 where,  
-$\overset{\rightarrow}{V}$ is the combined, asymmetric wind field,  
-$\overset{\rightarrow}{V_{c}}$ is symmetric wind field,  
-$\overset{\rightarrow}{V_{t}}$ is the translation speed of the storm,
-and  
-$C$ is function of $r$, the distance to the eye of the storm (in
-$km$).  
+$`\vec{V}`$ is the combined, asymmetric wind field,  
+$`\vec{V_c}`$ is symmetric wind field,  
+$`\vec{V_t}`$ is the translation speed of the storm, and  
+$`C`$ is function of $`r`$, the distance to the eye of the storm (in
+$`km`$).  
 
 Two formulations of C proposed by Miyazaki *et al.* (1962) and Chen
 (1994) are implemented.
 
 #### Miyazaki *et al.* (1962)
 
-$C = e^{( - \frac{r}{500} \times \pi)}$  
+$`C = e^{(-\frac{r}{500} \times \pi)}`$  
 
 #### Chen (1994)
 
-$C = \frac{3 \times R_{m}^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_{m}^{3} + r^{3} + R_{m}^{\frac{3}{2}} \times r^{\frac{3}{2}}}$
+$`C = \frac{3 \times R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}{R_m^3 + r^3 +R_m^{\frac{3}{2}} \times r^{\frac{3}{2}}}`$
 
 where,  
-$R_{m}$ is the radius of maximum sustained wind speed (in $km$).  
+$`R_m`$ is the radius of maximum sustained wind speed (in $`km`$).  
   
 
 ### Boose *et al.* (2004) asymmetric model
@@ -129,43 +146,52 @@ differently, using different surface friction coefficient for each.
 
 Wind speed is computed as follows,
 
-$$v_{r} = F\left( v_{m} - S \times \left( 1 - \sin(T) \right) \times \frac{v_{h}}{2} \right) \times \sqrt{\left( \frac{R_{m}}{r} \right)^{b} \times e^{1 - {(\frac{R_{m}}{r})}^{b}}}$$
+``` math
+v_r = F\left(v_m - S \times (1 - \sin(T)) \times \frac{v_h}{2} \right) \times \sqrt{\left(\frac{R_m}{r}\right)^b \times e^{1 - \left(\frac{R_m}{r}\right)^b}}
+```
 
-with, $$b = \frac{\rho \times e \times v_{m}^{2}}{p_{oci} - p_{c}}$$
+with,
+``` math
+b = \frac{\rho \times e \times v_m^2}{p_{oci} - p_c}
+```
 
 where,  
-$v_{r}$ is the tangential wind speed (in $m.s^{- 1}$),  
-$F$ is a scaling parameter for friction ($1.0$ in water, $0.8$ in
+$`v_r`$ is the tangential wind speed (in $`m.s^{-1}`$),  
+$`F`$ is a scaling parameter for friction ($`1.0`$ in water, $`0.8`$ in
 land),  
-$v_{m}$ is the maximum sustained wind speed (in $m.s^{- 1}$),  
-$S$ is a scaling parameter for asymmetry (usually set to $1$),  
-$T$ is the oriented angle (clockwise/counter clockwise in
+$`v_m`$ is the maximum sustained wind speed (in $`m.s^{-1}`$),  
+$`S`$ is a scaling parameter for asymmetry (usually set to $`1`$),  
+$`T`$ is the oriented angle (clockwise/counter clockwise in
 Northern/Southern Hemisphere) between the forward trajectory of the
-storm and a radial line from the eye of the storm to point $r$,  
-$v_{h}$ is the storm velocity (in $m.s^{- 1}$),  
-$R_{m}$ is the radius of maximum sustained wind speed (in $km$),  
-$r$ is the distance to the eye of the storm (in $km$),  
-$b$ is the shape parameter,  
-$\rho = 1.15$ is the air density (in $kg.m^{- 3}$),  
-$p_{oci}$ is the pressure at outermost closed isobar of the storm (in
-$Pa$), and  
-$p_{c}$ is the pressure at the centre of the storm ($pressure$ in
-$Pa$).  
+storm and a radial line from the eye of the storm to point $`r`$,  
+$`v_h`$ is the storm velocity (in $`m.s^{-1}`$),  
+$`R_m`$ is the radius of maximum sustained wind speed (in $`km`$),  
+$`r`$ is the distance to the eye of the storm (in $`km`$),  
+$`b`$ is the shape parameter,  
+$`\rho = 1.15`$ is the air density (in $`kg.m^{-3}`$),  
+$`p_{oci}`$ is the pressure at outermost closed isobar of the storm (in
+$`Pa`$), and  
+$`p_c`$ is the pressure at the centre of the storm ($`pressure`$ in
+$`Pa`$).  
 
 #### Wind direction
 
 Wind direction is computed as follows,
 
-$$\left\{ \begin{array}{r}
-{D = A_{z} - 90 - I\quad if\quad\phi > 0\quad(Northern\quad Hemisphere)} \\
-{D = A_{z} + 90 + I\quad if\quad\phi \leq 0\quad(Southern\quad Hemisphere)} \\
-
-\end{array} \right.$$ where,  
-$D$ is the direction of the radial wind,  
-$A_{z}$ is the azimuth from point r to the eye of the storm,  
-$I$ is the cross isobar inflow angle ($20$ in water, $40$ in land),
-and  
-$\phi$ is the latitude.  
+``` math
+\left\{
+\begin{aligned}
+D = A_z - 90 - I \quad if \quad \phi > 0 \quad(Northern \quad Hemisphere) \\
+D = A_z + 90 + I \quad if \quad \phi \leq 0 \quad(Southern \quad Hemisphere) \\
+\end{aligned}
+\right.
+```
+where,  
+$`D`$ is the direction of the radial wind,  
+$`A_z`$ is the azimuth from point r to the eye of the storm,  
+$`I`$ is the cross isobar inflow angle ($`20`$ in water, $`40`$ in
+land), and  
+$`\phi`$ is the latitude.  
 
 ### Wind fields comparison
 
@@ -174,6 +200,7 @@ used in `StormR` for the same time and location (tropical cyclone Pam
 near Vanuatu)
 
 ``` r
+
 sds <- defStormsDataset()
 ```
 
@@ -186,6 +213,7 @@ sds <- defStormsDataset()
     ## === DONE ===
 
 ``` r
+
 st <- defStormsList(sds = sds, loi = c(168.33, -17.73), names = "PAM", verbose = 0)
 PAM <- getObs(st, name = "PAM")
 
@@ -198,6 +226,7 @@ lines(PAM$lon, PAM$lat, lty = 3)
 ![](Models_files/figure-html/unnamed-chunk-2-1.png)
 
 ``` r
+
 pf <- spatialBehaviour(st, product = "Profiles", method = "Willoughby", asymmetry = "None", verbose = 0)
 terra::plot(pf$PAM_Speed_41, main = "Willoughby et al. (2006)", cex.main = 0.8, range = c(0, 90))
 terra::plot(countriesHigh, add = TRUE)
@@ -207,6 +236,7 @@ lines(PAM$lon, PAM$lat, lty = 3)
 ![](Models_files/figure-html/unnamed-chunk-2-2.png)
 
 ``` r
+
 pf <- spatialBehaviour(st, product = "Profiles", method = "Holland", asymmetry = "Miyazaki", verbose = 0)
 terra::plot(pf$PAM_Speed_41, main = "Holland (1980) + Miyazaki et al. (1962)", cex.main = 0.8, range = c(0, 90))
 terra::plot(countriesHigh, add = TRUE)
@@ -216,6 +246,7 @@ lines(PAM$lon, PAM$lat, lty = 3)
 ![](Models_files/figure-html/unnamed-chunk-2-3.png)
 
 ``` r
+
 pf <- spatialBehaviour(st, product = "Profiles", method = "Willoughby", asymmetry = "Miyazaki", verbose = 0)
 terra::plot(pf$PAM_Speed_41, main = "Willoughby et al. (2006) + Miyazaki et al. (1962)", cex.main = 0.8, range = c(0, 90))
 terra::plot(countriesHigh, add = TRUE)
@@ -225,6 +256,7 @@ lines(PAM$lon, PAM$lat, lty = 3)
 ![](Models_files/figure-html/unnamed-chunk-2-4.png)
 
 ``` r
+
 pf <- spatialBehaviour(st, product = "Profiles", method = "Holland", asymmetry = "Chen", verbose = 0)
 terra::plot(pf$PAM_Speed_41, main = "Holland (1980) + Chen (1994)", cex.main = 0.8, range = c(0, 90))
 terra::plot(countriesHigh, add = TRUE)
@@ -234,6 +266,7 @@ lines(PAM$lon, PAM$lat, lty = 3)
 ![](Models_files/figure-html/unnamed-chunk-2-5.png)
 
 ``` r
+
 pf <- spatialBehaviour(st, product = "Profiles", method = "Willoughby", asymmetry = "Chen", verbose = 0)
 terra::plot(pf$PAM_Speed_41, main = "Willoughby et al. (2006) + Chen (1994)", cex.main = 0.8, range = c(0, 90))
 terra::plot(countriesHigh, add = TRUE)
@@ -243,6 +276,7 @@ lines(PAM$lon, PAM$lat, lty = 3)
 ![](Models_files/figure-html/unnamed-chunk-2-6.png)
 
 ``` r
+
 pf <- spatialBehaviour(st, product = "Profiles", method = "Boose", verbose = 0)
 terra::plot(pf$PAM_Speed_41, main = "Boose et al. (2004)", cex.main = 0.8, range = c(0, 90))
 terra::plot(countriesHigh, add = TRUE)
@@ -252,6 +286,7 @@ lines(PAM$lon, PAM$lat, lty = 3)
 ![](Models_files/figure-html/unnamed-chunk-2-7.png)
 
 ``` r
+
 par(oldpar)
 ```
 

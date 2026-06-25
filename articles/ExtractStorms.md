@@ -29,6 +29,7 @@ We extract data on the tropical cyclone Pam (2015) nearby Vanuatu as
 follows:
 
 ``` r
+
 sds <- defStormsDataset(verbose = 0)
 ```
 
@@ -36,6 +37,7 @@ sds <- defStormsDataset(verbose = 0)
     ##              but cannot use basin filtering for speed-up when collecting data
 
 ``` r
+
 st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 ```
 
@@ -47,6 +49,7 @@ can be obtained using the [`getObs()`](../reference/getObs-methods.md)
 function as follows:
 
 ``` r
+
 head(getObs(st, name = "PAM"))
 ```
 
@@ -63,12 +66,14 @@ obtained using the [`getNbObs()`](../reference/getNbObs-methods.md) and
 [`getInObs()`](../reference/getInObs-methods.md) as follows:
 
 ``` r
+
 getNbObs(st, name = "PAM")
 ```
 
     ## [1] 57
 
 ``` r
+
 getInObs(st, name = "PAM")
 ```
 
@@ -77,6 +82,7 @@ getInObs(st, name = "PAM")
 The data can be visualised on a map as follows:
 
 ``` r
+
 plotStorms(st, labels = TRUE)
 ```
 
@@ -88,6 +94,7 @@ We can extract all tropical cyclones near Nouméa (longitude = 166.45,
 latitude = -22.27) between 2015 and 2021 as follows:
 
 ``` r
+
 pt <- c(166.45, -22.27)
 st <- defStormsList(sds = sds, loi = pt, seasons = c(2015, 2021), verbose = 0)
 ```
@@ -100,18 +107,21 @@ returned `stormsList` object can be obtained using the
 follows:
 
 ``` r
+
 getNbStorms(st)
 ```
 
     ## [1] 4
 
 ``` r
+
 getNames(st)
 ```
 
     ## [1] "SOLO"   "GRETEL" "LUCAS"  "NIRAN"
 
 ``` r
+
 getSeasons(st)
 ```
 
@@ -123,6 +133,7 @@ We can plot track data for the topical cyclone Niran only using the
 function as follows:
 
 ``` r
+
 plotStorms(st, names = "NIRAN", labels = TRUE, legends = "bottomleft")
 ```
 
@@ -133,6 +144,7 @@ object using the [`getStorm()`](../reference/getStorm-methods.md)
 function as follows:
 
 ``` r
+
 NIRAN <- getStorm(st, name = "NIRAN")
 getNames(NIRAN)
 ```
@@ -146,6 +158,7 @@ near the New Caledonia exclusive economic zone using the `eezNC`
 shapefile provided with the `StormR` package as follows:
 
 ``` r
+
 sp <- eezNC
 st <- defStormsList(sds = sds, loi = eezNC, season = c(2015, 2021), verbose = 0)
 ```
@@ -157,6 +170,7 @@ obtained using the [`getLOI()`](../reference/getLOI-methods.md),
 follows:
 
 ``` r
+
 LOI <- getLOI(st)
 Buffer <- getBuffer(st)
 BufferSize <- getBufferSize(st)
@@ -179,6 +193,7 @@ on the same season). Some workarounds may help you with that:
 - use the `renameStorms` function:
 
 ``` r
+
 getNames(st)
 ```
 
@@ -186,6 +201,7 @@ getNames(st)
     ## [8] "LUCAS"   "NIRAN"
 
 ``` r
+
 st_renamed <- renameStorms(st)
 getNames(st_renamed)
 ```
@@ -204,6 +220,7 @@ obtained using the [`getScale()`](../reference/getScale-methods.md)
 function as follows:
 
 ``` r
+
 getScale(st)
 ```
 
@@ -218,6 +235,7 @@ We can only plot cyclones that reached level 5 and 6 using the
 function as follows:
 
 ``` r
+
 plotStorms(st, category = c(5, 6), labels = FALSE, legends = "topright")
 ```
 
@@ -231,6 +249,7 @@ tropical storm PAM.
 StormR provides default palette and category names:
 
 ``` r
+
 # Tokyo's tropical cyclone intensity scale
 RSMCScale <- c(16.94, 24.44, 32.5, 43.33, 53.61)
 
@@ -248,6 +267,7 @@ plotStorms(sts_jpn)
 But you can also easily customize them:
 
 ``` r
+
 RSMCPalette <- c("#6ec1ea", "#4dffff", "#c0ffc0", "#ffd98c", "#ff738a", "#a188fc")
 names(RSMCPalette) <- c("Tropical depression",
                         "Tropical storm",
@@ -276,6 +296,7 @@ interactive map using leaflet library by setting `dynamicPlot` to
 click and each dotted colored observations to see there informations.
 
 ``` r
+
 # Example of dynamic plot, using the same parameters above
 plotStorms(st, category = c(4, 5), labels = FALSE, legends = "topright", dynamicPlot=TRUE)
 ```

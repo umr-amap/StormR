@@ -111,7 +111,9 @@ returned:
 - if `product == "TS"`, the function returns a data.frame with one row
   for each observation (or interpolated observation) and four columns
   for wind speed (in \\m.s^{-1}\\), wind direction (in degree), the
-  observation number, and the ISO time of observations,
+  observation number, and the ISO time of observations. Wind direction
+  indicates where the wind is blowing from, measured from 0° (North)
+  clockwise.
 
 - if `product == "PDI"`, the function returns a data.frame with one row
   for each point location and one column for the PDI,
@@ -284,7 +286,7 @@ pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #>    -> Identifying Storms: Done
 #> -> Gathering storm(s) ... 
 #> 
-#> === DONE with run time 0.4664991 sec ===
+#> === DONE with run time 0.4709373 sec ===
 #> 
 #> SUMMARY:
 #> (*) LOI: Vanuatu 

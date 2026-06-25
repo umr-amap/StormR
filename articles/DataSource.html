@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Data source">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">StormR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,9 +56,9 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Data source</h1>
             
-            <h4 data-toc-skip class="date">2026-03-12</h4>
+            <h4 data-toc-skip class="date">2026-06-25</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/v0.2.4/vignettes/DataSource.Rmd" class="external-link"><code>vignettes/DataSource.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/main/vignettes/DataSource.Rmd" class="external-link"><code>vignettes/DataSource.Rmd</code></a></small>
       <div class="d-none name"><code>DataSource.Rmd</code></div>
     </div>
 
@@ -133,7 +133,7 @@ as the following fields are provided:</p>
 <tr class="even">
 <td align="center"><code>msw</code></td>
 <td align="center">Maximum sustained wind speed</td>
-<td align="center"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math></td>
+<td align="center"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math></td>
 <td align="center">77</td>
 <td align="center">Mandatory</td>
 </tr>
@@ -178,9 +178,9 @@ of the storm and its band of strongest winds</td>
 <td align="center"><code>sshs</code></td>
 <td align="center">Saffir-Simpson hurricane wind scale rating based on
 <code>msw</code> (here in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>)</td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>)</td>
 <td align="center">
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">-1 =</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>1</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">-1 =</annotation></semantics></math>
 Tropical depression (<code>msw</code>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&lt;</mo><mn>18</mn></mrow><annotation encoding="application/x-tex">&lt; 18</annotation></semantics></math>)
 <br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>=</mo></mrow><annotation encoding="application/x-tex">0 =</annotation></semantics></math>
@@ -222,7 +222,7 @@ direction in the <code>temporatlBehaviour()</code> and
 <code>rmw</code> is approximated using an empirical formula derived from
 Willoughby <em>et al.</em> <span class="citation">(2006)</span> as
 follows,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>m</mi></msub><mo>=</mo><mn>46.4</mn><msup><mi>e</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>0.0155</mn><mo>×</mo><msub><mi>v</mi><mi>m</mi></msub><mo>+</mo><mn>0.0169</mn><mo>×</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>ϕ</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>m</mi></msub><mo>=</mo><mn>46.4</mn><msup><mi>e</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>0.0155</mn><mo>×</mo><msub><mi>v</mi><mi>m</mi></msub><mo>+</mo><mn>0.0169</mn><mo>×</mo><mo stretchy="false" form="prefix">|</mo><mi>ϕ</mi><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times
 |\phi|)}</annotation></semantics></math>. <br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mn>3</mn></msup><annotation encoding="application/x-tex">^{3}</annotation></semantics></math>
 If the <code>pressure</code> and <code>poci</code> fields are not
 provided, both <span class="citation">Holland (1980)</span> and Boose
@@ -325,7 +325,7 @@ IBTrACS data sets, the <code><a href="../reference/defStormsDataset.html">defSto
 knots
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>n</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">knt</annotation></semantics></math>)
 to meter per second
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>),
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>),
 nautical miles
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">nm</annotation></semantics></math>)
 to kilometres
@@ -417,7 +417,7 @@ names of columns in <code>fields</code> input must be equals</p>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-boose_landscape_2004" class="csl-entry">
 Boose, E. R., Mayra I. Serrano, and David R. Foster. 2004.
 <span>“Landscape and <span>Regional</span> <span>Impacts</span> of
@@ -429,14 +429,14 @@ Boose, E. R., Mayra I. Serrano, and David R. Foster. 2004.
 Holland, Greg J. 1980. <span>“An <span>Analytic</span>
 <span>Model</span> of the <span>Wind</span> and <span>Pressure</span>
 <span>Profiles</span> in <span>Hurricanes</span>.”</span> <em>Monthly
-Weather Review</em> 108 (8): 1212–18. <a href="https://doi.org/10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2" class="external-link">https://doi.org/10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2</a>.
+Weather Review</em> 108 (8): 1212–18. <a href="https://doi.org/10.1175/1520-0493(1980)108%3C1212:AAMOTW%3E2.0.CO;2" class="external-link">https://doi.org/10.1175/1520-0493(1980)108&lt;1212:AAMOTW&gt;2.0.CO;2</a>.
 </div>
 <div id="ref-knapp_international_2018" class="csl-entry">
 Knapp, Kenneth R., Howard J. Diamond, James P. Kossin, Michael C. Kruk,
-and Carl J. III Schreck. 2018. <span>“International <span>Best</span>
+and Carl J. III Schreck. 2018. <em>International <span>Best</span>
 <span>Track</span> <span>Archive</span> for <span>Climate</span>
 <span>Stewardship</span> (<span>IBTrACS</span>) <span>Project</span>,
-<span>Version</span> 4.”</span> <a href="https://doi.org/10.25921/82ty-9e16" class="external-link">https://doi.org/10.25921/82ty-9e16</a>.
+<span>Version</span> 4</em>. <a href="https://doi.org/10.25921/82ty-9e16" class="external-link">https://doi.org/10.25921/82ty-9e16</a>.
 </div>
 <div id="ref-knapp_international_2010" class="csl-entry">
 Knapp, Kenneth R., Michael C. Kruk, David H. Levinson, Howard J.
@@ -465,7 +465,7 @@ Willoughby, H. E., R. W. R. Darling, and M. E. Rahn. 2006.
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Baptiste Delaporte, Thomas Ibanez, Gunnar Keppel, Swen Jullien, Christophe Menkes, Thomas Arsouze.</p>
+  <p>Developed by Baptiste Delaporte, Thomas Ibanez, Gunnar Keppel, Swen Jullien, Christophe Menkes, Alix Biton, Thomas Arsouze.</p>
 </div>
 
 <div class="pkgdown-footer-right">

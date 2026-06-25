@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Behaviour">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">StormR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,9 +56,9 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Behaviour</h1>
             
-            <h4 data-toc-skip class="date">2026-03-12</h4>
+            <h4 data-toc-skip class="date">2026-06-25</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/v0.2.4/vignettes/Behaviour.Rmd" class="external-link"><code>vignettes/Behaviour.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/umr-amap/StormR/blob/main/vignettes/Behaviour.Rmd" class="external-link"><code>vignettes/Behaviour.Rmd</code></a></small>
       <div class="d-none name"><code>Behaviour.Rmd</code></div>
     </div>
 
@@ -79,9 +79,9 @@ reaching defined speed thresholds.</p>
 <h3 id="maximum-sustained-wind-speed">Maximum sustained wind speed<a class="anchor" aria-label="anchor" href="#maximum-sustained-wind-speed"></a>
 </h3>
 <p>The maximum sustained wind speed (MSW, in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>)
 over the lifespan of a storm is computed as follows:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><mi>t</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">|</mo><mi>t</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>T</mi><mo stretchy="false" form="postfix">]</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
 \max(v(t) | t \in [0,T])
 </annotation></semantics></math></p>
 <p>where
@@ -93,7 +93,7 @@ is the lifespan of the storm<br></p>
 <h3 id="power-dissipation-index">Power Dissipation Index<a class="anchor" aria-label="anchor" href="#power-dissipation-index"></a>
 </h3>
 <p>The power dissipation index (PDI, in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mi>.</mi><msup><mi>m</mi><mrow><mo>−</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">J.m^{-2}</annotation></semantics></math>)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mi>.</mi><msup><mi>m</mi><mrow><mi>−</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">J.m^{-2}</annotation></semantics></math>)
 or total power dissipated by unit area by a tropical storm over its
 lifespan <span class="citation">(Emanuel 1999, 2005)</span> is computed
 as follows:</p>
@@ -105,12 +105,12 @@ as follows:</p>
 is the time of the observation<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
 is the lifespan of the storm<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>
 is the air density fixed to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>g</mi><mi>.</mi><msup><mi>m</mi><mrow><mo>−</mo><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">kg.m^{-3}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>g</mi><mi>.</mi><msup><mi>m</mi><mrow><mi>−</mi><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">kg.m^{-3}</annotation></semantics></math>
 as in <span class="citation">Emanuel (1999)</span> <br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>d</mi></msub><annotation encoding="application/x-tex">C_d</annotation></semantics></math>
 is the drag coefficient of the storm fixed to
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
 X
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mo>−</mo><mn>3</mn></mrow></msup><annotation encoding="application/x-tex">10^{-3}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>3</mn></mrow></msup><annotation encoding="application/x-tex">10^{-3}</annotation></semantics></math>
 as in <span class="citation">Emanuel (1999)</span> <br></p>
 </div>
 <div class="section level3">
@@ -119,10 +119,10 @@ as in <span class="citation">Emanuel (1999)</span> <br></p>
 <p>The duration of exposure (in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">hours</annotation></semantics></math>)
 to winds reaching defined speed thresholds is computed as follows:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∫</mo><mi>T</mi></msub><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∫</mo><mi>T</mi></msub><mi>c</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">
 \int_T c(v_t) dt
 </annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>1</mn><mspace width="1.0em"></mspace><mi>i</mi><mi>f</mi><mspace width="1.0em"></mspace><msub><mi>v</mi><mi>t</mi></msub><mo>≥</mo><mi>T</mi><mi>h</mi><mi>d</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>0</mn><mspace width="1.0em"></mspace><mi>i</mi><mi>f</mi><mspace width="1.0em"></mspace><msub><mi>v</mi><mi>t</mi></msub><mo>&lt;</mo><mi>T</mi><mi>h</mi><mi>d</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd></mtr></mtable></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mi>c</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mn>1</mn><mspace width="1.0em"></mspace><mi>i</mi><mi>f</mi><mspace width="1.0em"></mspace><msub><mi>v</mi><mi>t</mi></msub><mo>≥</mo><mi>T</mi><mi>h</mi><mi>d</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><mi>c</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>v</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mn>0</mn><mspace width="1.0em"></mspace><mi>i</mi><mi>f</mi><mspace width="1.0em"></mspace><msub><mi>v</mi><mi>t</mi></msub><mo>&lt;</mo><mi>T</mi><mi>h</mi><mi>d</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"></mtd></mtr></mtable></mrow><annotation encoding="application/x-tex">
 \left\{
 \begin{aligned}
 c(v_t) &amp;= 1 \quad if \quad v_t \geq Thd\\
@@ -136,9 +136,9 @@ is the lifespan of the storm<br><math display="inline" xmlns="http://www.w3.org/
 is the maximum sustained wind speed at time
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 (in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>)<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>h</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">Thd</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>)<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>h</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">Thd</annotation></semantics></math>
 is the minimum wind sped threshold (in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>)<br></p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>)<br></p>
 <p>By default the duration of exposure is computed for each
 Saffir-Simpson Hurricane Scale threshold values for tropical cyclone
 categories (i.e.,
@@ -147,27 +147,28 @@ categories (i.e.,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
 ,<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>58</mn><annotation encoding="application/x-tex">58</annotation></semantics></math>,
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>70</mn><annotation encoding="application/x-tex">70</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>70</mn><annotation encoding="application/x-tex">70</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>.</mi><msup><mi>s</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">m.s^{-1}</annotation></semantics></math>,
 <span class="citation">(Simpson 1974)</span>) but can be defined using
 the <code>wind_threshold</code> argument.</p>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-emanuel_power_1999" class="csl-entry">
 Emanuel, Kerry A. 1999. <span>“The Power of a Hurricane: <span>An</span>
 Example of Reckless Driving on the Information Superhighway.”</span>
 <em>Weather</em> 54 (4): 107–8. <a href="https://doi.org/10.1002/j.1477-8696.1999.tb06435.x" class="external-link">https://doi.org/10.1002/j.1477-8696.1999.tb06435.x</a>.
 </div>
 <div id="ref-emanuel_increasing_2005" class="csl-entry">
-———. 2005. <span>“Increasing Destructiveness of Tropical Cyclones over
-the Past 30 Years.”</span> <em>Nature</em> 436 (7051): 686–88. <a href="https://doi.org/10.1038/nature03906" class="external-link">https://doi.org/10.1038/nature03906</a>.
+Emanuel, Kerry A. 2005. <span>“Increasing Destructiveness of Tropical
+Cyclones over the Past 30 Years.”</span> <em>Nature</em> 436 (7051):
+686–88. <a href="https://doi.org/10.1038/nature03906" class="external-link">https://doi.org/10.1038/nature03906</a>.
 </div>
 <div id="ref-simpson_hurricane_2010" class="csl-entry">
 Simpson, R. H. 1974. <span>“The <span>Hurricane</span>
 <span>Disaster</span>—<span>Potential</span> <span>Scale</span>.”</span>
-<em>Weatherwise</em>, July. <a href="https://doi.org/10.1080/00431672.1974.9931702" class="external-link">https://doi.org/10.1080/00431672.1974.9931702</a>.
+<em>Weatherwise</em>, ahead of print, July. <a href="https://doi.org/10.1080/00431672.1974.9931702" class="external-link">https://doi.org/10.1080/00431672.1974.9931702</a>.
 </div>
 </div>
 </div>
@@ -178,7 +179,7 @@ Simpson, R. H. 1974. <span>“The <span>Hurricane</span>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Baptiste Delaporte, Thomas Ibanez, Gunnar Keppel, Swen Jullien, Christophe Menkes, Thomas Arsouze.</p>
+  <p>Developed by Baptiste Delaporte, Thomas Ibanez, Gunnar Keppel, Swen Jullien, Christophe Menkes, Alix Biton, Thomas Arsouze.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -29,7 +29,7 @@ if (FALSE) { # \dontrun{
 sds <- defStormsDataset(...)
 sts <- defStormsList(...)
 getNames(sts)
-## "UNNAMED"   "UNNAMED"   "UNNAMED"   "ALLEN"     "CHARLEY"   "DANIELLE"  "JEANNE"    "UNNAMED" 
+## "UNNAMED"   "UNNAMED"   "UNNAMED"   "ALLEN"     "CHARLEY"   "DANIELLE"  "JEANNE"    "UNNAMED"
 ## "UNNAMED"   "UNNAMED"   "DENNIS"    ...
 
 sts <- renameStorms(sts)

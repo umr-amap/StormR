@@ -2,7 +2,9 @@
 
 The [`temporalBehaviour()`](../reference/temporalBehaviour.md) function
 allows computing wind speed and direction for a given location or set of
-locations along the lifespan of a tropical cyclone. It also allows to
+locations along the lifespan of a tropical cyclone. Wind direction
+follows the meteorological convention : it indicates where the wind is
+blowing from, with 0° at North, increasing clockwise. It also allows to
 compute to compute three associated summary statistics: the maximum
 sustained wind speed (`product="MSW"`), the power dissipation index
 (`product="PDI"`) and the duration of exposure to winds reaching defined
@@ -23,6 +25,7 @@ Luganville (longitude = 167.17, latitude = -15.53). The coordinates of
 the two locations of interest are provided in a data frame as follows:
 
 ``` r
+
 df <- data.frame(x = c(168.33, 167.17), y = c(-17.73, -15.53))
 rownames(df) <- c("Port_Vila", "Luganville")
 ```
@@ -30,6 +33,7 @@ rownames(df) <- c("Port_Vila", "Luganville")
 The track data for Pam nearby Vanuatu are extracted as follows:
 
 ``` r
+
 sds <- defStormsDataset()
 ```
 
@@ -42,6 +46,7 @@ sds <- defStormsDataset()
     ## === DONE ===
 
 ``` r
+
 st <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 plotStorms(st)
 points(df$x, df$y, pch = 3, col = c("blue", "red"))
@@ -57,6 +62,7 @@ be changed using the `tempRes` argument. Here we set the temporal
 resolution to 30 min with `tempRes=0.5` as follows:
 
 ``` r
+
 TS <- temporalBehaviour(st, points = df, product = "TS", tempRes = 30, verbose = 0)
 ```
 
@@ -67,6 +73,7 @@ wind speed (“speed”), direction (“direction”), indices of the
 observations and the date and time of the observation (“isoTimes”).
 
 ``` r
+
 str(TS)
 ```
 
@@ -88,12 +95,14 @@ We use the data frame and the
 series plots for wind speed and wind direction as follows:
 
 ``` r
+
 plotTemporal(data=TS, storm="PAM")
 ```
 
 ![](TemporalBehaviour_files/figure-html/unnamed-chunk-6-1.png)
 
 ``` r
+
 plotTemporal(data=TS, storm="PAM", var='direction')
 ```
 
@@ -103,16 +112,18 @@ Maximum sustained wind speed for Port Vila and Luganville can be
 computed as follows:
 
 ``` r
+
 max(TS$PAM$Port_Vila$speed, na.rm = TRUE)
 ```
 
-    ## [1] 53.312
+    ## [1] 53.923
 
 ``` r
+
 max(TS$PAM$Luganville$speed, na.rm = TRUE)
 ```
 
-    ## [1] 22.112
+    ## [1] 20.746
 
 ### Getting power dissipation index
 
@@ -120,13 +131,14 @@ The power dissipation index is computed using the `product = "PDI"`
 argument as follows:
 
 ``` r
+
 PDI <- temporalBehaviour(st, points = df, product = "PDI", tempRes = 30, verbose = 0)
 PDI
 ```
 
     ## $PAM
     ##     Port_Vila Luganville
-    ## PDI   7566313    1206699
+    ## PDI   7680080     950087
 
 ### Getting duration of exposure
 
@@ -134,27 +146,29 @@ The duration of exposure is computed using the `product = "Exposure"`
 argument as follows:
 
 ``` r
+
 exposure_SS <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 30, verbose = 0)
 exposure_SS
 ```
 
     ## $PAM
     ##                       Port_Vila Luganville
-    ## Min threshold: 18 m/s      23.0         16
-    ## Min threshold: 33 m/s       9.5          0
-    ## Min threshold: 42 m/s       5.0          0
-    ## Min threshold: 49 m/s       2.0          0
-    ## Min threshold: 58 m/s       0.0          0
-    ## Min threshold: 70 m/s       0.0          0
+    ## Min threshold: 18 m/s        22       12.5
+    ## Min threshold: 33 m/s         9        0.0
+    ## Min threshold: 42 m/s         5        0.0
+    ## Min threshold: 49 m/s         3        0.0
+    ## Min threshold: 58 m/s         0        0.0
+    ## Min threshold: 70 m/s         0        0.0
 
 By default, the function returns the duration of exposure (in hours) to
 wind speeds above the thresholds used by the Saffir-Simpson hurricane
-wind scale (i.e., 18, 33, 42, 49, 58, and 70 $m.s^{- 1}$). However,
+wind scale (i.e., 18, 33, 42, 49, 58, and 70 $`m.s^{-1}`$). However,
 different thresholds can be set using the `wind_threshold` arguments. We
 can use the thresholds used by the Australian Bureau of Meteorology to
 rank tropical cyclones intensity as follow:
 
 ``` r
+
 wt <- c(17.2, 24.4, 32.5, 44.2, 55.0)
 exposure_BOM <- temporalBehaviour(st, points = df, product = "Exposure", tempRes = 30, windThreshold = wt, verbose = 0)
 exposure_BOM
@@ -162,8 +176,8 @@ exposure_BOM
 
     ## $PAM
     ##                         Port_Vila Luganville
-    ## Min threshold: 17.2 m/s        24       17.5
-    ## Min threshold: 24.4 m/s        16        0.0
-    ## Min threshold: 32.5 m/s        10        0.0
-    ## Min threshold: 44.2 m/s         4        0.0
-    ## Min threshold: 55 m/s           0        0.0
+    ## Min threshold: 17.2 m/s      23.0       14.5
+    ## Min threshold: 24.4 m/s      15.5        0.0
+    ## Min threshold: 32.5 m/s       9.5        0.0
+    ## Min threshold: 44.2 m/s       4.0        0.0
+    ## Min threshold: 55 m/s         0.0        0.0

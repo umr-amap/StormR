@@ -14,53 +14,62 @@ exposure to winds reaching defined speed thresholds.
 
 ### Maximum sustained wind speed
 
-The maximum sustained wind speed (MSW, in $m.s^{- 1}$) over the lifespan
-of a storm is computed as follows:
+The maximum sustained wind speed (MSW, in $`m.s^{-1}`$) over the
+lifespan of a storm is computed as follows:
 
-$$\max\left( v(t)|t \in \lbrack 0,T\rbrack \right)$$
+``` math
+\max(v(t) | t \in [0,T])
+```
 
-where $t$ is the time of the observation  
-$T$ is the lifespan of the storm  
+where $`t`$ is the time of the observation  
+$`T`$ is the lifespan of the storm  
 
 ### Power Dissipation Index
 
-The power dissipation index (PDI, in $J.m^{- 2}$) or total power
+The power dissipation index (PDI, in $`J.m^{-2}`$) or total power
 dissipated by unit area by a tropical storm over its lifespan (Emanuel
 1999, 2005) is computed as follows:
 
-$$\int_{T}\rho \times C_{d} \times v_{r}^{3}\ dt$$
+``` math
+\int_T \rho \times C_d \times v_r^3 \ dt
+```
 
-where $t$ is the time of the observation  
-$T$ is the lifespan of the storm  
-$\rho$ is the air density fixed to $1$$kg.m^{- 3}$ as in Emanuel
+where $`t`$ is the time of the observation  
+$`T`$ is the lifespan of the storm  
+$`\rho`$ is the air density fixed to $`1`$$`kg.m^{-3}`$ as in Emanuel
 (1999)  
-$C_{d}$ is the drag coefficient of the storm fixed to $2$ X $10^{- 3}$
-as in Emanuel (1999)  
+$`C_d`$ is the drag coefficient of the storm fixed to $`2`$ X
+$`10^{-3}`$ as in Emanuel (1999)  
 
 ### Duration of exposure
 
-The duration of exposure (in $hours$) to winds reaching defined speed
+The duration of exposure (in $`hours`$) to winds reaching defined speed
 thresholds is computed as follows:
 
-$$\int_{T}c\left( v_{t} \right)dt$$
+``` math
+\int_T c(v_t) dt
+```
 
-$$\left\{ \begin{aligned}
-{c\left( v_{t} \right)} & {= 1\quad if\quad v_{t} \geq Thd} \\
-{c\left( v_{t} \right)} & {= 0\quad if\quad v_{t} < Thd} \\
- & 
-\end{aligned} \right.$$
+``` math
+\left\{
+\begin{aligned}
+c(v_t) &= 1 \quad if \quad v_t \geq Thd\\
+c(v_t) &= 0 \quad if \quad v_t < Thd\\
+\end{aligned}
+\right.
+```
 
 where  
-$t$ is the time of the observation  
-$T$ is the lifespan of the storm  
-$v_{t}$ is the maximum sustained wind speed at time $t$ (in
-$m.s^{- 1}$)  
-$Thd$ is the minimum wind sped threshold (in $m.s^{- 1}$)  
+$`t`$ is the time of the observation  
+$`T`$ is the lifespan of the storm  
+$`v_t`$ is the maximum sustained wind speed at time $`t`$ (in
+$`m.s^{-1}`$)  
+$`Thd`$ is the minimum wind sped threshold (in $`m.s^{-1}`$)  
 
 By default the duration of exposure is computed for each Saffir-Simpson
 Hurricane Scale threshold values for tropical cyclone categories (i.e.,
-$33$, $43$, $50$ ,$58$, and $70$$m.s^{- 1}$, (Simpson 1974)) but can be
-defined using the `wind_threshold` argument.
+$`33`$, $`43`$, $`50`$ ,$`58`$, and $`70`$$`m.s^{-1}`$, (Simpson 1974))
+but can be defined using the `wind_threshold` argument.
 
 ## References
 
@@ -68,9 +77,10 @@ Emanuel, Kerry A. 1999. “The Power of a Hurricane: An Example of
 Reckless Driving on the Information Superhighway.” *Weather* 54 (4):
 107–8. <https://doi.org/10.1002/j.1477-8696.1999.tb06435.x>.
 
-———. 2005. “Increasing Destructiveness of Tropical Cyclones over the
-Past 30 Years.” *Nature* 436 (7051): 686–88.
+Emanuel, Kerry A. 2005. “Increasing Destructiveness of Tropical Cyclones
+over the Past 30 Years.” *Nature* 436 (7051): 686–88.
 <https://doi.org/10.1038/nature03906>.
 
 Simpson, R. H. 1974. “The Hurricane Disaster—Potential Scale.”
-*Weatherwise*, July. <https://doi.org/10.1080/00431672.1974.9931702>.
+*Weatherwise*, ahead of print, July.
+<https://doi.org/10.1080/00431672.1974.9931702>.

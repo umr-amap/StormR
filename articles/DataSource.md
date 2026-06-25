@@ -20,20 +20,21 @@ as the following fields are provided:
 
 [TABLE]
 
-$^{1}$ Providing the `basin` allows to filter storms in a particular
+$`^{1}`$ Providing the `basin` allows to filter storms in a particular
 basin using the `basin` argument of the
 [`defStormsDataset()`](../reference/defStormsDataset.md) function.  
-$^{2}$ Providing `rmw` allows better estimates of wind speed and
+$`^{2}`$ Providing `rmw` allows better estimates of wind speed and
 direction in the `temporatlBehaviour()` and
 [`spatialBehaviour()`](../reference/spatialBehaviour.md) functions. If
 not provided, `rmw` is approximated using an empirical formula derived
 from Willoughby *et al.* (2006) as follows,
-$R_{m} = 46.4e^{( - 0.0155 \times v_{m} + 0.0169 \times {|\phi|})}$.  
-$^{3}$ If the `pressure` and `poci` fields are not provided, both
+$`R_m = 46.4e^{(-0.0155 \times v_m + 0.0169 \times
+|\phi|)}`$.  
+$`^{3}`$ If the `pressure` and `poci` fields are not provided, both
 Holland (1980) and Boose *et al.* (2004) wind field models cannot be
 used in the `temporatlBehaviour()` and
 [`spatialBehaviour()`](../reference/spatialBehaviour.md) functions.  
-$^{4}$ The `sshs` field is optional, if not provided this field is
+$`^{4}`$ The `sshs` field is optional, if not provided this field is
 automatically filled using the `msw` field.
 
 ### Downloading a data source
@@ -50,6 +51,7 @@ storms that occurred over the last three years over the different basins
 world wide can be download to the working directory as follows,
 
 ``` r
+
 download.file(url = "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/netcdf/IBTrACS.last3years.v04r00.nc", destfile = "./IBTrACS_ALL_3yrs.nc")
 ```
 
@@ -61,6 +63,7 @@ created using the
 follows,
 
 ``` r
+
 sds <- defStormsDataset(filename = "./IBTrACS_ALL_3yrs.nc", basin = NULL, verbose = 0)
 ```
 
@@ -68,6 +71,7 @@ sds <- defStormsDataset(filename = "./IBTrACS_ALL_3yrs.nc", basin = NULL, verbos
     ##              but cannot use basin filtering for speed-up when collecting data
 
 ``` r
+
 str(sds)
 ```
 
@@ -90,6 +94,7 @@ str(sds)
     ##   .. ..$ poci     : num [1:360, 1:266] NA NA NA NA NA NA NA NA NA NA ...
 
 ``` r
+
 length(unique(paste(sds@database$names, sds@database$seasons, " ")))
 ```
 
@@ -104,6 +109,7 @@ Bureau of Meteorology (starting with “bom\_”) in the IBTrACKS data set
 as follows,
 
 ``` r
+
 sds <- defStormsDataset(
   filename = "IBTrACS_ALL_3yrs.nc",
   fields = c(
@@ -131,17 +137,18 @@ South Pacific basin.
 
 ### Unit conversion
 
-In the IBTrACS data sets speeds are given in knots ($knt$), distances in
-nautical miles ($nm$), and pressure in millibar ($mb$) but the models
-implemented in the
+In the IBTrACS data sets speeds are given in knots ($`knt`$), distances
+in nautical miles ($`nm`$), and pressure in millibar ($`mb`$) but the
+models implemented in the
 [`temporalBehaviour()`](../reference/temporalBehaviour.md) and
 [`spatialBehaviour()`](../reference/spatialBehaviour.md) functions
 compute wind speed, wind direction, and summary statistics following the
 international system of units (SI) or SI-derived units. Therefore, by
 default, when using IBTrACS data sets, the
 [`defStormsDataset()`](../reference/defStormsDataset.md) function
-converts knots ($knt$) to meter per second ($m.s^{- 1}$), nautical miles
-($nm$) to kilometres ($km$), and millibar ($mb$) to Pascal ($pa$).
+converts knots ($`knt`$) to meter per second ($`m.s^{-1}`$), nautical
+miles ($`nm`$) to kilometres ($`km`$), and millibar ($`mb`$) to Pascal
+($`pa`$).
 
 When using another source of data than IBTrACS, the `unitConversion`
 argument of the [`defStormsDataset()`](../reference/defStormsDataset.md)
@@ -195,6 +202,7 @@ Notice that the header of the csv and the names of columns in `fields`
 input must be equals
 
 ``` r
+
 # Header of the csv
 head(read.csv(system.file("extdata", "test_dataset.csv", package = "StormR")))
 ```
@@ -215,6 +223,7 @@ head(read.csv(system.file("extdata", "test_dataset.csv", package = "StormR")))
     ## 6      45     1000     1004
 
 ``` r
+
 # Is already the default setting (in this particular case)
 fields <- c(
   names = "name",
@@ -247,8 +256,8 @@ Profiles in Hurricanes.” *Monthly Weather Review* 108 (8): 1212–18.
 <https://doi.org/10.1175/1520-0493(1980)108%3C1212:AAMOTW%3E2.0.CO;2>.
 
 Knapp, Kenneth R., Howard J. Diamond, James P. Kossin, Michael C. Kruk,
-and Carl J. III Schreck. 2018. “International Best Track Archive for
-Climate Stewardship (IBTrACS) Project, Version 4.”
+and Carl J. III Schreck. 2018. *International Best Track Archive for
+Climate Stewardship (IBTrACS) Project, Version 4*.
 <https://doi.org/10.25921/82ty-9e16>.
 
 Knapp, Kenneth R., Michael C. Kruk, David H. Levinson, Howard J.

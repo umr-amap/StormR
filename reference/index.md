@@ -28,6 +28,14 @@ Functions for initializing storm/stormsList objects
 
   Renaming storms to avoid duplicated names in a `stormsList` object
 
+- [`removeStorms()`](removeStorms.md) :
+
+  Removing specific storms from a `stormsList` object
+
+- [`subsetStorms()`](subsetStorms.md) :
+
+  Keeping only specific storms from a `stormsList` object
+
 ## Getters
 
 Functions for getting data associated with storm/stormsList objects
@@ -64,6 +72,8 @@ Functions for getting data associated with storm/stormsList objects
 - [`getBufferSize()`](getBufferSize-methods.md) : Getting the buffer
   size
 
+- [`getTerrain()`](getTerrain.md) : Get terrain data
+
 ## Compute products
 
 Functions for computing products
@@ -72,6 +82,12 @@ Functions for computing products
   and summary statistics over given areas
 - [`temporalBehaviour()`](temporalBehaviour.md) : Computing wind
   behaviour time series and summary statistics at given point locations
+- [`computeTEW()`](computeTEW.md) : Compute the topographic exposure to
+  wind
+- [`computeTEW(`*`<SpatRaster>`*`)`](computeTEW.SpatRaster.md) : Compute
+  the topographic exposure to wind
+- [`computeTEW(`*`<list>`*`)`](computeTEW.list.md) : Compute the
+  topographic exposure to wind
 
 ## Plot
 
@@ -82,6 +98,9 @@ Functions for plotting tracks and products
   behaviour
 - [`plotTemporal()`](plotTemporal.md) : Plotting wind behaviour time
   series and summary statistics at given point locations
+- [`plotTEW()`](plotTEW.md) : Plotting topographic exposure to wind
+- [`plotTemporalTEW()`](plotTemporalTEW.md) : Plotting TEW time series
+  at given point locations
 
 ## Write
 
