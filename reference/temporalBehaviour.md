@@ -286,7 +286,7 @@ pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM")
 #>    -> Identifying Storms: Done
 #> -> Gathering storm(s) ... 
 #> 
-#> === DONE with run time 0.4781854 sec ===
+#> === DONE with run time 0.4783258 sec ===
 #> 
 #> SUMMARY:
 #> (*) LOI: Vanuatu 

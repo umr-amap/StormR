@@ -54,7 +54,7 @@ plotStorms(st)
 
 Then a Digital Terrain Model (DTM) is essential to compute topographic
 exposure to wind (TEW). In this tutorial, DTM used is [Copernicus DEM30
-data](dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM)
+data](https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM)
 and is extracted thanks to the [`openEO`
 package](https://open-eo.github.io/openeo-r-client/index.html) as
 follows :
