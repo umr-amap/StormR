@@ -5,7 +5,10 @@
 ^data-raw$
 ^_pkgdown\.yml$
 ^docs$
+^doc$
+^.lintr$
 ^pkgdown$
 ^vignettes/DataSource.Rmd
 ^codemeta.json$
 ^paper$
+^StormR-manual\.tex$
