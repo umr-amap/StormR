@@ -1,5 +1,5 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   Behaviour: Behaviour.html
@@ -9,4 +9,4 @@ articles:
   Models: Models.html
   SpatialBehaviour: SpatialBehaviour.html
   TemporalBehaviour: TemporalBehaviour.html
-last_built: 2026-07-01T09:53Z
+last_built: 2026-07-15T12:08Z
