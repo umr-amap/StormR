@@ -1,3 +1,8 @@
 suppressWarnings(sds <- defStormsDataset(verbose = 0))
 pam <- defStormsList(sds = sds, loi = "Vanuatu", names = "PAM", verbose = 0)
 sts_nc <- defStormsList(sds = sds, loi = "New Caledonia", verbose = 0)
+mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
+topo <- getTerrain(mnt)
+df <- data.frame(x = c(168.36), y = c(-17.62))
+prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
+TS <- temporalBehaviour(pam, points = df, product = "TS", tempRes = 30, verbose = 0)

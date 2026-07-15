@@ -1,12 +1,13 @@
+tew <- computeTEW(prof, pam, mnt, product = "TEW", verbose = 0)
+tew_mean <- computeTEW(prof, pam, mnt, product = "TEW1wdMean", verbose = 0)
+tew_max <- computeTEW(prof, pam, mnt, product = "TEW1wdMax", verbose = 0)
+
 test_that("Tests checkInputsplotTEW function", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-  tew <- computeTEW(prof, pam, mnt, product = "TEW1wdMean", verbose = 0)
 
   # Checking sts input
   expect_error(
     checkInputsplotTEW(
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       xlim = NULL,
       ylim = NULL,
       labels = FALSE,
@@ -43,7 +44,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = TRUE,
       main = NULL,
       legends = "topright",
@@ -62,7 +63,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = TRUE,
       legends = "topright",
@@ -80,7 +81,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = c("a", "b"),
       legends = "topright",
@@ -99,7 +100,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -117,7 +118,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -135,7 +136,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -153,7 +154,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -171,7 +172,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -189,7 +190,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -208,7 +209,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -227,7 +228,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -245,7 +246,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -264,7 +265,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -282,7 +283,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -301,7 +302,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = 1,
@@ -319,7 +320,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "top",
@@ -338,7 +339,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -357,7 +358,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -375,7 +376,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -394,7 +395,7 @@ test_that("Tests checkInputsplotTEW function", {
   expect_error(
     checkInputsplotTEW(
       sts = pam,
-      rasterProduct = tew,
+      rasterProduct = tew_mean,
       colorPalette = NULL,
       main = NULL,
       legends = "topright",
@@ -411,12 +412,6 @@ test_that("Tests checkInputsplotTEW function", {
 })
 
 test_that("plotTEW works without errors", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-  tew <- computeTEW(prof, pam, mnt, product = "TEW", verbose = 0)
-  tew_mean <- computeTEW(prof, pam, mnt, product = "TEW1wdMean", verbose = 0)
-  tew_max <- computeTEW(prof, pam, mnt, product = "TEW1wdMax", verbose = 0)
-
   pdf(NULL)
   # Basic call with single observation layer
   expect_no_error(plotTEW(pam, tew[[1]]))
@@ -443,46 +438,38 @@ test_that("plotTEW works without errors", {
 })
 
 test_that("Tests checkInputsPlotTemporalTEW function", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  df <- data.frame(x = c(168.36), y = c(-17.62))
-  TS <- temporalBehaviour(pam, points = df, product = "TS", tempRes = 30, verbose = 0)
-  tew_data <- computeTEW(TS, df, mnt, angle = 6, threshold = 0, verbose = 0)
 
   # Missing data
   expect_error(checkInputsPlotTemporalTEW(storm = "PAM"))
 
   # Missing storm
-  expect_error(checkInputsPlotTemporalTEW(data = tew_data))
+  expect_error(checkInputsPlotTemporalTEW(data = tew))
 
   # Wrong data type (not a list of lists)
   expect_error(checkInputsPlotTemporalTEW(data = "not_a_list", storm = "PAM"))
 
   # Storm as character not found
-  expect_error(checkInputsPlotTemporalTEW(data = tew_data, storm = "NOT_A_STORM"))
+  expect_error(checkInputsPlotTemporalTEW(data = tew, storm = "NOT_A_STORM"))
 
   # Storm as numeric index out of bounds
-  expect_error(checkInputsPlotTemporalTEW(data = tew_data, storm = 99))
+  expect_error(checkInputsPlotTemporalTEW(data = tew, storm = 99))
 
   # Storm as invalid type
-  expect_error(checkInputsPlotTemporalTEW(data = tew_data, storm = TRUE))
+  expect_error(checkInputsPlotTemporalTEW(data = tew, storm = TRUE))
 })
 
 test_that("plotTemporalTEW works without errors", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  df <- data.frame(x = c(169.097), y = c(-18.723))
-  TS <- temporalBehaviour(pam, points = df, product = "TS", tempRes = 30, verbose = 0)
-  tew_data <- computeTEW(TS, df, mnt, angle = 6, threshold = 0, verbose = 0)
+  df2 <- data.frame(x = c(169.097), y = c(-18.723))
+  TS2 <- temporalBehaviour(pam, points = df2, product = "TS", tempRes = 30, verbose = 0)
+  tew_TS <- computeTEW(TS2, df2, mnt, angle = 6, threshold = 0, verbose = 0)
 
   pdf(NULL)
-  expect_no_error(plotTemporalTEW(tew_data, storm = "PAM"))
-  expect_no_error(plotTemporalTEW(tew_data, storm = 1))
+  expect_no_error(plotTemporalTEW(tew_TS, storm = "PAM"))
+  expect_no_error(plotTemporalTEW(tew_TS, storm = 1))
   dev.off()
 })
 
 test_that("computeWindFan returns direction range", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-  tew <- computeTEW(prof, pam, mnt, product = "TEW1wdMean", verbose = 0)
 
   fan <- computeWindFan(pam, tew)
   expect_type(fan, "list")

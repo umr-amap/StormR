@@ -1,6 +1,5 @@
+
 test_that("Tests checkInputscomputeTEW.SpatRaster function", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 
   # Checking sts input (missing)
   expect_error(
@@ -105,9 +104,6 @@ test_that("Tests checkInputscomputeTEW.SpatRaster function", {
 })
 
 test_that("Tests checkInputscomputeTEW.list function", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  df <- data.frame(x = c(168.36), y = c(-17.62))
-  TS <- temporalBehaviour(pam, points = df, product = "TS", tempRes = 30, verbose = 0)
 
   # Checking points input (missing)
   expect_error(
@@ -215,7 +211,6 @@ test_that("computeShade computes correct values with numeric inputs", {
 })
 
 test_that("getTerrain returns slope and aspect in radians", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
   topo <- getTerrain(mnt)
 
   expect_type(topo, "list")
@@ -227,8 +222,6 @@ test_that("getTerrain returns slope and aspect in radians", {
 })
 
 test_that("getValueMaxSpeed and getWindDirection extract direction at max speed", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 
   layersMSW <- names(prof)[grep("_Speed_", names(prof))]
   layersDir <- names(prof)[grep("_Direction_", names(prof))]
@@ -251,9 +244,6 @@ test_that("getValueMaxSpeed and getWindDirection extract direction at max speed"
 })
 
 test_that("computeTEWProfiles returns exposure profiles with usePixel = FALSE", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-  topo <- getTerrain(mnt)
 
   layersMSW <- names(prof)[grep("_Speed_", names(prof))]
   layersDir <- names(prof)[grep("_Direction_", names(prof))]
@@ -269,9 +259,6 @@ test_that("computeTEWProfiles returns exposure profiles with usePixel = FALSE", 
 })
 
 test_that("computeTEWProfiles returns exposure profiles with usePixel = TRUE", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-  topo <- getTerrain(mnt)
 
   layersMSW <- names(prof)[grep("_Speed_", names(prof))]
   layersDir <- names(prof)[grep("_Direction_", names(prof))]
@@ -288,9 +275,6 @@ test_that("computeTEWProfiles returns exposure profiles with usePixel = TRUE", {
 })
 
 test_that("computeTEWProfiles returns NULL when no layers meet threshold", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-  topo <- getTerrain(mnt)
 
   layersMSW <- names(prof)[grep("_Speed_", names(prof))]
   layersDir <- names(prof)[grep("_Direction_", names(prof))]
@@ -302,9 +286,6 @@ test_that("computeTEWProfiles returns NULL when no layers meet threshold", {
 })
 
 test_that("computeTEWIntegrated returns a single-layer SpatRaster", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
-  topo <- getTerrain(mnt)
 
   layersMSW <- names(prof)[grep("_Speed_", names(prof))]
   layersDir <- names(prof)[grep("_Direction_", names(prof))]
@@ -316,8 +297,6 @@ test_that("computeTEWIntegrated returns a single-layer SpatRaster", {
 })
 
 test_that("computeTEW.SpatRaster produces correct products", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 
   # Test TEWIntegrated (default)
   result <- computeTEW(prof, pam, mnt, product = "TEWIntegrated", verbose = 0)
@@ -353,8 +332,6 @@ test_that("computeTEW.SpatRaster produces correct products", {
 
 
 test_that("computeTEW.SpatRaster with very high threshold returns NULL", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  prof <- spatialBehaviour(pam, product = "Profiles", verbose = 0)
 
   expect_warning(
     result <- computeTEW(prof, pam, mnt, product = "TEW1wd", threshold = 1e6, verbose = 0),
@@ -364,9 +341,6 @@ test_that("computeTEW.SpatRaster with very high threshold returns NULL", {
 })
 
 test_that("computeTEW.list returns data.frames with tew column", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  df <- data.frame(x = c(168.36), y = c(-17.62))
-  TS <- temporalBehaviour(pam, points = df, product = "TS", tempRes = 30, verbose = 0)
 
   result <- computeTEW(TS, df, mnt, angle = 6, threshold = 0, verbose = 0)
 
@@ -380,9 +354,6 @@ test_that("computeTEW.list returns data.frames with tew column", {
 })
 
 test_that("computeTEW.list respects threshold", {
-  mnt <- terra::rast(system.file("extdata", "test_datadtm.tif", package = "StormR"))
-  df <- data.frame(x = c(168.36), y = c(-17.62))
-  TS <- temporalBehaviour(pam, points = df, product = "TS", tempRes = 30, verbose = 0)
 
   result_low <- computeTEW(TS, df, mnt, angle = 6, threshold = 0, verbose = 0)
   result_high <- computeTEW(TS, df, mnt, angle = 6, threshold = 100, verbose = 0)
