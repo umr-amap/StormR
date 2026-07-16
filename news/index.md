@@ -1,5 +1,31 @@
 # Changelog
 
+## StormR 0.3.0
+
+CRAN release: 2026-07-15
+
+- Devtopo: add “Topographic Exposure to Wind” feature to the package by
+  [@thomasarsouze](https://github.com/thomasarsouze) and
+  [@alixbiton](https://github.com/alixbiton) in
+  [\#127](https://github.com/umr-amap/StormR/pull/127)
+- Improve tests by [@thomasarsouze](https://github.com/thomasarsouze) in
+  [\#125](https://github.com/umr-amap/StormR/pull/125)
+- Change wind direction: towards to from by
+  [@thomasarsouze](https://github.com/thomasarsouze) in
+  [\#124](https://github.com/umr-amap/StormR/pull/124)
+- Solves [\#97](https://github.com/umr-amap/StormR/issues/97) \[Bug\]:
+  Wrong values of the storm taken in temporalBehaviour by
+  [@thomasarsouze](https://github.com/thomasarsouze) in
+  [\#126](https://github.com/umr-amap/StormR/pull/126)
+- Bump actions/checkout from 6 to 7 in the actions group by
+  [@dependabot](https://github.com/dependabot)\[bot\] in
+  [\#128](https://github.com/umr-amap/StormR/pull/128)
+
+## StormR 0.2.4
+
+- Solves [\#121](https://github.com/umr-amap/StormR/issues/121)
+- Improves warning messages in defStormsLists
+
 ## StormR 0.2.3
 
 - Bugfix : [defStormsList fails to print results when multiple storms
