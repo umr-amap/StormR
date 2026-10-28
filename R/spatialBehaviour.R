@@ -332,12 +332,12 @@ resampleProductToTemplate <- function(x, template, templateExtent) {
 #'
 #' @param rast SpatRaster. Raster to smooth
 #' @param nbg numeric. Size of the smoothing window
-#' @param pad logical. **Optional** Whether to pad the raster or not
+#' @param expand logical. **Optional** Whether to expand the raster or not
 #'
 #' @return SpatRaster. The initial raster smoothed
 
-smoothRaster <- function(rast, nbg, pad=TRUE) {
-  return(terra::focal(rast, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, pad = pad))
+smoothRaster <- function(rast, nbg, expand = TRUE) {
+  return(terra::focal(rast, w = matrix(1, nbg, nbg), mean, na.rm = TRUE, expand = expand))
 }
 
 #' Short internal function to name and give a correct time stamp to the raster
@@ -352,7 +352,7 @@ smoothRaster <- function(rast, nbg, pad=TRUE) {
 #'
 #' @return SpatRaster. The initial raster with a name and a time stamp
 
-nameAndTimeRaster <- function(rast, name, product, timeRaster, threshold=NULL) {
+nameAndTimeRaster <- function(rast, name, product, timeRaster, threshold = NULL) {
   if (!is.null(threshold)) {
     names(rast) <- paste0(name, "_", product, "_", threshold)
   } else {
@@ -394,7 +394,7 @@ rasterizeStormProduct <- function(product, stormRastersProduct, spaceRes, name, 
     for (l in seq_along(windThreshold)) {
       ind <- seq(l, terra::nlyr(stormRastersProduct), length(windThreshold))
       rastl <- sum(terra::subset(stormRastersProduct, ind), na.rm = TRUE)
-      rastl <- smoothRaster(rastl, nbg, pad=FALSE)
+      rastl <- smoothRaster(rastl, nbg, expand = FALSE)
       rastl <- nameAndTimeRaster(rastl, name, product, stormRastersProduct[[1]], windThreshold[l])
       rast <- c(rast, rastl)
     }
